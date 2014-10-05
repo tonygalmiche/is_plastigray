@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+  
+    <!-- Sale settings -->
+    <function model="sale.config.settings" name="execute_sale_setting" />
+    
+    <!-- Stock settings -->
+    <function model="stock.config.settings" name="execute_stock_setting" />
+    
+    <!-- Purchase settings -->
+    <function model="purchase.config.settings" name="execute_purchase_setting" />
+    
+    <!-- MRP settings -->
+    <function model="mrp.config.settings" name="execute_mrp_setting" />
+
+  
+  </data>
+</openerp>

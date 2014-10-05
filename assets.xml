@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim:fdn=3:
+-->
+<openerp>
+    <data>
+        <template id="is_assets_backend" name="is_teixeira assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/is_plastigray/static/src/css/style.css"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>

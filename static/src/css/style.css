@@ -1,0 +1,27 @@
+
+
+
+
+/*
+h1 {
+  color:red;
+}
+
+
+.openerp p {
+  color:red;
+  background-color: green;
+}
+
+
+.openerp .oe_secondary_menu_section {
+    color: red;
+    background-color: green;
+}
+*/
+
+
+.openerp .announcement_bar {
+    display:none;
+
+}
