@@ -41,6 +41,7 @@ Ce module sert uniquement à installer les dépendances du projet Plastigray
     "is_mrp",                 # Calcul des besoins
     "is_mold",                # Moules et Projets pour l'injection plastique
     "is_pg_product",          # Fiche article
+    "is_etiquette",           # Gestion des etiquettes de production
   ], # Liste des dépendances (autres modules nececessaire au fonctionnement de celui-ci)
      # -> Il peut être interessant de créer un module dont la seule fonction est d'installer une liste d'autres modules
      # Remarque : La desinstallation du module n'entrainera pas la desinstallation de ses dépendances (ex : mail)
