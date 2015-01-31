@@ -4,17 +4,17 @@
 #       https://doc.openerp.com/trunk/server/03_module_dev_01/#manifest-file-openerp-py
 
 {
-  "name" : "InfoSaône - Module Odoo d'installation des dépendances pour Plastigray",
+  "name" : "InfoSaône - Module Odoo pour Plastigray",
   "version" : "0.1",
   "author" : "InfoSaône",
   "category" : "InfoSaône\Plastigray",
 
 
   'description': """
-InfoSaône - Module Odoo d'installation des dépendances pour Plastigray 
+InfoSaône - Module Odoo pour Plastigray 
 ===================================================
 
-Ce module sert uniquement à installer les dépendances du projet Plastigray
+Ce module sert uniquement à installer les dépendances du projet Plastigray et à configurer les menus
 
 """,
 
