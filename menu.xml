@@ -122,23 +122,37 @@
     <menuitem id="menu_is_production_10"         sequence="10" name="Ordres de fabrication"  parent="menu_is_production_production"    action="mrp.mrp_production_action" />
     <menuitem id="menu_is_production_20"         sequence="20" name="Ordres de Travail"      parent="menu_is_production_production"    action="mrp_operations.mrp_production_wc_action_form" />
 
-    <menuitem id="menu_is_production_40"         sequence="40" name="Mouvement d'inventaire" parent="menu_is_production_production"    action="stock.act_product_stock_move_open" />
-    <menuitem id="menu_is_production_50"         sequence="50" name="Numéro de série"        parent="menu_is_production_production"    action="stock.action_production_lot_form" />
-    <menuitem id="menu_is_production_60"         sequence="60" name="Mouvements de stocks"   parent="menu_is_production_production"    action="stock.action_move_form2" />
 
-    <menuitem id="menu_is_production_inv"    sequence="20" name="Inventaires"          parent="menu_is_production"/>
+
+
+    <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"/>
+    <menuitem id="menu_is_production_stock_10" sequence="10" name="Numéro de série"          parent="menu_is_production_stock"  action="stock.action_production_lot_form" />
+    <menuitem id="menu_is_production_stock_20" sequence="20" name="Mouvements de stocks"     parent="menu_is_production_stock"  action="stock.action_move_form2" />
+
+    <menuitem id="menu_is_production_stock_40" sequence="40" name="Bloquer un lot"           parent="menu_is_production_stock"  action="is_gestion_lot.action_stock_lot_bloque_report"          groups="is_gestion_lot.group_is_bloque_lot" />
+    <menuitem id="menu_is_production_stock_50" sequence="50" name="Débloquer un lot"         parent="menu_is_production_stock"  action="is_gestion_lot.action_stock_lot_debloque_report"        groups="is_gestion_lot.group_is_debloque_lot" />
+    <menuitem id="menu_is_production_stock_60" sequence="60" name="Changement d'emplacement" parent="menu_is_production_stock"  action="is_gestion_lot.action_stock_lot_change_location_report" groups="is_gestion_lot.group_is_change_locations" />
+    <menuitem id="menu_is_production_stock_70" sequence="70" name="Lots au rebut"            parent="menu_is_production_stock"  action="is_gestion_lot.action_stock_lot_rebut_report"           groups="is_gestion_lot.group_is_rebut_lot" />
+
+
+    <menuitem id="menu_is_production_inv"    sequence="30" name="Inventaires"          parent="menu_is_production"/>
     <menuitem id="menu_is_production_inv_10" sequence="10" name="Inventaires"          parent="menu_is_production_inv" action="stock.action_inventory_form" />
     <menuitem id="menu_is_production_inv_20" sequence="20" name="Lignes d'inventaires" parent="menu_is_production_inv" action="is_inventory.action_is_inventory" />
 
-    <menuitem id="menu_is_production_cbn"    sequence="20" name="Calcul des besoins"  parent="menu_is_production"/>
+    <menuitem id="menu_is_production_cbn"    sequence="40" name="Calcul des besoins"  parent="menu_is_production"/>
     <menuitem id="menu_is_production_cbn_10" sequence="10" name="Calcul des besoins"  parent="menu_is_production_cbn"    action="is_mrp.action_generate_prevision" />
     <menuitem id="menu_is_production_cbn_20" sequence="20" name="Prévisions"          parent="menu_is_production_cbn"    action="is_mrp.action_mrp_prevision_form" />
 
+    <menuitem id="menu_is_production_config"    sequence="50" name="Configuration"  parent="menu_is_production"/>
+    <menuitem id="menu_is_production_config_10" sequence="10" name="Emplacements"   parent="menu_is_production_config"  action="stock.action_location_form" />
+
+
+    <!--
     <menuitem id="menu_is_production_eti"    sequence="20" name="Etiquettes"             parent="menu_is_production"/>
     <menuitem id="menu_is_production_eti_10" sequence="10" name="Etiquettes des colis"   parent="menu_is_production_eti"    action="is_etiquette.action_is_etiquette_form" />
     <menuitem id="menu_is_production_eti_20" sequence="20" name="Changement emplacement" parent="menu_is_production_eti"    action="is_etiquette.action_is_changer_emplacement" />
     <menuitem id="menu_is_production_eti_30" sequence="30" name="Etiquettes d'un lot"    parent="menu_is_production_eti"    action="is_etiquette.action_generer_etiquettes" />
-
+    -->
 
     <menuitem id="base.menu_reporting"           sequence="5"  name="Suivi d'activité" parent=""/>
 
