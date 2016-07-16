@@ -1,5 +1,7 @@
 InfoSaône - Module Odoo pour Plastigray
 ===================
 
-Ce module sert uniquement à installer les dépendances du projet Plastigray et à configurer les menus
+Ce module contient tous les développements spécifiques réalisés pour le projet Odoo
+
+
 
