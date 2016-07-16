@@ -267,8 +267,6 @@
 
 
     <!-- Poste de charges -->
-
-
     <record id="mrp.mrp_workcenter_tree_view" model="ir.ui.view">
         <field name="name">mrp.workcenter.tree</field>
         <field name="model">mrp.workcenter</field>
@@ -284,7 +282,6 @@
             </tree>
         </field>
     </record>
-
     <record id="mrp.mrp_workcenter_view" model="ir.ui.view">
         <field name="name">mrp.workcenter.form</field>
         <field name="model">mrp.workcenter</field>
@@ -327,8 +324,26 @@
                     <label for="note"/>
                     <field name="note"/>
                 </sheet>
-
             </form>
+        </field>
+    </record>
+    <record id="mrp.view_mrp_workcenter_search" model="ir.ui.view">
+        <field name="name">mrp.workcenter.search</field>
+        <field name="model">mrp.workcenter</field>
+        <field name="arch" type="xml">
+            <search string="Search for mrp workcenter">
+                <field name="name" string="Mrp Workcenter" filter_domain="['|',('name','ilike',self),('code','ilike',self)]"/>
+                <field name="resource_type"/>
+                <field name="is_atelier_id"/>
+                <field name="is_ilot_id"/>
+                <filter string="Inactive" icon="terp-gdu-smart-failing" domain="[('active','=',False)]"/>
+                <group expand="0" string="Group By...">
+                    <filter string="Type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'resource_type'}"/>
+                    <filter string="Atelier" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'is_atelier_id'}"/>
+                    <filter string="Ilot"    icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'is_ilot_id'}"/>
+                    <filter string="Company" icon="terp-go-home"                domain="[]" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
         </field>
     </record>
 
