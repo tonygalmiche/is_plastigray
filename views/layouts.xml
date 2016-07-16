@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+<!-- Permet de remplacer complètement le header -->
+<template id="is_external_layout_header" name="is_external_layout_header" inherit_id="report.external_layout_header">
+    <xpath expr="//div[@class='header']" position="replace">
+    <div class="header">
+    </div>
+    </xpath>
+</template>
+
+<!-- Permet de remplacer complètement le footer -->
+<template id="is_external_layout_footer" name="is_external_layout_footer" inherit_id="report.external_layout_footer">
+    <xpath expr="//div[@class='footer']" position="replace">
+    <div class="footer">
+        <div class="text-center" style="border-top: 1px solid black;">
+            <ul class="list-inline">
+                <li>Page:</li>
+                <li><span class="page"/></li>
+                <li>/</li>
+                <li><span class="topage"/></li>
+            </ul>
+        </div>
+    </div>      
+    </xpath>
+</template>
+
+</data>
+</openerp>

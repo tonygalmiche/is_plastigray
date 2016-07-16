@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="is_view_order_form" model="ir.ui.view">
+            <field name="name">is_view_order_form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="attributes">
+                    <attribute name="class">oe_form_sheet_width_wider</attribute>
+                </xpath>
+                <xpath expr="/form/sheet/group/group/field[@name='date_order']" position="after">
+                    <field  name="is_type_commande"
+                            required="1"
+                            attrs="{'readonly' : [('order_line', '!=', [])],
+                                    'invisible': [('partner_id', '=', False)] }   " />
+                    <field  name="is_article_commande_id" 
+                            attrs="{'required' : [('is_type_commande', '!=', 'standard')], 
+                                    'invisible': [('is_type_commande', '=', 'standard')], 
+                                    'readonly' : [('order_line', '!=', [])] }" 
+                            context="{'pricelist': pricelist_id}" />
+                    <field name="is_ref_client" readonly="1" attrs="{'invisible' : [('is_article_commande_id', '=', False)]}" />
+                </xpath>
+
+
+                <field name="partner_id" position="attributes">
+                    <attribute name="domain">[('customer','=',True),('is_company','=',True)]</attribute>
+                </field>
+
+
+
+
+
+                <field name="partner_shipping_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+                <field name="user_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+
+                <field name="partner_invoice_id" position="replace">
+                    <field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice', 'show_address': 1}" options="{'always_reload': True}"/>
+                </field>
+
+
+                <xpath expr="//field[@name='client_order_ref']" position="attributes">
+                    <attribute name="required">True</attribute>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+
+
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                    <field name="is_justification" attrs="{'required':['|',('price_unit', '=', 0),('product_id', '=', False)]}"/>
+                    <field name="is_date_livraison"  on_change="onchange_date_livraison(is_date_livraison, parent.partner_id, parent.company_id)" required="1"/>
+                    <field name="is_date_expedition" readonly="1" />
+                    <field name="is_type_commande" required="1"  />
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']" position="attributes">
+                    <attribute name="context">   {'default_product_id' : is_article_commande_id, 'is_type_commande' : is_type_commande }</attribute>
+                    <attribute name="on_change">onchange_order_line(is_type_commande,order_line)</attribute>
+                </xpath>
+
+                <!--
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('is_type_commande', '=', 'standard')]}</attribute>
+                </xpath>
+                -->
+
+
+                <!-- Désactive la vue formulaire des lignes de commandes -->
+                <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+        <!-- Désactive la vue formulaire des lignes de commandes -->
+        <record id="sale.view_order_form_editable_list" model="ir.ui.view">
+            <field name="name">is.sale.order.form.editable.list</field>
+            <field name="model">sale.order</field>
+            <field name="groups_id" eval="[]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="is_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">is_view_order_form_inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+            <field name="arch" type="xml">
+                <field name="warehouse_id" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+
+        <!-- Masque les champs de la CRM -->
+        <record model="ir.ui.view" id="is_sale_view_inherit123">
+            <field name="name">is_sale_view_inherit123</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_crm.sale_view_inherit123"/>
+            <field name="arch" type="xml">
+                <field name="categ_ids" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="campaign_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="medium_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="source_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+
+
+
+        <record id="sale.view_order_tree" model="ir.ui.view">
+            <field name="name">view_order_tree</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Order Number"/>
+                    <field name="is_type_commande"/>
+                    <field name="client_order_ref"/>
+                    <field name="is_ref_client"/>
+                    <field name="is_article_commande_id"/>
+                    <button string="Client" name="action_acceder_client" type="object" icon="gtk-home" />
+                    <field name="partner_id"/>
+                    <field name="date_order"/>
+                    <field name="user_id" invisible="1"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+
+        <record model="ir.ui.view" id="is_order_line_tree_view">
+            <field name="name">is_order_line_tree_view</field>
+            <field name="model">sale.order.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+
+                    <!--
+                    TODO : L'object 'parent' n'est pas accessible dans une treeview. Il faut donc refaire les onchange comme pour date_livraison
+                    <field name="product_id"
+                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                        groups="base.group_user"
+                        on_change="product_id_change(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False, context)"/>
+
+                    <field name="product_uom_qty"
+                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                        on_change="product_id_change(parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, name, parent.partner_id, False, False, parent.date_order, False, parent.fiscal_position, True, context)"/>
+
+                    <field name="product_uom"
+                        on_change="product_uom_change(parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, name, parent.partner_id, False, False, parent.date_order, context)"
+                        groups="product.group_uom" options='{"no_open": True}'/>
+                    -->
+
+                    <button string="Article" name="action_acceder_article"   type="object" icon="gtk-zoom-in" />
+                    <field name="product_id"      readonly="1"/>
+                    <field name="product_uom_qty" readonly="1" />
+
+                    <field name="is_date_livraison" on_change="onchange_date_livraison(is_date_livraison, False, False, order_id)" required="1" />
+                    <field name="is_date_expedition"/>
+                    <field name="is_type_commande" required="1"  />
+                    <button string="Client"    name="action_acceder_client"   type="object" icon="gtk-home" />
+                    <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />
+                    <field name="order_id" readonly="1"/>
+                    <field name="state"    readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_order_line_tree_action">
+            <field name="name">Lignes de commandes</field>
+            <field name="res_model">sale.order.line</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="is_order_line_tree_view"/>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+        <record id="is_sale_order_action" model="ir.actions.act_window">
+            <field name="name">Commandes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph</field>
+            <field name="domain">[]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        </record>
+
+
+
+
+    </data>
+</openerp>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- Unités de mesures -->
+        <record id="product.product_uom_tree_view" model="ir.ui.view">
+            <field name="name">product.uom.tree</field>
+            <field name="model">product.uom</field>
+            <field name="arch" type="xml">
+                <tree colors="red:uom_type == 'reference'">
+                    <field name="category_id"/>
+                    <field name="name"/>
+                    <field name="uom_type"/>
+                    <field name="factor"/>
+                    <field name="factor_inv"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product.product_uom_form_view" model="ir.ui.view">
+            <field name="name">product.uom.form</field>
+            <field name="model">product.uom</field>
+            <field name="arch" type="xml">
+                <form string="Units of Measure">
+                    <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="category_id"/>
+                            <field name="uom_type" on_change="onchange_type(uom_type)"/>
+                            <field name="factor"
+                                digits="[42,5]"
+                                attrs="{'invisible':[('uom_type','!=','smaller')],
+                                        'readonly':[('uom_type','=','bigger')]}"/>
+                            <field name="factor_inv"
+                                digits="[42,5]"
+                                attrs="{'invisible':[('uom_type','!=','bigger')],
+                                        'readonly':[('uom_type','!=','bigger')]}"/>
+                            <p attrs="{'invisible':[('uom_type','!=','smaller')]}" class="oe_grey" colspan="2">
+                                e.g: 1 * (reference unit) = ratio * (this unit)
+                            </p>
+                            <p attrs="{'invisible':[('uom_type','!=','bigger')]}" class="oe_grey" colspan="2">
+                                e.g: 1 * (this unit) = ratio * (reference unit)
+                            </p>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="rounding" digits="[42, 5]"/>
+                        </group>
+                    </group>
+                </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+
+
+    </data>
+</openerp>

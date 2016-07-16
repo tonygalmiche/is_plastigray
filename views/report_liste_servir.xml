@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<template id="report_liste_servir">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <style>
+                        h1{
+                            font-size:16pt;
+                        }
+                        h2{
+                            font-size:14pt;
+                        }
+                        table{
+                            border:1pt solid black;
+                        }
+                        td{
+                            border:1pt solid black;
+                            padding:2pt;
+                        }
+                        th{
+                            text-align:center;
+                            border:1pt solid black;
+                            background-color:#0082DC;
+                            padding:2pt;
+                        }
+                        .message{
+                            font-size:16pt;
+                            background:orange;
+                        }
+
+
+
+                    </style>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h1>Liste à servir <span t-field="o.name"/></h1>
+                        </div>
+                    </div>
+
+                    <div class="row" t-if="o.message">
+                        <div class="col-xs-12">
+                            <div class="message" t-field="o.message"/>
+                        </div>
+                    </div>
+                    <br />
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <table style="width:100%">
+                                <tr><th>Client à livrer</th></tr>
+                                <tr>
+                                    <td>
+                                        <div t-field="o.partner_id.name"/>
+                                        <div t-field="o.partner_id.is_raison_sociale2"/>
+                                        <div t-field="o.partner_id.street"/>
+                                        <div t-field="o.partner_id.street2"/>
+                                        <span t-field="o.partner_id.zip"/> <span t-field="o.partner_id.city"/><br />
+                                        <div t-field="o.partner_id.country_id"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <table style="width:100%">
+                                <tr><th colspan="2">Autres informations</th></tr>
+                                <tr>
+                                    <td class="text-right">
+                                        Date de début d'expédition : <br />
+                                        Date de fin d'expédition : <br />
+                                        Transporteur : <br />
+                                    </td>
+                                    <td class="text-center">
+                                        <span t-field="o.date_debut"/><br />
+                                        <span t-field="o.date_fin"/><br />
+                                        <span t-field="o.transporteur_id"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table style="width:100%">
+                                <tr>
+                                    <th>Article</th>
+                                    <th>Commande</th>
+                                    <th>Date Exp/Liv</th>
+                                    <th>Quantité</th>
+                                    <th>Nb UC</th>
+                                    <th>UC</th>
+                                    <th>Nb UM</th>
+                                    <th>UM</th>
+                                    <th>Mixer</th>
+                                    <th>Commentaire</th>
+                                </tr>
+                                <t t-set="nb_uc" t-value="0"/>
+                                <t t-set="nb_um" t-value="0"/>
+                                <t t-foreach="o.line_ids" t-as="l">
+                                    <t t-set="nb_uc" t-value="nb_uc+l.nb_uc"/>
+                                    <t t-set="nb_um" t-value="nb_um+l.nb_um"/>
+                                    <tr>
+                                        <td class="text-left"><span t-field="l.product_id"/></td>
+                                        <td class="text-center"><span t-field="l.order_id"/></td>
+                                        <td class="text-center"><span t-field="l.date_expedition"/><br /><span t-field="l.date_livraison"/></td>
+                                        <td class="text-right"><span t-field="l.quantite"/></td>
+                                        <td class="text-right"><span t-field="l.nb_uc"/></td>
+                                        <td class="text-left"><span t-field="l.uc_id"/></td>
+                                        <td class="text-right"><span t-field="l.nb_um"/></td>
+                                        <td class="text-left"><span t-field="l.um_id"/></td>
+                                        <td class="text-center"><span t-if="l.mixer">Oui</span></td>
+                                        <td width="30mm"> </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td class="text-right"><b><t t-esc='nb_uc'/></b></td>
+                                    <td></td>
+                                    <td class="text-right"><b><t t-esc='nb_um'/></b></td>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <table style="width:100%">
+                                <tr>
+                                    <th>Nb UC</th>
+                                    <th>UC</th>
+                                    <th>Nb UM</th>
+                                    <th>UM</th>
+                                    <th>Commentaire</th>
+                                </tr>
+                                <t t-foreach="o.uc_ids" t-as="l">
+                                    <tr>
+                                        <td class="text-right"><span t-field="l.nb_uc"/></td>
+                                        <td class="text-left"><span t-field="l.uc_id"/></td>
+                                        <td class="text-right"><span t-field="l.nb_um"/></td>
+                                        <td class="text-left"><span t-field="l.um_id"/></td>
+                                        <td width="30mm"> </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td class="text-right"><b><t t-esc='nb_uc'/></b></td>
+                                    <td></td>
+                                    <td class="text-right"><b><t t-esc='nb_um'/></b></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+</data>
+</openerp>

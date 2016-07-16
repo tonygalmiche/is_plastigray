@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Liste des clients -->
+        <record model="ir.ui.view" id="is_liste_servir_client_tree_view">
+            <field name="name">is_liste_servir_client_tree_view</field>
+            <field name="model">is.liste.servir.client</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree" create="false" >
+                    <button string="Créer Liste à servir"   name="action_creer_liste_servir" type="object" icon="gtk-add"    attrs="{'invisible':[('liste_servir_id','!=',False)]}" />
+                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]"/>
+                    <button string="Voir la liste à servir" name="action_voir_liste_servir" type="object" icon="gtk-zoom-in" attrs="{'invisible':[('liste_servir_id','=',False)]}" />
+                    <field name="liste_servir_id"/>
+                    <field name="zip"/>
+                    <field name="city"/>
+                    <field name="delai_transport"/>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="livrable"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_liste_servir_client_action">
+            <field name="name">Clients à livrer</field>
+            <field name="res_model">is.liste.servir.client</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+        <record model="ir.ui.view" id="is_liste_servir_form_view">
+            <field name="name">is_liste_servir_form_view</field>
+            <field name="model">is.liste.servir</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <header>
+                        <button name="action_importer_commandes" type="object" string="Importer les commandes" class="oe_highlight" states="creation" />
+                        <button name="action_generer_bl"         type="object" string="Générer la commande de livraison" states="analyse" confirm2="Générer le bon de livraison ?"/>
+                        <field name="state" widget="statusbar"  clickable="True" />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <field name="name"/> 
+                            <field name="partner_id" domain="[('customer','=',True),('is_company','=',True)]" /> 
+                            <field name="date_debut"/> 
+                            <field name="date_fin"/> 
+                            <field name="livrable"/> 
+                            <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
+                            <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
+                            <field name="order_id"/> 
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom"  create="true">
+                                    <button string="Article"   name="action_acceder_article"  type="object" icon="gtk-zoom-in" />
+                                    <field name="product_id"/>
+                                    <field name="date_livraison"/>
+                                    <field name="date_expedition"/>
+                                    <field name="quantite"/>
+                                    <field name="nb_uc"/>
+                                    <field name="uc_id"/>
+                                    <field name="nb_um"/>
+                                    <field name="um_id"/>
+                                    <field name="mixer"/>
+                                    <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />
+                                    <field name="order_id"/>
+                                    <field name="anomalie"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="uc_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="nb_uc"/>
+                                    <field name="uc_id"/>
+                                    <field name="nb_um"/>
+                                    <field name="um_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_liste_servir_tree_view">
+            <field name="name">is_liste_servir_tree_view</field>
+            <field name="model">is.liste.servir</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/> 
+                    <field name="partner_id"/> 
+                    <field name="date_debut"/> 
+                    <field name="date_fin"/> 
+                    <field name="livrable"/> 
+                    <field name="state"/> 
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_liste_servir_search_view" >
+            <field name="name">is_liste_servir_search_view</field>
+            <field name="model">is.liste.servir</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="is_liste_servir_action">
+            <field name="name">Liste à servir</field>
+            <field name="res_model">is.liste.servir</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Message client -->
+        <record model="ir.ui.view" id="is_liste_servir_message_tree_view">
+            <field name="name">is_liste_servir_message_tree_view</field>
+            <field name="model">is.liste.servir.message</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree" editable="top">
+                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]"/>
+                    <field name="message"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_liste_servir_message_action">
+            <field name="name">Message liste à servir</field>
+            <field name="res_model">is.liste.servir.message</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+  </data>
+</openerp>

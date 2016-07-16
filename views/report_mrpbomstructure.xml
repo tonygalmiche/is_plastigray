@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<template id="is_report_mrpbomstructure" name="is_report_mrpbomstructure" inherit_id="mrp.report_mrpbomstructure">
+    <xpath expr="//div[@class='page']" position="replace">
+        <div class="page">
+            <h2>Nomenclature multi-niveaux</h2>
+
+
+
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th class="text-left">Article</th>
+                        <th class="text-center">Catégorie</th>
+                        <th class="text-right">Quantité</th>
+                        <th class="text-left">Unité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="docs" t-as="o">
+                        <tr style="font-weight: bold;">
+                            <td>
+                                <t t-if="o.product_tmpl_id.is_soumise_regl == 'SR'"> 
+                                    <img src='/is_pg_product/static/src/img/logo_rs.png' style="height:32px" />
+                                </t>
+                                <t t-if="o.product_tmpl_id.is_soumise_regl == 'R'"> 
+                                    <img src='/is_pg_product/static/src/img/logo_r.png' style="height:32px" />
+                                </t>
+                                <span t-field="o.product_tmpl_id.is_code"/>
+                                <span t-field="o.product_tmpl_id.name"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-field="o.product_tmpl_id.is_category_id.name"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="formatLang(o.product_qty,4)"/>
+                            </td>
+                            <td class="text-left">
+                                <span groups="product.group_uom" t-field="o.product_uom.name"/>
+                            </td>
+                        </tr>
+                        <tr t-foreach="get_children(o.bom_line_ids)" t-as="l">
+                            <td style="padding-left: 20px;">
+                                <span style="color: black;" t-esc="'- '*(l['level'])"/>
+                                <span t-esc="l['pcode']"/>
+                                <span t-esc="l['pname']"/>
+                            </td>
+                            <td class="text-center">
+                                <span t-esc="l['is_category_id']"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="formatLang(l['pqty'],4)"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="l['uname']" groups="product.group_uom"/>
+                            </td>
+                            <!--<td>
+                                <span t-esc="l['code']"/>
+                            </td>-->
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </div>
+    </xpath>
+</template>
+
+</data>
+</openerp>

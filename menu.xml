@@ -4,117 +4,101 @@
   <data>
     <menuitem id="menu_is_donnees_techniques"  sequence="1"  name="Données techniques"/>
 
-    <menuitem id="menu_is_moules"    sequence="10" name="Moules" parent="menu_is_donnees_techniques"/>
-    <menuitem id="menu_is_moules_10" sequence="10" name="Projets" parent="menu_is_moules" action="is_mold.is_mold_project_action" />
-    <menuitem id="menu_is_moules_20" sequence="20" name="Moules"  parent="menu_is_moules" action="is_mold.is_mold_action" />
+    <menuitem id="menu_is_moules"    sequence="10" name="Projets et Moules"  parent="menu_is_donnees_techniques"/>
+    <menuitem id="menu_is_moules_10" sequence="10" name="Projets"    parent="menu_is_moules" action="is_mold.is_mold_project_action" />
+    <menuitem id="menu_is_moules_20" sequence="20" name="Dossiers F" parent="menu_is_moules" action="is_mold.is_dossierf_action" />
+    <menuitem id="menu_is_moules_30" sequence="30" name="Moules"     parent="menu_is_moules" action="is_mold.is_mold_action" />
 
-    <menuitem id="menu_is_articles"     sequence="15" name="Articles"                 parent="menu_is_donnees_techniques"/>
-    <!--<menuitem id="menu_is_articles_10"  sequence="10" name="Articles"                 parent="menu_is_articles"    action="is_pg_product.is_product_action" />-->
-    <menuitem id="menu_is_articles_20"  sequence="20" name="Articles"  parent="menu_is_articles"    action="product.product_normal_action" />
-    <!--<menuitem id="menu_is_articles_30"  sequence="30" name="Variantes (vue standard)" parent="menu_is_articles"    action="product.product_template_action" />-->
+    <menuitem id="menu_is_articles"     sequence="15" name="Articles"  parent="menu_is_donnees_techniques"/>
 
-    <menuitem id="menu_is_nomenclatures"               sequence="20" name="Nomenclatures"  parent="menu_is_donnees_techniques"/>
-    <menuitem id="menu_is_nomenclatures_nomenclatures" sequence="10" name="Nomenclatures"  parent="menu_is_nomenclatures"               action="mrp.product_open_bom" />
-    <menuitem id="menu_is_nomenclatures_ligne"         sequence="10" name="Lignes"         parent="menu_is_nomenclatures_nomenclatures" action="is_bom.action_is_mrp_bom_line" />
-
-
+    <menuitem id="menu_is_nomenclatures"    sequence="20" name="Nomenclatures"            parent="menu_is_donnees_techniques"/>
+    <menuitem id="menu_is_nomenclatures_10" sequence="10" name="Nomenclatures"            parent="menu_is_nomenclatures" action="mrp.mrp_bom_form_action" />
+    <menuitem id="menu_is_nomenclatures_20" sequence="20" name="Lignes des nomenclatures" parent="menu_is_nomenclatures" action="is_mrp_bom_line_action" />
 
     <menuitem id="menu_is_gammes"        sequence="30" name="Gammes"                 parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_gammes_gammes" sequence="10" name="Gammes"                 parent="menu_is_gammes"         action="mrp.mrp_routing_action" />
-    <menuitem id="menu_is_gammes_lignes" sequence="10" name="Opérations des Gammes"  parent="menu_is_gammes_gammes"  action="is_routing.action_is_mrp_routing_workcenter" />
+    <menuitem id="menu_is_gammes_lignes" sequence="15" name="Lignes des Gammes"      parent="menu_is_gammes"         action="action_is_mrp_routing_workcenter" />
     <menuitem id="menu_is_gammes_20"     sequence="20" name="Poste de charge"        parent="menu_is_gammes"         action="mrp.mrp_workcenter_action" />
     <menuitem id="menu_is_gammes_30"     sequence="30" name="Congés de la ressource" parent="menu_is_gammes"         action="resource.action_resource_calendar_leave_tree" />
     <menuitem id="menu_is_gammes_40"     sequence="40" name="Temps de travail"       parent="menu_is_gammes"         action="resource.action_resource_calendar_form" />
+    <menuitem id="menu_is_gammes_50"     sequence="50" name="Atelier"                parent="menu_is_gammes"         action="is_atelier_action" />
+    <menuitem id="menu_is_gammes_60"     sequence="60" name="Ilot"                   parent="menu_is_gammes"         action="is_ilot_action" />
 
 
     <menuitem id="menu_is_societes"      sequence="40" name="Sociétés"               parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_societes_10"   sequence="10" name="Sociétés"               parent="menu_is_societes" action="is_action_partner_supplier_form" />
     <menuitem id="menu_is_societes_20"   sequence="20" name="Jours de fermeture"     parent="menu_is_societes" action="resource.action_resource_calendar_leave_tree" />
  
-
-
-
-
-
     <menuitem id="menu_is_dt_tables"    sequence="90" name="Tables"                parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_dt_tables_10" sequence="10" name="Catégories d'articles" parent="menu_is_dt_tables"   action="product.product_category_action_form" />
-    <menuitem id="menu_is_dt_tables_15" sequence="15" name="Catégories d'unités"   parent="menu_is_dt_tables"   action="product.product_uom_categ_form_action" />
-    <menuitem id="menu_is_dt_tables_20" sequence="20" name="Unités de mesure"      parent="menu_is_dt_tables"   action="product.product_uom_form_action" />
-    <menuitem id="menu_is_dt_tables_30" sequence="30" name="Entrepôts"             parent="menu_is_dt_tables"   action="stock.action_warehouse_form" />
-    <menuitem id="menu_is_dt_tables_40" sequence="40" name="Emplacements"          parent="menu_is_dt_tables"   action="stock.action_location_form" />
-
-    <menuitem id="menu_is_dt_tables_50" sequence="50" name="Segments"              parent="menu_is_dt_tables"   action="is_pg_product.action_product_segment" />
-    <menuitem id="menu_is_dt_tables_60" sequence="60" name="Familles"              parent="menu_is_dt_tables"   action="is_pg_product.action_product_family" />
-    <menuitem id="menu_is_dt_tables_70" sequence="70" name="Sous-Familles"         parent="menu_is_dt_tables"   action="is_pg_product.action_product_subfamily" />
-    <menuitem id="menu_is_dt_tables_80" sequence="80" name="Masquer champs"        parent="menu_is_dt_tables"   action="is_pg_product.action_product_champs" />
-
-    <menuitem id="menu_is_dt_tables_90" sequence="90" name="Catégories"            parent="menu_is_dt_tables"   action="is_pg_product.is_category_action" />
-    <menuitem id="menu_is_dt_tables_91" sequence="91" name="Gestionnaires"         parent="menu_is_dt_tables"   action="is_pg_product.is_gestionnaire_action" />
+    <menuitem id="menu_is_dt_tables_20" sequence="20" name="Catégories d'unités"   parent="menu_is_dt_tables"   action="product.product_uom_categ_form_action" />
+    <menuitem id="menu_is_dt_tables_30" sequence="30" name="Unités de mesure"      parent="menu_is_dt_tables"   action="product.product_uom_form_action" />
+    <menuitem id="menu_is_dt_tables_40" sequence="40" name="Unités logistique"     parent="menu_is_dt_tables"   action="product.product_ul_form_action" groups="product.group_stock_packaging"/>
+    <menuitem id="menu_is_dt_tables_50" sequence="50" name="Entrepôts"             parent="menu_is_dt_tables"   action="stock.action_warehouse_form" />
+    <menuitem id="menu_is_dt_tables_60" sequence="60" name="Emplacements"          parent="menu_is_dt_tables"   action="stock.action_location_form" />
+    <menuitem id="menu_is_dt_tables_70" sequence="70" name="Section analytique"    parent="menu_is_dt_tables"   action="is_pg_product.is_section_analytique_action" />
 
 
-
-
-    <menuitem id="menu_is_achats"            sequence="2"  name="Achats"/>
+    <menuitem id="menu_is_achats"            sequence="2"  name="Achats" />
 
     <menuitem id="menu_is_achats_fournisseurs"     sequence="10" name="Fournisseurs"  parent="menu_is_achats" />
     <menuitem id="menu_is_achats_fournisseurs_10"  sequence="10" name="Fournisseurs"  parent="menu_is_achats_fournisseurs" action="base.action_partner_supplier_form" />
 
     <menuitem id="menu_is_achats_prix"             sequence="20" name="Liste de prix"               parent="menu_is_achats" />
     <menuitem id="menu_is_achats_prix_10"          sequence="10" name="Listes de prix"              parent="menu_is_achats_prix" action="product.product_pricelist_action_for_purchase" />
-    <menuitem id="menu_is_achats_prix_20"          sequence="20" name="Versions liste de prix"      parent="menu_is_achats_prix" action="purchase.purchase_pricelist_version_action" />
-    <menuitem id="menu_is_achats_prix_30"          sequence="30" name="Item version liste de prix"  parent="menu_is_achats_prix" action="is_pricelist.action_is_pricelist" />
 
     <menuitem id="menu_is_achats_cde"     sequence="30" name="Commandes"        parent="menu_is_achats" />
     <menuitem id="menu_is_achats_cde_10"  sequence="10" name="Devis"            parent="menu_is_achats_cde" action="purchase.purchase_rfq" />
     <menuitem id="menu_is_achats_cde_20"  sequence="20" name="Bons de commande" parent="menu_is_achats_cde" action="purchase.purchase_form_action" />
 
-
     <menuitem id="menu_is_achats_rcp"     sequence="40" name="Réceptions"             parent="menu_is_achats" />
     <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions"             parent="menu_is_achats_rcp" action="purchase.action_picking_tree_picking_to_invoice" />
     <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Mouvements en attente"  parent="menu_is_achats_rcp" action="stock.action_receipt_picking_move" />
 
-
     <menuitem id="menu_is_achats_fac"     sequence="50" name="Facturation"            parent="menu_is_achats" />
-    <menuitem id="menu_is_achats_fac_10"  sequence="10" name="Factures fournisseur"   parent="menu_is_achats_fac" action="purchase.act_res_partner_2_supplier_invoices" />
+    <menuitem id="menu_is_achats_fac_10"  sequence="10" name="Factures fournisseur"   parent="menu_is_achats_fac" action="account.action_invoice_tree2" />
     <menuitem id="menu_is_achats_fac_20"  sequence="20" name="Avoirs fournisseurs"    parent="menu_is_achats_fac" action="account.action_invoice_tree4" />
     <menuitem id="menu_is_achats_fac_30"  sequence="30" name="Paiements fournisseurs" parent="menu_is_achats_fac" action="account_voucher.action_vendor_payment" />
 
+    <menuitem id="menu_is_achats_table"    sequence="90" name="Tables"                 parent="menu_is_achats"  groups="base.group_no_one"/>
+    <menuitem id="menu_is_achats_table_10" sequence="10" name="Segment d'achat"        parent="menu_is_achats_table" action="action_is_segment_achat"/>
+    <menuitem id="menu_is_achats_table_20" sequence="20" name="Famille d'achat"        parent="menu_is_achats_table" action="action_is_famille_achat"/>
+    <menuitem id="menu_is_achats_table_30" sequence="30" name="Site livré"             parent="menu_is_achats_table" action="action_is_site"/>
+    <menuitem id="menu_is_achats_table_40" sequence="40" name="Mode transmission cde"  parent="menu_is_achats_table" action="action_is_transmission_cde"/>
+    <menuitem id="menu_is_achats_table_50" sequence="50" name="Norme Certificat"       parent="menu_is_achats_table" action="action_is_norme_certificats"/>
+    <menuitem id="menu_is_achats_table_60" sequence="60" name="Certifications Qualité" parent="menu_is_achats_table" action="action_is_certifications_qualite"/>
 
 
     <menuitem id="menu_is_ventes"             sequence="3"  name="Ventes"/>
 
-    <menuitem id="menu_is_ventes_clients"     sequence="10" name="Clients"   parent="menu_is_ventes"/>
-    <menuitem id="menu_is_ventes_clients_10"  sequence="10" name="Clients"   parent="menu_is_ventes_clients" action="base.action_partner_customer_form" />
+    <menuitem id="menu_is_ventes_clients"     sequence="10" name="Clients"                 parent="menu_is_ventes"/>
+    <menuitem id="menu_is_ventes_clients_10"  sequence="10" name="Clients"                 parent="menu_is_ventes_clients" action="base.action_partner_customer_form" />
 
     <menuitem id="menu_is_ventes_prix"     sequence="20" name="Liste de prix"                parent="menu_is_ventes"/>
     <menuitem id="menu_is_ventes_prix_10"  sequence="10" name="Liste de prix"                parent="menu_is_ventes_prix" action="product.product_pricelist_action2" />
-    <menuitem id="menu_is_ventes_prix_20"  sequence="20" name="Versions de la liste de prix" parent="menu_is_ventes_prix" action="product.product_pricelist_action" />
-    <menuitem id="menu_is_ventes_prix_30"  sequence="30" name="Item version liste de prix"   parent="menu_is_ventes_prix" action="is_pricelist.action_is_pricelist" />
 
-    <menuitem id="menu_is_ventes_cde"     sequence="30" name="Commandes"             parent="menu_is_ventes" />
-    <menuitem id="menu_is_ventes_cde_10"  sequence="10" name="Devis"                 parent="menu_is_ventes_cde" action="sale.action_quotations" />
-    <menuitem id="menu_is_ventes_cde_20"  sequence="20" name="Bons de commande"      parent="menu_is_ventes_cde" action="sale.action_orders_in_progress" />
-    <menuitem id="menu_is_ventes_cde_30"  sequence="30" name="Lignes des devis"      parent="menu_is_ventes_cde" action="is_automobile_contract.action_sale_commandes_report" />
-    <menuitem id="menu_is_ventes_cde_40"  sequence="40" name="Lignes des commandes"  parent="menu_is_ventes_cde" action="is_automobile_contract.action_sale_quotations_report" /> 
+    <menuitem id="menu_is_ventes_liste_servir"     sequence="35" name="Liste à servir"          parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_liste_servir_10"  sequence="10" name="Clients à livrer"        parent="menu_is_ventes_liste_servir" action="is_liste_servir_wizard_action" />
+    <menuitem id="menu_is_ventes_liste_servir_20"  sequence="20" name="Liste à servir"          parent="menu_is_ventes_liste_servir" action="is_liste_servir_action" />
+    <menuitem id="menu_is_ventes_liste_servir_90"  sequence="90" name="Message liste à service" parent="menu_is_ventes_liste_servir" action="is_liste_servir_message_action" />
 
-    <menuitem id="menu_is_ventes_cdeo"    sequence="35" name="Commandes Ouvertes"    parent="menu_is_ventes" />
-    <menuitem id="menu_is_achats_cdeo_10" sequence="10" name="Contrats"              parent="menu_is_ventes_cdeo" action="is_automobile_contract.action_contract_automobile_form" />
-    <menuitem id="menu_is_achats_cdeo_20" sequence="20" name="Importation commandes" parent="menu_is_ventes_cdeo" action="is_contract_edi.action_is_import_contract" />
+    <menuitem id="menu_is_ventes_cde"      sequence="30" name="Commandes"             parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_cde_10"   sequence="10" name="Commandes"             parent="menu_is_ventes_cde" action="is_sale_order_action" />
+    <menuitem id="menu_is_ventes_cde_20"   sequence="20" name="Lignes de commandes"   parent="menu_is_ventes_cde" action="is_order_line_tree_action" />
+    <menuitem id="menu_is_ventes_cde_30"   sequence="30" name="Importation commandes" parent="menu_is_ventes_cde" action="is_import_cde_cli_action" />
+    <menuitem id="menu_is_ventes_cde_40"   sequence="40" name="PIC à 3 mois"          parent="menu_is_ventes_cde" action="is_pic_3mois_action" />
 
+    <menuitem id="menu_is_ventes_liv"      sequence="40" name="Livraisons"            parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_liv_20"   sequence="20" name="Livraisons"            parent="menu_is_ventes_liv" action="sale_stock.outgoing_picking_list_to_invoice" />
 
-    <menuitem id="menu_is_ventes_liv"     sequence="40" name="Livraisons"                parent="menu_is_ventes" />
-    <menuitem id="menu_is_ventes_liv_10"  sequence="10" name="Livraisons"                parent="menu_is_ventes_liv" action="sale_stock.outgoing_picking_list_to_invoice" />
+    <menuitem id="menu_is_ventes_fac"      sequence="50" name="Facturation"           parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_fac_10"   sequence="10" name="Factures clients"      parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
+    <menuitem id="menu_is_ventes_fac_20"   sequence="20" name="Avoirs clients"        parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
 
-
-
-    <menuitem id="menu_is_ventes_liv_20"  sequence="20" name="Générer Bons de livraison" parent="menu_is_ventes_liv" action="is_automobile_contract.action_generate_picking" />
-
-
-
-    <menuitem id="menu_is_ventes_fac"     sequence="50" name="Facturation"           parent="menu_is_ventes" />
-    <menuitem id="menu_is_ventes_fac_10"  sequence="10" name="Factures clients"      parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
-    <menuitem id="menu_is_ventes_fac_20"  sequence="20" name="Avoirs clients"        parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
-
+    <menuitem id="menu_is_ventes_table"    sequence="90" name="Tables"                parent="menu_is_ventes" groups="base.group_no_one"/>
+    <menuitem id="menu_is_ventes_table_10" sequence="10" name="Secteur d'activité"    parent="menu_is_ventes_table" action="is_secteur_activite_action"/>
+    <menuitem id="menu_is_ventes_table_20" sequence="20" name="Type de contact"       parent="menu_is_ventes_table" action="is_type_contact_action"/>
+    <menuitem id="menu_is_ventes_table_30" sequence="30" name="Escompte"              parent="menu_is_ventes_table" action="is_escompte_action"/>
 
 
     <menuitem id="menu_is_production"            sequence="4"  name="Production"/>
@@ -122,12 +106,9 @@
     <menuitem id="menu_is_production_10"         sequence="10" name="Ordres de fabrication"  parent="menu_is_production_production"    action="mrp.mrp_production_action" />
     <menuitem id="menu_is_production_20"         sequence="20" name="Ordres de Travail"      parent="menu_is_production_production"    action="mrp_operations.mrp_production_wc_action_form" />
 
-
-
-
     <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"/>
     <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="stock.quantsact" groups="base.group_no_one"/>
-    <menuitem id="menu_is_production_stock_20" sequence="20" name="Numéro de série"          parent="menu_is_production_stock"  action="stock.action_production_lot_form" />
+    <menuitem id="menu_is_production_stock_20" sequence="20" name="Lots"                     parent="menu_is_production_stock"  action="stock.action_production_lot_form" />
     <menuitem id="menu_is_production_stock_30" sequence="30" name="Mouvements de stocks"     parent="menu_is_production_stock"  action="stock.action_move_form2" />
 
     <menuitem id="menu_is_production_qualite"    sequence="25" name="Contrôle Qualité"         parent="menu_is_production"/>
@@ -136,32 +117,32 @@
     <menuitem id="menu_is_production_qualite_30" sequence="60" name="Changement d'emplacement" parent="menu_is_production_qualite"  action="is_gestion_lot.action_stock_lot_change_location_report" groups="is_gestion_lot.group_is_change_locations" />
     <menuitem id="menu_is_production_qualite_40" sequence="70" name="Lots au rebut"            parent="menu_is_production_qualite"  action="is_gestion_lot.action_stock_lot_rebut_report"           groups="is_gestion_lot.group_is_rebut_lot" />
 
-
     <menuitem id="menu_is_production_inv"    sequence="30" name="Inventaires"          parent="menu_is_production"/>
     <menuitem id="menu_is_production_inv_10" sequence="10" name="Inventaires"          parent="menu_is_production_inv" action="stock.action_inventory_form" />
     <menuitem id="menu_is_production_inv_20" sequence="20" name="Lignes d'inventaires" parent="menu_is_production_inv" action="is_inventory.action_is_inventory" />
 
     <menuitem id="menu_is_production_cbn"    sequence="40" name="Calcul des besoins"  parent="menu_is_production"/>
-    <menuitem id="menu_is_production_cbn_10" sequence="10" name="Calcul des besoins"  parent="menu_is_production_cbn"    action="is_mrp.action_generate_prevision" />
-    <menuitem id="menu_is_production_cbn_20" sequence="20" name="Prévisions"          parent="menu_is_production_cbn"    action="is_mrp.action_mrp_prevision_form" />
+    <menuitem id="menu_is_production_cbn_10" sequence="10" name="Calcul des besoins"  parent="menu_is_production_cbn"  action="is_mrp.action_generate_prevision" groups="mrp.group_mrp_manager" />
+    <menuitem id="menu_is_production_cbn_20" sequence="20" name="Prévisions"          parent="menu_is_production_cbn"  action="is_mrp.action_mrp_prevision_form" groups="mrp.group_mrp_manager" />
+
+
+    <menuitem id="menu_is_pdc"    sequence="42" name="Plan de charge"    parent="menu_is_production"/>
+    <menuitem id="menu_is_pdc_10" sequence="10" name="Plan de charge"    parent="menu_is_pdc"  action="is_pdc_action"      groups="mrp.group_mrp_manager" />
+
+    <menuitem id="menu_is_intranet"          sequence="45" name="Intranet"            parent="menu_is_production"/>
+    <menuitem id="menu_is_intranet_10"       sequence="10" name="Analyse du CBN"      parent="menu_is_intranet"  action="is_mrp.is_url_analyse_cbn_action" groups="mrp.group_mrp_manager"/>
+    <menuitem id="menu_is_intranet_20"       sequence="20" name="Planning"            parent="menu_is_intranet"  action="is_mrp.is_url_planning_action"    groups="mrp.group_mrp_manager"/>
+    <menuitem id="menu_is_intranet_30"       sequence="30" name="Wiki"                parent="menu_is_intranet"  action="is_mrp.is_url_wiki_action"        groups="mrp.group_mrp_manager"/>
 
     <menuitem id="menu_is_production_config"    sequence="50" name="Configuration"  parent="menu_is_production"/>
-    <menuitem id="menu_is_production_config_10" sequence="10" name="Emplacements"   parent="menu_is_production_config"  action="stock.action_location_form" />
+    <menuitem id="menu_is_production_config_10" sequence="10" name="Emplacements"   parent="menu_is_production_config"  action="stock.action_location_form" groups="mrp.group_mrp_manager" />
 
 
-    <!--
-    <menuitem id="menu_is_production_eti"    sequence="20" name="Etiquettes"             parent="menu_is_production"/>
-    <menuitem id="menu_is_production_eti_10" sequence="10" name="Etiquettes des colis"   parent="menu_is_production_eti"    action="is_etiquette.action_is_etiquette_form" />
-    <menuitem id="menu_is_production_eti_20" sequence="20" name="Changement emplacement" parent="menu_is_production_eti"    action="is_etiquette.action_is_changer_emplacement" />
-    <menuitem id="menu_is_production_eti_30" sequence="30" name="Etiquettes d'un lot"    parent="menu_is_production_eti"    action="is_etiquette.action_generer_etiquettes" />
-    -->
-
-    <menuitem id="base.menu_reporting"           sequence="5"  name="Suivi d'activité" parent=""/>
+    <menuitem id="account.menu_finance"          sequence="5"  name="Comptabilité"         parent=""/>
+    <menuitem id="menu_is_autre"                 sequence="6"  name="Autre" groups="base.group_no_one" />
+    <menuitem id="base.menu_reporting"           sequence="7"  name="Suivi d'activité" parent=""/>
 
     <!-- Déplacement des menus standards sous le menu 'Autre' -->
-    <menuitem id="menu_is_autre"              sequence="9"  name="Autre"/>
-    <menuitem id="is_automobile_contract.menu_is_contrat"            sequence="10" name="Contrats automobiles" parent="menu_is_autre"/>
-    <menuitem id="account.menu_finance"       sequence="15" name="Comptabilité"         parent="menu_is_autre"/>
     <menuitem id="base.menu_purchase_root"    sequence="20" name="Achats"               parent="menu_is_autre"/>
     <menuitem id="base.menu_base_partner"     sequence="30" name="Ventes"               parent="menu_is_autre"/>
     <menuitem id="stock.menu_stock_root"      sequence="40" name="Entrepôt"             parent="menu_is_autre"/>

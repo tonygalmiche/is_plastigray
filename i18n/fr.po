@@ -1,0 +1,55 @@
+
+
+#. module: stock
+#: model:res.request.link,name:stock.req_link_tracking
+#: field:stock.change.product.qty,lot_id:0
+#: field:stock.inventory.line,prod_lot_id:0
+#: view:stock.production.lot:stock.view_production_lot_form
+#: view:stock.production.lot:stock.view_production_lot_tree
+#: field:stock.production.lot,name:0
+#: field:stock.return.picking.line,lot_id:0
+msgid "Serial Number"
+msgstr "Lot"
+
+
+#. module: stock
+#: model:ir.actions.act_window,name:stock.action_production_lot_form
+#: model:ir.ui.menu,name:stock.menu_action_production_lot_form
+msgid "Serial Numbers"
+msgstr "Lots"
+
+
+
+#. modules: account, base, account_voucher, sale, crm
+#: view:account.invoice:account.view_account_invoice_filter
+#: field:account.invoice,user_id:0
+#: view:account.invoice.report:account.view_account_invoice_report_search
+#: field:account.invoice.report,user_id:0
+#: field:sale.receipt.report,user_id:0
+#: view:res.partner:base.view_res_partner_filter
+#: field:res.partner,user_id:0
+#: view:crm.lead:crm.view_crm_case_leads_filter
+#: view:crm.lead:crm.view_crm_case_opportunities_filter
+#: field:crm.lead,user_id:0
+#: view:crm.lead.report:crm.view_report_crm_lead_filter
+#: field:crm.lead2opportunity.partner,user_id:0
+#: field:crm.lead2opportunity.partner.mass,user_id:0
+#: field:crm.merge.opportunity,user_id:0
+#: view:crm.opportunity.report:crm.view_report_crm_opportunity_filter
+#: view:crm.phonecall.report:crm.view_report_crm_phonecall_filter
+#: view:sale.order:sale.view_sales_order_filter
+#: field:sale.order,user_id:0
+#: view:sale.order.line:sale.view_sales_order_line_filter
+#: field:sale.order.line,salesman_id:0
+#: view:sale.report:sale.view_order_product_search
+#: field:sale.report,user_id:0
+msgid "Salesperson"
+msgstr "Commercial"
+
+
+#. module: sale
+#: field:sale.order,client_order_ref:0
+msgid "Reference/Description"
+msgstr "N° de commande client"
+
+

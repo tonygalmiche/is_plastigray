@@ -2,6 +2,190 @@
 <openerp>
     <data>
 
+
+        <record id="is_view_partner_form" model="ir.ui.view">
+            <field name="name">is_view_partner_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+
+
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="is_secteur_activite" placeholder="Secteur d'activité" attrs="{'invisible': [('is_company', '=', False)]}"/> 
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="before">
+                    <field name="is_num_fournisseur" attrs="{'invisible': ['|',('is_company', '=', False),('customer','=', False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='credit_limit']" position="after">
+                    <field name="is_type_reglement" attrs="{'invisible': [('is_company', '=', False)]}" />
+                    <field name="is_num_siret" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}" />
+                </xpath>
+
+
+                <xpath expr="//field[@name='street2']" position="after">
+                    <field name="is_rue3" placeholder="Rue 3 ou Boite Postale" />
+                </xpath>
+
+
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="is_cofor" attrs="{'invisible': [('customer', '!=', True)] }"/>
+                    <field name="is_incoterm" />
+                    <field name="is_delai_transport" />
+                    <field name="is_import_function" />
+                </xpath>
+
+                <xpath expr="//field[@name='property_payment_term']" position="after">
+                    <field name="is_escompte" />
+                </xpath>
+
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='parent_id']" position="before">
+                    <field name="name"               placeholder="Name" default_focus="1" />
+                    <field name="is_raison_sociale2" placeholder="Raison sociale 2" attrs="{'invisible': [('is_company', '=', False)]}" />
+                    <field name="is_code"            placeholder="Code"             attrs="{'required': [('is_company', '=', True)], 'invisible': [('is_company', '=', False)]}" />
+                    <field name="is_adr_code"        placeholder="Code Adresse"     attrs="{'required': [('is_company', '=', True)], 'invisible': [('is_company', '=', False)]}"/>    
+                </xpath>
+                <xpath expr="//field[@name='website']" position="before">
+                    <field name="is_adr_facturation"  attrs="{'invisible': [('is_company', '=', False)]}"  domain="[('is_company', '=', True),('customer','=', customer),('supplier','=',supplier)]" />
+                    <field name="is_adr_groupe"       attrs="{'invisible': [('is_company', '=', False)]}" />
+                    <field name="is_secteur_activite" attrs="{'invisible': [('is_company', '=', False)]}" />
+                </xpath>
+                <xpath expr="//field[@name='website']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_company', '=', False)]}</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='function']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='date']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute> 
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_company', '=', False)]}</attribute> 
+                </xpath>
+                <xpath expr="//page[@name='accounting_disabled']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='last_reconciliation_date']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='credit_limit']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='credit']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='debit']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='bank_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//page[@name='is_calendar']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('is_company', '=', False)]}</attribute> 
+                </xpath>
+                <xpath expr="//page[@string='Contacts']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute>
+                </xpath>
+                <xpath expr="//page[@string='Contacts']" position="after">
+                    <page string="Les contacts" attrs="{'invisible': [('is_company','=',False), ('child_ids', '=', [])]}" autofocus="autofocus">
+                        <field name="child_ids"  mode="tree" context="{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_customer': customer, 'default_use_parent_address': True}">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="is_type_contact"/>
+                                <field name="phone"/>
+                                <field name="mobile"/>
+                                <field name="email"/>
+                                <field name="use_parent_address" invisible="1" />
+                            </tree>
+                        </field>
+                    </page>
+
+                    <page name="is_identification" string="Identification" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}">
+                        <group>
+                            <field name="is_segment_achat" on_change="onchange_segment_id(is_segment_achat)"/>
+                            <field name="is_famille_achat" context="{'default_segment_id':is_segment_achat}"/>
+                            <field name="is_fournisseur_imp" />
+                            <field name="is_site_livre_ids" widget="many2many_tags" />
+                        </group>
+                        <group string="Conditions Logistiques">
+                            <field name="is_groupage" />
+                            <field name="is_tolerance_delai" />
+                            <field name="is_tolerance_quantite" />
+                            <field name="is_transmission_cde" />
+                        </group>
+                    </page>
+                    <page name="is_qualite" string="Qualité" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}">
+                        <field name="is_certifications" >
+                            <form string="Certification qualité">
+                                <group>
+                                    <field name="is_norme" />
+                                    <field name="is_date_validation" />
+                                    <!--<field name="is_certificat"/>-->
+                              <field name="is_certificat_ids"  widget="many2many_binary"/>
+                                    <field name="partner_id" invisible="1"/>
+                                </group>
+                            </form>
+                            <tree string="Certification qualité">
+                                <field name="is_norme" />
+                                <field name="is_date_validation" />
+                                <field name="partner_id" invisible="1"/>                                 
+                            </tree>
+                        </field>
+                    </page>
+
+
+
+                </xpath>
+
+
+
+            </field>
+        </record>
+        <!-- Permet de masquer les champs opt_out et notify_email -->
+       <record model="ir.ui.view" id="is_res_partner_opt_out_form">
+            <field name="name">is_res_partner_opt_out_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="email_template.res_partner_opt_out_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='opt_out']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute>
+                </xpath>
+            </field>
+        </record>
+       <record id="is_view_emails_partner_info_form" model="ir.ui.view">
+            <field name="name">is_view_emails_partner_info_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="mail.view_emails_partner_info_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='notify_email']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute>
+                </xpath>
+            </field>
+        </record>
+        <!-- Permet de masquer les emplacements de stock -->
+        <record id="is_view_partner_property_form" model="ir.ui.view">
+            <field name="name">is_view_partner_property_form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="stock.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_stock_customer']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_stock_supplier']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
         <record id="is_action_partner_supplier_form" model="ir.actions.act_window">
             <field name="name">Sociétés</field>
             <field name="type">ir.actions.act_window</field>
@@ -16,6 +200,310 @@
 
             <field name="filter" eval="True"/>
         </record>
+
+
+        <record id="base.view_partner_tree" model="ir.ui.view">
+            <field name="name">res.partner.tree</field>
+            <field name="model">res.partner</field>
+            <field eval="8" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Contacts">
+                    <field name="name"/>
+                    <field name="is_code"/>
+                    <field name="is_adr_code"/>
+                    <field name="function" invisible="1"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="user_id"    invisible="1"/>
+                    <field name="is_company" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <field name="parent_id"  invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="base.action_partner_customer_form" model="ir.actions.act_window">
+            <field name="name">Customers</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{'default_customer':1, 'search_default_customer':1}</field>
+            <field name="filter" eval="True"/>
+        </record>
+
+
+
+        <!-- Secteur d'activité -->
+        <record model="ir.ui.view" id="is_secteur_activite_tree_view">
+            <field name="name">is_secteur_activite_tree_view</field>
+            <field name="model">is.secteur.activite</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree" editable="top">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_secteur_activite_action">
+            <field name="name">Secteur d'activité</field>
+            <field name="res_model">is.secteur.activite</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+        <!-- Type de contact -->
+        <record model="ir.ui.view" id="is_type_contact_tree_view">
+            <field name="name">is_type_contact_tree_view</field>
+            <field name="model">is.type.contact</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree" editable="top">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_type_contact_action">
+            <field name="name">Type de contact</field>
+            <field name="res_model">is.type.contact</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+        <!-- Taux d'escompte -->
+        <record model="ir.ui.view" id="is_escompte_tree_view">
+            <field name="name">is_escompte_tree_view</field>
+            <field name="model">is.escompte</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree" editable="top">
+                    <field name="name"/>
+                    <field name="taux"/>
+                    <field name="compte"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_escompte_action">
+            <field name="name">Escompte</field>
+            <field name="res_model">is.escompte</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+
+
+
+
+        <!-- Segment d'achat -->
+        <record id="view_is_segment_achat_tree" model="ir.ui.view">
+            <field name="name">is.segment.achat.tree</field>
+            <field name="model">is.segment.achat</field>
+            <field name="arch" type="xml">
+                <tree string="Segment d'achat">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_segment_achat_form" model="ir.ui.view">
+            <field name="name">is.segment.achat.form</field>
+            <field name="model">is.segment.achat</field>
+            <field name="arch" type="xml">
+                <form string="Segment d'achat">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="family_line">
+                                <tree string="Familles" editable="bottom">
+                                    <field name="name" />
+                                    <field name="segment_id" required="0" invisible="1" />
+                                </tree>
+                            </field>
+                            <field name="description" placeholder="Commentaire ..."/>
+                      </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_is_segment_achat" model="ir.actions.act_window">
+            <field name="name">Segment d'achat</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.segment.achat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+                
+        <!-- Famille d'achat -->
+        <record id="view_is_famille_achat_tree" model="ir.ui.view">
+            <field name="name">is.famille.achat.tree</field>
+            <field name="model">is.famille.achat</field>
+            <field name="arch" type="xml">
+                <tree string="Famille d'achat">
+                    <field name="name" />
+                    <field name="segment_id" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_famille_achat_form" model="ir.ui.view">
+            <field name="name">is.famille.achat.form</field>
+            <field name="model">is.famille.achat</field>
+            <field name="arch" type="xml">
+                <form string="Famille d'achat">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="segment_id" />
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Commentaire ..."/>  
+                        </group> 
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_is_famille_achat" model="ir.actions.act_window">
+            <field name="name">Famille d'achat</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.famille.achat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+                
+        <!-- sites livrés -->
+        <record id="view_is_site_tree" model="ir.ui.view">
+            <field name="name">is.site.tree</field>
+            <field name="model">is.site</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_site_form" model="ir.ui.view">
+            <field name="name">is.site.form</field>
+            <field name="model">is.site</field>
+            <field name="arch" type="xml">
+                <form string="sites livrés">
+                    <group>
+                        <field name="name" />
+                      </group> 
+                </form>
+            </field>
+        </record>
+        <record id="action_is_site" model="ir.actions.act_window">
+            <field name="name">Sites livrés</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.site</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+        
+                
+        <!-- Mode de transmission des commandes -->
+        <record id="view_is_transmission_cde_tree" model="ir.ui.view">
+            <field name="name">is.transmission.cde.tree</field>
+            <field name="model">is.transmission.cde</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_transmission_cde_form" model="ir.ui.view">
+            <field name="name">is.transmission.cde.form</field>
+            <field name="model">is.transmission.cde</field>
+            <field name="arch" type="xml">
+                <form string="Mode de transmission des commandes">
+                    <group>
+                        <field name="name" />
+                      </group> 
+                </form>
+            </field>
+        </record>
+        <record id="action_is_transmission_cde" model="ir.actions.act_window">
+            <field name="name">Mode de transmission des commandes</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.transmission.cde</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+        
+        
+        <!-- Normes Certificats -->
+        <record id="view_is_norme_certificats_tree" model="ir.ui.view">
+            <field name="name">is.norme.certificats.tree</field>
+            <field name="model">is.norme.certificats</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_norme_certificats_form" model="ir.ui.view">
+            <field name="name">is.norme.certificats.form</field>
+            <field name="model">is.norme.certificats</field>
+            <field name="arch" type="xml">
+                <form string="Norme Certificat qualité">
+                    <group>
+                        <field name="name" />
+                      </group> 
+                </form>
+            </field>
+        </record>
+        <record id="action_is_norme_certificats" model="ir.actions.act_window">
+            <field name="name">Norme Certificat qualité</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.norme.certificats</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <!-- Certificats -->
+        <record id="view_is_certifications_qualite_tree" model="ir.ui.view">
+            <field name="name">is.certifications.qualite.tree</field>
+            <field name="model">is.certifications.qualite</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="is_norme" />
+                    <field name="is_date_validation" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_certifications_qualite_form" model="ir.ui.view">
+            <field name="name">is.certifications.qualite.form</field>
+            <field name="model">is.certifications.qualite</field>
+            <field name="arch" type="xml">
+                <form string="Certification qualité">
+                    <sheet>
+                        <group>
+                            <field name="is_norme" />
+                            <field name="is_date_validation" />
+                            <field name="is_certificat_ids"  widget="many2many_binary"/>
+                            <field name="partner_id" invisible="1"/>
+                          </group> 
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_is_certifications_qualite" model="ir.actions.act_window">
+            <field name="name">Certification qualité</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.certifications.qualite</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
     </data>
 </openerp>

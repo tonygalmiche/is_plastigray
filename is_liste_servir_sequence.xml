@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data> 
+    
+        <record id="is_liste_servir_type_seq" model="ir.sequence.type">
+            <field name="name">Liste à servir</field>
+            <field name="code">is.liste.servir</field>
+        </record>
+
+        <record id="is_liste_servir_seq" model="ir.sequence">
+            <field name="name">Liste à servir</field>
+            <field name="code">is.liste.servir</field>
+            <field name="prefix">LS-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+     </data>
+</openerp>     
+        

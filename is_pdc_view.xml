@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <record model="ir.actions.act_window" id="is_pdc_mold_action">
+            <field name="name">Charge par moule</field>
+            <field name="res_model">is.pdc.mold</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('pdc_id','=',active_id)]</field>
+            <!--<field name="context">{'pdc_id': active_id}</field>-->
+        </record>
+
+
+        <record model="ir.ui.view" id="is_pdc_form_view">
+            <field name="name">is_pdc_form_view</field>
+            <field name="model">is.pdc</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <header>
+                        <button name="action_importer_cbn"    type="object" string="Importer les données du CBN" class="oe_highlight" states="creation" />
+                        <button name="action_recalculer"      type="object" string="Recalculer" class="oe_highlight"                  states="analyse"  />
+                        <button name="%(is_pdc_mold_action)d" type="action" string="Détail par moule et par section"                  states="analyse"  />
+                        <field name="state" widget="statusbar"  clickable="True" />
+                    </header>
+
+                    <sheet>
+                        <!--
+                        <div class="oe_right oe_button_box" name="buttons">
+                             <button class="oe_inline oe_stat_button" type="action" name="%(is_pdc_mold_action)d" icon="fa-tasks">
+                                <field string="Détail" name="mold_nb" widget="statinfo"/>
+                            </button>
+                        </div>
+                        -->
+                        <group>
+                            <field name="name"       attrs="{'readonly':[('state','in',['analyse'])]}"/>
+                            <field name="date_debut" attrs="{'readonly':[('state','in',['analyse'])]}"/> 
+                            <field name="date_fin"   attrs="{'readonly':[('state','in',['analyse'])]}"/> 
+                            <field name="nb_heures_total" digits="(14, 0)"/> 
+                            <field name="tps_brut"        digits="(14, 0)"/> 
+                            <field name="nb_jours_ouvrables"/> 
+                            <field name="nb_inscrits"/> 
+                            <field name="nb_absents"/> 
+                            <field name="effectif_operationnel"/> 
+                            <field name="decision_prise"/> 
+                            <field name="temps_ouverture"/> 
+                        </group>
+                        <group>
+                            <field name="mod_ids" readonly="1" nolabel="1">
+                                <tree>
+                                    <field name="intitule"/>
+                                    <field name="semaine_35"/>
+                                    <field name="semaine_37"/>
+                                    <field name="semaine_40"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="workcenter_ids" readonly="1" nolabel="1">
+                                <tree>
+                                    <field name="workcenter_id"/>
+                                    <field name="presse_heure"      digits="(14, 0)" />
+                                    <field name="presse_pourcent"   digits="(14, 0)" />
+                                    <field name="presse_heure85"    digits="(14, 0)" />
+                                    <field name="presse_pourcent85" digits="(14, 0)" />
+                                </tree>
+                            </field>
+                        </group>
+                        <!--
+                        <group>
+                            <field name="mold_ids" >
+                                <tree editable="bottom">
+                                    <field name="workcenter_id"/>
+                                    <field name="mold_id"/>
+                                    <field name="matiere"/>
+                                    <field name="quantite"/>
+                                    <field name="temps_s"/>
+                                    <field name="temps_h"/>
+                                    <field name="capacite"/>
+                                    <field name="cumul_pourcent"/>
+                                    <field name="cumul_h"/>
+                                    <field name="cumul_j"/>
+                                </tree>
+                            </field>
+                        </group>
+                        -->
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_pdc_tree_view">
+            <field name="name">is_pdc_tree_view</field>
+            <field name="model">is.pdc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="nb_jours_ouvrables"/>
+                    <field name="nb_inscrits"/>
+                    <field name="nb_absents"/>
+                    <field name="temps_ouverture"/>
+                    <field name="decision_prise"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_pdc_search_view" >
+            <field name="name">is_pdc_search_view</field>
+            <field name="model">is.pdc</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="is_pdc_action">
+            <field name="name">Plan de charge</field>
+            <field name="res_model">is.pdc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- Plan de charge par moule -->
+        <record model="ir.ui.view" id="is_pdc_mold_form_view">
+            <field name="name">is_pdc_mold_form_view</field>
+            <field name="model">is.pdc.mold</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="pdc_id" readonly="1"/>
+                            <field name="workcenter_id"/>
+                            <field name="resource_type"/>
+                            <field name="mold_id"/>
+                            <field name="matiere"/>
+                            <field name="quantite"/>
+                            <field name="temps_h"/>
+                            <field name="capacite"/>
+                            <field name="temps_pourcent" digit=""/>
+                            <field name="cumul_pourcent"/>
+                            <field name="cumul_h"/>
+                            <field name="cumul_j"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_pdc_mold_tree_view">
+            <field name="name">is_pdc_mold_tree_view</field>
+            <field name="model">is.pdc.mold</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" colors="red:cumul_pourcent and (cumul_pourcent&gt;100)">
+                    <field name="pdc_id" readonly="1"/>
+                    <field name="workcenter_id"/>
+                    <field name="resource_type"/>
+                    <field name="mold_id"/>
+                    <field name="matiere"/>
+                    <field name="quantite" sum="Total"/>
+                    <field name="temps_h"         digits="(14, 0)" sum="Total"/>
+                    <field name="capacite"        digits="(14, 0)" />
+                    <field name="temps_pourcent"  digits="(14, 0)" />
+                    <field name="cumul_pourcent"  digits="(14, 0)" />
+                    <field name="cumul_h"         digits="(14, 0)" />
+                    <field name="cumul_j"         digits="(14, 2)" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_pdc_mold_search_view" >
+            <field name="name">is_pdc_mold_search_view</field>
+            <field name="model">is.pdc.mold</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="pdc_id"/>
+                    <field name="workcenter_id"/>
+                    <field name="resource_type"/>
+                    <field name="mold_id"/>
+
+                    <!-- Filtres pré-enregistrés -->
+                    <filter string="MO"       name="type_mo"      domain="[('resource_type','=','user')]"/>
+                    <filter string="Machine"  name="type_machine" domain="[('resource_type','=','material')]"/>
+
+                    <group expand="1" string="Regrouper par">
+                        <filter string="Poste de charge"  context="{'group_by':'workcenter_id'}"/>
+                        <filter string="Type"             context="{'group_by':'resource_type'}"/>
+                        <filter string="Moule"            context="{'group_by':'mold_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+
+  </data>
+</openerp>

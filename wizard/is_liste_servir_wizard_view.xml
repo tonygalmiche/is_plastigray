@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="is_liste_servir_wizard_form_view" model="ir.ui.view">
+            <field name="name">is.liste.servir.wizard.form</field>
+            <field name="model">is.liste.servir.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="date_debut" />
+                        <field name="date_fin" />
+                        <field name="livrable" />
+                    </group>
+                    <footer>
+                        <button string='OK' name="generer_liste_servir_client" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+
+        <record id="is_liste_servir_wizard_action" model="ir.actions.act_window">
+            <field name="name">Listes a servir des clients</field>
+            <field name="res_model">is.liste.servir.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+           <field name="target">new</field>
+        </record>
+        
+    </data>
+</openerp>
