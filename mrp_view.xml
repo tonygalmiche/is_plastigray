@@ -279,7 +279,6 @@
                 <field name="resource_type"/>
                 <field name="is_atelier_id"/>
                 <field name="is_ilot_id"/>
-                <field name="is_ligne"/>
                 <field name="is_ordre"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </tree>
@@ -304,7 +303,6 @@
                         <group string="Configuration pour le Planning">
                             <field name="is_atelier_id"/>
                             <field name="is_ilot_id"/>
-                            <field name="is_ligne"/>
                             <field name="is_ordre"/>
                         </group>
                     </group>

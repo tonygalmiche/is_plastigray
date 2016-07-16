@@ -93,7 +93,6 @@ class mrp_workcenter(models.Model):
     is_atelier_id = fields.Many2one('is.atelier', 'Atelier')
     is_ilot_id    = fields.Many2one('is.ilot'   , 'Ilot')
 
-    is_ligne = fields.Integer("N° de ligne")
     is_ordre = fields.Integer("Ordre")
 
 
