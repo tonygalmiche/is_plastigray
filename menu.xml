@@ -2,6 +2,7 @@
 
 <openerp>
   <data>
+
     <menuitem id="menu_is_donnees_techniques"  sequence="1"  name="Données techniques"/>
 
     <menuitem id="menu_is_moules"    sequence="10" name="Projets et Moules"  parent="menu_is_donnees_techniques"/>

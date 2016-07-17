@@ -350,6 +350,21 @@
 
 
 
+    <record model="ir.ui.view" id="is_mrp_production_workcenter_form_view_inherit">
+        <field name="name">mrp.production.workcenter.line.form</field>
+        <field name="model">mrp.production.workcenter.line</field>
+        <field name="inherit_id" ref="mrp_operations.mrp_production_workcenter_form_view_inherit" />
+        <field name="arch" type="xml">
+            <field name="date_planned_end" position="after" > 
+                <field name="is_ordre" />
+                <field name="is_qt_restante" />
+                <field name="is_tps_restant" widget="float_time" />
+                <field name="is_date_tri" />
+            </field>
+        </field>
+    </record>
+
+
 
 
 </data>
