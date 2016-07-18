@@ -10,9 +10,8 @@ import stock
 import is_pdc
 import is_liste_servir
 import wizard
-import is_import_csv
-import is_import_xml
 import account_invoice
 import report
+import is_edi_cde_cli
 
 

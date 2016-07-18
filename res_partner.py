@@ -83,7 +83,7 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     is_delai_transport  = fields.Integer('Delai de transport (jour)')
-    is_import_function  = fields.Selection([('xml1','Fonction XML1'),('csv1','Fonction CSV1')], "Fonction d'importation EDI")
+    is_import_function  = fields.Selection([('eCar','eCar'),('xml1','Fonction XML1'),('csv1','Fonction CSV1')], "Fonction d'importation EDI")
     is_raison_sociale2  = fields.Char('Raison sociale 2')
     is_code             = fields.Char('Code')
     is_adr_code         = fields.Char('Code adresse')

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="is_edi_cde_cli_tree_view" model="ir.ui.view">
+            <field name="name">is_edi_cde_cli_form_view</field>
+            <field name="model">is.edi.cde.cli</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="partner_id"  />
+                    <field name="import_function"/>
+               </tree>
+            </field>
+        </record>
+        <record id="is_edi_cde_cli_form_view" model="ir.ui.view">
+            <field name="name">is_edi_cde_cli_form_view</field>
+            <field name="model">is.edi.cde.cli</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button string='Analyser les fichiers'  name="action_analyser_fichiers"  type="object" states="analyse" class="oe_highlight"  />
+                        <button string='Importer les commandes' name="action_importer_commandes" type="object" states="analyse" />
+                        <field name="state" widget="statusbar"  clickable="True" />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id" domain="[('is_import_function','!=','')]"  />
+                            <field name="import_function"/>
+                            <field name="file_ids" widget="many2many_binary" />
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom"  create="true">
+                                    <field name="ref_article_client"/>
+                                    <field name="date_livraison"/>
+                                    <field name="quantite"/>
+                                    <field name="type_commande"/>
+                                    <field name="num_commande_client"/>
+                                    <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" attrs="{'invisible':[('order_id','=',False)]}" />
+                                    <field name="order_id"/>
+                                    <field name="anomalie"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record id="is_edi_cde_cli_action" model="ir.actions.act_window">
+            <field name="name">EDI commandes clients</field>
+            <field name="res_model">is.edi.cde.cli</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+<!--
+        <record id="is_edi_cde_cli_notfound_view" model="ir.ui.view">
+             <field name="name">is_edi_cde_cli_notfound_view</field>
+             <field name="model">is.edi.cde.cli</field>
+             <field name="arch" type="xml">
+                <form string="Importation des commandes ouvertes" version="7.0">
+                    <field name="partner_id" />
+                    <separator string="Contrats non trouvés"/>
+                    <label string="Les contrats suivants n'existent pas sur votre systeme, Essayer de les creer pour achever l'import."/>
+                         <field name="line_ids" nolabel="1" readonly="1">
+                            <tree>
+                                <field name="import_id" />
+                                <field name="is_ref_client" />
+                                <field name="client_order_ref" />
+                            </tree>
+                        </field>
+                    <footer>
+                        <button string="Close" class="oe_highlight" special="cancel"/>
+                    </footer>
+                </form>
+             </field>
+         </record>
+-->
+        
+    </data>
+</openerp>

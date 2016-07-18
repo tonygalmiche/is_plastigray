@@ -1,6 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_is_import_csv1,access_is_import_csv1,model_is_import_csv1,,1,0,0,0
-access_is_import_xml1,access_is_import_xml1,model_is_import_xml1,,1,0,0,0
+
+access_is_edi_cde_cli,access_is_edi_cde_cli,model_is_edi_cde_cli,base.group_sale_manager,1,1,1,1
+access_is_edi_cde_cli_line,access_is_edi_cde_cli_line,model_is_edi_cde_cli_line,base.group_sale_manager,1,1,1,1
 
 access_is_pdc,access_is_pdc,model_is_pdc,mrp.group_mrp_manager,1,1,1,1
 access_is_pdc_mold,access_is_pdc_mold,model_is_pdc_mold,mrp.group_mrp_manager,1,1,1,1

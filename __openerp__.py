@@ -40,7 +40,7 @@
         "is_liste_servir_sequence.xml",
         "is_liste_servir_view.xml",
         "is_plastigray_report.xml",
-        "wizard/is_import_cde_cli_view.xml",
+        "is_edi_cde_cli_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",
