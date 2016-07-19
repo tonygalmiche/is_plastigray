@@ -70,7 +70,7 @@ class mrp_routing_workcenter(models.Model):
 
     hour_nbr         = fields.Float("Nombre d'heures"      , digits=(12,6), method=True, type='float', store=True, readonly=True, compute='_hour_nbr')
     is_nb_secondes   = fields.Float("Nombre de secondes"   , digits=(12,2), required=False, help="Nombre de secondes")
-
+    is_nb_mod        = fields.Selection([('0.25', '0.25'), ('0.3', '0.3'), ('0.5', '0.5'), ('0.75', '0.75'), ('1', '1'), ('1.5', '1.5'), ('2', '2')], 'Nombre de MOD', help='Donnée utilisée en particlier pour le planning')
 
 
 
