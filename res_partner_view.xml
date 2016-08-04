@@ -9,10 +9,11 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
 
-
+                <!--
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="is_secteur_activite" placeholder="Secteur d'activité" attrs="{'invisible': [('is_company', '=', False)]}"/> 
                 </xpath>
+                -->
                 <xpath expr="//field[@name='ref']" position="before">
                     <field name="is_num_fournisseur" attrs="{'invisible': ['|',('is_company', '=', False),('customer','=', False)]}"/>
                 </xpath>
@@ -107,8 +108,8 @@
 
                     <page name="is_identification" string="Identification" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}">
                         <group>
-                            <field name="is_segment_achat" on_change="onchange_segment_id(is_segment_achat)"/>
-                            <field name="is_famille_achat" context="{'default_segment_id':is_segment_achat}"/>
+                            <field name="is_segment_achat"     on_change="onchange_segment_id(is_segment_achat)"/>
+                            <field name="is_famille_achat_ids" context="{'default_segment_id':is_segment_achat}" widget="many2many_tags" />
                             <field name="is_fournisseur_imp" />
                             <field name="is_site_livre_ids" widget="many2many_tags" />
                         </group>

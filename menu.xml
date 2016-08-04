@@ -3,6 +3,15 @@
 <openerp>
   <data>
 
+
+    <!-- Analyse du CBN -->
+    <record model="ir.actions.act_url" id="is_url_pic_3_mois">
+        <field name="name">http://odoo/odoo-erp/analyses/pic-3-mois.php</field>
+        <field name="url">http://odoo/odoo-erp/analyses/pic-3-mois.php</field>
+        <field name="type">ir.actions.act_url</field>
+    </record>
+
+
     <menuitem id="menu_is_donnees_techniques"  sequence="1"  name="Données techniques"/>
 
     <menuitem id="menu_is_moules"    sequence="10" name="Projets et Moules"  parent="menu_is_donnees_techniques"/>
@@ -87,7 +96,7 @@
     <menuitem id="menu_is_ventes_cde_10"   sequence="10" name="Commandes"             parent="menu_is_ventes_cde" action="is_sale_order_action" />
     <menuitem id="menu_is_ventes_cde_20"   sequence="20" name="Lignes de commandes"   parent="menu_is_ventes_cde" action="is_order_line_tree_action" />
     <menuitem id="menu_is_ventes_cde_30"   sequence="30" name="EDI commandes clients" parent="menu_is_ventes_cde" action="is_edi_cde_cli_action" />
-    <menuitem id="menu_is_ventes_cde_40"   sequence="40" name="PIC à 3 mois"          parent="menu_is_ventes_cde" action="is_pic_3mois_action" />
+    <menuitem id="menu_is_ventes_cde_40"   sequence="40" name="PIC à 3 mois"          parent="menu_is_ventes_cde" action="is_url_pic_3_mois" />
 
     <menuitem id="menu_is_ventes_liv"      sequence="40" name="Livraisons"            parent="menu_is_ventes" />
     <menuitem id="menu_is_ventes_liv_20"   sequence="20" name="Livraisons"            parent="menu_is_ventes_liv" action="sale_stock.outgoing_picking_list_to_invoice" />

@@ -82,39 +82,32 @@ class is_escompte(models.Model):
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    is_delai_transport  = fields.Integer('Delai de transport (jour)')
-    is_import_function  = fields.Selection([('eCar','eCar'),('xml1','Fonction XML1'),('csv1','Fonction CSV1')], "Fonction d'importation EDI")
-    is_raison_sociale2  = fields.Char('Raison sociale 2')
-    is_code             = fields.Char('Code')
-    is_adr_code         = fields.Char('Code adresse')
-    is_rue3             = fields.Char('Rue 3 ou Boite Postale')
-    is_secteur_activite = fields.Many2one('is.secteur.activite', "Secteur d'activité")
-    is_type_contact     = fields.Many2one('is.type.contact', "Type de contact")
-    is_adr_facturation  = fields.Many2one('res.partner', 'Adresse de facturation')
-    is_adr_groupe       = fields.Char('Code auxiliaire comptable', help="Code auxiliaire comptable de l'adresse groupe pour la comptabilité")
-    is_cofor            = fields.Char('N° fournisseur (COFOR)', help="Notre code fourniseur chez le client")
-    is_incoterm         = fields.Many2one('stock.incoterms', "Incoterm")
-    is_escompte         = fields.Many2one('is.escompte', "Escompte")
-
+    is_delai_transport    = fields.Integer('Delai de transport (jour)')
+    is_import_function    = fields.Selection([('eCar','eCar'),('xml1','Fonction XML1'),('csv1','Fonction CSV1')], "Fonction d'importation EDI")
+    is_raison_sociale2    = fields.Char('Raison sociale 2')
+    is_code               = fields.Char('Code')
+    is_adr_code           = fields.Char('Code adresse')
+    is_rue3               = fields.Char('Rue 3 ou Boite Postale')
+    is_secteur_activite   = fields.Many2one('is.secteur.activite', "Secteur d'activité")
+    is_type_contact       = fields.Many2one('is.type.contact', "Type de contact")
+    is_adr_facturation    = fields.Many2one('res.partner', 'Adresse de facturation')
+    is_adr_groupe         = fields.Char('Code auxiliaire comptable', help="Code auxiliaire comptable de l'adresse groupe pour la comptabilité")
+    is_cofor              = fields.Char('N° fournisseur (COFOR)', help="Notre code fourniseur chez le client")
+    is_incoterm           = fields.Many2one('stock.incoterms', "Incoterm")
+    is_escompte           = fields.Many2one('is.escompte', "Escompte")
     is_num_fournisseur    = fields.Char(u'N° de fournisseur')
     is_type_reglement     = fields.Many2one('account.journal', u'Type règlement', domain=[('type', 'in', ['bank','cash'])])
-    is_num_siret          =  fields.Char(u'N° de SIRET')
-    is_segment_achat      =  fields.Many2one('is.segment.achat', "Segment d'achat")
-    is_famille_achat      =  fields.Many2one('is.famille.achat', "Famille d'achat")
-    is_fournisseur_imp    =  fields.Boolean(u'Fournisseur imposé')
-
-    #is_site_livre         =  fields.Many2one('is.site', u'sites livrés')
-
+    is_num_siret          = fields.Char(u'N° de SIRET')
+    is_segment_achat      = fields.Many2one('is.segment.achat', "Segment d'achat")
+    is_famille_achat_ids  = fields.Many2many('is.famille.achat', id1='partner_id', id2='famille_id', string=u"Famille d'achat")
+    is_fournisseur_imp    = fields.Boolean(u'Fournisseur imposé')
     is_site_livre_ids     = fields.Many2many('is.site', id1='partner_id', id2='site_id', string=u'sites livrés')
-
-
-    is_groupage           =  fields.Boolean('Groupage')
-    is_tolerance_delai    =  fields.Boolean('Tolérance sur délai')
-    is_tolerance_quantite =  fields.Boolean('Tolérance sur quantité')
-    is_transmission_cde   =  fields.Many2one('is.transmission.cde', 'Mode de transmission des commandes')
+    is_groupage           = fields.Boolean('Groupage')
+    is_tolerance_delai    = fields.Boolean('Tolérance sur délai')
+    is_tolerance_quantite = fields.Boolean('Tolérance sur quantité')
+    is_transmission_cde   = fields.Many2one('is.transmission.cde', 'Mode de transmission des commandes')
     is_certifications     = fields.One2many('is.certifications.qualite', 'partner_id', u'Certification qualité')
-    is_type_contact       =  fields.Many2one('is.type.contact', "Type de contact")
-
+    is_type_contact       = fields.Many2one('is.type.contact', "Type de contact")
 
     _defaults = {
         'delai_transport': 0,
