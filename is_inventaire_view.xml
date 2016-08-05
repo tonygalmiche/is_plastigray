@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- is.inventaire --> 
+        <record model="ir.ui.view" id="is_inventaire_form_view">
+            <field name="name">is_inventaire_form_view</field>
+            <field name="model">is.inventaire</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <header>
+                        <button name="action_creer_feuille" type="object" string="Nouvelle feuille"         class="oe_highlight" states="creation" />
+                        <button name="action_fin"           type="object" string="Fin d'inventaire"                              states="creation" confirm="Voulez-vous vraiment cloturer cet inventaire ?"/>
+                        <button name="action_maj_stock"     type="object" string="Mettre à jour les stocks" class="oe_highlight" states="cloture"  confirm="Voulez-vous vraiment mettre à jour les stocks ?"/>
+                        <field name="state" widget="statusbar"  clickable="True" />
+                    </header>
+
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/> 
+                                <field name="date_creation"/> 
+                                <field name="createur_id"/> 
+                                <field name="commentaire"/> 
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <button string="Feuille"   name="action_acceder_feuille"  type="object" icon="gtk-zoom-in" />
+                                    <field name="name"/>
+                                    <field name="date_creation"/>
+                                    <field name="createur_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_tree_view">
+            <field name="name">is_inventaire_tree_view</field>
+            <field name="model">is.inventaire</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/> 
+                    <field name="date_creation"/> 
+                    <field name="createur_id"/> 
+                    <field name="commentaire"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_search_view" >
+            <field name="name">is_inventaire_search_view</field>
+            <field name="model">is.inventaire</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/> 
+                    <field name="createur_id"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_inventaire_action">
+            <field name="name">Inventaire</field>
+            <field name="res_model">is.inventaire</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.inventaire.feuille --> 
+        <record model="ir.ui.view" id="is_inventaire_feuille_form_view">
+            <field name="name">is_inventaire_feuille_form_view</field>
+            <field name="model">is.inventaire.feuille</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <header>
+                        <button name="action_creer_feuille"  type="object" string="Nouvelle feuille" class="oe_highlight" />
+                        <button name="action_import_fichier" type="object" string="Importer le fichier" attrs="{'invisible':[('fichier','=',False)]}"  />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="inventaire_id"/> 
+                                <field name="name"/> 
+                            </group>
+                            <group>
+                                <field name="date_creation"/> 
+                                <field name="createur_id"/> 
+                                <field name="fichier"/> 
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom"  create="true"  domain="[('location_id','=',location_id.id)]">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"  on_change="onchange_product_id(product_id)" />
+                                    <field name="uc"/>
+                                    <field name="uc_us"/>
+                                    <field name="location_id" 
+                                           domain="[('usage','=','internal')]"  
+                                           on_change="onchange_location_id(product_id,location_id,qt_us,qt_uc,lieu)"/> 
+                                    <field name="qt_us"/>
+                                    <field name="qt_uc"/>
+                                    <field name="qt_us_calc"/>
+                                    <field name="lieu"/>
+                                    <field name="lot"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_feuille_tree_view">
+            <field name="name">is_inventaire_feuille_tree_view</field>
+            <field name="model">is.inventaire.feuille</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="false" >
+                    <field name="inventaire_id"/> 
+                    <field name="name"/> 
+                    <field name="date_creation"/> 
+                    <field name="createur_id"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_feuille_search_view" >
+            <field name="name">is_inventaire_feuille_search_view</field>
+            <field name="model">is.inventaire.feuille</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="inventaire_id"/> 
+                    <field name="name"/> 
+                    <field name="createur_id"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_inventaire_feuille_action">
+            <field name="name">Inventaire Feuille</field>
+            <field name="res_model">is.inventaire.feuille</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.inventaire.line --> 
+        <record model="ir.ui.view" id="is_inventaire_line_tree_view">
+            <field name="name">is_inventaire_line_tree_view</field>
+            <field name="model">is.inventaire.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="false" editable="true">
+                    <field name="inventaire_id"/> 
+                    <field name="feuille_id"  readonly="1"/> 
+                    <field name="sequence"    readonly="1"/> 
+                    <field name="product_id"  readonly="1"/> 
+                    <field name="uc"          readonly="1"/> 
+                    <field name="uc_us"       readonly="1"/> 
+                    <field name="location_id" readonly="1"/> 
+                    <field name="qt_us"/> 
+                    <field name="qt_uc"/> 
+                    <field name="qt_us_calc"  sum="Total"/> 
+                    <field name="lieu"/> 
+                    <field name="lot"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_line_search_view" >
+            <field name="name">is_inventaire_line_search_view</field>
+            <field name="model">is.inventaire.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="inventaire_id"/> 
+                    <field name="feuille_id"/> 
+                    <field name="product_id"/> 
+                    <field name="location_id"/> 
+                    <field name="lieu"/> 
+                    <group expand="1" string="Regrouper par">
+                        <filter string="Inventaire"  context="{'group_by':'inventaire_id'}"/>
+                        <filter string="Feuille"     context="{'group_by':'feuille_id'}"/>
+                        <filter string="Emplacement" context="{'group_by':'location_id'}"/>
+                        <filter string="Article"     context="{'group_by':'product_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_inventaire_line_action">
+            <field name="name">Inventaire Ligne</field>
+            <field name="res_model">is.inventaire.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+  </data>
+</openerp>

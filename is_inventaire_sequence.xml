@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data> 
+    
+        <record id="is_inventaire_type_seq" model="ir.sequence.type">
+            <field name="name">Inventaire</field>
+            <field name="code">is.inventaire</field>
+        </record>
+
+        <record id="is_inventaire_seq" model="ir.sequence">
+            <field name="name">Inventaire</field>
+            <field name="code">is.inventaire</field>
+            <field name="prefix">INV-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+     </data>
+</openerp>     
+        
