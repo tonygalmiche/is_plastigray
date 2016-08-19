@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<template id="report_inventaire">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <style>
+                        h1{
+                            font-size:16pt;
+                        }
+                        h2{
+                            font-size:14pt;
+                        }
+                        table{
+                            border:1pt solid black;
+                        }
+                        td{
+                            border:1pt solid black;
+                            padding:2pt;
+                        }
+                        th{
+                            text-align:center;
+                            border:1pt solid black;
+                            background-color:#0082DC;
+                            padding:2pt;
+                        }
+                        .message{
+                            font-size:16pt;
+                            background:orange;
+                        }
+
+
+
+
+                    </style>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h1>Ecarts d'inventaire <span t-field="o.name"/></h1>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table style="width:100%" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Emp</th>
+                                        <th>Article</th>
+                                        <th>Désignation</th>
+                                        <th>US</th>
+                                        <th>Qt Odoo</th>
+                                        <th>Qt Inv</th>
+                                        <th>Ecart</th>
+                                        <th>Commentaire</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody">
+                                    <t t-foreach="o.ecart_ids" t-as="l">
+                                        <tr>
+                                            <td class="text-center"> <span t-field="l.location_id"/></td>
+                                            <td class="text-left">   <span t-field="l.code"/></td>
+                                            <td class="text-left">   <small><span t-field="l.designation"/></small></td>
+                                            <td class="text-center"> <span t-field="l.us_id"/></td>
+                                            <td class="text-right">  <span t-field="l.qt_odoo"/></td>
+                                            <td class="text-right">  <span t-field="l.qt_inventaire"/></td>
+                                            <td class="text-right">  <span t-field="l.ecart" /></td>
+                                            <td width="50mm"> </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                   
+
+
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+</data>
+</openerp>
