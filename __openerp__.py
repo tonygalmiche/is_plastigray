@@ -44,11 +44,13 @@
         "is_inventaire_view.xml",
         "is_inventaire_sequence.xml",
         "is_mem_var_view.xml",
+        "res_company_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",
         "views/webclient_templates.xml",
         "views/report_liste_servir.xml",
+        "views/report_inventaire.xml",
         "report/is_pic_3mois.xml",
         "menu.xml",              # Reorganisation des menus
         "security/ir.model.access.csv",

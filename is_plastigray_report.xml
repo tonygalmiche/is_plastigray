@@ -12,6 +12,16 @@
         />
 
 
+        <report 
+            id="report_inventaires"
+            model="is.inventaire"
+            string="Ecarts d'inventaire"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_inventaire"
+            file="is_plastigray.report_inventaire"
+        />
+
+
 
     </data>
 </openerp>

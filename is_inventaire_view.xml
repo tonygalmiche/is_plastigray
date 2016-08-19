@@ -4,6 +4,9 @@
     <data>
 
 
+
+
+
         <!-- is.inventaire --> 
         <record model="ir.ui.view" id="is_inventaire_form_view">
             <field name="name">is_inventaire_form_view</field>
@@ -12,9 +15,7 @@
             <field name="arch" type="xml">
                 <form string="Form">  
                     <header>
-                        <button name="action_creer_feuille" type="object" string="Nouvelle feuille"         class="oe_highlight" states="creation" />
-                        <button name="action_fin"           type="object" string="Fin d'inventaire"                              states="creation" confirm="Voulez-vous vraiment cloturer cet inventaire ?"/>
-                        <button name="action_maj_stock"     type="object" string="Mettre à jour les stocks" class="oe_highlight" states="cloture"  confirm="Voulez-vous vraiment mettre à jour les stocks ?"/>
+                        <button name="action_creer_feuille"     type="object" string="Nouvelle feuille"         class="oe_highlight" states="creation" />
                         <field name="state" widget="statusbar"  clickable="True" />
                     </header>
 
@@ -27,17 +28,42 @@
                                 <field name="commentaire"/> 
                             </group>
                         </group>
-                        <group>
-                            <field name="line_ids" nolabel="1" readonly="1">
+                        <group string="Feuilles" attrs="{'invisible': [('line_ids', '=', [])]}">
+                            <field name="line_ids" nolabel="1" readonly="1" >
                                 <tree>
                                     <button string="Feuille"   name="action_acceder_feuille"  type="object" icon="gtk-zoom-in" />
                                     <field name="name"/>
                                     <field name="date_creation"/>
-                                    <field name="createur_id"/>
+                                    <field name="createur_id"    />
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Inventaires" states="cloture,traite">
+                            <field name="inventory_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <button string="Inventaire"   name="action_acceder_inventaire"  type="object" icon="gtk-zoom-in" />
+                                    <field name="inventory_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Ecarts" states="cloture,traite">
+                            <field name="ecart_ids" nolabel="1" >
+                                <tree editable="bottom" colors="red:ecart &lt; 0">
+                                    <field name="location_id"/>
+                                    <field name="product_id"/>
+                                    <field name="us_id"/>
+                                    <field name="qt_odoo"/>
+                                    <field name="qt_inventaire"/>
+                                    <field name="ecart"/>
                                 </tree>
                             </field>
                         </group>
                     </sheet>
+
+                    <footer>
+                        <button name="action_fin_inventaire"    type="object" string="Fin d'inventaire" states="creation" confirm="Voulez-vous vraiment cloturer cet inventaire ?"/>
+                        <button name="action_valide_inventaire" type="object" string="Valider les inventaires"  class="oe_highlight" states="cloture"  confirm="Voulez-vous vraiment mettre à jour les stocks ?"/>
+                    </footer>
                 </form>
             </field>
         </record>
@@ -46,11 +72,12 @@
             <field name="model">is.inventaire</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree colors="blue:state == 'creation'; red:state == 'cloture'; gray:state == 'traite'">
                     <field name="name"/> 
                     <field name="date_creation"/> 
                     <field name="createur_id"/> 
                     <field name="commentaire"/> 
+                    <field name="state"/> 
                 </tree>
             </field>
         </record>
@@ -71,8 +98,23 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <!--Cette action server, permet d'executer la fonction python indiquée -->
+        <record id="is_action_mark_as_lost" model="ir.actions.server">
+            <field name="name">Importer depuis Prodstar</field>
+            <field name="model_id" ref="model_is_inventaire_feuille"/>
+            <field name="state">code</field>
+            <field name="code">
+                self.action_import_prodstar(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+        <!-- Ce record permet d'ajouter un sous-menu au bouton 'Autres options' et d'appeller l'action server précédente -->
+        <record id="is_ir_mark_as_lost" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.inventaire.feuille'" name="model"/>
+            <field name="name">Importer depuis Prodstar</field>
+            <field eval="'ir.actions.server,%d'%is_action_mark_as_lost" name="value"/>
+        </record>
 
-        <!-- is.inventaire.feuille --> 
         <record model="ir.ui.view" id="is_inventaire_feuille_form_view">
             <field name="name">is_inventaire_feuille_form_view</field>
             <field name="model">is.inventaire.feuille</field>
@@ -80,8 +122,7 @@
             <field name="arch" type="xml">
                 <form string="Form">  
                     <header>
-                        <button name="action_creer_feuille"  type="object" string="Nouvelle feuille" class="oe_highlight" />
-                        <button name="action_import_fichier" type="object" string="Importer le fichier" attrs="{'invisible':[('fichier','=',False)]}"  />
+                        <button name="action_creer_feuille"   type="object" string="Nouvelle feuille"         class="oe_highlight" />
                     </header>
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
@@ -92,14 +133,23 @@
                             <group>
                                 <field name="date_creation"/> 
                                 <field name="createur_id"/> 
-                                <field name="fichier"/> 
+                                <!--<field name="fichier"              /> -->
                             </group>
                         </group>
                         <group>
+                            <div style="color:green">Astuce : Pour la saisie des lignes, vous pouvez utiliser la touche TAB pour passer au champ suivant ou à la ligne suivante pour éviter d'utiliser la souris. La barre d'espace permet de cocher ou décocher une case</div>
+                        </group>
+                        <group>
                             <field name="line_ids" nolabel="1">
-                                <tree editable="bottom"  create="true"  domain="[('location_id','=',location_id.id)]">
+                                <tree editable="bottom"  
+                                      create="true"  
+                                      domain="[('location_id','=',location_id.id)]"
+                                      colors="blue:encours; red:composant_encours">
                                     <field name="sequence" widget="handle"/>
                                     <field name="product_id"  on_change="onchange_product_id(product_id)" />
+                                    <field name="encours"/>
+                                    <field name="composant_encours" readonly="1"/>
+                                    <field name="us_id"/>
                                     <field name="uc"/>
                                     <field name="uc_us"/>
                                     <field name="location_id" 
@@ -109,10 +159,18 @@
                                     <field name="qt_uc"/>
                                     <field name="qt_us_calc"/>
                                     <field name="lieu"/>
-                                    <field name="lot"/>
+                                    <field name="lot_id" domain="[('product_id', '=', product_id)]" invisible="1" />
                                 </tree>
                             </field>
                         </group>
+
+                        <group>
+                            <group>
+                                <field name="anomalies"/> 
+                            </group>
+                        </group>
+
+
                     </sheet>
                 </form>
             </field>
@@ -122,11 +180,12 @@
             <field name="model">is.inventaire.feuille</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree create="false" >
+                <tree colors="blue:state == 'creation'; red:state == 'cloture'; gray:state == 'traite'" create="false" >
                     <field name="inventaire_id"/> 
                     <field name="name"/> 
                     <field name="date_creation"/> 
                     <field name="createur_id"/> 
+                    <field name="state"/> 
                 </tree>
             </field>
         </record>
@@ -155,11 +214,13 @@
             <field name="model">is.inventaire.line</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree create="false" editable="true">
+                <tree colors="blue:state == 'creation'; red:state == 'cloture'; gray:state == 'traite'" create="false" editable="true" >
                     <field name="inventaire_id"/> 
                     <field name="feuille_id"  readonly="1"/> 
                     <field name="sequence"    readonly="1"/> 
                     <field name="product_id"  readonly="1"/> 
+                    <field name="encours"    readonly="1"/> 
+                    <field name="composant_encours"    readonly="1"/> 
                     <field name="uc"          readonly="1"/> 
                     <field name="uc_us"       readonly="1"/> 
                     <field name="location_id" readonly="1"/> 
@@ -167,7 +228,8 @@
                     <field name="qt_uc"/> 
                     <field name="qt_us_calc"  sum="Total"/> 
                     <field name="lieu"/> 
-                    <field name="lot"/>
+                    <field name="lot_id" domain="[('product_id', '=', product_id)]" />
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -195,6 +257,53 @@
             <field name="res_model">is.inventaire.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+        <!-- stock.inventory.tree -->
+        <record id="stock.view_inventory_tree" model="ir.ui.view">
+            <field name="name">stock.inventory.tree</field>
+            <field name="model">stock.inventory</field>
+            <field name="arch" type="xml">
+                <tree string="Lot Inventory" colors="grey:state == 'cancel'">
+                    <field name="name"/>
+                    <field name="location_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <!-- Remplacement de la vue par défaut pour ajouter 'sheet' -->
+        <record model="ir.ui.view" id="stock.view_stock_quant_form">
+            <field name="name">stock.quant.form</field>
+            <field name="model">stock.quant</field>
+            <field eval="10" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Quants" create="false" edit="false" delete="false">
+                    <sheet>
+                        <div class="oe_right oe_button_box">
+                            <button name="action_view_quant_history" type="object" string="Quant History"/>                            
+                        </div>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="qty"/>
+                            <field name="lot_id" groups="stock.group_production_lot"/>
+                            <field name="package_id" groups="stock.group_tracking_lot"/>
+                            <field name="location_id"/>
+                            <field name="in_date"/>
+                            <field name="reservation_id"/>
+                            <field name="propagated_from_id"/>
+                            <field name="owner_id" groups="stock.group_tracking_owner"/>
+                            <field name="inventory_value"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
         </record>
 
 
