@@ -65,6 +65,7 @@
                     <field name="is_date_livraison"  on_change="onchange_date_livraison(is_date_livraison, parent.partner_id, parent.company_id)" required="1"/>
                     <field name="is_date_expedition" readonly="1" />
                     <field name="is_type_commande" required="1"  />
+                    <field name="is_client_order_ref" readonly="1" />
                 </xpath>
 
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']" position="attributes">

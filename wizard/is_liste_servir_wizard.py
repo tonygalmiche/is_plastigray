@@ -48,7 +48,8 @@ class is_liste_servir_wizard(osv.osv_memory):
                 select so.partner_id, rp.zip, rp.city, rp.is_delai_transport, sum(sol.product_uom_qty)
                 from sale_order so inner join sale_order_line sol on so.id=sol.order_id
                                    inner join res_partner rp on so.partner_id=rp.id
-                where sol.is_date_expedition<='"""+str(data['date_fin'])+"""' """
+                where sol.is_date_expedition<='"""+str(data['date_fin'])+"""' 
+                      and so.state='draft' """
             if data['date_debut']:
                 SQL=SQL+" and sol.is_date_expedition>='"+str(data['date_debut'])+"' "
             SQL=SQL+"group by so.partner_id, rp.zip, rp.city, rp.is_delai_transport"

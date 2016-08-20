@@ -70,6 +70,17 @@ class sale_order(models.Model):
             }
 
 
+    @api.multi
+    def write(self,vals):
+        res=super(sale_order, self).write(vals)
+        for obj in self:
+            print obj
+            for line in obj.order_line:
+                if not line.is_client_order_ref:
+                    line.is_client_order_ref=obj.client_order_ref
+        return res
+
+
 
 
 
@@ -81,7 +92,7 @@ class sale_order_line(models.Model):
     is_date_livraison     = fields.Date("Date de livraison")
     is_date_expedition    = fields.Date("Date d'expédition", store=True, compute='_date_expedition')
     is_type_commande      = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
-
+    is_client_order_ref   = fields.Char("Commande client")
 
     _defaults = {
         'is_type_commande': 'previsionnel',

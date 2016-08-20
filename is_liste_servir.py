@@ -190,7 +190,7 @@ class is_liste_servir(models.Model):
     @api.multi
     def _get_sql(self,obj):
         SQL="""
-            select sol.order_id, sol.product_id, max(sol.is_date_livraison), max(sol.is_date_expedition), sum(sol.product_uom_qty)
+            select sol.order_id, sol.product_id, sol.is_client_order_ref, max(sol.is_date_livraison), max(sol.is_date_expedition), sum(sol.product_uom_qty)
             from sale_order so inner join sale_order_line sol on so.id=sol.order_id 
             where so.partner_id="""+str(obj.partner_id.id)+""" and so.state='draft' 
                   and sol.is_date_expedition<='"""+str(obj.date_fin)+"""' and sol.product_id>0
@@ -199,7 +199,7 @@ class is_liste_servir(models.Model):
             SQL=SQL+" and so.id!="+str(obj.order_id.id)+" "
         if obj.date_debut:
             SQL=SQL+" and sol.is_date_expedition>='"+str(obj.date_debut)+"' "
-        SQL=SQL+"group by sol.order_id,sol.product_id"
+        SQL=SQL+"group by sol.order_id,sol.product_id, sol.is_client_order_ref"
         return SQL
 
 
@@ -214,14 +214,15 @@ class is_liste_servir(models.Model):
             result = cr.fetchall()
             line_obj = self.env['is.liste.servir.line']
             for row in result:
-                qt=row[4]
+                qt=row[5]
                 vals={
-                    'liste_servir_id': obj.id,
-                    'order_id'       : row[0],
-                    'product_id'     : row[1],
-                    'date_livraison' : row[2],
-                    'date_expedition': row[3],
-                    'quantite'       : qt,
+                    'liste_servir_id'  : obj.id,
+                    'order_id'         : row[0],
+                    'product_id'       : row[1],
+                    'client_order_ref' : row[2],
+                    'date_livraison'   : row[3],
+                    'date_expedition'  : row[4],
+                    'quantite'         : qt,
                 }
                 line_obj.create(vals)
             obj.state="analyse"
@@ -273,10 +274,12 @@ class is_liste_servir(models.Model):
                 'product_id':line.product_id.id, 
                 'product_uom_qty': line.quantite,
                 'is_date_livraison': line.date_livraison,
+                'is_client_order_ref': line.client_order_ref,
             })
             lines.append([0,False,quotation_line]) 
         values = {
             'partner_id': obj.partner_id.id,
+            'client_order_ref': obj.name,
             'origin': obj.name,
             'order_line': lines,
             'picking_policy': 'direct',
@@ -359,18 +362,19 @@ class is_liste_servir_line(models.Model):
 
 
 
-    liste_servir_id = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
-    product_id      = fields.Many2one('product.product', 'Article', required=True, readonly=True)
-    date_livraison  = fields.Date('Date de livraison', readonly=True)
-    date_expedition = fields.Date("Date d'expédition", readonly=True)
-    quantite        = fields.Float('Quantité')
-    uc_id           = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
-    nb_uc           = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True)
-    um_id           = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
-    nb_um           = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True)
-    mixer           = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
-    order_id        = fields.Many2one('sale.order', 'Commande', required=True     , readonly=True)
-    anomalie        = fields.Char('Anomalie', readonly=True)
+    liste_servir_id  = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
+    product_id       = fields.Many2one('product.product', 'Article', required=True, readonly=True)
+    date_livraison   = fields.Date('Date de livraison', readonly=True)
+    date_expedition  = fields.Date("Date d'expédition", readonly=True)
+    quantite         = fields.Float('Quantité')
+    uc_id            = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
+    nb_uc            = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True)
+    um_id            = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
+    nb_um            = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True)
+    mixer            = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
+    order_id         = fields.Many2one('sale.order', 'Commande', required=True     , readonly=True)
+    client_order_ref = fields.Char('Cde Client', readonly=True)
+    anomalie         = fields.Char('Commentaire')
 
     _defaults = {
         'mixer': True,

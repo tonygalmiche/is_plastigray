@@ -71,6 +71,7 @@
                                     <field name="mixer"/>
                                     <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />
                                     <field name="order_id"/>
+                                    <field name="client_order_ref" readonly="1" />
                                     <field name="anomalie"/>
                                 </tree>
                             </field>

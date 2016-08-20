@@ -106,16 +106,16 @@
                                     <t t-set="nb_uc" t-value="nb_uc+l.nb_uc"/>
                                     <t t-set="nb_um" t-value="nb_um+l.nb_um"/>
                                     <tr>
-                                        <td class="text-left"><span t-field="l.product_id"/></td>
-                                        <td class="text-center"><span t-field="l.order_id"/></td>
-                                        <td class="text-center"><span t-field="l.date_expedition"/><br /><span t-field="l.date_livraison"/></td>
-                                        <td class="text-right"><span t-field="l.quantite"/></td>
-                                        <td class="text-right"><span t-field="l.nb_uc"/></td>
-                                        <td class="text-left"><span t-field="l.uc_id"/></td>
-                                        <td class="text-right"><span t-field="l.nb_um"/></td>
-                                        <td class="text-left"><span t-field="l.um_id"/></td>
-                                        <td class="text-center"><span t-if="l.mixer">Oui</span></td>
-                                        <td width="30mm"> </td>
+                                        <td class="text-left">   <span t-field="l.product_id"/></td>
+                                        <td class="text-center"> <span t-field="l.order_id"/></td>
+                                        <td class="text-center"> <span t-field="l.date_expedition"/><br /><span t-field="l.date_livraison"/></td>
+                                        <td class="text-right">  <span t-field="l.quantite"/></td>
+                                        <td class="text-right">  <span t-field="l.nb_uc"/></td>
+                                        <td class="text-left">   <span t-field="l.uc_id"/></td>
+                                        <td class="text-right">  <span t-field="l.nb_um"/></td>
+                                        <td class="text-left">   <span t-field="l.um_id"/></td>
+                                        <td class="text-center"> <span t-if="l.mixer">Oui</span></td>
+                                        <td width="30mm">        <span t-field="l.anomalie"/> </td>
                                     </tr>
                                 </t>
                                 <tr>
@@ -141,11 +141,11 @@
                                 </tr>
                                 <t t-foreach="o.uc_ids" t-as="l">
                                     <tr>
-                                        <td class="text-right"><span t-field="l.nb_uc"/></td>
-                                        <td class="text-left"><span t-field="l.uc_id"/></td>
-                                        <td class="text-right"><span t-field="l.nb_um"/></td>
-                                        <td class="text-left"><span t-field="l.um_id"/></td>
-                                        <td width="30mm"> </td>
+                                        <td class="text-right"> <span t-field="l.nb_uc"/></td>
+                                        <td class="text-left">  <span t-field="l.uc_id"/></td>
+                                        <td class="text-right"> <span t-field="l.nb_um"/></td>
+                                        <td class="text-left">  <span t-field="l.um_id"/></td>
+                                        <td width="30mm"></td>
                                     </tr>
                                 </t>
                                 <tr>
