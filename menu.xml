@@ -54,8 +54,9 @@
     <menuitem id="menu_is_achats_fournisseurs"     sequence="10" name="Fournisseurs"  parent="menu_is_achats" />
     <menuitem id="menu_is_achats_fournisseurs_10"  sequence="10" name="Fournisseurs"  parent="menu_is_achats_fournisseurs" action="base.action_partner_supplier_form" />
 
-    <menuitem id="menu_is_achats_prix"             sequence="20" name="Liste de prix"               parent="menu_is_achats" />
-    <menuitem id="menu_is_achats_prix_10"          sequence="10" name="Listes de prix"              parent="menu_is_achats_prix" action="product.product_pricelist_action_for_purchase" />
+    <menuitem id="menu_is_achats_prix"    sequence="20" name="Liste de prix"         parent="menu_is_achats" />
+    <menuitem id="menu_is_achats_prix_10" sequence="10" name="Listes de prix"        parent="menu_is_achats_prix" action="product.product_pricelist_action_for_purchase" />
+    <menuitem id="menu_is_achats_prix_20" sequence="20" name="Lignes liste de prix"  parent="menu_is_achats_prix" action="is_pricelist_item_action" />
 
     <menuitem id="menu_is_achats_cde"     sequence="30" name="Commandes"        parent="menu_is_achats" />
     <menuitem id="menu_is_achats_cde_10"  sequence="10" name="Devis"            parent="menu_is_achats_cde" action="purchase.purchase_rfq" />
@@ -81,11 +82,12 @@
 
     <menuitem id="menu_is_ventes"             sequence="3"  name="Ventes"/>
 
-    <menuitem id="menu_is_ventes_clients"     sequence="10" name="Clients"                 parent="menu_is_ventes"/>
-    <menuitem id="menu_is_ventes_clients_10"  sequence="10" name="Clients"                 parent="menu_is_ventes_clients" action="base.action_partner_customer_form" />
+    <menuitem id="menu_is_ventes_clients"     sequence="10" name="Clients"            parent="menu_is_ventes"/>
+    <menuitem id="menu_is_ventes_clients_10"  sequence="10" name="Clients"            parent="menu_is_ventes_clients" action="base.action_partner_customer_form" />
 
-    <menuitem id="menu_is_ventes_prix"     sequence="20" name="Liste de prix"                parent="menu_is_ventes"/>
-    <menuitem id="menu_is_ventes_prix_10"  sequence="10" name="Liste de prix"                parent="menu_is_ventes_prix" action="product.product_pricelist_action2" />
+    <menuitem id="menu_is_ventes_prix"     sequence="20" name="Liste de prix"         parent="menu_is_ventes"/>
+    <menuitem id="menu_is_ventes_prix_10"  sequence="10" name="Liste de prix"         parent="menu_is_ventes_prix" action="product.product_pricelist_action2" />
+    <menuitem id="menu_is_ventes_prix_20"  sequence="20" name="Lignes liste de prix"  parent="menu_is_ventes_prix" action="is_pricelist_item_action" />
 
     <menuitem id="menu_is_ventes_liste_servir"     sequence="35" name="Liste à servir"          parent="menu_is_ventes" />
     <menuitem id="menu_is_ventes_liste_servir_10"  sequence="10" name="Clients à livrer"        parent="menu_is_ventes_liste_servir" action="is_liste_servir_wizard_action" />

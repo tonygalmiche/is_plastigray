@@ -2,6 +2,7 @@
 
 import is_config
 import product
+import product_pricelist
 import res_partner
 import res_company
 import sale

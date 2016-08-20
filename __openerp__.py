@@ -22,7 +22,6 @@
         "mrp",                    # MRP
         "mrp_operations",         # Gammes
         "purchase",               # Gestion des achats
-        "is_pricelist",           # Modifications Liste de prix
         "is_inventory",           # Modifications Inventaires
         "is_mrp",                 # Calcul des besoins
         "is_mold",                # Moules et Projets pour l'injection plastique
@@ -36,6 +35,7 @@
         "mrp_view.xml",
         "stock_view.xml",
         "product_view.xml",
+        "product_pricelist_view.xml",
         "is_pdc_view.xml",
         "is_liste_servir_sequence.xml",
         "is_liste_servir_view.xml",

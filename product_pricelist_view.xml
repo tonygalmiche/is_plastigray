@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+    <!-- Permet d'ajouter la quantité minimum dans l'unité ?? -->
+    <!--
+    <record id="product_uom_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.uom.inherit.form</field>
+        <field name="model">product.uom</field>
+        <field name="inherit_id" ref="product.product_uom_form_view" />
+        <field name="arch" type="xml">
+            <field name="rounding" position="after">
+                <field name="min_quantity" />
+                <field name="amount" />
+            </field>
+        </field>
+    </record>            
+    -->
+
+    <record id="product.product_pricelist_view" model="ir.ui.view">
+        <field name="name">product.pricelist.form</field>
+        <field name="model">product.pricelist</field>
+        <field name="arch" type="xml">
+            <form string="Products Price List">
+                <label for="name" class="oe_edit_only"/>
+                <h1>
+                    <field name="name"/>
+                </h1>
+                <group col="4">
+                    <field name="active"/>
+                    <field name="type"/>
+                    <field name="currency_id" groups="base.group_multi_currency"/>
+                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                </group>
+                <field name="version_id" context="{'type':type}">
+                    <tree editable="bottom">
+                        <field name="name"/>
+                        <button string="Liste des prix" name= "action_liste_items" type="object" icon="gtk-justify-fill"/>
+                        <field name="active"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <button string="Dupliquer" name= "action_dupliquer" type="object" icon="gtk-copy"/>
+                    </tree>
+                </field>
+            </form>
+        </field>
+    </record>
+
+
+
+
+
+    <!-- Permet d'ajouter l'unité d'achat dans la liste de prix -->
+    <record id="product_pricelist_item_form_view_inherit" model="ir.ui.view">
+        <field name="name">product.pricelist.item.inherit.form</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_form_view" />
+        <field name="arch" type="xml">
+            <field name="sequence" position="after">
+                <field name="date_start" />
+                <field name="date_end" />
+                <field name="product_po_uom_id" />
+            </field>
+            <field name="product_id" position="attributes">
+                <attribute name="on_change">on_change_product_id(product_id)</attribute>
+            </field>
+        </field>
+    </record>
+
+
+
+
+
+
+    <!-- tree view product.pricelist.item -->
+    <record id="is_product_pricelist_item_tree_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.tree</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="inherit_id" ref="product.product_pricelist_item_tree_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="replace">
+                <tree editable="top">
+                    <!--<field name="price_version_id" readonly="1"/>-->
+                    <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
+                    <field name="sequence"/>
+                    <field name="product_po_uom_id"/>
+                    <field name="min_quantity"    required="1"/>
+                    <field name="price_surcharge" required="1" string="Prix" />
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                    <field name="base" invisible="1"/>
+                </tree>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- tree view product.pricelist.item -->
+    <record id="is_product_pricelist_item2_tree_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.tree</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="price_version_id" readonly="1"/>
+                <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
+                <field name="sequence"/>
+                <field name="product_po_uom_id"/>
+                <field name="min_quantity"    required="1"/>
+                <field name="price_surcharge" required="1" string="Prix" />
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="base" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+    <!-- search view product.pricelist.item -->
+    <record model="ir.ui.view" id="is_product_pricelist_item_search_view">
+        <field name="name">product.pricelist.item.search</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="arch" type="xml">
+            <search string="Products Price Item Search">
+                <field name="product_id" />
+                <field name="price_version_id" />
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action pour accèder aux lignes des liste des prix pour l'importation -->
+    <record model="ir.actions.act_window" id="is_pricelist_item_action">
+        <field name="name">action_is_pricelist</field>
+        <field name="res_model">product.pricelist.item</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="is_product_pricelist_item2_tree_view" />
+        <field name="search_view_id" ref="is_product_pricelist_item_search_view" />
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+    </record>
+
+
+
+
+
+
+        
+    </data>
+</openerp>
