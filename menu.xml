@@ -47,6 +47,7 @@
     <menuitem id="menu_is_dt_tables_50" sequence="50" name="Entrepôts"              parent="menu_is_dt_tables"   action="stock.action_warehouse_form" />
     <menuitem id="menu_is_dt_tables_60" sequence="60" name="Emplacements"           parent="menu_is_dt_tables"   action="stock.action_location_form" />
     <menuitem id="menu_is_dt_tables_70" sequence="70" name="Section analytique"     parent="menu_is_dt_tables"   action="is_pg_product.is_section_analytique_action" />
+    <menuitem id="menu_is_dt_tables_80" sequence="80" name="Incoterms"              parent="menu_is_dt_tables"   action="is_stock_incoterms_action" />
     <menuitem id="menu_is_dt_tables_99" sequence="99" name="Variables utilisateurs" parent="menu_is_dt_tables"   action="is_mem_var_action" groups="base.group_no_one" />
 
     <menuitem id="menu_is_achats"            sequence="2"  name="Achats" />

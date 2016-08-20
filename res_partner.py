@@ -98,6 +98,7 @@ class res_partner(models.Model):
     is_num_fournisseur    = fields.Char(u'N° de fournisseur')
     is_type_reglement     = fields.Many2one('account.journal', u'Type règlement', domain=[('type', 'in', ['bank','cash'])])
     is_num_siret          = fields.Char(u'N° de SIRET')
+    is_code_client        = fields.Char('Code client', help=u'Notre code client chez le fourniseur')
     is_segment_achat      = fields.Many2one('is.segment.achat', "Segment d'achat")
     is_famille_achat_ids  = fields.Many2many('is.famille.achat', id1='partner_id', id2='famille_id', string=u"Famille d'achat")
     is_fournisseur_imp    = fields.Boolean(u'Fournisseur imposé')
@@ -155,7 +156,7 @@ class res_partner(models.Model):
                 'is_code': partner.is_code + ' (copie)',
                 'is_adr_code': partner.is_adr_code + ' (copie)',
         })
-        return super(is_partner, self).copy(cr, uid, id, default, context=context)
+        return super(res_partner, self).copy(cr, uid, id, default, context=context)
     
 
     def onchange_segment_id(self, cr, uid, ids, segment_id, context=None):
