@@ -121,7 +121,7 @@
     <menuitem id="menu_is_production_30"         sequence="30" name="Planning"               parent="menu_is_production_production" action="is_mrp.is_url_planning_action"    groups="mrp.group_mrp_manager"/>
 
     <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"/>
-    <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="stock.quantsact" />
+    <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="stock.quantsact" groups=""/>
     <menuitem id="menu_is_production_stock_20" sequence="20" name="Lots"                     parent="menu_is_production_stock"  action="stock.action_production_lot_form" />
     <menuitem id="menu_is_production_stock_30" sequence="30" name="Mouvements de stocks"     parent="menu_is_production_stock"  action="stock.action_move_form2" />
 
