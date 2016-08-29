@@ -85,6 +85,12 @@
                     <attribute name="editable">bottom</attribute>
                 </xpath>
 
+
+                <xpath expr="//notebook/page[@string='Other Information']/group/group" position="inside">
+                    <field name="is_source_location_id" required="1"/>
+                </xpath>
+
+
             </field>
         </record>
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="is_view_sale_move_picking_inherit_tree" model="ir.ui.view">
+            <field name="name">stock.move.tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+            <field name="arch" type="xml">
+                <field name="state" position="before">
+                    <field name="is_sale_line_id" invisible="1"/>
+                </field>
+            </field>
+        </record>
+        
+        <record id="is_view_sale_move_picking_inherit_form" model="ir.ui.view">
+            <field name="name">stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_form"/>
+            <field name="arch" type="xml">
+                <field name="date_expected" position="after">
+                    <field name="is_sale_line_id"/>
+                </field>
+            </field>
+        </record>
+
+
+        <record id="view_picking_location_inherit_form" model="ir.ui.view">
+            <field name="name">stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@string='Additional Info']/group/group/field[@name='location_id']" position="attributes">
+                    <attribute name="invisible">0</attribute>>
+                </xpath>
+            </field>
+        </record>
+        
+
+
+
+        
+    </data>
+</openerp>

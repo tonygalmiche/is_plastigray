@@ -6,6 +6,7 @@ import product_pricelist
 import res_partner
 import res_company
 import sale
+import sale_picking
 import sale_stock
 import mrp
 import stock
