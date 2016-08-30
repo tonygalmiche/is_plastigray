@@ -57,7 +57,8 @@ class is_edi_cde_cli_line(models.Model):
 
 class is_edi_cde_cli(models.Model):
     _name = "is.edi.cde.cli"
-    _description = "EDI commandes clients"  
+    _description = "EDI commandes clients"
+    _order = "name desc,partner_id"
 
     name            = fields.Date('Date de création', readonly='1')
     partner_id      = fields.Many2one('res.partner', 'Client', required=False)
@@ -95,7 +96,7 @@ class is_edi_cde_cli(models.Model):
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
                     order=self.env['sale.order'].search([
-                        ('partner_id'      , '=', obj.partner_id.id),
+                        ('partner_id.is_code'      , '=', obj.partner_id.is_code),
                         ('is_ref_client'   , '=', ref_article_client),
                         ('client_order_ref', '=', num_commande_client)]
                     )
@@ -146,7 +147,64 @@ class is_edi_cde_cli(models.Model):
         datas={}
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
+
+        if import_function=="903410":
+            datas=self.get_data_903410(attachment)
+
         return datas
+
+
+
+    @api.multi
+    def get_data_903410(self, attachment):
+        res = []
+        for obj in self:
+            csvfile=base64.decodestring(attachment.datas)
+            csvfile=csvfile.split("\r")
+            tab=[]
+            ct=0
+            for row in csvfile:
+                ct=ct+1
+                if ct>1:
+                    lig=row.split("\t")
+                    ref_article_client=lig[5][2:]
+                    order=self.env['sale.order'].search([
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                        ('is_ref_client', '=', ref_article_client)]
+                    )
+                    num_commande_client="??"
+                    if len(order):
+                        num_commande_client=order[0].client_order_ref
+                    val={
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    quantite=str(lig[12])
+                    quantite=quantite.replace(",", ".")
+                    qt=0
+                    try:
+                        qt=float(quantite)
+                    except ValueError:
+                        continue
+                    type_commande=lig[7]
+                    if type_commande=="P":
+                        type_commande="previsionnel"
+                    else:
+                        type_commande="ferme"
+                    ligne = {
+                        'quantite'      : qt,
+                        'type_commande' : type_commande,
+                        'date_livraison': lig[9],
+                    }
+                    val.update({'lignes':[ligne]})
+                    res.append(val)
+        return res
+
+
+
+
+
+
 
 
     @api.multi
@@ -189,7 +247,7 @@ class is_edi_cde_cli(models.Model):
                 if  partie_citee.xpath("ARTICLE_PROGRAMME"):
                     ref_article_client=partie_citee.xpath("ARTICLE_PROGRAMME/NumeroArticleClient")[0].text
                     order=self.env['sale.order'].search([
-                        ('partner_id'   , '=', obj.partner_id.id),
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
                         ('is_ref_client', '=', ref_article_client)]
                     )
                     num_commande_client="??"
