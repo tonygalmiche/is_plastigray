@@ -38,3 +38,13 @@ access_is_inventaire_inventory,access_is_inventaire_inventory,model_is_inventair
 access_is_inventaire_line_tmp,access_is_inventaire_line_tmp,model_is_inventaire_line_tmp,base.group_sale_manager,1,1,1,1
 access_is_inventaire_ecart,access_is_inventaire_ecart,model_is_inventaire_ecart,base.group_sale_manager,1,1,1,1
 
+access_is_cout,access_is_cout,model_is_cout,mrp.group_mrp_manager,1,1,1,1
+access_is_cout_nomenclature,access_is_cout_nomenclature,model_is_cout_nomenclature,mrp.group_mrp_manager,1,1,1,1
+access_is_cout_gamme_ma,access_is_cout_gamme_ma,model_is_cout_gamme_ma,mrp.group_mrp_manager,1,1,1,1
+access_is_cout_gamme_mo,access_is_cout_gamme_mo,model_is_cout_gamme_mo,mrp.group_mrp_manager,1,1,1,1
+access_is_cout_calcul,access_is_cout_calcul,model_is_cout_calcul,mrp.group_mrp_manager,1,1,1,1
+access_is_cout_calcul_actualise,access_is_cout_calcul_actualise,model_is_cout_calcul_actualise,mrp.group_mrp_manager,1,1,1,1
+
+
+
+

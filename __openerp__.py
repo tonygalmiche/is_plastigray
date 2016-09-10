@@ -45,6 +45,7 @@
         "is_inventaire_view.xml",
         "is_inventaire_sequence.xml",
         "is_mem_var_view.xml",
+        "is_cout_view.xml",
         "res_company_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
         "views/layouts.xml",

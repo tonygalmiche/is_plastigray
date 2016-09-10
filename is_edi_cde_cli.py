@@ -15,14 +15,6 @@ import time
 from datetime import date, datetime
 
 
-#TODO : 
-#- Rechercher la commande Odoo dans la fonction d'import eCar et non pas en général
-#- Créer une nouvelle fonction d'import eCar en plus de xml1 et cvs1
-#- Importer les commandes dans Odoo
-#- Tenir compte du type d'import du client
-#- Faire fonctionner l'import CSV
-
-
 class is_edi_cde_cli_line(models.Model):
     _name = "is.edi.cde.cli.line"
     _order = "edi_cde_cli_id,ref_article_client,date_livraison"
@@ -123,22 +115,39 @@ class is_edi_cde_cli(models.Model):
     def action_importer_commandes(self):
         for obj in self:
             line_obj       = self.env['sale.order.line']
+
+            #** Recherche des commandes ouvertes trouvées **********************
+            order_ids={}
             for line in obj.line_ids:
                 if line.order_id:
-                    order_line=line_obj.search([
-                        ('order_id', '=', line.order_id.id),
-                        ('is_date_livraison', '=', line.date_livraison)]
-                    )
-                    for row in order_line:
-                        row.unlink()
-                    vals={
-                        'order_id':line.order_id.id, 
-                        'is_date_livraison':line.date_livraison, 
-                        'is_type_commande':line.type_commande, 
-                        'product_id':line.order_id.is_article_commande_id.id, 
-                        'product_uom_qty':line.quantite, 
-                    }
-                    line_obj.create(vals)
+                    order_ids[line.order_id.id]=True
+            #*******************************************************************
+
+            #** Suppression des anciennes commandes ****************************
+            date_jour=time.strftime('%Y-%m-%d')
+            for order_id in order_ids:
+                order_line=line_obj.search([
+                    ('order_id', '=', order_id),
+                    ('is_date_livraison', '>=', date_jour)]
+                )
+                for row in order_line:
+                    row.unlink()
+            #*******************************************************************
+
+            #** Importation des commandes **************************************
+            for line in obj.line_ids:
+                if line.order_id:
+                    if line.quantite!=0:
+                        vals={
+                            'order_id':line.order_id.id, 
+                            'is_date_livraison':line.date_livraison, 
+                            'is_type_commande':line.type_commande, 
+                            'product_id':line.order_id.is_article_commande_id.id, 
+                            'product_uom_qty':line.quantite, 
+                            'is_client_order_ref':line.order_id.client_order_ref, 
+                        }
+                        line_obj.create(vals)
+            #*******************************************************************
             obj.state='traite'
 
 
@@ -148,10 +157,65 @@ class is_edi_cde_cli(models.Model):
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
 
+        if import_function=="902810":
+            datas=self.get_data_902810(attachment)
+
         if import_function=="903410":
             datas=self.get_data_903410(attachment)
 
         return datas
+
+
+
+
+
+    @api.multi
+    def get_data_902810(self, attachment):
+        res = []
+        for obj in self:
+            csvfile=base64.decodestring(attachment.datas)
+            csvfile=csvfile.split("\n")
+            tab=[]
+            ct=0
+            for row in csvfile:
+                lig=row.split(";")
+                if len(lig)==9:
+                    ct=ct+1
+                    if ct>1:
+                        ref_article_client=lig[0].strip()
+                        order=self.env['sale.order'].search([
+                            ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                            ('is_ref_client', '=', ref_article_client)]
+                        )
+                        num_commande_client="??"
+                        if len(order):
+                            num_commande_client=order[0].client_order_ref
+                        val={
+                            'num_commande_client' : num_commande_client,
+                            'ref_article_client'  : ref_article_client,
+                        }
+                        quantite=lig[6].strip()
+                        qt=0
+                        try:
+                            qt=float(quantite)
+                        except ValueError:
+                            continue
+                        type_commande=lig[5].strip()
+                        if type_commande=="P":
+                            type_commande="previsionnel"
+                        else:
+                            type_commande="ferme"
+                        date_livraison=lig[4].strip()
+                        d=datetime.strptime(date_livraison, '%d/%m/%y')
+                        date_livraison=d.strftime('%Y-%m-%d')
+                        ligne = {
+                            'quantite'      : qt,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes':[ligne]})
+                        res.append(val)
+        return res
 
 
 
