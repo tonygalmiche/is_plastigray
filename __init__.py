@@ -19,6 +19,6 @@ import is_edi_cde_cli
 import is_inventaire
 import is_mem_var
 import is_cout
-
+import is_tarif_cial
 
 

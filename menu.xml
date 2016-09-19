@@ -100,6 +100,10 @@
     <menuitem id="menu_is_ventes_clients"     sequence="10" name="Clients"            parent="menu_is_ventes"/>
     <menuitem id="menu_is_ventes_clients_10"  sequence="10" name="Clients"            parent="menu_is_ventes_clients" action="base.action_partner_customer_form" />
 
+    <menuitem id="menu_is_ventes_tarif_cial"    sequence="15" name="Tarif commercial" parent="menu_is_ventes"/>
+    <menuitem id="menu_is_ventes_tarif_cial_10" sequence="10" name="Tarif commercial" parent="menu_is_ventes_tarif_cial" action="is_tarif_cial_action" />
+
+
     <menuitem id="menu_is_ventes_prix"     sequence="20" name="Liste de prix"         parent="menu_is_ventes"/>
     <menuitem id="menu_is_ventes_prix_10"  sequence="10" name="Liste de prix"         parent="menu_is_ventes_prix" action="product.product_pricelist_action2" />
     <menuitem id="menu_is_ventes_prix_20"  sequence="20" name="Lignes liste de prix"  parent="menu_is_ventes_prix" action="is_pricelist_item_action" />

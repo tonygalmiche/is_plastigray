@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="is_tarif_cial_form_view">
+            <field name="name">is_tarif_cial_form_view</field>
+            <field name="model">is.tarif.cial</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="partner_id"/> 
+                                <field name="product_id"/> 
+                                <field name="indice_prix"/> 
+                                <field name="date_debut"/> 
+                                <field name="date_fin"/> 
+                                <field name="type_evolution"/> 
+                                <field name="numero_dossier"/> 
+                            </group>
+                            <group>
+                                <field name="tarif_matiere"/> 
+                                <field name="part_matiere"/> 
+                                <field name="part_composant"/> 
+                                <field name="part_emballage"/> 
+                                <field name="va_injection"/> 
+                                <field name="va_assemblage"/> 
+                                <field name="frais_port"/> 
+                                <field name="logistique"/> 
+                                <field name="amortissement_moule"/> 
+                                <field name="surcout_pre_serie"/> 
+                                <field name="prix_vente"/> 
+                            </group>
+                        </group>
+                     </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_tarif_cial_tree_view">
+            <field name="name">is_tarif_cial_tree_view</field>
+            <field name="model">is.tarif.cial</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="gray:indice_prix != 999">
+                    <field name="partner_id"/> 
+                    <field name="product_id"/> 
+                    <field name="indice_prix"/> 
+                    <field name="date_debut"/> 
+                    <field name="date_fin"/> 
+                    <field name="type_evolution"/> 
+                    <field name="numero_dossier"/> 
+                    <field name="tarif_matiere"/> 
+                    <field name="part_matiere"/> 
+                    <field name="part_composant"/> 
+                    <field name="part_emballage"/> 
+                    <field name="va_injection"/> 
+                    <field name="va_assemblage"/> 
+                    <field name="frais_port"/> 
+                    <field name="logistique"/> 
+                    <field name="amortissement_moule"/> 
+                    <field name="surcout_pre_serie"/> 
+                    <field name="prix_vente"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_tarif_cial_search_view" >
+            <field name="name">is_tarif_cial_search_view</field>
+            <field name="model">is.tarif.cial</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id"/> 
+                    <field name="product_id"/> 
+                    <field name="indice_prix"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_tarif_cial_action">
+            <field name="name">Tarif commercial</field>
+            <field name="res_model">is.tarif.cial</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</openerp>

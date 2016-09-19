@@ -47,6 +47,7 @@
         "is_mem_var_view.xml",
         "is_cout_view.xml",
         "res_company_view.xml",
+        "is_tarif_cial_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",

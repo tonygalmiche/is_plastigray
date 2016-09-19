@@ -44,7 +44,7 @@ access_is_cout_gamme_ma,access_is_cout_gamme_ma,model_is_cout_gamme_ma,mrp.group
 access_is_cout_gamme_mo,access_is_cout_gamme_mo,model_is_cout_gamme_mo,mrp.group_mrp_manager,1,1,1,1
 access_is_cout_calcul,access_is_cout_calcul,model_is_cout_calcul,mrp.group_mrp_manager,1,1,1,1
 access_is_cout_calcul_actualise,access_is_cout_calcul_actualise,model_is_cout_calcul_actualise,mrp.group_mrp_manager,1,1,1,1
-
+access_is_tarif_cial,access_is_tarif_cial,model_is_tarif_cial,base.group_sale_manager,1,1,1,1
 
 
 
