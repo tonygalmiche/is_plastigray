@@ -57,6 +57,9 @@
         "views/report_paperformat.xml",
         "views/report_stockpicking.xml",
         "report/is_pic_3mois.xml",
+        "report/is_comparatif_gamme_standard_generique.xml",
+        "report/is_article_sans_nomenclature.xml",
+        "report/is_article_sans_fournisseur.xml",
         "menu.xml",              # Reorganisation des menus
         "security/ir.model.access.csv",
     ], 

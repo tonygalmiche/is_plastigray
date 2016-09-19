@@ -167,12 +167,16 @@
 
     <menuitem id="menu_is_intranet"          sequence="45" name="Intranet"            parent="menu_is_production"/>
 
-
     <menuitem id="menu_is_intranet_30"       sequence="30" name="Wiki"                parent="menu_is_intranet"  action="is_mrp.is_url_wiki_action"        groups="mrp.group_mrp_manager"/>
 
     <menuitem id="account.menu_finance"          sequence="5"  name="Comptabilité"         parent=""/>
     <menuitem id="menu_is_autre"                 sequence="6"  name="Autre" groups="base.group_no_one" />
     <menuitem id="base.menu_reporting"           sequence="7"  name="Suivi d'activité" parent=""/>
+
+    <menuitem id="menu_is_analyses"      sequence="6"  name="Analyses"/>
+    <menuitem id="menu_is_analyses_0"    sequence="10" name="Analyses"                         parent="menu_is_analyses"/>
+    <menuitem id="menu_is_analyses_10"   sequence="10" name="Articles sans nomenclatures" parent="menu_is_analyses_0"  action="is_article_sans_nomenclature_action"  groups="mrp.group_mrp_manager" />
+    <menuitem id="menu_is_analyses_20"   sequence="20" name="Articles sans fournisseurs"  parent="menu_is_analyses_0"  action="is_article_sans_fournisseur_action"   groups="mrp.group_mrp_manager" />
 
     <!-- Déplacement des menus standards sous le menu 'Autre' -->
     <menuitem id="base.menu_purchase_root"    sequence="20" name="Achats"               parent="menu_is_autre"/>

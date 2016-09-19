@@ -46,5 +46,11 @@ access_is_cout_calcul,access_is_cout_calcul,model_is_cout_calcul,mrp.group_mrp_m
 access_is_cout_calcul_actualise,access_is_cout_calcul_actualise,model_is_cout_calcul_actualise,mrp.group_mrp_manager,1,1,1,1
 access_is_tarif_cial,access_is_tarif_cial,model_is_tarif_cial,base.group_sale_manager,1,1,1,1
 
+access_is_comparatif_gamme_standard_generique,access_is_comparatif_gamme_standard_generique,model_is_comparatif_gamme_standard_generique,mrp.group_mrp_manager,1,1,1,1
+access_is_article_sans_nomenclature,access_is_article_sans_nomenclature,model_is_article_sans_nomenclature,mrp.group_mrp_manager,1,1,1,1
+access_is_article_sans_fournisseur,access_is_article_sans_fournisseur,model_is_article_sans_fournisseur,mrp.group_mrp_manager,1,1,1,1
+
+
+
 
 
