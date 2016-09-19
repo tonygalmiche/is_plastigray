@@ -53,6 +53,8 @@
         "views/webclient_templates.xml",
         "views/report_liste_servir.xml",
         "views/report_inventaire.xml",
+        "views/report_paperformat.xml",
+        "views/report_stockpicking.xml",
         "report/is_pic_3mois.xml",
         "menu.xml",              # Reorganisation des menus
         "security/ir.model.access.csv",

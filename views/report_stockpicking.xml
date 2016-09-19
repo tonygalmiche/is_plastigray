@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--
+TODO : 
+- Ajouter une feuille de styles (surcharger report.layout)
+- Créer un nouveau format de papier et l'associer à cette vue (A4 avec entête)
+- Renommer le nom du rapport (pour mettre Bon de livraison à la place 'Opération de manutention)
+- Personnaliser l'entête et le pied de page différement des autres documents (papier à entête)
+-->
+
+<openerp>
+    <data>
+
+        <template id="style">
+            .titre {
+                font-size:12pt;
+                font-weight: bold;
+            }
+
+            .expediteur {
+                font-size:8pt;
+                text-align:center;
+            }
+            .destinataire {
+                text-align:left;
+                border: 1px solid black;
+                padding:5mm;
+            }
+
+        </template>
+
+        <template id="layout" inherit_id="web.layout" primary="True">
+            <!-- Add report attributes -->
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <!-- Add report style -->
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.style"/>
+                </style>
+            </xpath>
+            <!-- Remove conflicting style -->
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+
+
+
+        <template id="html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+
+
+        <!-- Entête personnalisé Plastigray -->
+        <template id="pg_external_layout_header">
+            <div class="header">
+
+                <div class="row">
+                    <div class="col-xs-4  text-center">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                        <div class="expediteur">
+                            S.A.S. au capital de 2 102 400 € <br />
+                            Siège social : ZAC de Gray Sud <br />
+                            CS 10133 - <b>70104 GRAY Cedex</b><br />
+                            Tél. : 03 84 64 77 00 - Fax : 03 84 65 51 09 <br />
+                            Siret B 377 846 381 00046 - Code NAF 2229 A <br />
+                            Registre du Commerce GRAY <br />
+                            N°Identification T.V.A. FR 65 377 846 381 <br />
+
+                            <span t-if="o.partner_id.lang == 'fr_FR'">Fournisseur N°</span>
+                            <span t-if="o.partner_id.lang != 'fr_FR'">Supplier N°</span>
+                            <span t-field="o.partner_id.is_num_fournisseur"/>
+
+
+                        </div>
+                    </div>
+                    <div class="col-xs-1" />
+                    <div class="col-xs-7">
+                        <div class="titre">
+                            <span t-if="o.partner_id.lang == 'fr_FR'">BORDEREAU DE LIVRAISON N°</span>
+                            <span t-if="o.partner_id.lang != 'fr_FR'">DELIVERY NOTE N°</span>
+                            <span t-field="o.name"/>
+                             du <span t-field="o.date"  t-field-options='{"format": "dd/MM/yyyy"}' /><br />
+                        </div>
+                        <div t-if="o.partner_id.lang == 'fr_FR'">Destinataire : </div>
+                        <div t-if="o.partner_id.lang != 'fr_FR'">Addressee : </div>
+                        <div class="destinataire">
+                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>)
+                            <div t-field="o.partner_id"
+                                 t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
+                            <div t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></div>
+                        </div>
+                        <div>
+                            <span t-if="o.partner_id.lang == 'fr_FR'">Arrivée prévue le</span>
+                            <span t-if="o.partner_id.lang != 'fr_FR'">Delivery Date</span>
+                            <span t-field="o.min_date" t-field-options='{"format": "dd/MM/yyyy"}'/>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </template>
+
+
+
+        <!-- Pied de page personnalisé Plastigray -->
+        <template id="pg_external_layout_footer">
+            <div class="footer">
+                <br />
+                <div class="text-center" style="border-top: 1px solid black">
+                    Page <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>      
+        </template>
+
+        <!-- Squelette de la page personnalisé pour Plastigray -->
+        <template id="pg_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+
+            <t t-call="is_plastigray.pg_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.pg_external_layout_footer"/>
+        </template>
+
+        <!-- Bon de livraison -->
+        <template id="stock.report_picking">
+            <t t-call="is_plastigray.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.pg_external_layout">
+                        <div class="page">
+                            <table class="table table-condensed" t-if="not o.pack_operation_ids">
+                              <thead>
+                                <tr>
+                                    <th t-if="o.partner_id.lang == 'fr_FR'">Commande N°</th> <th t-if="o.partner_id.lang != 'fr_FR'">Order N°</th>
+                                    <th t-if="o.partner_id.lang == 'fr_FR'">Désignation</th> <th t-if="o.partner_id.lang != 'fr_FR'">Description</th>
+                                    <th class="text-right" t-if="o.partner_id.lang == 'fr_FR'">Quantité</th>    <th class="text-right" t-if="o.partner_id.lang != 'fr_FR'">Quantity</th>
+                                    <th class="text-right"></th>
+                                    <th class="text-right">UC</th>
+                                    <th class="text-right"></th>
+                                    <th class="text-right">UM</th>
+                                    <th class="text-right"></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <t t-set="pds_total" t-value="0"/>
+                                <tr t-foreach="o.move_lines" t-as="move">
+                                    <t t-if="(o.state != 'partially_available') or (move.reserved_availability > 0)">
+
+                                        <t t-set="qt1" t-value="move.product_uom_qty"/>
+                                        <t t-set="nb2"    t-value="0"/>
+                                        <t t-set="unite2" t-value="x"/>
+                                        <t t-set="nb3"    t-value="0"/>
+                                        <t t-set="unite3" t-value="x"/>
+                                        <t t-foreach="move.product_id.packaging_ids" t-as="l">
+                                            <t t-set="nb2"    t-value="l.qty"/>
+                                            <t t-set="unite2" t-value="l.ul.name"/>
+                                            <t t-set="nb3"    t-value="l.qty*l.ul_qty*l.rows"/>
+                                            <t t-set="unite3" t-value="l.ul_container.name"/>
+                                        </t>
+                                        <t t-set="pds" t-value="qt1*move.product_id.weight_net"/>
+                                        <t t-set="pds_total" t-value="pds_total + pds"/>
+                                        <td>
+                                            <span t-field="move.is_sale_line_id.is_client_order_ref"/>
+                                        </td>
+                                        <td>
+                                            <span t-field="move.product_id.name"/><br />
+                                            <span t-field="move.product_id.is_code"/> - <span t-field="move.product_id.is_ref_client"/> <br />
+                                        </td>
+                                        <td class="text-right">
+
+                                            <t t-esc='"{:,.0f}".format(qt1).replace(","," ").replace(".",",")'/> 
+                                        </td>
+                                        <td class="text-left">
+                                            <span t-field="move.product_uom" /> 
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-if="nb2">
+                                                <t t-set="qt2" t-value="qt1/nb2"/>
+                                                <t t-esc='"{:,.1f}".format(qt2).replace(","," ").replace(".",",")'/> 
+                                            </t>
+                                        </td>
+                                        <td class="text-left">
+                                            <t t-if="nb2">
+                                                <span t-esc="unite2"/>
+                                            </t>
+                                        </td>
+                                        <td class="text-right">
+                                            <t t-if="nb3">
+                                                <t t-set="qt3" t-value="qt1/nb3"/>
+                                                <t t-esc='"{:,.1f}".format(qt3).replace(","," ").replace(".",",")'/> 
+                                            </t>
+                                        </td>
+                                        <td class="text-left">
+                                            <t t-if="nb3">
+                                                <span t-esc="unite3"/><br />
+                                            </t>
+                                            <span t-esc="pds"/> KG
+                                        </td>
+
+
+
+                                    </t>
+                                </tr>
+                              </tbody>
+                            </table>
+                            Poids total : <span t-esc="pds_total"/> KG
+                        </div>
+                    </t>
+                 </t>
+             </t>
+        </template>
+    </data>
+</openerp>
