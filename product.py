@@ -6,6 +6,67 @@ from openerp import pooler
 from openerp import models,fields,api
 from openerp.tools.translate import _
 
+
+
+class product_template(models.Model):
+    _inherit = "product.template"
+
+
+    @api.multi
+    def copy(self,vals):
+        for obj in self:
+            vals.update({
+                'is_code': obj.is_code + ' (copie)',
+            })
+            res=super(product_template, self).copy(vals)
+            model = self.env['product.supplierinfo']
+            for item in obj.seller_ids:
+                vals = {
+                    'product_tmpl_id': res.id,
+                    'name'           : item.name.id,
+                    'product_name'   : item.product_name,
+                    'sequence'       : item.sequence,
+                    'product_code'   : item.product_code,
+                    'min_qty'        : item.min_qty,
+                    'delay'          : item.delay,
+                }
+                id = model.create(vals)
+            model = self.env['product.packaging']
+            for item in obj.packaging_ids:
+                
+                vals = {
+                    'product_tmpl_id': res.id,
+                    'ean'            : item.ean,
+                    'qty'            : item.qty,
+                    'ul'             : item.ul.id,
+                    'ul_qty'         : item.ul_qty,
+                    'rows'           : item.rows,
+                    'ul_container'   : item.ul_container.id,
+                    'weight'         : item.weight,
+                }
+                id = model.create(vals)
+        return res
+
+
+    def get_uc(self):
+        uc=0
+        for obj in self:
+            if obj.packaging_ids:
+                uc=obj.packaging_ids[0].qty
+        if uc==0:
+            uc=1
+        return uc
+
+    def get_um(self):
+        um=0
+        for obj in self:
+            if obj.packaging_ids:
+                um=obj.packaging_ids[0].qty*obj.packaging_ids[0].rows*obj.packaging_ids[0].ul_qty
+        if um==0:
+            um=self.get_uc()
+        return um
+
+
 class product_product(models.Model):
     _name = "product.product"
     _inherit = "product.product"

@@ -19,7 +19,6 @@ class is_tarif_cial(models.Model):
     date_debut          = fields.Date("Date de début")
     date_fin            = fields.Date("Date de fin")
     type_evolution      = fields.Char("Type évolution")
-    tarif_matiere       = fields.Float("Tarif Matière"      , digits=(12, 4))
     part_matiere        = fields.Float("Part Matière"       , digits=(12, 4))
     part_composant      = fields.Float("Part Composant"     , digits=(12, 4))
     part_emballage      = fields.Float("Part Emballage"     , digits=(12, 4))
@@ -30,7 +29,15 @@ class is_tarif_cial(models.Model):
     amortissement_moule = fields.Float("Amortissement Moule", digits=(12, 4))
     surcout_pre_serie   = fields.Float("Surcôut pré-série"  , digits=(12, 4))
     prix_vente          = fields.Float("Prix de Vente"      , digits=(12, 4))
+    ecart               = fields.Float("Ecart prix de vente", digits=(12, 4), compute='_ecart')
     numero_dossier      = fields.Char("Numéro de dossier")
+
+
+    @api.one
+    @api.depends('part_matiere', 'part_composant', 'part_emballage', 'va_injection', 'va_assemblage', 'frais_port', 'logistique', 'amortissement_moule', 'surcout_pre_serie', 'prix_vente')
+    def _ecart(self):
+        for obj in self:
+            obj.ecart = obj.prix_vente-(obj.part_matiere+obj.part_composant+obj.part_emballage+obj.va_injection+obj.va_assemblage+obj.frais_port+obj.logistique+obj.amortissement_moule+obj.surcout_pre_serie)
 
     @api.one
     @api.depends('product_id', 'indice_prix')
@@ -43,6 +50,20 @@ class is_tarif_cial(models.Model):
         'indice_prix': 999,
     }
 
+    @api.model
+    def create(self, vals):
+        res=super(is_tarif_cial, self).create(vals)
+        if res.ecart!=0:
+            raise Warning(u"Ecart prix de vente différent de 0 !")
+        return res
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_tarif_cial, self).write(vals)
+        for obj in self:
+            if obj.ecart!=0:
+                raise Warning(u"Ecart prix de vente différent de 0 !")
+        return res
 
     @api.multi
     def copy(self,vals):
@@ -58,7 +79,12 @@ class is_tarif_cial(models.Model):
             vals.update({
                 'indice_prix': indice_prix,
             })
-        return super(is_tarif_cial, self).copy(vals)
+            res=super(is_tarif_cial, self).copy(vals)
+
+            if obj.indice_prix==999:
+                obj.numero_dossier=""
+                obj.type_evolution=""
+        return res
 
 
 

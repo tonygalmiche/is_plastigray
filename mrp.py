@@ -6,17 +6,36 @@ from openerp.tools.translate import _
 
 
 class mrp_bom(models.Model):
-    _name    = 'mrp.bom'
-    _inherit = 'mrp.bom'
-    _order   = 'product_tmpl_id'
+    _name     = 'mrp.bom'
+    _inherit  = 'mrp.bom'
+    _order    = 'product_tmpl_id'
+    _rec_name = 'product_tmpl_id'
 
     is_gamme_generique_id = fields.Many2one('mrp.routing', 'Gamme générique', help="Gamme générique utilisée dans le plan directeur")
     is_sous_traitance     = fields.Boolean('Nomenclature de sous-traitance')
+    is_negoce             = fields.Boolean('Nomenclature de négoce')
+    is_inactive           = fields.Boolean('Nomenclature inactive')
+    is_qt_uc              = fields.Integer("Qt par UC", compute='_compute')
+    is_qt_um              = fields.Integer("Qt par UM", compute='_compute')
+
+    @api.one
+    @api.depends('product_tmpl_id')
+    def _compute(self):
+        for obj in self:
+            obj.is_qt_uc = obj.product_tmpl_id.get_uc()
+            obj.is_qt_um = obj.product_tmpl_id.get_um()
+
+
+#    @api.one
+#    @api.depends('product_tmpl_id')
+#    def _compute_display_name(self):
+#        self.display_name = self.product_tmpl_id.is_code
 
 
 class mrp_bom_line(models.Model):
     _name = 'mrp.bom.line'
     _inherit = 'mrp.bom.line'
+    _order = "sequence, id"
 
 
     #Si la catégorie est 'Fantôme', tous les liens des nomenclatures doivent passer en 'Fantôme'
@@ -33,10 +52,21 @@ class mrp_bom_line(models.Model):
     type = fields.Selection([('normal', 'Normal'), ('phantom', 'Phantom')], 'BoM Line Type', required=True, compute='_type')
 
     is_article_fourni = fields.Selection([('oui', 'Oui'), ('non', 'Non')], 'Article fourni')
+    is_qt_uc          = fields.Float("Qt par UC", digits=(12, 2), compute='_compute')
+    is_qt_um          = fields.Float("Qt par UM", digits=(12, 2), compute='_compute')
+
 
     _defaults = {
         'is_article_fourni': 'non',
     }
+
+
+    @api.one
+    @api.depends('bom_id.product_tmpl_id', 'product_qty')
+    def _compute(self):
+        for obj in self:
+            obj.is_qt_uc = obj.product_qty*obj.bom_id.product_tmpl_id.get_uc()
+            obj.is_qt_um = obj.product_qty*obj.bom_id.product_tmpl_id.get_um()
 
 
 

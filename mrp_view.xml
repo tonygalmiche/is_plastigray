@@ -120,6 +120,9 @@
                     <field name="is_gamme_generique_id" class="oe_inline"/>
                 </div>
             </xpath>
+            <field name="name" position="attributes" > 
+                <attribute name="invisible">1</attribute>
+            </field>
             <field name="product_id" position="attributes" > 
                 <attribute name="invisible">1</attribute>
             </field>
@@ -135,15 +138,33 @@
             <field name="type" position="attributes" > 
                 <attribute name="invisible">1</attribute>
             </field>
+            <field name="product_tmpl_id" position="after" > 
+                <field name="is_qt_uc" />
+                <field name="is_qt_um" />
+            </field>
+
             <field name="name" position="after" > 
                 <field name="is_sous_traitance" />
+                <field name="is_negoce" />
+                <field name="is_inactive" />
             </field>
+            <xpath expr="/form/notebook/page/field/tree/field[@name='sequence']" position="replace">
+                <field name="sequence" />
+            </xpath>
+
+
             <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="attributes">
                 <attribute name="readonly">1</attribute>
             </xpath>
             <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="after">
                 <field name="is_article_fourni"/> 
             </xpath>
+
+            <xpath expr="/form/notebook/page/field/tree/field[@name='product_uom']" position="after">
+                <field name="is_qt_uc"/> 
+                <field name="is_qt_um"/> 
+            </xpath>
+
             <xpath expr="/form/notebook/page/field/tree/field[@name='product_rounding']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -162,12 +183,12 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="product_tmpl_id"/>
-                <field name="name"/>
-                <field name="is_sous_traitance"/>
                 <field name="sequence"/>
+                <field name="is_sous_traitance"/>
+                <field name="is_negoce"/>
+                <field name="is_inactive"/>
                 <field name="routing_id"/>
                 <field name="is_gamme_generique_id"/>
-                <!--<field name="type"/>-->
             </tree>
         </field>
     </record>
@@ -188,6 +209,10 @@
         <field name="model">mrp.bom.line</field>
         <field name="inherit_id" ref="mrp.mrp_bom_component_tree_view" />
         <field name="arch" type="xml">
+            <field name="bom_id" position="attributes" > 
+                <attribute name="readonly">1</attribute>
+            </field>
+
             <field name="type" position="attributes" > 
                 <attribute name="readonly">1</attribute>
             </field>

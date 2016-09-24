@@ -21,7 +21,6 @@
                                 <field name="numero_dossier"/> 
                             </group>
                             <group>
-                                <field name="tarif_matiere"/> 
                                 <field name="part_matiere"/> 
                                 <field name="part_composant"/> 
                                 <field name="part_emballage"/> 
@@ -32,6 +31,7 @@
                                 <field name="amortissement_moule"/> 
                                 <field name="surcout_pre_serie"/> 
                                 <field name="prix_vente"/> 
+                                <field name="ecart"/> 
                             </group>
                         </group>
                      </sheet>
@@ -51,7 +51,6 @@
                     <field name="date_fin"/> 
                     <field name="type_evolution"/> 
                     <field name="numero_dossier"/> 
-                    <field name="tarif_matiere"/> 
                     <field name="part_matiere"/> 
                     <field name="part_composant"/> 
                     <field name="part_emballage"/> 

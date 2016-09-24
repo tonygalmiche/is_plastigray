@@ -5,12 +5,13 @@ import datetime
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from math import *
+from openerp.exceptions import Warning
 
 
 class sale_order(models.Model):
     _inherit = "sale.order"
 
-    is_type_commande       = fields.Selection([('standard', 'Standard'),('ouverte', 'Ouverte'),('cadence', 'Cadencé')], "Type de commande")
+    is_type_commande       = fields.Selection([('standard', 'Ferme'),('ouverte', 'Ouverte'),('cadence', 'Cadencé')], "Type de commande")
     is_article_commande_id = fields.Many2one('product.product', 'Article de la commande', help="Article pour les commandes ouvertes")
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
 
@@ -74,7 +75,14 @@ class sale_order(models.Model):
     def write(self,vals):
         res=super(sale_order, self).write(vals)
         for obj in self:
-            print obj
+            r=self.env['sale.order'].search([
+                ['partner_id', '=', obj.partner_id.id],
+                ['is_article_commande_id', '=', obj.is_article_commande_id.id],
+                ['is_type_commande', '=', 'ouverte'],
+            ])
+            if len(r)>1 :
+                raise Warning(u"Il exite déjà une commande ouverte pour cet article et ce client")
+
             for line in obj.order_line:
                 if not line.is_client_order_ref:
                     line.is_client_order_ref=obj.client_order_ref
@@ -97,6 +105,17 @@ class sale_order_line(models.Model):
     _defaults = {
         'is_type_commande': 'previsionnel',
     }
+
+#    def _is_type_commande():
+#        now = datetime.date.today()         # Date du jour
+#        return now.strftime('%Y-%m-%d')     # Formatage
+
+#    _defaults = {
+#        'is_type_commande':  _is_type_commande(),
+#    }
+
+
+
 
 
     @api.depends('is_date_livraison')
