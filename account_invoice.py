@@ -56,4 +56,22 @@ class account_invoice(models.Model):
                     }
                     tax_obj.create(tax_vals)
 
+class account_invoice_line(models.Model):
+    _inherit = "account.invoice.line"
+
+    is_section_analytique_id = fields.Many2one('is.section.analytique', 'Section analytique')
+
+
+    @api.multi
+    def product_id_change(self, product, uom_id, qty=0, name='', type='out_invoice',
+            partner_id=False, fposition_id=False, price_unit=False, currency_id=False,
+            company_id=None):
+        res=super(account_invoice_line, self).product_id_change(product, uom_id, qty, name, type,
+            partner_id, fposition_id, price_unit, currency_id,company_id)
+        if product:
+            product = self.env['product.product'].browse(product)
+            is_section_analytique_id=product.is_section_analytique_id.id or False
+            res['value']['is_section_analytique_id']=is_section_analytique_id
+        return res
+
 

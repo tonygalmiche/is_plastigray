@@ -32,6 +32,7 @@
         "res_partner_view.xml",  # Vue partenaire modifiée
         "assets.xml",            # Permet d'ajouter des css et des js
         "sale_view.xml",
+        "account_invoice_view.xml",
         "sale_picking_view.xml",
         "mrp_view.xml",
         "stock_view.xml",

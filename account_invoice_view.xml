@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="is_invoice_form" model="ir.ui.view">
+            <field name="name">is_invoice_form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="attributes">
+                    <attribute name="class">oe_form_sheet_width_wider</attribute>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='account_id']" position="after">
+                    <field name="is_section_analytique_id"/>
+                </xpath>
+
+                <xpath expr="//sheet" position="after">
+                    <attribute name="class">oe_form_sheet_width_wider</attribute>
+                </xpath>
+
+
+                                    <field name="account_id" groups="account.group_account_user" />
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
