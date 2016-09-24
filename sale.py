@@ -102,9 +102,9 @@ class sale_order_line(models.Model):
     is_type_commande      = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
     is_client_order_ref   = fields.Char("Commande client")
 
-    _defaults = {
-        'is_type_commande': 'previsionnel',
-    }
+#    _defaults = {
+#        'is_type_commande': 'previsionnel',
+#    }
 
 #    def _is_type_commande():
 #        now = datetime.date.today()         # Date du jour
@@ -208,6 +208,7 @@ class sale_order_line(models.Model):
 
 
     def onchange_date_livraison(self, cr, uid, ids, date_livraison, partner_id, company_id, order_id=False, context=None):
+        print "context=",context
         v = {}
         warning = {}
         if order_id:
@@ -237,6 +238,14 @@ class sale_order_line(models.Model):
                 date_expedition = is_api.get_working_day(cr, uid, date, num_day, jours_fermes, leave_dates, context=context)
                 
             v['is_date_expedition'] = date_expedition 
+
+
+            #Type de commande = previsionnel pour les commandes ouvertes
+            is_type_commande='ferme'
+            if 'is_type_commande' in context:
+                if context['is_type_commande']=='ouverte':
+                    is_type_commande='previsionnel'
+            v['is_type_commande']   = is_type_commande
         
             check_date = self.check_date_livraison(cr, uid, ids, date_livraison, partner_id, context=context)
             if not check_date:
