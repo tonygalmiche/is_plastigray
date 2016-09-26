@@ -80,11 +80,10 @@
         <field name="arch" type="xml">
             <xpath expr="//tree" position="replace">
                 <tree editable="top">
-                    <!--<field name="price_version_id" readonly="1"/>-->
                     <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
                     <field name="sequence"/>
                     <field name="product_po_uom_id"/>
-                    <field name="min_quantity"    required="1"/>
+                    <field name="min_quantity"    required="1" digits="(14, 4)"/>
                     <field name="price_surcharge" required="1" string="Prix" />
                     <field name="date_start"/>
                     <field name="date_end"/>
@@ -94,25 +93,6 @@
         </field>
     </record>
 
-
-    <!-- tree view product.pricelist.item -->
-    <record id="is_product_pricelist_item2_tree_view" model="ir.ui.view">
-        <field name="name">product.pricelist.item.tree</field>
-        <field name="model">product.pricelist.item</field>
-        <field name="arch" type="xml">
-            <tree editable="top">
-                <field name="price_version_id" readonly="1"/>
-                <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
-                <field name="sequence"/>
-                <field name="product_po_uom_id"/>
-                <field name="min_quantity"    required="1"/>
-                <field name="price_surcharge" required="1" string="Prix" />
-                <field name="date_start"/>
-                <field name="date_end"/>
-                <field name="base" invisible="1"/>
-            </tree>
-        </field>
-    </record>
 
 
 
@@ -129,9 +109,31 @@
     </record>
 
 
+    <!-- tree view product.pricelist.item -->
+    <!--
+    <record id="is_product_pricelist_item2_tree_view" model="ir.ui.view">
+        <field name="name">product.pricelist.item.tree</field>
+        <field name="model">product.pricelist.item</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="price_version_id" readonly="1"/>
+                <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
+                <field name="sequence"/>
+                <field name="product_po_uom_id"/>
+                <field name="min_quantity"    required="1"  digits="(14, 4)" />
+                <field name="price_surcharge" required="1"  string="Prix" />
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="base" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    -->
+
     <!-- Action pour accèder aux lignes des liste des prix pour l'importation -->
+    <!--
     <record model="ir.actions.act_window" id="is_pricelist_item_action">
-        <field name="name">action_is_pricelist</field>
+        <field name="name">Lignes liste de prix</field>
         <field name="res_model">product.pricelist.item</field>
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
@@ -140,7 +142,7 @@
         <field name="context">{}</field>
         <field name="domain">[]</field>
     </record>
-
+    -->
 
 
 

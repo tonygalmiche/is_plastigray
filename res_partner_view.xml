@@ -34,6 +34,7 @@
                     <field name="is_incoterm" />
                     <field name="is_delai_transport" />
                     <field name="is_import_function" />
+                    <field name="is_source_location_id" />
                 </xpath>
 
                 <xpath expr="//field[@name='property_payment_term']" position="after">
@@ -116,10 +117,19 @@
                         </group>
                         <group string="Conditions Logistiques">
                             <field name="is_groupage" />
-                            <field name="is_tolerance_delai" />
                             <field name="is_tolerance_quantite" />
                             <field name="is_transmission_cde" />
                         </group>
+                        <group>
+                            <group>
+                                <field name="is_tolerance_delai" />
+                            </group>
+                            <group>
+                                <field name="is_nb_jours_tolerance" attrs="{'invisible': [('is_tolerance_delai', '=', False)]}" />
+                            </group>
+                        </group>
+
+
                     </page>
                     <page name="is_qualite" string="Qualité" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}">
                         <field name="is_certifications" >

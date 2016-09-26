@@ -47,8 +47,17 @@ class is_liste_servir_client(models.Model):
     def action_creer_liste_servir(self):
         for obj in self:
             liste_servir_obj = self.env['is.liste.servir']
+
+            if obj.name.is_source_location_id:
+                is_source_location_id=obj.name.is_source_location_id.id
+            else:
+                is_source_location=liste_servir_obj._get_default_location()
+                is_source_location_id=is_source_location.id
+
+
             vals={
                 'partner_id': obj.name.id,
+                'is_source_location_id': is_source_location_id,
                 'date_debut': obj.date_debut,
                 'date_fin'  : obj.date_fin,
                 'livrable'  : obj.livrable,
@@ -90,17 +99,28 @@ class is_liste_servir(models.Model):
     _name='is.liste.servir'
     _order='name desc'
 
-    name            = fields.Char("N°", readonly=True)
-    partner_id      = fields.Many2one('res.partner', 'Client', required=True)
-    date_debut      = fields.Date("Date de début d'expédition")
-    date_fin        = fields.Date("Date de fin d'expédition", required=True)
-    livrable        = fields.Selection(livrable, "Livrable")
-    transporteur_id = fields.Many2one('res.partner', 'Transporteur')
-    message         = fields.Text("Message")
-    state           = fields.Selection([('creation', u'Création'),('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
-    order_id        = fields.Many2one('sale.order', 'Commande générée', readonly=True)
-    line_ids        = fields.One2many('is.liste.servir.line', 'liste_servir_id', u"Lignes")
-    uc_ids          = fields.One2many('is.liste.servir.uc', 'liste_servir_id', u"UCs")
+    @api.model
+    def _get_default_location(self):
+        company_id = self.env.user.company_id.id
+        warehouse_obj = self.env['stock.warehouse']
+        warehouse_id = warehouse_obj.search([('company_id','=',company_id)])
+        location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
+        return location and location or False
+
+    name                   = fields.Char("N°", readonly=True)
+    partner_id             = fields.Many2one('res.partner', 'Client', required=True)
+    date_debut             = fields.Date("Date de début d'expédition")
+    date_fin               = fields.Date("Date de fin d'expédition", required=True)
+    livrable               = fields.Selection(livrable, "Livrable")
+    transporteur_id        = fields.Many2one('res.partner', 'Transporteur')
+    message                = fields.Text("Message")
+    state                  = fields.Selection([('creation', u'Création'),('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
+    order_id               = fields.Many2one('sale.order', 'Commande générée', readonly=True)
+    line_ids               = fields.One2many('is.liste.servir.line', 'liste_servir_id', u"Lignes")
+    uc_ids                 = fields.One2many('is.liste.servir.uc', 'liste_servir_id', u"UCs")
+    is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
+
+
 
     def _date_fin():
         now = datetime.date.today()                 # Date du jour
@@ -112,6 +132,16 @@ class is_liste_servir(models.Model):
         'date_fin':  _date_fin(),
         'livrable':  'livrable',
     }
+
+
+    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+        res = {}
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
+            if partner.is_source_location_id:
+                res['value']={'is_source_location_id': partner.is_source_location_id }
+        return res
+
 
 
     def _message(self,partner_id,vals):
@@ -173,7 +203,6 @@ class is_liste_servir(models.Model):
             result = cr.fetchall()
             uc_obj = self.env['is.liste.servir.uc']
             for r in result:
-                print r
                 vals={
                     'liste_servir_id': obj.id,
                     'uc_id': r[0],
@@ -274,11 +303,13 @@ class is_liste_servir(models.Model):
                 'product_id':line.product_id.id, 
                 'product_uom_qty': line.quantite,
                 'is_date_livraison': line.date_livraison,
+                'is_type_commande': 'ferme',
                 'is_client_order_ref': line.client_order_ref,
             })
             lines.append([0,False,quotation_line]) 
         values = {
             'partner_id': obj.partner_id.id,
+            'is_source_location_id': obj.is_source_location_id.id,
             'client_order_ref': obj.name,
             'origin': obj.name,
             'order_line': lines,

@@ -61,6 +61,7 @@
         "report/is_comparatif_gamme_standard_generique.xml",
         "report/is_article_sans_nomenclature.xml",
         "report/is_article_sans_fournisseur.xml",
+        "report/is_pricelist_item.xml",
         "menu.xml",              # Reorganisation des menus
         "security/ir.model.access.csv",
     ], 

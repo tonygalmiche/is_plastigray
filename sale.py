@@ -11,9 +11,19 @@ from openerp.exceptions import Warning
 class sale_order(models.Model):
     _inherit = "sale.order"
 
+    @api.model
+    def _get_default_location(self):
+        company_id = self.env.user.company_id.id
+        warehouse_obj = self.env['stock.warehouse']
+        warehouse_id = warehouse_obj.search([('company_id','=',company_id)])
+        location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
+        return location and location or False
+
+
     is_type_commande       = fields.Selection([('standard', 'Ferme'),('ouverte', 'Ouverte'),('cadence', 'Cadencé')], "Type de commande")
     is_article_commande_id = fields.Many2one('product.product', 'Article de la commande', help="Article pour les commandes ouvertes")
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
+    is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
 
     _defaults = {
         'is_type_commande': 'standard',
@@ -24,17 +34,14 @@ class sale_order(models.Model):
         res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part, context=context)
         if part:
             partner = self.pool.get('res.partner').browse(cr, uid, part, context=context)
-#            if partner.is_adr_livraison:
-#                res['value'].update({'partner_shipping_id': partner.is_adr_livraison.id })
             if partner.is_adr_facturation:
                 res['value'].update({'partner_invoice_id': partner.is_adr_facturation.id })
-#            if partner.is_adr_groupe:
-#                res['value'].update({'partner_group_id': partner.is_adr_groupe.id })
-#            else:
-#                res['value'].update({'partner_group_id': res['value']['partner_invoice_id'] })
+
+            if partner.is_source_location_id:
+                res['value'].update({'is_source_location_id': partner.is_source_location_id.id })
+
 
         return res
-
 
 
     @api.depends('is_article_commande_id', 'is_article_commande_id.is_ref_client', 'is_article_commande_id.product_tmpl_id.is_ref_client')
@@ -42,7 +49,6 @@ class sale_order(models.Model):
         for order in self:
             if order.is_article_commande_id:
                 order.is_ref_client = order.is_article_commande_id.is_ref_client
-
 
 
     def onchange_order_line(self, cr, uid, ids, type_commande, order_line, context=None):

@@ -82,8 +82,13 @@ class is_escompte(models.Model):
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-
-
+    @api.model
+    def _get_default_location(self):
+        company_id = self.env.user.company_id.id
+        warehouse_obj = self.env['stock.warehouse']
+        warehouse_id = warehouse_obj.search([('company_id','=',company_id)])
+        location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
+        return location and location or False
 
     is_delai_transport    = fields.Integer('Delai de transport (jour)')
     is_import_function    = fields.Selection([('eCar','eCar'),('902810','902810'),('903410','903410')], "Fonction d'importation EDI")
@@ -108,10 +113,12 @@ class res_partner(models.Model):
     is_site_livre_ids     = fields.Many2many('is.site', id1='partner_id', id2='site_id', string=u'sites livrés')
     is_groupage           = fields.Boolean('Groupage')
     is_tolerance_delai    = fields.Boolean('Tolérance sur délai')
+    is_nb_jours_tolerance = fields.Integer('Nb jours tolérance sur délai')
     is_tolerance_quantite = fields.Boolean('Tolérance sur quantité')
     is_transmission_cde   = fields.Many2one('is.transmission.cde', 'Mode de transmission des commandes')
     is_certifications     = fields.One2many('is.certifications.qualite', 'partner_id', u'Certification qualité')
     is_type_contact       = fields.Many2one('is.type.contact', "Type de contact")
+    is_source_location_id = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
 
     _defaults = {
         'delai_transport': 0,

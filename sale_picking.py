@@ -22,19 +22,6 @@ class procurement_order(models.Model):
         return data
         
         
-class sale_order(models.Model):
-    _inherit = 'sale.order'
-
-    @api.model
-    def _get_default_location(self):
-        
-        company_id = self.env.user.company_id.id
-        warehouse_obj = self.env['stock.warehouse']
-        warehouse_id = warehouse_obj.search([('company_id','=',company_id)])
-        location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
-        return location and location or False
-        
-    is_source_location_id = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
     
      
 class stock_picking(models.Model):

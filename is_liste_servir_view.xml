@@ -47,14 +47,22 @@
                     </header>
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
-                            <field name="name"/> 
-                            <field name="partner_id" domain="[('customer','=',True),('is_company','=',True)]" /> 
-                            <field name="date_debut"/> 
-                            <field name="date_fin"/> 
-                            <field name="livrable"/> 
-                            <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
-                            <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
-                            <field name="order_id"/> 
+                            <group>
+                                <field name="name"/> 
+                                <field  name="partner_id" 
+                                        domain="[('customer','=',True),('is_company','=',True)]" 
+                                        on_change="onchange_partner_id(partner_id)"
+                                /> 
+                                <field name="date_debut"/> 
+                                <field name="date_fin"/> 
+                                <field name="livrable"/> 
+                            </group>
+                            <group>
+                                <field name="is_source_location_id"/> 
+                                <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
+                                <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
+                                <field name="order_id"/> 
+                            </group>
                         </group>
                         <group>
                             <field name="line_ids" nolabel="1">

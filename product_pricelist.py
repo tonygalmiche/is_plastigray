@@ -84,8 +84,8 @@ class product_pricelist_version(osv.osv):
                     'product_id': item.product_id.id,
                     'min_quantity': item.min_quantity,
                     'sequence': item.sequence,
-                    'date_start': start,
-                    'date_end': end,
+                    'date_start': item.date_start,
+                    'date_end': item.date_end,
                     'price_surcharge': item.price_surcharge,
                 }
                 id = model.create(cr, uid, vals, context=context)
