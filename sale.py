@@ -213,7 +213,7 @@ class sale_order_line(models.Model):
         return True
 
 
-    def onchange_date_livraison(self, cr, uid, ids, date_livraison, partner_id, company_id, order_id=False, context=None):
+    def onchange_date_livraison(self, cr, uid, ids, date_livraison, product_id, qty, uom, partner_id, pricelist, company_id, order_id=False, context=None):
         print "context=",context
         v = {}
         warning = {}
@@ -259,6 +259,20 @@ class sale_order_line(models.Model):
                             'title': _('Warning!'),
                             'message' : 'La date de livraison tombe pendant la fermeture du client.'
                 }
+
+
+            #** Recherche prix dans liste de prix pour la date et qt ***********
+            if pricelist:
+                ctx = dict(
+                    context,
+                    uom=uom,
+                    date=date_livraison,
+                )
+                price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
+                        product_id, qty or 1.0, partner_id, ctx)[pricelist]
+                v['price_unit'] = price
+            #*******************************************************************
+
         
         return {'value': v,
                 'warning': warning}
@@ -285,8 +299,10 @@ class sale_order_line(models.Model):
                                                                      uom, qty_uos, uos, name, partner_id,
                                                                      lang, update_tax, date_order, packaging,
                                                                      fiscal_position, flag, context=context)
+        vals['value']['product_uom_qty'] = qty
 
-        vals['value']['product_uom_qty']=qty
+        # Le prix est forcé à 0, car il sera calculé avec la date d'expédition
+        vals['value']['price_unit'] = 0    
 
         return vals
 

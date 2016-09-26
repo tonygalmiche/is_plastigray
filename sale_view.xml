@@ -60,12 +60,25 @@
                     <attribute name="invisible">1</attribute>
                 </xpath>
 
-                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
-                    <field name="is_justification" attrs="{'required':['|',('price_unit', '=', 0),('product_id', '=', False)]}"/>
-                    <field name="is_date_livraison"  on_change="onchange_date_livraison(is_date_livraison, parent.partner_id, parent.company_id)" required="1"/>
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
+                    <field  name="is_date_livraison"  
+                            on_change="onchange_date_livraison(
+                                is_date_livraison,
+                                product_id,
+                                product_uom_qty,
+                                product_uom,
+                                parent.partner_id, 
+                                parent.pricelist_id, 
+                                parent.company_id
+                            )" 
+                            required="1"/>
                     <field name="is_date_expedition" readonly="1" />
                     <field name="is_type_commande" required="1"  />
                     <field name="is_client_order_ref" readonly="1" />
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                    <field name="is_justification" attrs="{'required':['|',('price_unit', '=', 0),('product_id', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']" position="attributes">
@@ -206,7 +219,6 @@
                     <button string="Article" name="action_acceder_article"   type="object" icon="gtk-zoom-in" />
                     <field name="product_id"      readonly="1"/>
                     <field name="product_uom_qty" readonly="1" />
-
                     <field name="is_date_livraison" on_change="onchange_date_livraison(is_date_livraison, False, False, order_id)" required="1" />
                     <field name="is_date_expedition"/>
                     <field name="is_type_commande" required="1"  />
