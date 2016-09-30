@@ -138,13 +138,33 @@ class is_edi_cde_cli(models.Model):
             for line in obj.line_ids:
                 if line.order_id:
                     if line.quantite!=0:
+
+
+                        # ** Recherche du tarif ********************************
+                        price=0;
+                        product_id = line.order_id.is_article_commande_id.id
+                        product    = line.order_id.is_article_commande_id
+                        pricelist  = line.order_id.pricelist_id.id
+                        context={}
+                        if pricelist:
+                            qty  = line.quantite
+                            date = line.date_livraison
+                            ctx = dict(
+                                context,
+                                uom=product.uom_id.id,
+                                date=date,
+                            )
+                            price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, pricelist,
+                                    product_id, qty, line.order_id.partner_id.id, ctx)[pricelist]
+                        #*******************************************************
                         vals={
-                            'order_id':line.order_id.id, 
-                            'is_date_livraison':line.date_livraison, 
-                            'is_type_commande':line.type_commande, 
-                            'product_id':line.order_id.is_article_commande_id.id, 
-                            'product_uom_qty':line.quantite, 
-                            'is_client_order_ref':line.order_id.client_order_ref, 
+                            'order_id'            : line.order_id.id, 
+                            'is_date_livraison'   : line.date_livraison, 
+                            'is_type_commande'    : line.type_commande, 
+                            'product_id'          : line.order_id.is_article_commande_id.id, 
+                            'product_uom_qty'     : line.quantite, 
+                            'is_client_order_ref' : line.order_id.client_order_ref, 
+                            'price_unit'          : price,
                         }
                         line_obj.create(vals)
             #*******************************************************************
@@ -163,7 +183,55 @@ class is_edi_cde_cli(models.Model):
         if import_function=="903410":
             datas=self.get_data_903410(attachment)
 
+        if import_function=="GXS":
+            datas=self.get_data_GXS(attachment)
+
+
         return datas
+
+
+
+    @api.multi
+    def get_data_GXS(self, attachment):
+        res = []
+        for obj in self:
+            csvfile=base64.decodestring(attachment.datas)
+            csvfile=csvfile.split("\r")
+            tab=[]
+            ct=0
+            for row in csvfile:
+                ct=ct+1
+                lig=row.split(",")
+                if ct==2:
+                    ref_article_client  = lig[14].strip()
+                    num_commande_client = lig[16].strip()
+                date_livraison = False
+                type_commande  = "ferme"
+                qt             = 0
+                if len(lig)>6:
+                    if lig[6].strip()=="PCE":
+                        date_livraison=lig[0].strip()
+                        d=datetime.strptime(date_livraison, '%Y%m%d')
+                        date_livraison=d.strftime('%Y-%m-%d')
+                        quantite=lig[4].strip()
+                        try:
+                            qt=float(quantite)
+                        except ValueError:
+                            continue
+                        if lig[1].strip()=="Horizon Start Date":
+                            type_commande  = "previsionnel"
+                        val={
+                            'num_commande_client' : num_commande_client,
+                            'ref_article_client'  : ref_article_client,
+                        }
+                        ligne = {
+                            'quantite'      : qt,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes':[ligne]})
+                        res.append(val)
+        return res
 
 
 

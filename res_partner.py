@@ -4,6 +4,16 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 
 
+# ** Fonctions d'importation EDI ***********************************************
+import_function=[
+    ('eCar'  , 'eCar'),
+    ('902810', '902810'),
+    ('903410', '903410'),
+    ('GXS'   , 'GXS'),
+]
+# ******************************************************************************
+
+
 class is_segment_achat(models.Model):
     _name = 'is.segment.achat'
     _description = "Segment d'achat"
@@ -91,7 +101,7 @@ class res_partner(models.Model):
         return location and location or False
 
     is_delai_transport    = fields.Integer('Delai de transport (jour)')
-    is_import_function    = fields.Selection([('eCar','eCar'),('902810','902810'),('903410','903410')], "Fonction d'importation EDI")
+    is_import_function    = fields.Selection(import_function, "Fonction d'importation EDI")
     is_raison_sociale2    = fields.Char('Raison sociale 2')
     is_code               = fields.Char('Code')
     is_adr_code           = fields.Char('Code adresse')
