@@ -268,6 +268,9 @@ class sale_order_line(models.Model):
                     uom=uom,
                     date=date_livraison,
                 )
+
+                print ctx
+
                 price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
                         product_id, qty or 1.0, partner_id, ctx)[pricelist]
                 v['price_unit'] = price

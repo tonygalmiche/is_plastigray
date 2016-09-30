@@ -16,7 +16,9 @@ class product_template(models.Model):
     def copy(self,vals):
         for obj in self:
             vals.update({
-                'is_code': obj.is_code + ' (copie)',
+                'is_code'                 : obj.is_code + ' (copie)',
+                'property_account_income' : obj.property_account_income,
+                'property_account_expense': obj.property_account_expense,
             })
             res=super(product_template, self).copy(vals)
             model = self.env['product.supplierinfo']
@@ -45,6 +47,10 @@ class product_template(models.Model):
                     'weight'         : item.weight,
                 }
                 id = model.create(vals)
+
+            
+
+
         return res
 
 
