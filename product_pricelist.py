@@ -125,7 +125,6 @@ class product_pricelist(osv.osv):
     
     def _price_rule_get_multi(self, cr, uid, pricelist, products_by_qty_by_partner, context=None):
         context = context or {}
-
         date = context.get('date') or time.strftime('%Y-%m-%d')
         date = date[0:10]
 

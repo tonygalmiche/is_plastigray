@@ -51,6 +51,7 @@ access_is_article_sans_nomenclature,access_is_article_sans_nomenclature,model_is
 access_is_article_sans_fournisseur,access_is_article_sans_fournisseur,model_is_article_sans_fournisseur,mrp.group_mrp_manager,1,1,1,1
 
 access_is_pricelist_item,access_is_pricelist_item,model_is_pricelist_item,mrp.group_mrp_manager,1,1,1,1
+access_is_cas_emplois,access_is_cas_emplois,model_is_cas_emplois,mrp.group_mrp_manager,1,1,1,1
 
 
 

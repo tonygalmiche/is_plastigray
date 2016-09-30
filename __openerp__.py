@@ -62,7 +62,8 @@
         "report/is_article_sans_nomenclature.xml",
         "report/is_article_sans_fournisseur.xml",
         "report/is_pricelist_item.xml",
-        "menu.xml",              # Reorganisation des menus
+        "report/is_cas_emplois.xml",
+        "menu.xml",  
         "security/res.groups.xml",
         "security/ir.model.access.csv",
     ], 

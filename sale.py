@@ -78,16 +78,58 @@ class sale_order(models.Model):
 
 
     @api.multi
+    def _verif_tarif(self,vals):
+        if 'is_type_commande' in vals and 'is_article_commande_id' in vals and 'pricelist_id' in vals :
+            if vals['is_type_commande']=='ouverte':
+                product_id=vals['is_article_commande_id']
+                product   = self.env['product.product'].browse([product_id])
+                pricelist=vals['pricelist_id']
+                context={}
+                if pricelist:
+                    qty  = product.lot_livraison
+                    date = time.strftime('%Y-%m-%d')
+                    ctx = dict(
+                        context,
+                        uom=product.uom_id.id,
+                        date=date,
+                    )
+                    price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, pricelist,
+                            product_id, qty, vals['partner_id'], ctx)[pricelist]
+                    if not price:
+                        raise Warning("Il n'existe pas de tarif (liste de prix) pour l'article '"+str(product.is_code)+"' / qt="+str(qty)+ " / date="+str(date))
+
+
+    @api.multi
+    def _verif_existe(self,vals):
+        r=self.env['sale.order'].search([
+            ['partner_id'            , '=', vals['partner_id']],
+            ['is_article_commande_id', '=', vals['is_article_commande_id']],
+            ['is_type_commande'      , '=', vals['is_type_commande']],
+        ])
+        if len(r)>1 :
+            raise Warning(u"Il exite déjà une commande ouverte pour cet article et ce client")
+
+    @api.model
+    def create(self, vals):
+        self._verif_tarif(vals)
+        self._verif_existe(vals)
+        new_id = super(sale_order, self).create(vals)
+        return new_id
+
+
+
+    @api.multi
     def write(self,vals):
         res=super(sale_order, self).write(vals)
         for obj in self:
-            r=self.env['sale.order'].search([
-                ['partner_id', '=', obj.partner_id.id],
-                ['is_article_commande_id', '=', obj.is_article_commande_id.id],
-                ['is_type_commande', '=', 'ouverte'],
-            ])
-            if len(r)>1 :
-                raise Warning(u"Il exite déjà une commande ouverte pour cet article et ce client")
+            vals2={
+                'is_type_commande'       : obj.is_type_commande,
+                'is_article_commande_id' : obj.is_article_commande_id.id,
+                'pricelist_id'           : obj.pricelist_id.id,
+                'partner_id'             : obj.partner_id.id,
+            }
+            self._verif_tarif(vals2)
+            self._verif_existe(vals2)
 
             for line in obj.order_line:
                 if not line.is_client_order_ref:

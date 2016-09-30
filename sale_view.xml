@@ -11,6 +11,8 @@
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
                 <xpath expr="/form/sheet/group/group/field[@name='date_order']" position="after">
+
+                    <!--
                     <field  name="is_type_commande"
                             required="1"
                             attrs="{'readonly' : [('order_line', '!=', [])],
@@ -20,6 +22,22 @@
                                     'invisible': [('is_type_commande', '=', 'standard')], 
                                     'readonly' : [('order_line', '!=', [])] }" 
                             context="{'pricelist': pricelist_id}" />
+                    -->
+
+                    <field  name="is_type_commande"
+                            required="1"
+                            attrs="{'invisible': [('partner_id', '=', False)] }   " />
+                    <field  name="is_article_commande_id" 
+                            attrs="{
+                                'required' : [('is_type_commande', '!=', 'standard')], 
+                                'invisible': [('is_type_commande', '=', 'standard')], 
+                            }" 
+                            context="{'pricelist': pricelist_id}" />
+
+
+
+
+
                     <field name="is_ref_client" readonly="1" attrs="{'invisible' : [('is_article_commande_id', '=', False)]}" />
                 </xpath>
 
@@ -217,16 +235,18 @@
                     -->
 
                     <button string="Article" name="action_acceder_article"   type="object" icon="gtk-zoom-in" />
-                    <field name="product_id"      readonly="1"/>
-                    <field name="product_uom_qty" readonly="1" />
-                    <field name="is_date_livraison" on_change="onchange_date_livraison(is_date_livraison, False, False, order_id)" required="1" />
-                    <field name="is_date_expedition"/>
-                    <field name="is_type_commande" required="1"  />
+                    <field name="product_id"         readonly="1"/>
+                    <field name="product_uom_qty"    readonly="1" />
+                    <field name="is_date_livraison"  readonly="1" />
+                    <field name="is_date_expedition" readonly="1"/>
+                    <field name="is_type_commande"   readonly="1" />
                     <button string="Client"    name="action_acceder_client"   type="object" icon="gtk-home" />
                     <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />
                     <field name="order_id" readonly="1"/>
                     <field name="is_client_order_ref" readonly="1"/>
-                    <field name="state"    readonly="1"/>
+                    <field name="price_unit"          readonly="1"/>
+                    <field name="is_justification"    readonly="1"/>
+                    <field name="state"               readonly="1"/>
                 </tree>
             </field>
         </record>

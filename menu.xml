@@ -25,6 +25,7 @@
     <menuitem id="menu_is_nomenclatures"    sequence="20" name="Nomenclatures"            parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_nomenclatures_10" sequence="10" name="Nomenclatures"            parent="menu_is_nomenclatures" action="mrp.mrp_bom_form_action" />
     <menuitem id="menu_is_nomenclatures_20" sequence="20" name="Lignes des nomenclatures" parent="menu_is_nomenclatures" action="is_mrp_bom_line_action" />
+    <menuitem id="menu_is_nomenclatures_30" sequence="30" name="Cas d'emplois"            parent="menu_is_nomenclatures" action="is_cas_emplois_action" />
 
     <menuitem id="menu_is_gammes"        sequence="30" name="Gammes"                 parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_gammes_gammes" sequence="10" name="Gammes"                 parent="menu_is_gammes"         action="mrp.mrp_routing_action" />

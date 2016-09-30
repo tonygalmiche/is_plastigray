@@ -5,3 +5,4 @@ import is_comparatif_gamme_standard_generique
 import is_article_sans_nomenclature
 import is_article_sans_fournisseur
 import is_pricelist_item
+import is_cas_emplois
