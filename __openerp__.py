@@ -63,6 +63,7 @@
         "report/is_article_sans_fournisseur.xml",
         "report/is_pricelist_item.xml",
         "menu.xml",              # Reorganisation des menus
+        "security/res.groups.xml",
         "security/ir.model.access.csv",
     ], 
     "installable": True,

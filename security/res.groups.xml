@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+
+    <record model="res.groups" id="group_chef_de_projet" >
+        <field name="name">Chef de projet</field>
+        <field name="comment"></field>
+    </record>
+
+
+
+</data>
+</openerp>
