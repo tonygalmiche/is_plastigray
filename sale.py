@@ -101,13 +101,16 @@ class sale_order(models.Model):
 
     @api.multi
     def _verif_existe(self,vals):
-        r=self.env['sale.order'].search([
-            ['partner_id'            , '=', vals['partner_id']],
-            ['is_article_commande_id', '=', vals['is_article_commande_id']],
-            ['is_type_commande'      , '=', vals['is_type_commande']],
-        ])
-        if len(r)>1 :
-            raise Warning(u"Il exite déjà une commande ouverte pour cet article et ce client")
+        if 'is_article_commande_id' in vals:
+            r=self.env['sale.order'].search([
+                ['partner_id'            , '=', vals['partner_id']],
+                ['is_article_commande_id', '=', vals['is_article_commande_id']],
+                ['is_type_commande'      , '=', vals['is_type_commande']],
+                ['state'                 , '=', 'draft'],
+                ['is_type_commande'      , '=', 'ouverte'],
+            ])
+            if len(r)>1 :
+                raise Warning(u"Il exite déjà une commande ouverte pour cet article et ce client")
 
     @api.model
     def create(self, vals):

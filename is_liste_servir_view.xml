@@ -69,9 +69,10 @@
                                 <tree editable="bottom"  create="true">
                                     <button string="Article"   name="action_acceder_article"  type="object" icon="gtk-zoom-in" />
                                     <field name="product_id"/>
+                                    <field name="quantite"/>
                                     <field name="date_livraison"/>
                                     <field name="date_expedition"/>
-                                    <field name="quantite"/>
+                                    <field name="prix"/>
                                     <field name="nb_uc"/>
                                     <field name="uc_id"/>
                                     <field name="nb_um"/>

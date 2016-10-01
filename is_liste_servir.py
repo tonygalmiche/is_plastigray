@@ -219,7 +219,8 @@ class is_liste_servir(models.Model):
     @api.multi
     def _get_sql(self,obj):
         SQL="""
-            select sol.order_id, sol.product_id, sol.is_client_order_ref, max(sol.is_date_livraison), max(sol.is_date_expedition), sum(sol.product_uom_qty)
+            select sol.order_id, sol.product_id, sol.is_client_order_ref,
+            max(sol.is_date_livraison), max(sol.is_date_expedition), sum(sol.product_uom_qty), max(sol.price_unit)
             from sale_order so inner join sale_order_line sol on so.id=sol.order_id 
             where so.partner_id="""+str(obj.partner_id.id)+""" and so.state='draft' 
                   and sol.is_date_expedition<='"""+str(obj.date_fin)+"""' and sol.product_id>0
@@ -251,6 +252,7 @@ class is_liste_servir(models.Model):
                     'client_order_ref' : row[2],
                     'date_livraison'   : row[3],
                     'date_expedition'  : row[4],
+                    'prix'             : row[6],
                     'quantite'         : qt,
                 }
                 line_obj.create(vals)
@@ -300,11 +302,12 @@ class is_liste_servir(models.Model):
             if 'tax_id' in quotation_line:
                 quotation_line.update({'tax_id': [[6, False, quotation_line['tax_id']]]})
             quotation_line.update({
-                'product_id':line.product_id.id, 
-                'product_uom_qty': line.quantite,
-                'is_date_livraison': line.date_livraison,
-                'is_type_commande': 'ferme',
-                'is_client_order_ref': line.client_order_ref,
+                'product_id'          : line.product_id.id, 
+                'product_uom_qty'     : line.quantite,
+                'is_date_livraison'   : line.date_livraison,
+                'is_type_commande'    : 'ferme',
+                'is_client_order_ref' : line.client_order_ref,
+                'price_unit'          : line.prix,
             })
             lines.append([0,False,quotation_line]) 
         values = {
@@ -396,8 +399,9 @@ class is_liste_servir_line(models.Model):
     liste_servir_id  = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
     product_id       = fields.Many2one('product.product', 'Article', required=True, readonly=True)
     date_livraison   = fields.Date('Date de livraison', readonly=True)
-    date_expedition  = fields.Date("Date d'expédition", readonly=True)
     quantite         = fields.Float('Quantité')
+    date_expedition  = fields.Date("Date d'expédition"   , readonly=True)
+    prix             = fields.Float("Prix", digits=(14,4), readonly=True)
     uc_id            = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
     nb_uc            = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True)
     um_id            = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)

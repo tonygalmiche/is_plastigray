@@ -57,7 +57,10 @@ class is_liste_servir_wizard(osv.osv_memory):
             result = cr.fetchall()
             for row in result:
 
-                SQL="select id from is_liste_servir where partner_id="+str(row[0])+" limit 1"
+                SQL="""
+                    select id 
+                    from is_liste_servir 
+                    where state!='traite' and partner_id="""+str(row[0])+" limit 1"
                 cr.execute(SQL)
                 result2 = cr.fetchall()
                 liste_servir_id=False
