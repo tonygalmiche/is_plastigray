@@ -17,17 +17,19 @@ from datetime import date, datetime
 
 class is_edi_cde_cli_line(models.Model):
     _name = "is.edi.cde.cli.line"
-    _order = "edi_cde_cli_id,ref_article_client,date_livraison"
+    _order = "anomalie desc, edi_cde_cli_id,ref_article_client,date_livraison"
 
     edi_cde_cli_id      = fields.Many2one('is.edi.cde.cli', 'EDI Commandes Clients', required=True, ondelete='cascade')
     num_commande_client = fields.Char('N° Cde Client')
     ref_article_client  = fields.Char('Ref Article Client')
+    product_id          = fields.Many2one('product.product', 'Article')
     quantite            = fields.Integer('Quantité')
     date_livraison      = fields.Date('Date liv')
     type_commande       = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
+    prix                = fields.Float('Prix', digits=(14,4),)
     order_id            = fields.Many2one('sale.order', 'Cde Odoo')
     anomalie            = fields.Char('Anomalie')
-
+    file_id             = fields.Many2one('ir.attachment', 'Fichier')
 
     @api.multi
     def action_acceder_commande(self):
@@ -88,25 +90,65 @@ class is_edi_cde_cli(models.Model):
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
                     order=self.env['sale.order'].search([
-                        ('partner_id.is_code'      , '=', obj.partner_id.is_code),
-                        ('is_ref_client'   , '=', ref_article_client),
-                        ('client_order_ref', '=', num_commande_client)]
-                    )
-                    order_id=False
-                    anomalie="Non trouvée"
+                        ('partner_id.is_code', '=', obj.partner_id.is_code),
+                        ('is_ref_client'     , '=', ref_article_client),
+                        ('client_order_ref'  , '=', num_commande_client),
+                        ('is_type_commande'  , '=', 'ouverte'),
+                        ('state'             , '=', 'draft'),
+                    ])
+                    order_id   = False
+
+                    anomalie   = "Cde non trouvée"
+
                     if len(order):
-                        order_id=order[0].id
                         anomalie=""
+                        order_id     = order[0].id
+                        partner_id   = order[0].partner_id.id
+                        pricelist_id = order[0].pricelist_id.id
+
                     for ligne in row["lignes"]:
+
+                        product_id = False
+                        prix       = 0;
+                        if len(order):
+                            #** Recherche du prix ******************************
+                            product      = order[0].is_article_commande_id
+                            product_id   = product.id
+                            context={}
+                            if pricelist_id:
+                                qty  = ligne["quantite"]
+                                date = ligne["date_livraison"]
+                                ctx = dict(
+                                    context,
+                                    uom=product.uom_id.id,
+                                    date=date,
+                                )
+                                prix = self.pool.get('product.pricelist').price_get(
+                                    self._cr, self._uid,
+                                    pricelist_id, product.id, qty, partner_id, ctx)[pricelist_id]
+                            if prix==0:
+                                anomalie="Prix à 0"
+                            #***************************************************
+
+                            #** Vérification que qt >= lot livraison ***********
+                            lot=product.lot_livraison
+                            if ligne["quantite"]<lot:
+                                anomalie="Quantité < Lot de livraison ("+str(lot)+")"
+                            #***************************************************
+
+
                         vals={
                             'edi_cde_cli_id'     : obj.id,
                             'num_commande_client': num_commande_client,
                             'ref_article_client' : ref_article_client,
+                            'product_id'         : product_id,
                             'quantite'           : ligne["quantite"],
                             'date_livraison'     : ligne["date_livraison"],
                             'type_commande'      : ligne["type_commande"],
+                            'prix'               : prix,
                             'order_id'           : order_id,
                             'anomalie'           : anomalie,
+                            'file_id'            : attachment.id,
                         }
                         line_obj.create(vals)
 
@@ -137,26 +179,7 @@ class is_edi_cde_cli(models.Model):
             #** Importation des commandes **************************************
             for line in obj.line_ids:
                 if line.order_id:
-                    if line.quantite!=0:
-
-
-                        # ** Recherche du tarif ********************************
-                        price=0;
-                        product_id = line.order_id.is_article_commande_id.id
-                        product    = line.order_id.is_article_commande_id
-                        pricelist  = line.order_id.pricelist_id.id
-                        context={}
-                        if pricelist:
-                            qty  = line.quantite
-                            date = line.date_livraison
-                            ctx = dict(
-                                context,
-                                uom=product.uom_id.id,
-                                date=date,
-                            )
-                            price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, pricelist,
-                                    product_id, qty, line.order_id.partner_id.id, ctx)[pricelist]
-                        #*******************************************************
+                    if line.quantite!=0 and not line.anomalie:
                         vals={
                             'order_id'            : line.order_id.id, 
                             'is_date_livraison'   : line.date_livraison, 
@@ -164,7 +187,7 @@ class is_edi_cde_cli(models.Model):
                             'product_id'          : line.order_id.is_article_commande_id.id, 
                             'product_uom_qty'     : line.quantite, 
                             'is_client_order_ref' : line.order_id.client_order_ref, 
-                            'price_unit'          : price,
+                            'price_unit'          : line.prix,
                         }
                         line_obj.create(vals)
             #*******************************************************************

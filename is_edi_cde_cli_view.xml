@@ -23,7 +23,7 @@
                         <button string='Importer les commandes' name="action_importer_commandes" type="object" states="analyse" />
                         <field name="state" widget="statusbar"  clickable="True" />
                     </header>
-                    <sheet>
+                    <sheet class="oe_form_sheet_width_wider">
                         <group>
                             <field name="name"/>
                             <field name="partner_id" domain="[('is_import_function','!=','')]"  />
@@ -32,15 +32,18 @@
                         </group>
                         <group>
                             <field name="line_ids" nolabel="1">
-                                <tree editable="bottom"  create="true">
-                                    <field name="ref_article_client"/>
-                                    <field name="date_livraison"/>
-                                    <field name="quantite"/>
-                                    <field name="type_commande"/>
-                                    <field name="num_commande_client"/>
+                                <tree editable="bottom"  create="false">
+                                    <field name="ref_article_client"  readonly="1"/>
+                                    <field name="num_commande_client" readonly="1"/>
+                                    <field name="product_id"          readonly="1"/>
+                                    <field name="quantite"            readonly="1"/>
+                                    <field name="date_livraison"      readonly="1"/>
+                                    <field name="type_commande"       readonly="1"/>
+                                    <field name="prix"                readonly="1"/>
                                     <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" attrs="{'invisible':[('order_id','=',False)]}" />
-                                    <field name="order_id"/>
-                                    <field name="anomalie"/>
+                                    <field name="order_id"            readonly="1"/>
+                                    <field name="anomalie"            readonly="1"/>
+                                    <field name="file_id"             readonly="1"/>
                                 </tree>
                             </field>
                         </group>
