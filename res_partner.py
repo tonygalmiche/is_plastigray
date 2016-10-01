@@ -100,6 +100,7 @@ class res_partner(models.Model):
         location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
         return location and location or False
 
+    is_transporteur_id    = fields.Many2one('res.partner', 'Transporteur')
     is_delai_transport    = fields.Integer('Delai de transport (jour)')
     is_import_function    = fields.Selection(import_function, "Fonction d'importation EDI")
     is_raison_sociale2    = fields.Char('Raison sociale 2')

@@ -32,6 +32,11 @@
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="is_cofor" attrs="{'invisible': [('customer', '!=', True)] }"/>
                     <field name="is_incoterm" />
+                    <field 
+                        name   = "is_transporteur_id" 
+                        domain = "[('is_company', '=', True),('supplier','=', True)]" 
+                        attrs  = "{'invisible': [('is_company', '=', False)]}"
+                    />
                     <field name="is_delai_transport" />
                     <field name="is_import_function" />
                     <field name="is_source_location_id" />

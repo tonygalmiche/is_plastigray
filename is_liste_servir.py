@@ -53,14 +53,13 @@ class is_liste_servir_client(models.Model):
             else:
                 is_source_location=liste_servir_obj._get_default_location()
                 is_source_location_id=is_source_location.id
-
-
             vals={
-                'partner_id': obj.name.id,
+                'partner_id'           : obj.name.id,
+                'transporteur_id'      : obj.name.is_transporteur_id.id,
                 'is_source_location_id': is_source_location_id,
-                'date_debut': obj.date_debut,
-                'date_fin'  : obj.date_fin,
-                'livrable'  : obj.livrable,
+                'date_debut'           : obj.date_debut,
+                'date_fin'             : obj.date_fin,
+                'livrable'             : obj.livrable,
             }
             liste_servir=liste_servir_obj.create(vals)
             liste_servir.action_importer_commandes()
@@ -111,7 +110,6 @@ class is_liste_servir(models.Model):
     partner_id             = fields.Many2one('res.partner', 'Client', required=True)
     date_debut             = fields.Date("Date de début d'expédition")
     date_fin               = fields.Date("Date de fin d'expédition", required=True)
-    #livrable               = fields.Selection(livrable, "Livrable")
     livrable               = fields.Boolean("Livrable")
     transporteur_id        = fields.Many2one('res.partner', 'Transporteur')
     message                = fields.Text("Message")
@@ -119,6 +117,7 @@ class is_liste_servir(models.Model):
     order_id               = fields.Many2one('sale.order', 'Commande générée', readonly=True)
     line_ids               = fields.One2many('is.liste.servir.line', 'liste_servir_id', u"Lignes")
     uc_ids                 = fields.One2many('is.liste.servir.uc', 'liste_servir_id', u"UCs")
+    um_ids                 = fields.One2many('is.liste.servir.um', 'liste_servir_id', u"UMs")
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
 
 
@@ -136,11 +135,20 @@ class is_liste_servir(models.Model):
 
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
-        res = {}
+        res  = {}
+        vals = {}
         if partner_id:
             partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
             if partner.is_source_location_id:
-                res['value']={'is_source_location_id': partner.is_source_location_id }
+                vals.update({'is_source_location_id': partner.is_source_location_id })
+
+            if partner.is_transporteur_id:
+                vals.update({'transporteur_id': partner.is_transporteur_id })
+
+        res['value']=vals
+
+        print res
+
         return res
 
 
@@ -167,6 +175,7 @@ class is_liste_servir(models.Model):
             sequence_id = data_obj.browse(self._cr, self._uid, sequence_ids[0]).res_id
             vals['name'] = self.pool.get('ir.sequence').get_id(self._cr, self._uid, sequence_id, 'id')
         new_id = super(is_liste_servir, self).create(vals)
+
         return new_id
 
 
@@ -177,43 +186,73 @@ class is_liste_servir(models.Model):
             vals=self._message(vals["partner_id"], vals)
         res=super(is_liste_servir, self).write(vals)
         for obj in self:
-            #Supprimer le tableau des UC avant de le recalculer
-            for row in obj.uc_ids:
-                row.unlink()
+            if 'line_ids' in vals or not obj.uc_ids:
+                #La procédure sotckée permet de gérer le regoupement des UC
+                SQL="""
+                    CREATE OR REPLACE FUNCTION fmixer(mixer boolean, id integer) RETURNS integer AS $$
+                            BEGIN
+                                IF mixer = True THEN
+                                    RETURN 0;
+                                ELSE
+                                    RETURN id;
+                                END IF;
+                            END;
+                    $$ LANGUAGE plpgsql;
 
-            #La procédure sotckée permet de gérer le regoupement des UC
-            SQL="""
-                CREATE OR REPLACE FUNCTION fmixer(mixer boolean, id integer) RETURNS integer AS $$
-                        BEGIN
-                            IF mixer = True THEN
-                                RETURN 0;
-                            ELSE
-                                RETURN id;
-                            END IF;
-                        END;
-                $$ LANGUAGE plpgsql;
+                    select uc_id,um_id,fmixer(mixer,id), sum(nb_uc),sum(nb_um) 
+                    from is_liste_servir_line 
+                    where liste_servir_id="""+str(obj.id)+"""  
+                    group by uc_id,um_id,fmixer(mixer,id);
+                """
 
-                select uc_id,um_id,fmixer(mixer,id), sum(nb_uc),sum(nb_um) 
-                from is_liste_servir_line 
-                where liste_servir_id="""+str(obj.id)+"""  
-                group by uc_id,um_id,fmixer(mixer,id);
-            """
+                #** Création du tableau des UC *************************************
+                for row in obj.uc_ids:
+                    row.unlink()
+                cr.execute(SQL)
+                result = cr.fetchall()
+                for r in result:
+                    vals={
+                        'liste_servir_id': obj.id,
+                        'uc_id': r[0],
+                        'um_id': r[1],
+                        'nb_uc': r[3],
+                        'nb_um': r[4],
+                    }
+                    self.env['is.liste.servir.uc'].create(vals)
+                #*******************************************************************
 
-            #Création du tableau des UC
-            cr.execute(SQL)
-            result = cr.fetchall()
-            uc_obj = self.env['is.liste.servir.uc']
-            for r in result:
-                vals={
-                    'liste_servir_id': obj.id,
-                    'uc_id': r[0],
-                    'um_id': r[1],
-                    'nb_uc': r[3],
-                    'nb_um': r[4],
-                }
-                uc_obj.create(vals)
+
+            if 'line_ids' in vals or 'uc_ids' in vals or not obj.um_ids:
+
+                #** Création du tableau des UM *************************************
+                for row in obj.um_ids:
+                    row.unlink()
+                r={}
+                for row in obj.uc_ids:
+                    if row.mixer:
+                        k=1000+row.um_id.id
+                    else:
+                        k=2000+row.id
+                    um_id=row.um_id.id
+                    if k in r:
+                        nb_um=r[k]['nb_um']+row.nb_um
+                    else:
+                        nb_um=row.nb_um
+                    r[k]={'um_id': um_id, 'nb_um': nb_um}
+
+                for k in r:
+                    vals={
+                        'liste_servir_id': obj.id,
+                        'um_id': r[k]['um_id'],
+                        'nb_um': r[k]['nb_um'],
+                    }
+                    self.env['is.liste.servir.um'].create(vals)
+                #*******************************************************************
 
         return res
+
+
+
 
 
 
@@ -319,11 +358,12 @@ class is_liste_servir(models.Model):
         values = {
             'partner_id': obj.partner_id.id,
             'is_source_location_id': obj.is_source_location_id.id,
-            'client_order_ref': obj.name,
-            'origin': obj.name,
-            'order_line': lines,
-            'picking_policy': 'direct',
-            'order_policy': 'picking',
+            'client_order_ref'     : obj.name,
+            'origin'               : obj.name,
+            'order_line'           : lines,
+            'picking_policy'       : 'direct',
+            'order_policy'         : 'picking',
+            'is_transporteur_id'   : obj.transporteur_id.id,
         }
         vals.update(values)
         if obj.order_id:
@@ -447,17 +487,6 @@ class is_liste_servir_line(models.Model):
             }
 
 
-class is_liste_servir_uc(models.Model):
-    _name='is.liste.servir.uc'
-    _order='uc_id'
-
-    liste_servir_id = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
-    uc_id           = fields.Many2one('product.ul', 'UC')
-    nb_uc           = fields.Float('Nb UC')
-    um_id           = fields.Many2one('product.ul', 'UM')
-    nb_um           = fields.Float('Nb UM')
-
-
 
 class is_liste_servir_message(models.Model):
     _name='is.liste.servir.message'
@@ -468,6 +497,31 @@ class is_liste_servir_message(models.Model):
     message = fields.Text('Message')
 
 
+
+
+class is_liste_servir_uc(models.Model):
+    _name='is.liste.servir.uc'
+    _order='uc_id'
+
+    liste_servir_id = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
+    uc_id           = fields.Many2one('product.ul', 'UC')
+    nb_uc           = fields.Float('Nb UC')
+    um_id           = fields.Many2one('product.ul', 'UM')
+    nb_um           = fields.Float('Nb UM')
+    mixer           = fields.Boolean('Mixer', help="L'UM peut-être mixée avec une autre")
+
+    _defaults = {
+        'mixer': False,
+    }
+
+
+class is_liste_servir_um(models.Model):
+    _name='is.liste.servir.um'
+    _order='um_id,nb_um desc'
+
+    liste_servir_id = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
+    um_id           = fields.Many2one('product.ul', 'UM')
+    nb_um           = fields.Float('Nb UM')
 
 
 

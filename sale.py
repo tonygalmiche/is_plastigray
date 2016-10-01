@@ -24,23 +24,23 @@ class sale_order(models.Model):
     is_article_commande_id = fields.Many2one('product.product', 'Article de la commande', help="Article pour les commandes ouvertes")
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
+    is_transporteur_id     = fields.Many2one('res.partner', 'Transporteur')
 
     _defaults = {
         'is_type_commande': 'standard',
     }
 
 
-    def onchange_partner_id(self, cr, uid, ids, part, context=None):
-        res = super(sale_order, self).onchange_partner_id(cr, uid, ids, part, context=context)
-        if part:
-            partner = self.pool.get('res.partner').browse(cr, uid, part, context=context)
+    def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
+        res = super(sale_order, self).onchange_partner_id(cr, uid, ids, partner_id, context=context)
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
             if partner.is_adr_facturation:
                 res['value'].update({'partner_invoice_id': partner.is_adr_facturation.id })
-
             if partner.is_source_location_id:
                 res['value'].update({'is_source_location_id': partner.is_source_location_id.id })
-
-
+            if partner.is_transporteur_id:
+                res['value'].update({'is_transporteur_id': partner.is_transporteur_id.id })
         return res
 
 

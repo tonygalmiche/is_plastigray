@@ -88,14 +88,25 @@
                             </field>
                         </group>
                         <group>
-                            <field name="uc_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="nb_uc"/>
-                                    <field name="uc_id"/>
-                                    <field name="nb_um"/>
-                                    <field name="um_id"/>
-                                </tree>
-                            </field>
+                            <group>
+                                <field name="uc_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="nb_uc"/>
+                                        <field name="uc_id"/>
+                                        <field name="nb_um"/>
+                                        <field name="um_id"/>
+                                        <field name="mixer"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="um_ids" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="nb_um"/>
+                                        <field name="um_id"/>
+                                    </tree>
+                                </field>
+                            </group>
                         </group>
                     </sheet>
                 </form>
