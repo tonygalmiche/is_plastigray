@@ -27,7 +27,7 @@ def _acceder_commande(self,id):
     }
 
 
-livrable=[('livrable', u'Livrable'),('toutes', u'Toutes')]
+#livrable=[('livrable', u'Livrable'),('toutes', u'Toutes')]
 
 
 class is_liste_servir_client(models.Model):
@@ -41,7 +41,7 @@ class is_liste_servir_client(models.Model):
     delai_transport = fields.Integer('Délai de transport')
     date_debut      = fields.Date("Date de début d'expédition")
     date_fin        = fields.Date("Date de fin d'expédition")
-    livrable        = fields.Selection(livrable, "Livrable")
+    livrable        = fields.Boolean("Livrable")
 
     @api.multi
     def action_creer_liste_servir(self):
@@ -111,7 +111,8 @@ class is_liste_servir(models.Model):
     partner_id             = fields.Many2one('res.partner', 'Client', required=True)
     date_debut             = fields.Date("Date de début d'expédition")
     date_fin               = fields.Date("Date de fin d'expédition", required=True)
-    livrable               = fields.Selection(livrable, "Livrable")
+    #livrable               = fields.Selection(livrable, "Livrable")
+    livrable               = fields.Boolean("Livrable")
     transporteur_id        = fields.Many2one('res.partner', 'Transporteur')
     message                = fields.Text("Message")
     state                  = fields.Selection([('creation', u'Création'),('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
@@ -244,6 +245,9 @@ class is_liste_servir(models.Model):
             result = cr.fetchall()
             line_obj = self.env['is.liste.servir.line']
             for row in result:
+                product_id=row[1]
+                stocka=self.env['product.product'].get_stock(product_id,'f')
+                stockq=self.env['product.product'].get_stock(product_id,'t')
                 qt=row[5]
                 vals={
                     'liste_servir_id'  : obj.id,
@@ -254,6 +258,8 @@ class is_liste_servir(models.Model):
                     'date_expedition'  : row[4],
                     'prix'             : row[6],
                     'quantite'         : qt,
+                    'stocka'           : stocka,
+                    'stockq'           : stockq,
                 }
                 line_obj.create(vals)
             obj.state="analyse"
@@ -398,6 +404,8 @@ class is_liste_servir_line(models.Model):
 
     liste_servir_id  = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
     product_id       = fields.Many2one('product.product', 'Article', required=True, readonly=True)
+    stocka           = fields.Float('Stock A')
+    stockq           = fields.Float('Stock Q')
     date_livraison   = fields.Date('Date de livraison', readonly=True)
     quantite         = fields.Float('Quantité')
     date_expedition  = fields.Date("Date d'expédition"   , readonly=True)
@@ -414,7 +422,6 @@ class is_liste_servir_line(models.Model):
     _defaults = {
         'mixer': True,
     }
-
 
 
     @api.multi

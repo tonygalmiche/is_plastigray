@@ -69,6 +69,8 @@
                                 <tree editable="bottom"  create="true">
                                     <button string="Article"   name="action_acceder_article"  type="object" icon="gtk-zoom-in" />
                                     <field name="product_id"/>
+                                    <field name="stocka"/>
+                                    <field name="stockq"/>
                                     <field name="quantite"/>
                                     <field name="date_livraison"/>
                                     <field name="date_expedition"/>

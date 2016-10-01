@@ -22,7 +22,7 @@ class is_liste_servir_wizard(osv.osv_memory):
     _columns = {
         'date_debut': fields.date(u"Date de début d'expédition", required=False),
         'date_fin':   fields.date(u"Date de fin d'expédition", required=True),
-        'livrable':   fields.selection([('livrable', u'Livrable'),('toutes', u'Toutes')], "Livrable"),
+        'livrable':   fields.boolean("Livrable (avec stock)"),
     }
 
 
@@ -33,7 +33,7 @@ class is_liste_servir_wizard(osv.osv_memory):
 
 
     _defaults={
-        'livrable': 'toutes',
+        'livrable': True,
         'date_fin': _date_fin(),
     }
 
@@ -44,18 +44,46 @@ class is_liste_servir_wizard(osv.osv_memory):
         if data:
             SQL="delete from is_liste_servir_client"
             cr.execute(SQL)
+#            SQL="""
+#                select so.partner_id, rp.zip, rp.city, rp.is_delai_transport, sum(sol.product_uom_qty)
+#                from sale_order so inner join sale_order_line sol on so.id=sol.order_id
+#                                   inner join res_partner rp on so.partner_id=rp.id
+#                where sol.is_date_expedition<='"""+str(data['date_fin'])+"""' 
+#                      and so.state='draft' """
+#            if data['date_debut']:
+#                SQL=SQL+" and sol.is_date_expedition>='"+str(data['date_debut'])+"' "
+#            SQL=SQL+"group by so.partner_id, rp.zip, rp.city, rp.is_delai_transport"
+
+
             SQL="""
-                select so.partner_id, rp.zip, rp.city, rp.is_delai_transport, sum(sol.product_uom_qty)
-                from sale_order so inner join sale_order_line sol on so.id=sol.order_id
-                                   inner join res_partner rp on so.partner_id=rp.id
+                select  so.partner_id, 
+                        rp.zip, 
+                        rp.city, 
+                        rp.is_delai_transport, 
+                        sum(sol.product_uom_qty)
+                from sale_order so inner join sale_order_line   sol on so.id=sol.order_id
+                                   inner join res_partner       rp  on so.partner_id=rp.id
+                                   inner join product_product   pp  on sol.product_id=pp.id
+                                   inner join  product_template pt  on pp.product_tmpl_id=pt.id
                 where sol.is_date_expedition<='"""+str(data['date_fin'])+"""' 
                       and so.state='draft' """
+            if data['livrable']:
+                SQL=SQL+"""
+                      and (
+                        select sum(sq.qty) 
+                        from stock_quant sq inner join stock_location sl on sq.location_id=sl.id
+                        where sq.product_id=pp.id and sl.usage='internal' and sl.active='t'
+                      )>0
+                """
             if data['date_debut']:
                 SQL=SQL+" and sol.is_date_expedition>='"+str(data['date_debut'])+"' "
             SQL=SQL+"group by so.partner_id, rp.zip, rp.city, rp.is_delai_transport"
+
+
             cr.execute(SQL)
             result = cr.fetchall()
             for row in result:
+                print row
 
                 SQL="""
                     select id 
@@ -66,6 +94,8 @@ class is_liste_servir_wizard(osv.osv_memory):
                 liste_servir_id=False
                 for row2 in result2:
                     liste_servir_id=row2[0]
+
+
 
                 vals={
                     'name'            : row[0],

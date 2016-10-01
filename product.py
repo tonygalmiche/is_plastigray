@@ -100,6 +100,26 @@ class product_product(models.Model):
         return super(product_product, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
  
 
+    def get_stock(self, product_id, control_quality=False):
+        cr=self._cr
+        SQL="""
+            select sum(sq.qty) 
+            from stock_quant sq inner join stock_location sl on sq.location_id=sl.id
+            where sq.product_id="""+str(product_id)+""" 
+                  and sl.usage='internal' and sl.active='t' """
+        if control_quality:
+            SQL=SQL+" and sl.control_quality='"+str(control_quality)+"' "
+        cr.execute(SQL)
+        result = cr.fetchall()
+        stock=0
+        for row in result:
+            stock=row[0]
+        return stock
+
+    
+
+
+
 
 class product_uom(models.Model):
     _inherit = 'product.uom'
