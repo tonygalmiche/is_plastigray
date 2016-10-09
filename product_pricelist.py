@@ -3,7 +3,6 @@
 from openerp.osv import fields, osv
 import openerp.addons.decimal_precision as dp
 from openerp.tools.translate import _
-
 import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -16,108 +15,6 @@ class product_uom(osv.osv):
         'min_quantity': fields.float('Quantité minimum'),
         'amount': fields.float('Montant', digits_compute= dp.get_precision('Product Price')),
     }
-
-
-
-class product_pricelist_version(osv.osv):
-    _inherit = "product.pricelist.version"
-
-
-
-    def action_liste_items(self, cr, uid, ids, context=None):
-        for obj in self.browse(cr, uid, ids, dict(context, active_test=False)):
-            return {
-                'name': obj.name,
-                'view_mode': 'tree',
-                'view_type': 'form',
-                'res_model': 'product.pricelist.item',
-                'type': 'ir.actions.act_window',
-                'domain': [('price_version_id','=',obj.id)],
-                'context': {'default_price_version_id': obj.id }
-            }
-
-
-
-
-    def action_dupliquer(self, cr, uid, ids, context=None):
-        for obj in self.browse(cr, uid, ids, dict(context, active_test=False)):
-            date_end=datetime.datetime.strptime(obj.date_end, '%Y-%m-%d')
-            date_start = date_end   + datetime.timedelta(days=1)
-            date_end = date_start + relativedelta(years=1)
-            date_end = date_end   + datetime.timedelta(days=-1)
-            name=str(int(obj.name)+1)
-            vals = {
-                'pricelist_id' : obj.pricelist_id.id,
-                'name': name,
-                'active': obj.active,
-                'date_start': date_start,
-                'date_end': date_end ,
-            }
-            model = self.pool.get('product.pricelist.version')
-            new_id = model.create(cr, uid, vals, context=context)
-
-
-            model = self.pool.get('product.pricelist.item')
-            for item in obj.items_id:
-                start=item.date_start
-                if start:
-                    start=date_start
-                end=item.date_end
-                if end:
-                    end=date_end
-                vals = {
-                    'price_version_id': new_id,
-                    'name' : name,
-                    'product_id': item.product_id.id,
-                    'min_quantity': item.min_quantity,
-                    'sequence': item.sequence,
-                    'date_start': item.date_start,
-                    'date_end': item.date_end,
-                    'price_surcharge': item.price_surcharge,
-                }
-                id = model.create(cr, uid, vals, context=context)
-
-
-        return {
-            'name': "Liste de prix",
-            'view_mode': 'form',
-            'view_type': 'form',
-            'res_model': 'product.pricelist',
-            'type': 'ir.actions.act_window',
-            'res_id': obj.pricelist_id.id,
-        }
-
-
-
-
-
-
-
-class product_pricelist_item(osv.osv):
-    _inherit = "product.pricelist.item"
-    _order="price_version_id,product_id,sequence"
-    
-    _columns = {
-        'date_start': fields.date('Date de début de validité'),
-        'date_end': fields.date('Date de fin de validité'),
-        'product_po_uom_id': fields.related('product_id','uom_po_id', type='many2one', relation='product.uom' , string="Unité d'achat", readonly=True),
-        'min_quantity': fields.float('Quantité minimum', required=True,
-            help="For the rule to apply, bought/sold quantity must be greater "
-              "than or equal to the minimum quantity specified in this field.\n"
-              "Expressed in the default UoM of the product."
-            ),
-    }
-    
-    def on_change_product_id(self, cr, uid, ids, product_id):
-        res = {}
-        res.setdefault('value',{})
-        if product_id:
-            product_brw = self.pool.get('product.product').browse(cr, uid, product_id)[0]
-            if product_brw.uom_po_id:
-                res['value']['product_po_uom_id'] = product_brw.uom_po_id.id
-                res['value']['min_quantity']      = product_brw.lot_mini
-                res['value']['price_surcharge']   = product_brw.uom_po_id.amount
-        return res
 
 
 class product_pricelist(osv.osv):

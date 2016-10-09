@@ -3,6 +3,7 @@
 import is_config
 import product
 import product_pricelist
+import product_pricelist_new_api
 import res_partner
 import res_company
 import sale

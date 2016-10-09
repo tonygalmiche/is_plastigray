@@ -155,7 +155,6 @@ class res_partner(models.Model):
                     name =  "%s (%s/%s)" % (name, record.is_code, record.is_adr_code)
                 if record.is_code and not record.is_adr_code:
                     name =  "%s (%s)" % (name, record.is_code)
-                                    
             if context.get('show_address_only'):
                 name = self._display_address(cr, uid, record, without_company=True, context=context)
             if context.get('show_address'):

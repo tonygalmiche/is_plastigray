@@ -17,6 +17,7 @@ class is_pricelist_item(models.Model):
     version_date_end   = fields.Date('Date fin version')
     product_id         = fields.Many2one('product.product', 'Article')
     sequence           = fields.Integer('Sequence')
+    product_uom_id     = fields.Many2one('product.uom', "Unité")
     product_po_uom_id  = fields.Many2one('product.uom', "Unité d'achat")
     min_quantity       = fields.Float('Quantité min.')
     price_surcharge    = fields.Float('Prix')
@@ -36,6 +37,7 @@ class is_pricelist_item(models.Model):
                     ppv.date_end          as version_date_end,
                     ppi.product_id        as product_id,
                     ppi.sequence          as sequence,
+                    pt.uom_id             as product_uom_id,
                     pt.uom_po_id          as product_po_uom_id,
                     ppi.min_quantity      as min_quantity,
                     ppi.price_surcharge   as price_surcharge,
@@ -50,16 +52,25 @@ class is_pricelist_item(models.Model):
         """)
 
 
+    @api.multi
+    def action_liste_items(self):
+        for obj in self:
+            print obj.price_version_id.pricelist_id
 
-    def action_liste_items(self, cr, uid, ids, context=None):
-        print ids
-        for obj in self.browse(cr, uid, ids, dict(context, active_test=False)):
+            if obj.price_version_id.pricelist_id.type=='sale':
+                view_id=self.env.ref('is_plastigray.is_product_pricelist_item_sale_tree_view')
+            else:
+                view_id=self.env.ref('is_plastigray.is_product_pricelist_item_purchase_tree_view')
+
+
+
             return {
                 'name': str(obj.pricelist_name)+" ("+str(obj.price_version_id.name)+")",
                 'view_mode': 'tree',
                 'view_type': 'form',
                 'res_model': 'product.pricelist.item',
                 'type': 'ir.actions.act_window',
+                'view_id': view_id.id,
                 'domain': [('price_version_id','=',obj.price_version_id.id)],
                 'context': {'default_price_version_id': obj.price_version_id.id }
             }
