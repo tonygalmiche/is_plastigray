@@ -105,7 +105,6 @@
             <tree editable="top">
                 <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
                 <field name="sequence"/>
-                <field name="sequence"/>
                 <field name="min_quantity"    required="1" digits="(14, 4)"/>
                 <field name="product_uom_id"/>
                 <field name="price_surcharge" required="1" string="Prix" />
@@ -133,7 +132,6 @@
         <field name="arch" type="xml">
             <tree editable="top">
                 <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
-                <field name="sequence"/>
                 <field name="sequence"/>
                 <field name="min_quantity"    required="1" digits="(14, 4)"/>
                 <field name="product_po_uom_id"/>
