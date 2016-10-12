@@ -100,6 +100,8 @@ class res_partner(models.Model):
         location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
         return location and location or False
 
+    display_name          = fields.Char(string='Name', compute='_compute_display_name')
+
     is_transporteur_id    = fields.Many2one('res.partner', 'Transporteur')
     is_delai_transport    = fields.Integer('Delai de transport (jour)')
     is_import_function    = fields.Selection(import_function, "Fonction d'importation EDI")
@@ -140,13 +142,29 @@ class res_partner(models.Model):
         ('code_adr_uniq', 'unique(is_code, is_adr_code, company_id)', u'Le code et le code adresse doivent être uniques par société!'),
     ]
     
-    def name_get(self, cr, uid, ids, context=None):
+
+
+
+    # Le champ display_name est un champ standard d'Odoo correspondant au titre de la fiche
+    # Cette fonction appelle la fonction name_get => Elle permet de définir les dépendances de champs
+    @api.one
+    @api.depends('name', 'parent_id.name','is_code', 'is_adr_code')
+    def _compute_display_name(self):
+        r=self.name_get()
+        self.display_name = r[0][1]
+
+
+    # La fonction name_get est une fonction standard d'Odoo permettant de définir le nom des fiches (dans les relations x2x)
+    # La fonction name_search permet de définir les résultats des recherches dans les relations x2x. En général, elle appelle la fonction name_get
+    @api.multi
+    def name_get(self):
+        context=self._context
+        if not len(self.ids):
+            return []
+        res = []
         if context is None:
             context = {}
-        if isinstance(ids, (int, long)):
-            ids = [ids]
-        res = []
-        for record in self.browse(cr, uid, ids, context=context):
+        for record in self:
             name = record.name
             if record.parent_id and not record.is_company:
                 name =  "%s, %s" % (record.parent_id.name, name)
@@ -156,9 +174,10 @@ class res_partner(models.Model):
                 if record.is_code and not record.is_adr_code:
                     name =  "%s (%s)" % (name, record.is_code)
             if context.get('show_address_only'):
-                name = self._display_address(cr, uid, record, without_company=True, context=context)
+                name = self._display_address(record, without_company=True, context=context)
+            #Affiche l'adresse complète (ex dans les commandes)
             if context.get('show_address'):
-                name = name + "\n" + self._display_address(cr, uid, record, without_company=True, context=context)
+                name = name + "\n" + self._display_address(record, without_company=True, context=context)
             name = name.replace('\n\n','\n')
             name = name.replace('\n\n','\n')
             if context.get('show_email') and record.email:
