@@ -386,10 +386,18 @@ class is_edi_cde_cli(models.Model):
                             type_commande="previsionnel"
                         else:
                             type_commande="ferme"
+
+
+                        date_livraison=detail_programme.xpath("DateHeureLivraisonAuPlusTot")[0].text[:8]
+                        d=datetime.strptime(date_livraison, '%Y%m%d')
+                        date_livraison=d.strftime('%Y-%m-%d')
+
+
+
                         ligne = {
                             'quantite'      : detail_programme.xpath("QuantiteALivrer")[0].text,
                             'type_commande' : type_commande,
-                            'date_livraison': detail_programme.xpath("DateHeureLivraisonAuPlusTot")[0].text[:8],
+                            'date_livraison': date_livraison,
                         }
                         res1.append(ligne)
                     

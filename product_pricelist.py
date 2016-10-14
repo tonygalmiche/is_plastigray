@@ -33,14 +33,13 @@ class product_pricelist(osv.osv):
 
         if not products:
             return {}
-
         version = False
         for v in pricelist.version_id:
             if ((v.date_start is False) or (v.date_start <= date)) and ((v.date_end is False) or (v.date_end >= date)):
                 version = v
                 break
         if not version:
-            raise osv.except_osv(_('Warning!'), _("At least one pricelist has no active version !\nPlease create or activate one."))
+            raise osv.except_osv(_('Warning!'), u"Au moins une liste de prix n'a pas de version active !\nCréez ou activez en une.")
         categ_ids = {}
         for p in products:
             categ = p.categ_id
