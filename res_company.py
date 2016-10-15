@@ -9,4 +9,4 @@ class res_company(models.Model):
     _inherit = 'res.company'
 
     is_mysql_pwd    = fields.Char('Mot de passe MySQL')
-
+    is_dynacase_pwd = fields.Char('Mot de passe Dynacase')

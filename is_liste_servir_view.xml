@@ -68,7 +68,6 @@
                         <group>
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
-                                    <!--<button string="Article"   name="action_acceder_article"  type="object" icon="gtk-zoom-in" />-->
                                     <field name="product_id" widget="many2one_clickable"/>
                                     <field name="stocka"/>
                                     <field name="stockq"/>
@@ -81,9 +80,15 @@
                                     <field name="nb_um"/>
                                     <field name="um_id"/>
                                     <field name="mixer"/>
-                                    <!--<button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />-->
                                     <field name="order_id" widget="many2one_clickable"/>
                                     <field name="client_order_ref" readonly="1" />
+                                    <field name="certificat_matiere" invisible="1"/>
+                                    <button 
+                                        string="Voir le certificat matière" 
+                                        name="action_acceder_certificat" type="object" 
+                                        context="{'certificat_matiere': certificat_matiere}"
+                                        icon="gtk-zoom-in" attrs="{'invisible':[('certificat_matiere','=',False)]}" 
+                                    />
                                     <field name="anomalie"/>
                                 </tree>
                             </field>

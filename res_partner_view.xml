@@ -38,6 +38,7 @@
                         attrs  = "{'invisible': [('is_company', '=', False)]}"
                     />
                     <field name="is_delai_transport" />
+                    <field name="is_certificat_matiere" />
                     <field name="is_import_function" />
                     <field name="is_source_location_id" />
                 </xpath>

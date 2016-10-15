@@ -5,6 +5,8 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import datetime
 import time
+import psycopg2
+import sys
 
 
 #TODO : 
@@ -161,11 +163,7 @@ class is_liste_servir(models.Model):
 
             if partner.is_transporteur_id:
                 vals.update({'transporteur_id': partner.is_transporteur_id })
-
         res['value']=vals
-
-        print res
-
         return res
 
 
@@ -175,8 +173,18 @@ class is_liste_servir(models.Model):
             message=""
             r=self.env['is.liste.servir.message'].search([['name', '=', partner_id]])
             for l in r:
-                message=l.message
+                message=message+l.message+'\n'
+
+            partner=self.env['res.partner'].browse(partner_id)
+            if partner.is_certificat_matiere:
+                message=message+'JOINDRE CERTIFICAT CONFORMITE \n'
+
+
             vals["message"]=message
+
+
+
+
         return vals
 
 
@@ -294,6 +302,22 @@ class is_liste_servir(models.Model):
     def action_importer_commandes(self):
         cr = self._cr
         for obj in self:
+
+
+            #** Connexion à Dynacase *******************************************
+            if obj.partner_id.is_certificat_matiere:
+                uid=self._uid
+                user=self.env['res.users'].browse(uid)
+                password=user.company_id.is_dynacase_pwd
+                cnx=False
+                try:
+                    cnx = psycopg2.connect("host='dynacase' port=5432 dbname='freedom' user='dynacaseowner' password='"+password+"'")
+                except:
+                    raise Warning("Impossible de se connecter à Dynacase")
+                cursor = cnx.cursor()
+            #*******************************************************************
+
+
             for row in obj.line_ids:
                 row.unlink()
             SQL=self._get_sql(obj)
@@ -302,23 +326,46 @@ class is_liste_servir(models.Model):
             line_obj = self.env['is.liste.servir.line']
             for row in result:
                 product_id=row[1]
+
+                #** Recherche du certificat matière ****************************
+                certificat_matiere=False
+                if obj.partner_id.is_certificat_matiere:
+                    product=self.env['product.product'].browse(product_id)
+                    SQL="""
+                        select id
+                        from doc69106
+                        where doctype='F' and locked='0' and cmc_codepg='"""+product.is_code+"""' limit 1
+                    """
+                    cursor.execute(SQL)
+
+                    for row2 in cursor:
+                        certificat_matiere=row2[0]
+                #***************************************************************
+
+
                 stocka=self.env['product.product'].get_stock(product_id,'f')
                 stockq=self.env['product.product'].get_stock(product_id,'t')
                 qt=row[5]
                 vals={
-                    'liste_servir_id'  : obj.id,
-                    'order_id'         : row[0],
-                    'product_id'       : row[1],
-                    'client_order_ref' : row[2],
-                    'date_livraison'   : row[3],
-                    'date_expedition'  : row[4],
-                    'prix'             : row[6],
-                    'quantite'         : qt,
-                    'stocka'           : stocka,
-                    'stockq'           : stockq,
+                    'liste_servir_id'   : obj.id,
+                    'order_id'          : row[0],
+                    'product_id'        : row[1],
+                    'client_order_ref'  : row[2],
+                    'date_livraison'    : row[3],
+                    'date_expedition'   : row[4],
+                    'prix'              : row[6],
+                    'quantite'          : qt,
+                    'stocka'            : stocka,
+                    'stockq'            : stockq,
+                    'certificat_matiere': certificat_matiere,
                 }
                 line_obj.create(vals)
             obj.state="analyse"
+
+
+
+
+
 
 
     @api.multi
@@ -459,26 +506,42 @@ class is_liste_servir_line(models.Model):
 
 
 
-    liste_servir_id  = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
-    product_id       = fields.Many2one('product.product', 'Article', required=True, readonly=True)
-    stocka           = fields.Float('Stock A')
-    stockq           = fields.Float('Stock Q')
-    date_livraison   = fields.Date('Date de livraison', readonly=True)
-    quantite         = fields.Float('Quantité')
-    date_expedition  = fields.Date("Date d'expédition"   , readonly=True)
-    prix             = fields.Float("Prix", digits=(14,4), readonly=True)
-    uc_id            = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
-    nb_uc            = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True)
-    um_id            = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
-    nb_um            = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True)
-    mixer            = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
-    order_id         = fields.Many2one('sale.order', 'Commande', required=True     , readonly=True)
-    client_order_ref = fields.Char('Cde Client', readonly=True)
-    anomalie         = fields.Char('Commentaire')
+    liste_servir_id    = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
+    product_id         = fields.Many2one('product.product', 'Article', required=True, readonly=True)
+    stocka             = fields.Float('Stock A')
+    stockq             = fields.Float('Stock Q')
+    date_livraison     = fields.Date('Date de livraison', readonly=True)
+    quantite           = fields.Float('Quantité')
+    date_expedition    = fields.Date("Date d'expédition"   , readonly=True)
+    prix               = fields.Float("Prix", digits=(14,4), readonly=True)
+    uc_id              = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
+    nb_uc              = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True)
+    um_id              = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
+    nb_um              = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True)
+    mixer              = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
+    order_id           = fields.Many2one('sale.order', 'Commande', required=True     , readonly=True)
+    client_order_ref   = fields.Char('Cde Client', readonly=True)
+    certificat_matiere = fields.Char('Certificat matiere', readonly=True)
+    anomalie           = fields.Char('Commentaire')
+
+
+    #TODO : Le champ HTML pour le certificat matiere ne fonctionne pas en tree view => Enregsitrer l'ID de Dynacase et mettre un bouton pour acceder
 
     _defaults = {
         'mixer': True,
     }
+
+
+    @api.multi
+    def action_acceder_certificat(self):
+        context=self._context
+        if 'certificat_matiere' in context:
+            docid=context['certificat_matiere']
+            return {
+                'name': "Certificat",
+                'url': "http://dynacase/?sole=Y&app=FDL&action=FDL_CARD&id="+docid,
+                'type': 'ir.actions.act_url',
+            }
 
 
     @api.multi
