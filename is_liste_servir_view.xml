@@ -60,7 +60,6 @@
                             <group>
                                 <field name="is_source_location_id"/> 
                                 <field name="poids_brut"/> 
-                                <field name="poids_net"/> 
                                 <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
                                 <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
                                 <field name="order_id"/> 
