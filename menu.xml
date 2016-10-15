@@ -61,6 +61,7 @@
     <menuitem id="menu_is_dt_tables_45" sequence="45" name="Responsable budget"     parent="menu_is_dt_tables"   action="is_pg_product.is_budget_responsable_action" />
     <menuitem id="menu_is_dt_tables_50" sequence="50" name="Nature budget"          parent="menu_is_dt_tables"   action="is_pg_product.is_budget_nature_action" />
     <menuitem id="menu_is_dt_tables_55" sequence="55" name="Incoterms"              parent="menu_is_dt_tables"   action="is_stock_incoterms_action" />
+    <menuitem id="menu_is_dt_tables_60" sequence="60" name="Type étiquette GALIA"   parent="menu_is_dt_tables"   action="is_pg_product.is_type_etiquette_action" />
     <menuitem id="menu_is_dt_tables_97" sequence="97" name="Catégories comptables"  parent="menu_is_dt_tables"   action="product.product_category_action_form" />
     <menuitem id="menu_is_dt_tables_98" sequence="98" name="Variables utilisateurs" parent="menu_is_dt_tables"   action="is_mem_var_action" groups="base.group_no_one" />
     <menuitem id="menu_is_dt_tables_99" sequence="99" name="Masquer champs"         parent="menu_is_dt_tables"   action="is_pg_product.is_config_champ_action" />
