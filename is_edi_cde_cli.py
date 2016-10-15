@@ -98,10 +98,9 @@ class is_edi_cde_cli(models.Model):
                     ])
                     order_id   = False
 
-                    anomalie   = "Cde non trouvée"
-
+                    anomalie1   = "Cde non trouvée"
                     if len(order):
-                        anomalie=""
+                        anomalie1=False
                         order_id     = order[0].id
                         partner_id   = order[0].partner_id.id
                         pricelist_id = order[0].pricelist_id.id
@@ -110,32 +109,39 @@ class is_edi_cde_cli(models.Model):
 
                         product_id = False
                         prix       = 0;
+                        anomalie2  = False
                         if len(order):
+                            quantite   = int(ligne["quantite"])
+                            product    = order[0].is_article_commande_id
+                            product_id = product.id
+
                             #** Recherche du prix ******************************
-                            product      = order[0].is_article_commande_id
-                            product_id   = product.id
-                            context={}
-                            if pricelist_id:
-                                qty  = ligne["quantite"]
-                                date = ligne["date_livraison"]
-                                ctx = dict(
-                                    context,
-                                    uom=product.uom_id.id,
-                                    date=date,
-                                )
-                                prix = self.pool.get('product.pricelist').price_get(
-                                    self._cr, self._uid,
-                                    pricelist_id, product.id, qty, partner_id, ctx)[pricelist_id]
-                            if prix==0:
-                                anomalie="Prix à 0"
+                            if quantite>0:
+                                context={}
+                                if pricelist_id:
+                                    date = ligne["date_livraison"]
+                                    ctx = dict(
+                                        context,
+                                        uom=product.uom_id.id,
+                                        date=date,
+                                    )
+                                    prix = self.pool.get('product.pricelist').price_get(
+                                        self._cr, self._uid,
+                                        pricelist_id, product.id, quantite, partner_id, ctx)[pricelist_id]
+                                if prix==0:
+                                    anomalie2="Prix à 0"
                             #***************************************************
 
                             #** Vérification que qt >= lot livraison ***********
-                            lot=product.lot_livraison
-                            if ligne["quantite"]<lot:
-                                anomalie="Quantité < Lot de livraison ("+str(lot)+")"
+                            lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, obj.partner_id)
+                            if quantite<lot and quantite>0:
+                                anomalie2="Quantité < Lot de livraison ("+str(int(lot))+")"
                             #***************************************************
 
+                        anomalie=anomalie2
+                        if anomalie1:
+                            anomalie=anomalie1
+                        anomalie=anomalie or ''
 
                         vals={
                             'edi_cde_cli_id'     : obj.id,

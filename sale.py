@@ -83,18 +83,19 @@ class sale_order(models.Model):
             if vals['is_type_commande']=='ouverte':
                 product_id=vals['is_article_commande_id']
                 product   = self.env['product.product'].browse([product_id])
-                pricelist=vals['pricelist_id']
+                pricelist_id=vals['pricelist_id']
                 context={}
-                if pricelist:
-                    qty  = product.lot_livraison
+                if pricelist_id:
+                    pricelist=self.env['product.pricelist'].browse(pricelist_id)
+                    qty = self.env['product.template'].get_lot_livraison(product.product_tmpl_id, pricelist.partner_id)
                     date = time.strftime('%Y-%m-%d')
                     ctx = dict(
                         context,
                         uom=product.uom_id.id,
                         date=date,
                     )
-                    price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, pricelist,
-                            product_id, qty, vals['partner_id'], ctx)[pricelist]
+                    price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, pricelist_id,
+                            product_id, qty, vals['partner_id'], ctx)[pricelist_id]
                     if not price:
                         raise Warning("Il n'existe pas de tarif (liste de prix) pour l'article '"+str(product.is_code)+"' / qt="+str(qty)+ " / date="+str(date))
 
@@ -227,7 +228,6 @@ class sale_order_line(models.Model):
     def action_acceder_article(self):
         dummy, view_id = self.env['ir.model.data'].get_object_reference('is_pg_product', 'is_product_template_only_form_view')
         for obj in self:
-            print "product_tmpl_id=",obj.product_id.product_tmpl_id.id,
             return {
                 'name': "Article",
                 'view_mode': 'form',
@@ -259,7 +259,6 @@ class sale_order_line(models.Model):
 
 
     def onchange_date_livraison(self, cr, uid, ids, date_livraison, product_id, qty, uom, partner_id, pricelist, company_id, order_id=False, context=None):
-        print "context=",context
         v = {}
         warning = {}
         if order_id:
@@ -313,9 +312,6 @@ class sale_order_line(models.Model):
                     uom=uom,
                     date=date_livraison,
                 )
-
-                print ctx
-
                 price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
                         product_id, qty or 1.0, partner_id, ctx)[pricelist]
                 v['price_unit'] = price
@@ -328,27 +324,18 @@ class sale_order_line(models.Model):
 
 
     # Arrondir au lot et au multiple du lot dans la saisie des commandes
-    def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+    #def product_id_change(self, cr, uid, ids, pricelist, product, qty=0,
+    @api.multi
+    def product_id_change(self, pricelist_id, product_id, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=None):
 
-        product_obj = self.pool.get('product.product').browse(cr, uid, product, context=context)
-        lot      = product_obj.lot_livraison
-        multiple = product_obj.multiple_livraison
-        if multiple==0:
-            multiple=1
-        if qty<lot:
-            qty=lot
-        else:
-            delta=qty-lot
-            qty=lot+multiple*ceil(delta/multiple)
-
-        vals = super(sale_order_line, self).product_id_change(cr, uid, ids, pricelist, product, qty,
+        qty=self.env['product.template'].get_arrondi_lot_livraison(product_id, pricelist_id, qty)
+        vals = super(sale_order_line, self).product_id_change(pricelist_id, product_id, qty,
                                                                      uom, qty_uos, uos, name, partner_id,
                                                                      lang, update_tax, date_order, packaging,
                                                                      fiscal_position, flag, context=context)
         vals['value']['product_uom_qty'] = qty
-
         # Le prix est forcé à 0, car il sera calculé avec la date d'expédition
         vals['value']['price_unit'] = 0    
 

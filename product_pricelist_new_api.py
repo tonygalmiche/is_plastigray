@@ -5,6 +5,19 @@ from openerp.tools.translate import _
 import datetime
 from dateutil.relativedelta import relativedelta
 
+
+
+
+class product_pricelist(models.Model):
+    _inherit = "product.pricelist"
+    
+    partner_id = fields.Many2one('res.partner', 'Partenaire')
+
+
+
+
+
+
 class product_pricelist_item(models.Model):
     _inherit = "product.pricelist.item"
     _order="price_version_id,product_id,sequence"
@@ -26,7 +39,8 @@ class product_pricelist_item(models.Model):
                 if product:
                     version = self.env['product.pricelist.version'].browse(context['default_price_version_id'])
                     if version.pricelist_id.type=='sale':
-                        min_quantity=product.lot_livraison
+                        partner=version.pricelist_id.partner_id
+                        min_quantity=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, partner)
                     else:
                         min_quantity=product.lot_mini
                         product_uom = self.env['product.uom'].browse(product.uom_po_id.id)

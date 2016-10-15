@@ -44,8 +44,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree colors="gray:indice_prix != 999">
-                    <field name="partner_id"/> 
-                    <field name="product_id"/> 
+                    <field name="partner_id" widget="many2one_clickable"/> 
+                    <field name="product_id" widget="many2one_clickable"/> 
                     <field name="indice_prix"/> 
                     <field name="date_debut"/> 
                     <field name="date_fin"/> 

@@ -67,8 +67,8 @@
                         <group>
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
-                                    <button string="Article"   name="action_acceder_article"  type="object" icon="gtk-zoom-in" />
-                                    <field name="product_id"/>
+                                    <!--<button string="Article"   name="action_acceder_article"  type="object" icon="gtk-zoom-in" />-->
+                                    <field name="product_id" widget="many2one_clickable"/>
                                     <field name="stocka"/>
                                     <field name="stockq"/>
                                     <field name="quantite"/>
@@ -80,8 +80,8 @@
                                     <field name="nb_um"/>
                                     <field name="um_id"/>
                                     <field name="mixer"/>
-                                    <button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />
-                                    <field name="order_id"/>
+                                    <!--<button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />-->
+                                    <field name="order_id" widget="many2one_clickable"/>
                                     <field name="client_order_ref" readonly="1" />
                                     <field name="anomalie"/>
                                 </tree>
@@ -119,8 +119,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name"/> 
-                    <field name="partner_id"/> 
+                    <field name="name" /> 
+                    <field name="partner_id" widget="many2one_clickable"/> 
                     <field name="date_debut"/> 
                     <field name="date_fin"/> 
                     <field name="livrable"/> 
@@ -155,7 +155,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="tree" editable="top">
-                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]"/>
+                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]" widget="many2one_clickable"/>
                     <field name="message"/>
                 </tree>
             </field>
