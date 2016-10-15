@@ -120,6 +120,8 @@ class is_liste_servir(models.Model):
     um_ids                 = fields.One2many('is.liste.servir.um', 'liste_servir_id', u"UMs")
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
 
+    poids_brut             = fields.Float('Poids brut', compute='_compute', readonly=True, store=False)
+    poids_net              = fields.Float('Poids net' , compute='_compute', readonly=True, store=False)
 
 
     def _date_fin():
@@ -132,6 +134,21 @@ class is_liste_servir(models.Model):
         'date_fin':  _date_fin(),
         'livrable':  'livrable',
     }
+
+
+
+    @api.depends('line_ids')
+    def _compute(self):
+        for obj in self:
+            poids_brut = 0
+            poids_net  = 0
+            for line in obj.line_ids:
+                poids_brut = poids_brut + line.quantite * line.product_id.weight
+                poids_net  = poids_net  + line.quantite * line.product_id.weight_net
+            obj.poids_brut = poids_brut
+            obj.poids_net  = poids_net
+
+
 
 
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):

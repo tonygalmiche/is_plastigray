@@ -59,6 +59,8 @@
                             </group>
                             <group>
                                 <field name="is_source_location_id"/> 
+                                <field name="poids_brut"/> 
+                                <field name="poids_net"/> 
                                 <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
                                 <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
                                 <field name="order_id"/> 
@@ -157,6 +159,10 @@
                 <tree string="tree" editable="top">
                     <field name="name" domain="[('customer','=',True),('is_company','=',True)]" widget="many2one_clickable"/>
                     <field name="message"/>
+                    <field name="create_date" string="Créé le"     readonly="1"/>
+                    <field name="write_date"  string="Modifié le"  readonly="1"/>
+                    <field name="write_uid"   string="Créé par"    readonly="1"/>
+                    <field name="create_uid"  string="Modifié par" readonly="1"/>
                 </tree>
             </field>
         </record>
