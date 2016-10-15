@@ -16,6 +16,7 @@ class is_pricelist_item(models.Model):
     version_date_start = fields.Date('Date début version')
     version_date_end   = fields.Date('Date fin version')
     product_id         = fields.Many2one('product.product', 'Article')
+    mold_id            = fields.Many2one('is.mold', 'Moule')
     sequence           = fields.Integer('Sequence')
     product_uom_id     = fields.Many2one('product.uom', "Unité")
     product_po_uom_id  = fields.Many2one('product.uom', "Unité d'achat")
@@ -36,6 +37,7 @@ class is_pricelist_item(models.Model):
                     ppv.date_start        as version_date_start,
                     ppv.date_end          as version_date_end,
                     ppi.product_id        as product_id,
+                    pt.is_mold_id         as mold_id,
                     ppi.sequence          as sequence,
                     pt.uom_id             as product_uom_id,
                     pt.uom_po_id          as product_po_uom_id,
