@@ -14,21 +14,24 @@ TODO :
 
         <template id="style">
             .page {
-                font-size:8pt;
+                font-size:10pt;
             }
             .header {
-                font-size:8pt;
-                color:red;
+                font-size:10pt;
+            }
+            .footer {
+                font-size:7pt;
+            }
+            .page {
+                font-size:7pt;
             }
             .titre {
-                font-size:10pt;
+                font-size:11pt;
                 font-weight: bold;
-                color:green;
             }
             .expediteur {
-                font-size:4pt;
+                font-size:8pt;
                 text-align:center;
-                color:red;
             }
             .destinataire {
                 text-align:left;
@@ -127,11 +130,22 @@ TODO :
         <!-- Pied de page personnalisé Plastigray -->
         <template id="pg_external_layout_footer">
             <div class="footer">
-                <br />
                 <div class="text-center" style="border-top: 1px solid black">
-                    Page <span class="page"/> / <span class="topage"/>
+                    <table>
+                        <tr>
+                            <td class="text-left" style="width:90%">
+                                <b>CONDITIONS D'EXPEDITION : </b> Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. <br />
+                                <b>CLAUSE D'ATTRIBUTION DE COMPETENCE : </b> Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. Me donner le texte, car c'est long. <br />
+                            </td>
+                            <td class="text-right">
+                                Page <span class="page"/> / <span class="topage"/>
+                            </td>
+
+                        </tr>
+                    </table>
                 </div>
-            </div>      
+            </div>
+            <br />
         </template>
 
         <!-- Squelette de la page personnalisé pour Plastigray -->
@@ -165,75 +179,11 @@ TODO :
                 <t t-foreach="docs" t-as="o">
                     <t t-call="is_plastigray.pg_external_layout">
                         <div class="page">
-
-
-                            <!--
-                            <div>o.pack_operation_ids</div>
-                            <t t-foreach="o.pack_operation_ids" t-as="line">
-                                <span t-field="line.is_sale_line_id.is_client_order_ref"/> : 
-                                <span t-field="line.product_id"/><br />
-                            </t>
-                            <div>o.move_lines</div>
-                            <t t-foreach="o.move_lines" t-as="line">
-                                <span t-field="line.is_sale_line_id.is_client_order_ref"/> : 
-                                <span t-field="line.product_id"/><br />
-                            </t>
-
-
-
-                            <div>not pack_operation_ids</div>
-                            <table class="table table-condensed" t-if="not o.pack_operation_ids">
-                              <thead>
-                                <tr>
-                                    <th><strong>Product</strong></th>
-                                    <th class="text-right"><strong>Quantity</strong></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr t-foreach="o.move_lines" t-as="move">
-                                    <t t-if="(o.state != 'partially_available') or (move.reserved_availability > 0)">
-                                        <td><span t-field="move.product_id"/></td>
-                                        <td class="text-right">
-                                            <t t-if="o.state == 'partially_available'">
-                                                <span t-field="move.reserved_availability"/> <span t-field="move.product_id.uom_id" groups="product.group_uom"/>
-                                            </t>
-                                            <t t-if="o.state != 'partially_available'">
-                                                <span t-field="move.product_uom_qty"/> <span t-field="move.product_uom" groups="product.group_uom"/>
-                                            </t>
-                                        </td>
-                                    </t>
-                                </tr>
-                              </tbody>
-                            </table>
-
-
-
-                            <div>pack_operation_ids</div>
-                            <table class="table table-condensed" t-if="o.pack_operation_ids">
-                              <thead>
-                                <tr>
-                                    <th><strong>Product</strong></th>
-                                    <th class="text-right"><strong>Quantity</strong></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr t-foreach="o.pack_operation_ids" t-as="pack_operation">
-                                    <td><span t-field="pack_operation.product_id"/>
-                                        <t t-if="not pack_operation.product_id and pack_operation.package_id"><span  t-field="pack_operation.package_id"/></t></td>
-                                    <td class="text-right"><span t-field="pack_operation.product_qty"/> <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/></td>
-                                </tr>
-                              </tbody>
-                            </table>
-
-
-                            <div>not pack_operation_ids</div>
-                            -->
-
-
                             <table class="table table-condensed">
                               <thead>
                                 <tr>
                                     <th t-if="o.partner_id.lang == 'fr_FR'">Commande N°</th> <th t-if="o.partner_id.lang != 'fr_FR'">Order N°</th>
+                                    <th class="text-center"></th>
                                     <th t-if="o.partner_id.lang == 'fr_FR'">Désignation</th> <th t-if="o.partner_id.lang != 'fr_FR'">Description</th>
                                     <th class="text-right" t-if="o.partner_id.lang == 'fr_FR'">Quantité</th>    <th class="text-right" t-if="o.partner_id.lang != 'fr_FR'">Quantity</th>
                                     <th class="text-right"></th>
@@ -258,14 +208,28 @@ TODO :
                                             <t t-set="nb3"    t-value="l.qty*l.ul_qty*l.rows"/>
                                             <t t-set="unite3" t-value="l.ul_container.name"/>
                                         </t>
-                                        <t t-set="pds" t-value="qt1*move.product_id.weight_net"/>
+                                        <t t-set="pds" t-value="qt1*move.product_id.weight"/>
                                         <t t-set="pds_total" t-value="pds_total + pds"/>
                                         <td>
-                                            <span t-field="move.is_sale_line_id.is_client_order_ref"/>
+                                            <span t-field="move.is_sale_line_id.is_client_order_ref"/> <br />
+                                            pour le <span t-field="move.is_sale_line_id.is_date_livraison"/>
                                         </td>
                                         <td>
+
+                                            <t t-if="move.product_id.is_soumise_regl == 'SR'"> 
+                                                <img src='/is_pg_product/static/src/img/logo_rs.png' style="height:32px" />
+                                            </t>
+                                            <t t-if="move.product_id.is_soumise_regl == 'R'"> 
+                                                <img src='/is_pg_product/static/src/img/logo_r.png' style="height:32px" />
+                                            </t>
+                                        </td>
+
+                                        <td>
                                             <span t-field="move.product_id.name"/><br />
-                                            <span t-field="move.product_id.is_code"/> - <span t-field="move.product_id.is_ref_client"/> <br />
+                                            <span t-field="move.product_id.is_code"/> - 
+                                            <span t-field="move.product_id.is_ref_client"/> / 
+                                            <span t-field="move.product_id.is_ind_plan"/> 
+                                            <br />
                                         </td>
                                         <td class="text-right">
 
@@ -304,9 +268,47 @@ TODO :
                                 </tr>
                               </tbody>
                             </table>
-                            Poids total : <span t-esc="pds_total"/> KG
 
+                            <br />
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="text-left"  t-if="o.partner_id.lang == 'fr_FR'">Transporteur</th> 
+                                        <th class="text-left"  t-if="o.partner_id.lang != 'fr_FR'">Carrier</th>
+                                        <th class="text-left"  t-if="o.partner_id.lang == 'fr_FR'">Site d'expédition</th> 
+                                        <th class="text-left"  t-if="o.partner_id.lang != 'fr_FR'">Shipment address</th>
 
+                                        <th class="text-left"  t-if="o.partner_id.lang == 'fr_FR'">Informations</th> 
+                                        <th class="text-left"  t-if="o.partner_id.lang != 'fr_FR'">Informations</th>
+
+                                        <th class="text-right" t-if="o.partner_id.lang == 'fr_FR'">Poids</th> 
+                                        <th class="text-right" t-if="o.partner_id.lang != 'fr_FR'">Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <td class="text-left">
+                                        <span t-field="o.is_transporteur_id.name" /><br />
+                                        <span t-field="o.is_transporteur_id.street" /><br />
+                                        <t t-if="o.is_transporteur_id.street2">
+                                            <span t-field="o.is_transporteur_id.street2" /><br />
+                                        </t>
+                                        <span t-field="o.is_transporteur_id.zip" /> <span t-field="o.is_transporteur_id.city" /><br />
+                                        <span t-field="o.is_transporteur_id.country_id.name" /><br />
+                                    </td>
+                                    <td class="text-left">
+                                        <span t-field="o.company_id.partner_id.name" /><br />
+                                        <span t-field="o.company_id.partner_id.street" /><br />
+                                         <span t-field="o.company_id.partner_id.zip" /> <span t-field="o.company_id.partner_id.city" /><br />
+                                        <span t-field="o.company_id.partner_id.country_id.name" /><br /><br />
+                                    </td>
+                                    <td class="text-left">
+                                        <span t-field="o.partner_id.is_incoterm.name" /><br />
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="pds_total"/> KG
+                                    </td>
+                                </tbody>
+                            </table>
 
                         </div>
                     </t>
