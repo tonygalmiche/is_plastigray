@@ -287,8 +287,11 @@ class is_liste_servir(models.Model):
             select sol.order_id, sol.product_id, sol.is_client_order_ref,
             max(sol.is_date_livraison), max(sol.is_date_expedition), sum(sol.product_uom_qty), max(sol.price_unit)
             from sale_order so inner join sale_order_line sol on so.id=sol.order_id 
-            where so.partner_id="""+str(obj.partner_id.id)+""" and so.state='draft' 
-                  and sol.is_date_expedition<='"""+str(obj.date_fin)+"""' and sol.product_id>0
+            where so.partner_id="""+str(obj.partner_id.id)+""" 
+                  and so.state='draft' 
+                  and sol.is_date_expedition<='"""+str(obj.date_fin)+"""' 
+                  and sol.product_id>0
+                  and sol.is_type_commande='ferme' 
         """
         if obj.order_id:
             SQL=SQL+" and so.id!="+str(obj.order_id.id)+" "
