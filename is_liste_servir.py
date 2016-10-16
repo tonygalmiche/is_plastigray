@@ -428,6 +428,7 @@ class is_liste_servir(models.Model):
             'picking_policy'       : 'direct',
             'order_policy'         : 'picking',
             'is_transporteur_id'   : obj.transporteur_id.id,
+            'is_type_commande'     : 'ls',
         }
         vals.update(values)
         if obj.order_id:

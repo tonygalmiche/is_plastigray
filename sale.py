@@ -20,7 +20,7 @@ class sale_order(models.Model):
         return location and location or False
 
 
-    is_type_commande       = fields.Selection([('standard', 'Ferme'),('ouverte', 'Ouverte'),('cadence', 'Cadencé')], "Type de commande")
+    is_type_commande       = fields.Selection([('standard', 'Ferme'),('ouverte', 'Ouverte'),('cadence', 'Cadencé'),('ls', 'Liste à servir')], "Type de commande")
     is_article_commande_id = fields.Many2one('product.product', 'Article de la commande', help="Article pour les commandes ouvertes")
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
@@ -113,13 +113,21 @@ class sale_order(models.Model):
             if len(r)>1 :
                 raise Warning(u"Il exite déjà une commande ouverte pour cet article et ce client")
 
+
+    @api.multi
+    def _client_order_ref(self, obj):
+        if obj.is_type_commande!='ls':
+            for line in obj.order_line:
+                line.is_client_order_ref=obj.client_order_ref
+
+
     @api.model
     def create(self, vals):
         self._verif_tarif(vals)
         self._verif_existe(vals)
-        new_id = super(sale_order, self).create(vals)
-        return new_id
-
+        obj = super(sale_order, self).create(vals)
+        self._client_order_ref(obj)
+        return obj
 
 
     @api.multi
@@ -134,10 +142,7 @@ class sale_order(models.Model):
             }
             self._verif_tarif(vals2)
             self._verif_existe(vals2)
-
-            for line in obj.order_line:
-                if not line.is_client_order_ref:
-                    line.is_client_order_ref=obj.client_order_ref
+            self._client_order_ref(obj)
         return res
 
 

@@ -30,8 +30,8 @@
                             attrs="{'invisible': [('partner_id', '=', False)] }   " />
                     <field  name="is_article_commande_id" 
                             attrs="{
-                                'required' : [('is_type_commande', '!=', 'standard')], 
-                                'invisible': [('is_type_commande', '=', 'standard')], 
+                                'required' : [    ('is_type_commande', '!=', 'standard'),('is_type_commande', '!=', 'ls')], 
+                                'invisible': ['|',('is_type_commande', '=', 'standard') ,('is_type_commande', '=', 'ls')] , 
                             }" 
                             context="{'pricelist': pricelist_id}" />
 
