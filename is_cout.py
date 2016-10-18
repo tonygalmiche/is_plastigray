@@ -153,8 +153,6 @@ class is_cout_calcul(models.Model):
                             prix_tarif=row[0]/coef
                     #***********************************************************
 
-                    print type_article, pricelist, prix_tarif, result, product.seller_ids, seller.name
-
 
                     #** Recherche prix dernière commande ***********************
                     SQL="""
@@ -400,13 +398,6 @@ class is_cout_calcul(models.Model):
                         row.cout_act_total      = cout_act_total
 
             obj.state="termine"
-
-
-    @api.multi
-    def valueof(self):
-        print 123
-        return 123
-
 
 
 
