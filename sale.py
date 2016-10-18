@@ -83,11 +83,13 @@ class sale_order(models.Model):
             if vals['is_type_commande']=='ouverte':
                 product_id=vals['is_article_commande_id']
                 product   = self.env['product.product'].browse([product_id])
+                partner   = self.env['res.partner'].browse(vals['partner_invoice_id'])
                 pricelist_id=vals['pricelist_id']
                 context={}
                 if pricelist_id:
                     pricelist=self.env['product.pricelist'].browse(pricelist_id)
-                    qty = self.env['product.template'].get_lot_livraison(product.product_tmpl_id, pricelist.partner_id)
+
+                    qty = self.env['product.template'].get_lot_livraison(product.product_tmpl_id, partner)
                     date = time.strftime('%Y-%m-%d')
                     ctx = dict(
                         context,
@@ -139,6 +141,7 @@ class sale_order(models.Model):
                 'is_article_commande_id' : obj.is_article_commande_id.id,
                 'pricelist_id'           : obj.pricelist_id.id,
                 'partner_id'             : obj.partner_id.id,
+                'partner_invoice_id'     : obj.partner_invoice_id.id,
             }
             self._verif_tarif(vals2)
             self._verif_existe(vals2)
@@ -334,8 +337,7 @@ class sale_order_line(models.Model):
     def product_id_change(self, pricelist_id, product_id, qty=0,
             uom=False, qty_uos=0, uos=False, name='', partner_id=False,
             lang=False, update_tax=True, date_order=False, packaging=False, fiscal_position=False, flag=False, context=None):
-
-        qty=self.env['product.template'].get_arrondi_lot_livraison(product_id, pricelist_id, qty)
+        qty=self.env['product.template'].get_arrondi_lot_livraison(product_id, partner_id, qty)
         vals = super(sale_order_line, self).product_id_change(pricelist_id, product_id, qty,
                                                                      uom, qty_uos, uos, name, partner_id,
                                                                      lang, update_tax, date_order, packaging,
