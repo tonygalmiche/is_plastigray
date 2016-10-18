@@ -219,7 +219,7 @@
             <field name="filter" eval="True"/>
         </record>
 
-
+<!--
         <record id="base.view_partner_tree" model="ir.ui.view">
             <field name="name">res.partner.tree</field>
             <field name="model">res.partner</field>
@@ -251,6 +251,39 @@
             <field name="context">{'default_customer':1, 'search_default_customer':1}</field>
             <field name="filter" eval="True"/>
         </record>
+-->
+
+
+        <!-- Liste des fournisseurs -->
+        <record id="fournisseur_tree_view" model="ir.ui.view">
+            <field name="name">fournisseur_tree_view</field>
+            <field name="model">res.partner</field>
+            <field eval="99" name="priority"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="is_code"/>
+                    <field name="is_adr_code"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="city"/>
+                    <field name="property_product_pricelist_purchase"/>
+                </tree>
+            </field>
+        </record>
+        <record id="fournisseur_action" model="ir.actions.act_window">
+            <field name="name">Fournisseurs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_id" ref="fournisseur_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="domain">[('supplier','=',True),('is_company','=',True)]</field>
+            <field name="context">{}</field>
+            <field name="filter" eval="True"/>
+        </record>
+
+
 
 
 

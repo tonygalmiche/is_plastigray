@@ -20,13 +20,13 @@ import time
 
 class is_cout_calcul(models.Model):
     _name='is.cout.calcul'
-    _order='name'
+    _order='name desc'
 
     name               = fields.Datetime('Date', required=True     , readonly=True)
     user_id            = fields.Many2one('res.users', 'Responsable', readonly=True)
     product_id         = fields.Many2one('product.product', 'Article')
+    segment_id         = fields.Many2one('is.product.segment', 'Segment')
     is_category_id     = fields.Many2one('is.category', 'Catégorie')
-
     cout_actualise_ids = fields.One2many('is.cout.calcul.actualise', 'cout_calcul_id', u"Historique des côuts actualisés")
     state              = fields.Selection([('creation',u'Création'), ('prix_achat', u"Calcul des prix d'achat"),('termine', u"Terminé")], u"État", readonly=True, select=True)
 
@@ -153,6 +153,9 @@ class is_cout_calcul(models.Model):
                             prix_tarif=row[0]/coef
                     #***********************************************************
 
+                    print type_article, pricelist, prix_tarif, result, product.seller_ids, seller.name
+
+
                     #** Recherche prix dernière commande ***********************
                     SQL="""
                         select pol.price_unit*pu.factor
@@ -194,12 +197,15 @@ class is_cout_calcul(models.Model):
                             else:
                                 if prix_tarif:
                                     prix_calcule=prix_tarif
-
                 cout.type_article  = type_article
                 cout.prix_tarif    = prix_tarif
                 cout.prix_commande = prix_commande
                 cout.prix_facture  = prix_facture
                 cout.prix_calcule  = prix_calcule
+
+                ecart_calcule_matiere  = prix_calcule - cout.cout_act_matiere
+                cout.ecart_calcule_matiere=ecart_calcule_matiere
+
             obj.state="prix_achat"
 
 
@@ -209,10 +215,13 @@ class is_cout_calcul(models.Model):
         if obj.product_id:
             products=self.env['product.product'].search([('id', '=', obj.product_id.id)])
         else:
-            if obj.is_category_id:
-                products=self.env['product.product'].search([('is_category_id', '=', obj.is_category_id.id)], limit=10000)
+            if obj.segment_id:
+                products=self.env['product.product'].search([('segment_id', '=', obj.segment_id.id)], limit=10000)
             else:
-                products=self.env['product.product'].search([])
+                if obj.is_category_id:
+                    products=self.env['product.product'].search([('is_category_id', '=', obj.is_category_id.id)], limit=10000)
+                else:
+                    products=self.env['product.product'].search([])
         return products
 
 
@@ -260,9 +269,12 @@ class is_cout_calcul(models.Model):
                 if routing_id:
                     routing = self.env['mrp.routing'].browse(routing_id)
                     for line in routing.workcenter_lines:
-                        cout_total=quantite_unitaire*(\
-                            line.workcenter_id.costs_hour*line.workcenter_id.time_start/lot_mini+\
-                            line.is_nb_secondes*line.workcenter_id.costs_hour/3600)
+                        # Ne pas tenir compte du temps préparation
+                        # cout_total=quantite_unitaire*(\
+                        #    line.workcenter_id.costs_hour*line.workcenter_id.time_start/lot_mini+\
+                        #    line.is_nb_secondes*line.workcenter_id.costs_hour/3600)
+
+                        cout_total=quantite_unitaire*(line.is_nb_secondes*line.workcenter_id.costs_hour/3600)
                         vals={
                             'composant'     : '----------'[:niveau]+product.is_code,
                             'sequence'      : line.sequence,
@@ -390,17 +402,24 @@ class is_cout_calcul(models.Model):
             obj.state="termine"
 
 
+    @api.multi
+    def valueof(self):
+        print 123
+        return 123
+
+
+
 
 class is_cout_calcul_actualise(models.Model):
     _name='is.cout.calcul.actualise'
 
     cout_calcul_id   = fields.Many2one('is.cout.calcul'  , 'Coût Calcul', required=True, ondelete='cascade')
     product_id       = fields.Many2one('product.product', 'Article'    , required=True, readonly=False)
-    cout_act_matiere = fields.Float("Coût act matière")
-    cout_act_machine = fields.Float("Coût act machine")
-    cout_act_mo      = fields.Float("Coût act main d'oeuvre")
-    cout_act_st      = fields.Float("Coût act sous-traitance")
-    cout_act_total   = fields.Float("Coût act Total")
+    cout_act_matiere = fields.Float("Coût act matière"       , digits=(12, 4))
+    cout_act_machine = fields.Float("Coût act machine"       , digits=(12, 4))
+    cout_act_mo      = fields.Float("Coût act main d'oeuvre" , digits=(12, 4))
+    cout_act_st      = fields.Float("Coût act sous-traitance", digits=(12, 4))
+    cout_act_total   = fields.Float("Coût act Total"         , digits=(12, 4))
 
 
 
@@ -425,6 +444,8 @@ class is_cout(models.Model):
     prix_force_commentaire = fields.Char("Commentaire")
     prix_calcule           = fields.Float("Prix calculé"                , digits=(12, 4))
     prix_sous_traitance    = fields.Float("Prix sous-traitance"         , digits=(12, 4))
+
+    ecart_calcule_matiere  = fields.Float("Ecart Calculé/Matière"       , digits=(12, 4))
 
     cout_std_matiere       = fields.Float("Coût std matière"         , digits=(12, 4))
     cout_std_condition     = fields.Float("Coût std conditionnement" , digits=(12, 4))
@@ -472,11 +493,11 @@ class is_cout_gamme_ma(models.Model):
     sequence      = fields.Integer('N°')
     workcenter_id = fields.Many2one('mrp.workcenter', 'Poste de charges')
     quantite      = fields.Float('Quantité')
-    cout_prepa    = fields.Float('Coût Préparation')
+    cout_prepa    = fields.Float('Coût Préparation'      , digits=(12, 4))
     tps_prepa     = fields.Float('Tps Préparation (H)')
-    cout_fab      = fields.Float('Coût Fabrication')
+    cout_fab      = fields.Float('Coût Fabrication'      , digits=(12, 4))
     tps_fab       = fields.Float('Tps Fabrication (s)')
-    cout_total    = fields.Float('Coût Total')
+    cout_total    = fields.Float('Coût Total'            , digits=(12, 4))
 
 
 class is_cout_gamme_mo(models.Model):
@@ -487,10 +508,10 @@ class is_cout_gamme_mo(models.Model):
     sequence      = fields.Integer('N°')
     workcenter_id = fields.Many2one('mrp.workcenter', 'Poste de charges')
     quantite      = fields.Float('Quantité')
-    cout_prepa    = fields.Float('Coût Préparation')
+    cout_prepa    = fields.Float('Coût Préparation'      , digits=(12, 4))
     tps_prepa     = fields.Float('Tps Préparation (H)')
-    cout_fab      = fields.Float('Coût Fabrication')
+    cout_fab      = fields.Float('Coût Fabrication'      , digits=(12, 4))
     tps_fab       = fields.Float('Tps Fabrication (s)')
-    cout_total    = fields.Float('Coût Total')
+    cout_total    = fields.Float('Coût Total'            , digits=(12, 4))
 
 

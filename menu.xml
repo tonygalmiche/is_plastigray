@@ -39,8 +39,8 @@
 
     <menuitem id="menu_is_cout"    sequence="35" name="Coût article"       parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_cout_10" sequence="10" name="Calcul des coûts"   parent="menu_is_cout"  action="is_cout_calcul_action" />
-    <menuitem id="menu_is_cout_20" sequence="20" name="Coût article"       parent="menu_is_cout"  action="is_cout_action" />
-
+    <menuitem id="menu_is_cout_20" sequence="20" name="Anomalies achat"    parent="menu_is_cout"  action="is_cout_anomalie_achat_action" />
+    <menuitem id="menu_is_cout_30" sequence="30" name="Coût article"       parent="menu_is_cout"  action="is_cout_action" />
 
     <menuitem id="menu_is_societes"      sequence="40" name="Sociétés"               parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_societes_10"   sequence="10" name="Sociétés"               parent="menu_is_societes" action="is_action_partner_supplier_form" />
@@ -69,7 +69,9 @@
 
     <menuitem id="menu_is_achats"            sequence="2"  name="Achats" />
     <menuitem id="menu_is_achats_fournisseurs"     sequence="10" name="Fournisseurs"  parent="menu_is_achats" />
-    <menuitem id="menu_is_achats_fournisseurs_10"  sequence="10" name="Fournisseurs"  parent="menu_is_achats_fournisseurs" action="base.action_partner_supplier_form" />
+    <!--<menuitem id="menu_is_achats_fournisseurs_10"  sequence="10" name="Fournisseurs"  parent="menu_is_achats_fournisseurs" action="base.action_partner_supplier_form" />-->
+    <menuitem id="menu_is_achats_fournisseurs_10"  sequence="10" name="Fournisseurs"  parent="menu_is_achats_fournisseurs" action="fournisseur_action" />
+
 
     <menuitem id="menu_is_achats_prix"    sequence="20" name="Liste de prix"         parent="menu_is_achats" />
     <menuitem id="menu_is_achats_prix_10" sequence="10" name="Listes de prix"        parent="menu_is_achats_prix" action="product.product_pricelist_action_for_purchase" />
