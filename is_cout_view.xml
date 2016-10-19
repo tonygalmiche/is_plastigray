@@ -25,11 +25,14 @@
                                 <field name="product_id"/> 
                                 <field name="segment_id"/> 
                                 <field name="is_category_id"/> 
+                                <field name="is_gestionnaire_id"/> 
+                                <field name="multiniveaux"/> 
                             </group>
                         </group>
                         <group string="Coûts actualisés" >
                             <field name="cout_actualise_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
+                                    <button string="Coût article" name= "action_acces_cout" type="object" icon="gtk-justify-fill" />
                                     <field name="product_id" widget="many2one_clickable"/>
                                     <field name="cout_act_matiere"/>
                                     <field name="cout_act_machine"/>
@@ -52,7 +55,9 @@
                     <field name="name"/> 
                     <field name="user_id"/> 
                     <field name="product_id"/> 
+                    <field name="segment_id"/> 
                     <field name="is_category_id"/> 
+                    <field name="is_gestionnaire_id"/> 
                     <field name="state"/> 
                 </tree>
             </field>
@@ -86,6 +91,9 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>  
+                    <header>
+                        <button name="action_calcul_cout"    type="object" string="Calcul du coût de cet article" />
+                    </header>
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
                             <group string="Description">
@@ -98,13 +106,13 @@
                                 <field name="uom_id"/> 
                                 <field name="lot_mini"/> 
                             </group>
-                            <group string="Prix"                      attrs="{'invisible': [('type_article', '!=', 'A')] }">
-                                <field name="prix_tarif"              attrs="{'invisible': [('type_article', '!=', 'A')] }" /> 
-                                <field name="prix_commande"           attrs="{'invisible': [('type_article', '!=', 'A')] }"/> 
-                                <field name="prix_facture"            attrs="{'invisible': [('type_article', '!=', 'A')] }"/> 
-                                <field name="prix_force"              attrs="{'invisible': [('type_article', '!=', 'A')] }"/> 
+                            <group string="Prix"                      attrs="{'invisible': [('type_article', '=', 'F')] }">
+                                <field name="prix_tarif"/> 
+                                <field name="prix_commande"/> 
+                                <field name="prix_facture"/> 
+                                <field name="prix_force"/> 
                                 <field name="prix_force_commentaire"  attrs="{'invisible': [('prix_force', '=', 0)], 'required':  [('prix_force', '!=', 0)] }"/> 
-                                <field name="prix_sous_traitance"     attrs="{'invisible': [('type_article', '!=', 'A')] }"/> 
+                                <field name="prix_sous_traitance"/> 
                             </group>
                             <group string="Coût standard">
                                 <field name="cout_std_matiere"/> 
@@ -190,6 +198,10 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
+                    <field name="type_article"/>
+                    <field name="is_category_id"/> 
+                    <field name="is_gestionnaire_id"/> 
+                    <field name="is_mold_id"/> 
                 </search>
             </field>
         </record>
@@ -202,7 +214,9 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" widget="many2one_clickable"/> 
-                    <field name="cout_calcul_id"/> 
+                    <field name="is_mold_id"/> 
+                    <field name="is_category_id"/> 
+                    <field name="is_gestionnaire_id"/> 
                     <field name="type_article"/> 
                     <field name="prix_tarif" /> 
                     <field name="prix_commande"/> 
@@ -212,6 +226,7 @@
                     <field name="cout_act_matiere"/> 
                     <field name="cout_act_st"/> 
                     <field name="ecart_calcule_matiere"/> 
+                    <field name="cout_calcul_id"/> 
                 </tree>
             </field>
         </record>

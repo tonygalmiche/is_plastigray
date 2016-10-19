@@ -150,8 +150,11 @@
             </field>
             <xpath expr="/form/notebook/page/field/tree/field[@name='sequence']" position="replace">
                 <field name="sequence" />
+                <field name="is_bom" invisible="1"/>
+                <button string="Nomenclature" name= "action_acces_nomenclature" 
+                        type="object" icon="gtk-justify-fill"
+                        attrs="{'invisible': [('is_bom', '=', False)]}"/>
             </xpath>
-
 
             <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="attributes">
                 <attribute name="readonly">1</attribute>
@@ -209,6 +212,7 @@
         <field name="model">mrp.bom.line</field>
         <field name="inherit_id" ref="mrp.mrp_bom_component_tree_view" />
         <field name="arch" type="xml">
+
             <field name="bom_id" position="attributes" > 
                 <attribute name="readonly">1</attribute>
             </field>

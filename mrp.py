@@ -26,6 +26,12 @@ class mrp_bom(models.Model):
             obj.is_qt_um = obj.product_tmpl_id.get_um()
 
 
+
+
+
+
+
+
 #    @api.one
 #    @api.depends('product_tmpl_id')
 #    def _compute_display_name(self):
@@ -54,7 +60,7 @@ class mrp_bom_line(models.Model):
     is_article_fourni = fields.Selection([('oui', 'Oui'), ('non', 'Non')], 'Article fourni')
     is_qt_uc          = fields.Float("Qt par UC", digits=(12, 2), compute='_compute')
     is_qt_um          = fields.Float("Qt par UM", digits=(12, 2), compute='_compute')
-
+    is_bom            = fields.Boolean('Nomenclature existante' , compute='_compute')
 
     _defaults = {
         'is_article_fourni': 'non',
@@ -67,6 +73,36 @@ class mrp_bom_line(models.Model):
         for obj in self:
             obj.is_qt_uc = obj.product_qty*obj.bom_id.product_tmpl_id.get_uc()
             obj.is_qt_um = obj.product_qty*obj.bom_id.product_tmpl_id.get_um()
+
+            product_tmpl_id=obj.product_id.product_tmpl_id.id
+            nomenclatures=self.env['mrp.bom'].search([['product_tmpl_id', '=', product_tmpl_id]])
+            is_bom=False
+            if len(nomenclatures)>0:
+                is_bom=True
+            obj.is_bom=is_bom
+
+
+
+
+
+    @api.multi
+    def action_acces_nomenclature(self):
+        print self
+        for obj in self:
+            product_tmpl_id=obj.product_id.product_tmpl_id.id
+            nomenclatures=self.env['mrp.bom'].search([['product_tmpl_id', '=', product_tmpl_id]])
+            if len(nomenclatures)>0:
+                res_id=nomenclatures[0].id
+                view_id=self.env.ref('is_plastigray.is_mrp_bom_form_view')
+                return {
+                    'name': obj.product_id.name,
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_model': 'mrp.bom',
+                    'type': 'ir.actions.act_window',
+                    'view_id': view_id.id,
+                    'res_id': res_id,
+                }
 
 
 

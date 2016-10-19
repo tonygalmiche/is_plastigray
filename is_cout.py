@@ -27,12 +27,15 @@ class is_cout_calcul(models.Model):
     product_id         = fields.Many2one('product.product', 'Article')
     segment_id         = fields.Many2one('is.product.segment', 'Segment')
     is_category_id     = fields.Many2one('is.category', 'Catégorie')
+    is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire')
+    multiniveaux       = fields.Boolean('Calcul des coûts multi-niveaux')
     cout_actualise_ids = fields.One2many('is.cout.calcul.actualise', 'cout_calcul_id', u"Historique des côuts actualisés")
     state              = fields.Selection([('creation',u'Création'), ('prix_achat', u"Calcul des prix d'achat"),('termine', u"Terminé")], u"État", readonly=True, select=True)
 
     _defaults = {
         'name': lambda *a: time.strftime('%Y-%m-%d %H:%M:%S'),
         'user_id': lambda self, cr, uid, c: uid,
+        'multiniveaux': True,
         'state': 'creation',
     }
 
@@ -42,19 +45,19 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     @api.multi
-    def nomenclature(self, cout_calcul_obj, product, niveau):
+    def nomenclature(self, cout_calcul_obj, product, niveau, multiniveaux=True):
         cr = self._cr
         type_article=self.type_article(product)
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
-        if type_article=='F':
+        if type_article!='A' and multiniveaux==True:
             SQL="""
                 select mbl.product_id, mbl.id, mbl.sequence, mb.id
                 from mrp_bom mb inner join mrp_bom_line mbl on mbl.bom_id=mb.id
                                 inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
                 where pp.id="""+str(product.id)+ """ 
-                      and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
                 order by mbl.sequence, mbl.id
             """
+            #TODO : Voir si ce filtre est necessaire : and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
             cr.execute(SQL)
             result = cr.fetchall()
             niv=niveau+1
@@ -105,14 +108,16 @@ class is_cout_calcul(models.Model):
             calcul_actualise_obj = self.env['is.cout.calcul.actualise']
             products=self.get_products(obj)
             for product in products:
-                self.nomenclature(obj,product,0)
+                self.nomenclature(obj,product,0, obj.multiniveaux)
             couts=self.env['is.cout'].search([('cout_calcul_id', '=', obj.id)])
+            product_uom_obj = self.env['product.uom']
             for cout in couts:
                 product=cout.name
                 prix_tarif    = 0
                 prix_commande = 0
                 prix_facture  = 0
                 prix_calcule  = 0
+                ecart_calcule_matiere = 0
                 vals={
                     'cout_calcul_id': obj.id,
                     'product_id': product.id,
@@ -132,17 +137,24 @@ class is_cout_calcul(models.Model):
                     #***********************************************************
 
                     #** Recherche du prix d'achat ******************************
+
+                    date=time.strftime('%Y-%m-%d') # Date du jour
+
+
                     if pricelist:
+                        #Convertion du lot_mini de US vers UA
+                        min_quantity = product_uom_obj._compute_qty(cout.name.uom_id.id, cout.name.lot_mini, cout.name.uom_po_id.id)
                         SQL="""
                             select ppi.price_surcharge
                             from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
                             where ppv.pricelist_id="""+str(pricelist.id)+ """ 
-                                  and (ppv.date_start <= '2016-09-08' or ppv.date_start is null)
-                                  and (ppv.date_end   >= '2016-09-08' or ppv.date_end   is null)
+                                  and min_quantity>="""+str(min_quantity)+"""
+                                  and (ppv.date_start <= '"""+date+"""' or ppv.date_start is null)
+                                  and (ppv.date_end   >= '"""+date+"""' or ppv.date_end   is null)
 
                                   and ppi.product_id="""+str(product.id)+ """ 
-                                  and (ppi.date_start <= '2016-09-08' or ppi.date_start is null)
-                                  and (ppi.date_end   >= '2016-09-08' or ppi.date_end   is null)
+                                  and (ppi.date_start <= '"""+date+"""' or ppi.date_start is null)
+                                  and (ppi.date_end   >= '"""+date+"""' or ppi.date_end   is null)
                             order by ppi.sequence
                             limit 1
                         """
@@ -195,23 +207,36 @@ class is_cout_calcul(models.Model):
                             else:
                                 if prix_tarif:
                                     prix_calcule=prix_tarif
+
+
+
+                    if type_article=='A':
+                        if prix_calcule==0:
+                            prix_calcule=cout.cout_act_matiere
+                        ecart_calcule_matiere  = prix_calcule - cout.cout_act_matiere
+                    if type_article=='ST':
+                        if prix_calcule==0:
+                            prix_calcule=cout.cout_act_st
+                        ecart_calcule_matiere  = prix_calcule - cout.cout_act_st
+
+
                 cout.type_article  = type_article
                 cout.prix_tarif    = prix_tarif
                 cout.prix_commande = prix_commande
                 cout.prix_facture  = prix_facture
                 cout.prix_calcule  = prix_calcule
+                cout.ecart_calcule_matiere = ecart_calcule_matiere
 
-                ecart_calcule_matiere  = prix_calcule - cout.cout_act_matiere
-                cout.ecart_calcule_matiere=ecart_calcule_matiere
 
             obj.state="prix_achat"
 
 
     @api.multi
     def get_products(self,obj):
+        cats=self.env['is.category']._calcul_cout()
         products={}
         if obj.product_id:
-            products=self.env['product.product'].search([('id', '=', obj.product_id.id)])
+            products=self.env['product.product'].search([('id', '=', obj.product_id.id), ('is_category_id', 'in', cats)])
         else:
             if obj.segment_id:
                 products=self.env['product.product'].search([('segment_id', '=', obj.segment_id.id)], limit=10000)
@@ -219,7 +244,10 @@ class is_cout_calcul(models.Model):
                 if obj.is_category_id:
                     products=self.env['product.product'].search([('is_category_id', '=', obj.is_category_id.id)], limit=10000)
                 else:
-                    products=self.env['product.product'].search([])
+                    if obj.is_gestionnaire_id:
+                        products=self.env['product.product'].search([('is_gestionnaire_id', '=', obj.is_gestionnaire_id.id)], limit=10000)
+                    else:
+                        products=self.env['product.product'].search([])
         return products
 
 
@@ -247,6 +275,7 @@ class is_cout_calcul(models.Model):
             'cout_st'     : cout_st, 
             'total_st'    : quantite_total*cout_st,
         })
+
         if type_article!='A':
             lot_mini=product.lot_mini
             if lot_mini==0:
@@ -297,9 +326,9 @@ class is_cout_calcul(models.Model):
                                 inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
                                 inner join is_cout ic on ic.name=mbl.product_id
                 where pp.id="""+str(product.id)+ """ 
-                      and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
                 order by mbl.sequence, mbl.id
             """
+            # TODO : Filtre sur ce critère ? => and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
             cr.execute(SQL)
             result = cr.fetchall()
             niv=niveau+1
@@ -339,16 +368,16 @@ class is_cout_calcul(models.Model):
                             cout_act_st      = 0
                         if cout.type_article=='ST':
                             cout_act_matiere = 0
-                            cout_act_st      = cout.prix_calcule
+                            cout_act_st      = 0
                         if cout.type_article!='A':
                             self.detail_nomenclature=[]
                             self.detail_gamme_ma=[]
                             self.detail_gamme_mo=[]
-                            self.nomenclature_prix_revient(obj,0,product)
+                            self.nomenclature_prix_revient(obj, 0, product, False, 1, 1, cout.prix_calcule)
                             for vals in self.detail_nomenclature:
                                 is_code=vals['is_code']
                                 if is_code[:1]=="7":
-                                    cout_act_condition=cout_act_condition++vals['total_mat']
+                                    cout_act_condition=cout_act_condition+vals['total_mat']
                                 del vals['is_code']
                                 vals['cout_id']=cout.id
                                 cout_act_matiere = cout_act_matiere+vals['total_mat']
@@ -358,7 +387,7 @@ class is_cout_calcul(models.Model):
                                 'cout_id'     : cout.id,
                                 'designation' : 'TOTAL  : ',
                                 'total_mat'   : cout_act_matiere,
-                                'total_st'    : cout_act_matiere,
+                                'total_st'    : cout_act_st,
                             }
                             res=self.env['is.cout.nomenclature'].create(vals)
                             vals={
@@ -379,11 +408,14 @@ class is_cout_calcul(models.Model):
 
                         cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
 
+
+
+
                         cout.cout_act_matiere   = cout_act_matiere
                         cout.cout_act_condition = cout_act_condition
                         cout.cout_act_machine   = cout_act_machine
                         cout.cout_act_mo        = cout_act_mo
-                        cout.cout_act_st        = 0
+                        cout.cout_act_st        = cout_act_st
                         cout.cout_act_total     = cout_act_total
                         cout.is_category_id     = row.product_id.is_category_id
                         cout.is_gestionnaire_id = row.product_id.is_gestionnaire_id
@@ -411,6 +443,24 @@ class is_cout_calcul_actualise(models.Model):
     cout_act_mo      = fields.Float("Coût act main d'oeuvre" , digits=(12, 4))
     cout_act_st      = fields.Float("Coût act sous-traitance", digits=(12, 4))
     cout_act_total   = fields.Float("Coût act Total"         , digits=(12, 4))
+
+
+
+    @api.multi
+    def action_acces_cout(self):
+        for obj in self:
+            product_id=obj.product_id.id
+            couts=self.env['is.cout'].search([['name', '=', product_id]])
+            if len(couts)>0:
+                res_id=couts[0].id
+                return {
+                    'name': obj.product_id.name,
+                    'view_mode': 'form',
+                    'view_type': 'form',
+                    'res_model': 'is.cout',
+                    'type': 'ir.actions.act_window',
+                    'res_id': res_id,
+                }
 
 
 
@@ -459,6 +509,30 @@ class is_cout(models.Model):
     nomenclature_ids       = fields.One2many('is.cout.nomenclature', 'cout_id', u"Lignes de la nomenclature")
     gamme_ma_ids           = fields.One2many('is.cout.gamme.ma'    , 'cout_id', u"Lignes gamme machine")
     gamme_mo_ids           = fields.One2many('is.cout.gamme.mo'    , 'cout_id', u"Lignes gamme MO")
+
+
+    @api.multi
+    def action_calcul_cout(self):
+        for obj in self:
+
+            vals={
+                'product_id'   : obj.name.id,
+                'multiniveaux' : False,
+            }
+            cout_calcul=self.env['is.cout.calcul'].create(vals)
+            cout_calcul.action_calcul_prix_achat()
+            cout_calcul.action_calcul_prix_revient()
+            
+            return {
+                'name': obj.name.name,
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'is.cout',
+                'type': 'ir.actions.act_window',
+                'res_id': obj.id,
+            }
+
+
 
 
 class is_cout_nomenclature(models.Model):
