@@ -1,12 +1,24 @@
 # -*- coding: utf-8 -*-
 
-
 from openerp import models,fields,api
 from openerp.tools.translate import _
 
 
 class account_invoice(models.Model):
     _inherit = "account.invoice"
+
+    is_document       = fields.Char('Document'     , help="Ce champ est utilisé dans les factures diverses pour saisir le moule ou le n° d'investissement")
+    is_num_cde_client = fields.Char('N° Cde Client', help="Ce champ est utilisé dans les factures diverses sans commande client dans Odoo")
+    is_num_bl_manuel  = fields.Char('N° BL manuel' , help="Ce champ est utilisé dans les factures diverses sans bon de livraison dans Odoo")
+
+
+    @api.multi
+    def invoice_print(self):
+        assert len(self) == 1, 'This option should only be used for a single id at a time.'
+        self.sent = True
+        return self.env['report'].get_action(self, 'is_plastigray.is_report_invoice')
+
+
 
     @api.multi
     def action_move_create(self):
@@ -60,7 +72,7 @@ class account_invoice_line(models.Model):
     _inherit = "account.invoice.line"
 
     is_section_analytique_id = fields.Many2one('is.section.analytique', 'Section analytique')
-
+    is_move_id               = fields.Many2one('stock.move', 'Mouvement de stock')
 
     @api.multi
     def product_id_change(self, product, uom_id, qty=0, name='', type='out_invoice',

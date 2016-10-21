@@ -26,6 +26,18 @@ class stock_picking(models.Model):
 class stock_move(models.Model):
     _inherit = "stock.move"
 
+
+
+    def _create_invoice_line_from_vals(self, cr, uid, move, invoice_line_vals, context=None):
+
+        if move:
+            invoice_line_vals['is_move_id']=move.id
+
+        res = super(stock_move, self)._create_invoice_line_from_vals(cr, uid, move, invoice_line_vals, context)
+        print "RES = ", res, move, invoice_line_vals
+        return res
+
+
     @api.multi
     def action_acceder_mouvement_stock(self):
         dummy, view_id = self.env['ir.model.data'].get_object_reference('stock', 'view_move_form')
