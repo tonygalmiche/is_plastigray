@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+        <!-- tree prevision -->
+        <record id="mrp_prevision_tree" model="ir.ui.view">
+            <field name="name">mrp.prevision.tree</field>
+            <field name="model">mrp.prevision</field>
+            <field name="arch" type="xml">
+                <tree string="Prevision">
+                    <field name="name"/>
+                    <field name="parent_id" />
+                    <field name="product_id" />
+                    <field name="quantity" sum="Total" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="type" />
+                    <field name="niveau" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- form prevision -->
+        <record id="mrp_prevision_form" model="ir.ui.view">
+            <field name="name">mrp.prevision.form</field>
+            <field name="model">mrp.prevision</field>
+            <field name="arch" type="xml">
+                <form>
+
+
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="end_date" />
+                                <field name="quantity" />
+                                <field name="type"/> 
+                                <field name="parent_id"        attrs="{'invisible': [('type','!=', 'ft')]}" />
+                            </group>
+                            <group>
+                                <field name="name"             readonly="1"/>
+                                <field name="start_date"       readonly="1" />
+                                <field name="quantity_origine" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Composants" attrs="{'invisible': [('type','!=', 'fs')]}" >
+                            <field name="ft_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="product_id" />
+                                    <field name="quantity_origine" />
+                                    <field name="quantity" />
+                                    <field name="start_date"/>
+                                    <field name="end_date" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+           </field>
+        </record>
+        
+        <record id="mrp_prevision_search_view" model="ir.ui.view">
+            <field name="name">mrp.prevision.search</field>
+            <field name="model">mrp.prevision</field>
+            <field name="arch" type="xml">
+                <search string="Prevision">
+                    <filter string="Inactive" icon="terp-gdu-smart-failing" domain="[('active','=',False)]"/>
+
+                    <field name="name" string="OD" filter_domain="['|',('name', 'ilike', self),('parent_id', 'ilike', self)]"/>
+
+                    <!--<field name="name"/>-->
+                    <field name="product_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="type"/>
+                    <field name="niveau"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+
+                    <group expand="1" string="Regrouper par">
+                        <filter string="Type"     context="{'group_by':'type'}"/>
+                        <filter string="Article"  context="{'group_by':'product_id'}"/>
+                        <filter string="Semaine"  context="{'group_by':'start_date:week'}"/>
+                    </group>
+
+
+                </search>
+            </field>
+        </record>
+        
+        
+        <!-- action de la fenetre -->
+        <record id="action_mrp_prevision_form" model="ir.actions.act_window">
+            <field name="name">Prevision</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.prevision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mrp_prevision_tree"/>
+            <field name="search_view_id" ref="mrp_prevision_search_view"/>
+        </record>
+        
+        <menuitem name="Previsions" id="menu_mrp_prevision" parent="base.menu_mrp_root" sequence="1"/>
+        <menuitem action="action_mrp_prevision_form" 
+                  id="menu_action_mrp_prevision_form" 
+                  parent="menu_mrp_prevision" sequence="30"/>
+
+
+        <record id="mrp_prevision_action_server" model="ir.actions.server">
+             <field name="name">Convertir en ordre de fabrication</field>
+            <field name="model_id" ref="model_mrp_prevision"/>
+            <field name="code">action = self.button_mrp_create(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="mrp_order_more_item" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'mrp.prevision'" name="model"/>
+            <field name="name">Convertir en ordre de fabrication</field>
+            <field eval="'ir.actions.server,%d'%mrp_prevision_action_server" name="value"/>
+        </record>
+
+
+
+
+
+        <!-- Analyse du CBN -->
+        <record model="ir.actions.act_url" id="is_url_analyse_cbn_action">
+            <field name="name">http://odoo/cbn/Sugestion_CBN.php</field>
+            <field name="url">http://odoo/cbn/Sugestion_CBN.php</field>
+            <field name="type">ir.actions.act_url</field>
+        </record>
+
+
+        <!-- Planning -->
+        <record model="ir.actions.act_url" id="is_url_planning_action">
+            <field name="name">http://odoo/planning/</field>
+            <field name="url">http://odoo/planning/</field>
+            <field name="type">ir.actions.act_url</field>
+        </record>
+
+        <!-- Wiki -->
+        <record model="ir.actions.act_url" id="is_url_wiki_action">
+            <field name="name">http://odoowiki</field>
+            <field name="url">http://odoowiki</field>
+            <field name="type">ir.actions.act_url</field>
+        </record>
+
+
+
+    </data>
+</openerp>
+

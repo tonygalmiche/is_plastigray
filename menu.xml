@@ -140,7 +140,7 @@
     <menuitem id="menu_is_production_production" sequence="10" name="Production"             parent="menu_is_production"/>
     <menuitem id="menu_is_production_10"         sequence="10" name="Ordres de fabrication"  parent="menu_is_production_production" action="mrp.mrp_production_action" />
     <menuitem id="menu_is_production_20"         sequence="20" name="Ordres de Travail"      parent="menu_is_production_production" action="mrp_operations.mrp_production_wc_action_form" />
-    <menuitem id="menu_is_production_30"         sequence="30" name="Planning"               parent="menu_is_production_production" action="is_mrp.is_url_planning_action"    groups="mrp.group_mrp_manager"/>
+    <menuitem id="menu_is_production_30"         sequence="30" name="Planning"               parent="menu_is_production_production" action="is_url_planning_action"    groups="mrp.group_mrp_manager"/>
 
     <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"/>
     <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="stock.quantsact" groups=""/>
@@ -162,16 +162,16 @@
     <menuitem id="menu_is_production_inv_import_20" sequence="20" name="Lignes"              parent="menu_is_production_inv_import" action="is_inventaire_line_action" />
 
     <menuitem id="menu_is_production_cbn"    sequence="40" name="Calcul des besoins"  parent="menu_is_production"/>
-    <menuitem id="menu_is_production_cbn_10" sequence="10" name="Calcul des besoins"  parent="menu_is_production_cbn" action="is_mrp.action_generate_prevision" groups="mrp.group_mrp_manager" />
-    <menuitem id="menu_is_production_cbn_20" sequence="20" name="Prévisions"          parent="menu_is_production_cbn" action="is_mrp.action_mrp_prevision_form" groups="mrp.group_mrp_manager" />
-    <menuitem id="menu_is_production_cbn_30" sequence="30" name="Analyse du CBN"      parent="menu_is_production_cbn" action="is_mrp.is_url_analyse_cbn_action" groups="mrp.group_mrp_manager"/>
+    <menuitem id="menu_is_production_cbn_10" sequence="10" name="Calcul des besoins"  parent="menu_is_production_cbn" action="action_generate_prevision" groups="mrp.group_mrp_manager" />
+    <menuitem id="menu_is_production_cbn_20" sequence="20" name="Prévisions"          parent="menu_is_production_cbn" action="action_mrp_prevision_form" groups="mrp.group_mrp_manager" />
+    <menuitem id="menu_is_production_cbn_30" sequence="30" name="Analyse du CBN"      parent="menu_is_production_cbn" action="is_url_analyse_cbn_action" groups="mrp.group_mrp_manager"/>
 
     <menuitem id="menu_is_pdc"    sequence="42" name="Plan de charge"    parent="menu_is_production"/>
     <menuitem id="menu_is_pdc_10" sequence="10" name="Plan de charge"    parent="menu_is_pdc"  action="is_pdc_action"      groups="mrp.group_mrp_manager" />
 
     <menuitem id="menu_is_intranet"          sequence="45" name="Intranet"            parent="menu_is_production"/>
 
-    <menuitem id="menu_is_intranet_30"       sequence="30" name="Wiki"                parent="menu_is_intranet"  action="is_mrp.is_url_wiki_action"        groups="mrp.group_mrp_manager"/>
+    <menuitem id="menu_is_intranet_30"       sequence="30" name="Wiki"                parent="menu_is_intranet"  action="is_url_wiki_action"        groups="mrp.group_mrp_manager"/>
 
     <menuitem id="account.menu_finance"          sequence="5"  name="Comptabilité"         parent=""/>
     <menuitem id="menu_is_autre"                 sequence="6"  name="Autre" groups="base.group_no_one" />

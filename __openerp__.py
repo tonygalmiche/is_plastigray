@@ -23,7 +23,6 @@
         "mrp_operations",         # Gammes
         "purchase",               # Gestion des achats
         "is_inventory",           # Modifications Inventaires
-        "is_mrp",                 # Calcul des besoins
         "is_mold",                # Moules et Projets pour l'injection plastique
         "is_pg_product",          # Fiche article
         "is_gestion_lot",         # Gestion des lots pour le contrôle qualité
@@ -48,7 +47,10 @@
         "is_cout_view.xml",
         "res_company_view.xml",
         "is_tarif_cial_view.xml",
+        "mrp_prevision_view.xml",
+        "mrp_prevision_sequence.xml",
         "wizard/is_liste_servir_wizard_view.xml",
+        "wizard/generate_previsions_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",
         "views/webclient_templates.xml",

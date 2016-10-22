@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import is_config
+import mrp_prevision
 import product
 import product_pricelist
 import product_pricelist_new_api
