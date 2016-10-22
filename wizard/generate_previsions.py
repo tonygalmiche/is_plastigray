@@ -37,7 +37,7 @@ def duree(debut):
 
 
 #TODO : Permet d'indiquer le produit à analyser
-product_id_test=48
+product_id_test=0
 
 #class mrp_generate_previsions(osv.osv_memory):
 
@@ -366,10 +366,9 @@ class mrp_generate_previsions(models.TransientModel):
 
 
     @api.multi
-    def generate_previsions(self, ids, context=None):
+    def generate_previsions(self):
         cr=self._cr
         debut=datetime.datetime.now()
-
 
         #TODO : Mettre en place une liste d'étapes pour gérer les différentes phases du CBN 
         #=> calcul brut => Regroupement des suggestions => Suggestions multiples du lot
@@ -382,17 +381,26 @@ class mrp_generate_previsions(models.TransientModel):
 
 
         for obj in self:
-        #if data:
             prevision_obj = self.env['mrp.prevision']
             bom_line_obj  = self.env['mrp.bom.line']
             company_obj   = self.env['res.company']
+            partner_obj   = self.env['res.partner']
+            company       = obj.company_id
 
 
-            #self.env['product.product'].
-            #print "data=",data
 
 
-            company = company_obj.browse(obj.company_id)
+
+
+
+
+
+
+
+
+
+
+
 
             #** supprimer les previsions existantes ****************************
             prevision_ids = prevision_obj.search([('active','=',True),]).unlink()
@@ -512,6 +520,42 @@ class mrp_generate_previsions(models.TransientModel):
                 compteur=compteur+1
                 if compteur>10:
                     break
+
+
+            x=duree(debut)
+            print "Fin du CBN = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
+
+
+
+            #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
+            sas = prevision_obj.search([('type','=','sa'),])
+            for sa in sas:
+                new_date=partner_obj.get_date_dispo(company.partner_id, sa.end_date)
+                sa.end_date=new_date
+            #*******************************************************************
+
+
+            x=duree(debut)
+            print "Fin traitement date de fin des SA = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
+
+
+            #** Date de début des SA en tenant compte du délai de livraison ****
+            for sa in sas:
+                product=sa.product_id
+                if len(product.seller_ids)>0:
+                    delay=product.seller_ids[0].delay
+                    partner_id=product.seller_ids[0].name
+                    new_date = datetime.datetime.strptime(sa.end_date, '%Y-%m-%d')
+                    new_date = new_date - datetime.timedelta(days=delay)
+                    new_date = new_date.strftime('%Y-%m-%d')
+                    new_date = partner_obj.get_date_dispo(product.seller_ids[0].name, new_date)
+                    sa.start_date=new_date
+            #*******************************************************************
+
+            x=duree(debut)
+            print "Fin traitement date de début des SA = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
+
+
 
 
 

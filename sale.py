@@ -185,17 +185,17 @@ class sale_order_line(models.Model):
                 cr      = self._cr
                 uid     = self._uid
                 context = self._context
-                is_api = self.pool.get('is.api')
+                res_partner = self.env['res.partner']
                 # jours de fermeture de la société
-                jours_fermes = is_api.num_closing_days(cr, uid, order.order_id.company_id.partner_id, context=context)
+                jours_fermes = res_partner.num_closing_days(order.order_id.company_id.partner_id)
                 # Jours de congé de la société
-                leave_dates = is_api.get_leave_dates(cr, uid, order.order_id.company_id.partner_id, context=context)
+                leave_dates = res_partner.get_leave_dates(order.order_id.company_id.partner_id)
                 delai_transport = order.order_id.partner_id.is_delai_transport
                 if delai_transport:
                     date = datetime.datetime.strptime(order.is_date_livraison, '%Y-%m-%d') - datetime.timedelta(days=delai_transport)
                     date = date.strftime('%Y-%m-%d')
                     num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
-                    date_expedition = is_api.get_working_day(cr, uid, date, num_day, jours_fermes, leave_dates, context=context)         
+                    date_expedition = res_partner.get_working_day(date, num_day, jours_fermes, leave_dates)
                     order.is_date_expedition=date_expedition
                 else:
                     order.is_date_expedition = order.is_date_livraison 
@@ -249,15 +249,15 @@ class sale_order_line(models.Model):
 
 
 
-
-    def check_date_livraison(self, cr, uid, ids, date_livraison,  partner_id, context=None):
-        is_api = self.pool.get('is.api')
+    @api.multi
+    def check_date_livraison(self, date_livraison,  partner_id, context=None):
+        res_partner = self.env['res.partner']
         if partner_id:
-            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
+            partner = self.env['res.partner'].browse(partner_id)
             # jours de fermeture de la société
-            jours_fermes = is_api.num_closing_days(cr, uid, partner, context=context)
+            jours_fermes = res_partner.num_closing_days(partner)
             # Jours de congé de la société
-            leave_dates = is_api.get_leave_dates(cr, uid, partner, context=context)
+            leave_dates = res_partner.get_leave_dates(partner)
             # num de jour dans la semaine de la date de livraison
             num_day = time.strftime('%w', time.strptime(date_livraison, '%Y-%m-%d'))
             
@@ -266,22 +266,24 @@ class sale_order_line(models.Model):
         return True
 
 
-    def onchange_date_livraison(self, cr, uid, ids, date_livraison, product_id, qty, uom, partner_id, pricelist, company_id, order_id=False, context=None):
+    @api.multi
+    def onchange_date_livraison(self, date_livraison, product_id, qty, uom, partner_id, pricelist, company_id, order_id=False):
+        context=self._context
         v = {}
         warning = {}
         if order_id:
-            order = self.pool.get('sale.order').browse(cr, uid, order_id, context=context)
+            order = self.env['sale.order'].browse(order_id)
             if order:
                 partner_id=order.partner_id.id
                 company_id=order.company_id.id
         if partner_id and date_livraison:
-            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
-            company = self.pool.get('res.company').browse(cr, uid, company_id, context=context)
-            is_api = self.pool.get('is.api')
+            partner     = self.env['res.partner'].browse(partner_id)
+            company     = self.env['res.company'].browse(company_id)
+            res_partner = self.env['res.partner']
             # jours de fermeture de la société
-            jours_fermes = is_api.num_closing_days(cr, uid, company.partner_id, context=context)
+            jours_fermes = res_partner.num_closing_days(company.partner_id)
             # Jours de congé de la société
-            leave_dates = is_api.get_leave_dates(cr, uid, company.partner_id, context=context)
+            leave_dates = res_partner.get_leave_dates(company.partner_id)
             delai_transport = partner.is_delai_transport
             date_expedition = date_livraison
             if delai_transport:
@@ -290,10 +292,10 @@ class sale_order_line(models.Model):
                     date = datetime.datetime.strptime(date_expedition, '%Y-%m-%d') - datetime.timedelta(days=1)
                     date = date.strftime('%Y-%m-%d')
                     num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
-                    date_expedition = is_api.get_day_except_weekend(cr, uid, date, num_day, context=context)         
+                    date_expedition = res_partner.get_day_except_weekend(date, num_day)         
                     i += 1
                 
-                date_expedition = is_api.get_working_day(cr, uid, date, num_day, jours_fermes, leave_dates, context=context)
+                date_expedition = res_partner.get_working_day(date, num_day, jours_fermes, leave_dates)
                 
             v['is_date_expedition'] = date_expedition 
 
@@ -305,7 +307,7 @@ class sale_order_line(models.Model):
                     is_type_commande='previsionnel'
             v['is_type_commande']   = is_type_commande
         
-            check_date = self.check_date_livraison(cr, uid, ids, date_livraison, partner_id, context=context)
+            check_date = self.check_date_livraison(date_livraison, partner_id, context=context)
             if not check_date:
                 warning = {
                             'title': _('Warning!'),
@@ -320,7 +322,7 @@ class sale_order_line(models.Model):
                     uom=uom,
                     date=date_livraison,
                 )
-                price = self.pool.get('product.pricelist').price_get(cr, uid, [pricelist],
+                price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
                         product_id, qty or 1.0, partner_id, ctx)[pricelist]
                 v['price_unit'] = price
             #*******************************************************************

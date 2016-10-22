@@ -3,6 +3,11 @@
 from openerp import models,fields,api
 from openerp.tools.translate import _
 
+import time
+import datetime
+
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 
 # ** Fonctions d'importation EDI ***********************************************
 import_function=[
@@ -206,6 +211,112 @@ class res_partner(models.Model):
             domain.append(('segment_id','=',segment_id))           
         return {'value': val,
                 'domain': {'is_famille_achat': domain}}
+
+
+
+
+    @api.multi
+    def num_closing_days(self, partner_id):
+        """ Retourner les jours de fermetures de l'usine 
+        """
+        jours_fermes = []
+        if partner_id.close_monday:
+            jours_fermes.append(1)
+        if partner_id.close_tuesday:
+            jours_fermes.append(2)
+        if partner_id.close_wednesday:
+            jours_fermes.append(3)
+        if partner_id.close_thursday:
+            jours_fermes.append(4)
+        if partner_id.close_friday:
+            jours_fermes.append(5)
+        if partner_id.close_saturday:
+            jours_fermes.append(6)
+        if partner_id.close_sunday:
+            jours_fermes.append(0)
+        return jours_fermes
+    
+
+    @api.multi
+    def get_leave_dates(self, partner_id):
+        """ Retourner les jours de congé de l'usine 
+        """
+        leave_dates = []
+        if partner_id.calendar_line:
+            for line in partner_id.calendar_line:                                                                                                                                                            
+                delta = datetime.datetime.strptime(line.date_to, DATETIME_FORMAT) - datetime.datetime.strptime(line.date_from, DATETIME_FORMAT)
+                for i in range(delta.days + 1):
+                    date = datetime.datetime.strptime(line.date_from, DATETIME_FORMAT) + datetime.timedelta(days=i)
+                    leave_dates.append(date.strftime('%Y-%m-%d'))
+        return leave_dates
+    
+    @api.multi
+    def get_day_except_weekend(self, date, num_day):
+        """ Calculer la date d'expédition en exceptant les weekends
+        """
+        if int(num_day) not in [0, 6]:
+            return date
+        else:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d') - datetime.timedelta(days=1)
+            date = date.strftime('%Y-%m-%d')
+            num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
+            return self.get_day_except_weekend(date, num_day)
+
+        
+    @api.multi
+    def get_working_day(self, date, num_day, jours_fermes, leave_dates):
+        """ Déterminer la date d'expédition en fonction des jours de fermeture de l'usine ou des jours de congés de l'usine 
+        """
+        if int(num_day) not in jours_fermes and date not in leave_dates:
+            return date
+        else:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d') - datetime.timedelta(days=1)
+            date = date.strftime('%Y-%m-%d')
+            num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
+            return self.get_working_day(date, num_day, jours_fermes, leave_dates)
+        
+
+
+    @api.multi
+    def get_date_dispo(self, partner_id, date):
+        """ Retourne la première date disponible dans le passé en tenant compte des jours d'ouverture et des vacances 
+        """
+        num_closing_days = self.num_closing_days(partner_id)
+        leave_dates      = self.get_leave_dates(partner_id)
+        new_date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        while True:
+            date_txt=new_date.strftime('%Y-%m-%d')
+            num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
+            if num_day in num_closing_days or date_txt in leave_dates:
+                new_date = new_date - datetime.timedelta(days=1)
+            else:
+                break
+        return new_date.strftime('%Y-%m-%d')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

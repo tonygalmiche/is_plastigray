@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import is_config
+import is_resource
 import mrp_prevision
 import product
 import product_pricelist
@@ -22,6 +23,4 @@ import is_inventaire
 import is_mem_var
 import is_cout
 import is_tarif_cial
-
-
 

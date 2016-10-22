@@ -49,6 +49,7 @@
         "is_tarif_cial_view.xml",
         "mrp_prevision_view.xml",
         "mrp_prevision_sequence.xml",
+        "is_resource_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
         "wizard/generate_previsions_view.xml",
         "views/layouts.xml",
