@@ -39,7 +39,8 @@ class product_pricelist(osv.osv):
                 version = v
                 break
         if not version:
-            raise osv.except_osv(_('Warning!'), u"Au moins une liste de prix n'a pas de version active !\nCréez ou activez en une.")
+            raise osv.except_osv(_('Warning!'), u"Au moins une liste de prix n'a pas de version active !\n \
+                Créez ou activez en une.\nListe de prix="+str(_(pricelist.name))+' : date='+str(date) + ' : Article='+str(products[0].is_code))
         categ_ids = {}
         for p in products:
             categ = p.categ_id

@@ -7,6 +7,8 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 from math import *
 from openerp import workflow
+from openerp.exceptions import Warning
+
 
 class mrp_prevision(models.Model):
     _name = 'mrp.prevision'
@@ -42,12 +44,64 @@ class mrp_prevision(models.Model):
 
 
 
+
     @api.multi
-    def button_mrp_create(self):
+    def convertir_sa(self):
+        ids=[]
         for obj in self:
+            if obj.type=='sa':
+                if len(obj.product_id.seller_ids)>0:
+                    ids.append(obj)
+                else:
+                    obj.note="Aucun fournisseur indiqué dans la fiche article => Convertion en commande impossible"
 
+        order_obj      = self.env['purchase.order']
+        order_line_obj = self.env['purchase.order.line']
+
+        for obj in ids:
+            partner=obj.product_id.seller_ids[0].name
+            orders = order_obj.search([('partner_id','=',partner.id),('state','=','draft')])
+            order=False
+            if len(orders)>0:
+                order=orders[0]
+            else:
+                if partner.property_product_pricelist_purchase:
+                    vals={
+                        'partner_id'   : partner.id,
+                        'location_id'  : partner.is_source_location_id.id,
+                        'pricelist_id' : partner.property_product_pricelist_purchase.id,
+                    }
+                    order=order_obj.create(vals)
+            if order:
+                res=order_line_obj.onchange_product_id(order.pricelist_id.id, \
+                    obj.product_id.id, obj.quantity, obj.product_id.uom_id.id, \
+                    partner.id, False, False, obj.end_date, False, False, 'draft')
+                vals=res['value']
+                vals['order_id']=order.id
+                order_line=order_line_obj.create(vals)
+                obj.unlink()
+
+
+
+
+        
+            
+
+
+
+
+    @api.multi
+    def convertir_fs(self):
+        ids=[]
+        for obj in self:
             if obj.type=='fs':
+                if len(obj.ft_ids)>0:
+                    ids.append(obj)
+                else:
+                    obj.note="Aucune nomenclature pour cet article => Convertion en OF impossible"
 
+        for obj in ids:
+            if obj.type=='fs':
                 mrp_production_obj = self.env['mrp.production']
                 bom_obj = self.env['mrp.bom']
 
@@ -67,8 +121,21 @@ class mrp_prevision(models.Model):
                         'routing_id': routing_id,
                         'origin': obj.name,
                 })
-                print "Convertion ",obj.name, mrp_id
-                workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
+                name=obj.name
+                try:
+                    workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
+                    break
+                except Exception as inst:
+                    msg="Impossible de convertir la "+name+'\n('+str(inst)+')'
+                    #obj.note=msg
+                    raise Warning(msg)
+
+
+
+
+
+
+
 
 
     @api.multi

@@ -7,7 +7,7 @@
             <field name="name">mrp.prevision.tree</field>
             <field name="model">mrp.prevision</field>
             <field name="arch" type="xml">
-                <tree string="Prevision">
+                <tree colors="red:note!=False">
                     <field name="name"/>
                     <field name="parent_id" />
                     <field name="product_id" />
@@ -15,6 +15,7 @@
                     <field name="start_date" />
                     <field name="end_date" />
                     <field name="type" />
+                    <field name="note" />
                     <field name="niveau" invisible="1"/>
                 </tree>
             </field>
@@ -53,6 +54,9 @@
                                     <field name="end_date" />
                                 </tree>
                             </field>
+                        </group>
+                        <group>
+                            <field name="note" />
                         </group>
                     </sheet>
                 </form>
@@ -105,18 +109,32 @@
                   parent="menu_mrp_prevision" sequence="30"/>
 
 
-        <record id="mrp_prevision_action_server" model="ir.actions.server">
-             <field name="name">Convertir en ordre de fabrication</field>
+        <!-- convertir les FS -->
+        <record id="convertir_fs_action_server" model="ir.actions.server">
+             <field name="name">Convertir FS en ordre de fabrication</field>
             <field name="model_id" ref="model_mrp_prevision"/>
-            <field name="code">action = self.button_mrp_create(cr, uid, context.get('active_ids', []), context=context)</field>
+            <field name="code">action = self.convertir_fs(cr, uid, context.get('active_ids', []), context=context)</field>
         </record>
-        <record id="mrp_order_more_item" model="ir.values">
+        <record id="convertir_fs_ir_value" model="ir.values">
             <field eval="'client_action_multi'" name="key2"/>
             <field eval="'mrp.prevision'" name="model"/>
-            <field name="name">Convertir en ordre de fabrication</field>
-            <field eval="'ir.actions.server,%d'%mrp_prevision_action_server" name="value"/>
+            <field name="name">Convertir FS en ordre de fabrication</field>
+            <field eval="'ir.actions.server,%d'%convertir_fs_action_server" name="value"/>
         </record>
 
+
+        <!-- convertir les SA -->
+        <record id="convertir_sa_action_server" model="ir.actions.server">
+             <field name="name">Convertir SA en commande fournisseur</field>
+            <field name="model_id" ref="model_mrp_prevision"/>
+            <field name="code">action = self.convertir_sa(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="convertir_sa_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'mrp.prevision'" name="model"/>
+            <field name="name">Convertir SA en commande fournisseur</field>
+            <field eval="'ir.actions.server,%d'%convertir_sa_action_server" name="value"/>
+        </record>
 
 
 
