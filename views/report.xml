@@ -37,23 +37,21 @@
         </record>
 
 
-<!--
         <report 
-            id="is_report_invoices"
-            model="account.invoice"
-            string="Facture Plastigray"
+            id="report_cde_ouverte_fournisseurs"
+            model="is.cde.ouverte.fournisseur"
+            string="Commande ouverte fournisseur"
             report_type="qweb-pdf"
-            name="is_plastigray.is_report_invoice"
-            file="is_plastigray.is_report_invoice"
+            name="is_plastigray.report_cde_ouverte_fournisseur"
+            file="is_plastigray.report_cde_ouverte_fournisseur"
         />
-        <record id="is_report_invoices" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="is_plastigray.is_paperformat_facture_client"/>
+        <record id="report_cde_ouverte_fournisseurs" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.cde_ouverte_fournisseur_paperformat"/>
         </record>
--->
 
-<!--
-            paperformat_id=""
--->
+
+
+
 
     </data>
 </openerp>

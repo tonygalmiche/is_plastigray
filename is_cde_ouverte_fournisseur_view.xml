@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Sequence is.cde.ouverte.fournisseur --> 
+        <record id="is_cde_ouverte_fournisseur_type_seq" model="ir.sequence.type">
+            <field name="name">Commande ouverte fournisseur</field>
+            <field name="code">is.cde.ouverte.fournisseur</field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_seq" model="ir.sequence">
+            <field name="name">Commande ouverte fournisseur</field>
+            <field name="code">is.cde.ouverte.fournisseur</field>
+            <field name="prefix">COF-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- is.cde.ouverte.fournisseur --> 
+        <record model="ir.ui.view" id="is_cde_ouverte_fournisseur_form_view">
+            <field name="name">is_cde_ouverte_fournisseur_form_view</field>
+            <field name="model">is.cde.ouverte.fournisseur</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"  /> 
+                                <field name="partner_id" domain="[('supplier','=',True),('is_company','=',True)]"/> 
+                                <field name="pricelist_id"  /> 
+                                <field name="product_id" context="{'pricelist': pricelist_id}" /> 
+                                <field name="uom_po_id"  /> 
+                                <field name="commentaire"  /> 
+                            </group>
+                        </group>
+                        <group string="Commandes">
+                            <field name="line_ids" nolabel="1">
+                                <tree colors="gray:type_cde == 'prev'">
+                                    <field name="date"/>
+                                    <field name="type_cde"/>
+                                    <field name="quantite"/>
+                                    <field name="mrp_prevision_id"   widget="many2one_clickable"/> 
+                                    <field name="purchase_order_id"  widget="many2one_clickable"/> 
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_cde_ouverte_fournisseur_tree_view">
+            <field name="name">is_cde_ouverte_fournisseur_tree_view</field>
+            <field name="model">is.cde.ouverte.fournisseur</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/> 
+                    <field name="partner_id"/> 
+                    <field name="pricelist_id"/> 
+                    <field name="product_id"/> 
+                    <field name="uom_po_id"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_cde_ouverte_fournisseur_search_view" >
+            <field name="name">is_cde_ouverte_fournisseur_search_view</field>
+            <field name="model">is.cde.ouverte.fournisseur</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/> 
+                    <field name="partner_id"/> 
+                    <field name="product_id"/> 
+                    <group expand="0" string="Regrouper par">
+                        <filter 
+                            string="Fournisseur" domain="[]" 
+                            context="{'group_by':'partner_id'}" 
+                            name="group_by_partner_id_filter"
+                        />
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_cde_ouverte_fournisseur_action">
+            <field name="name">Commande ouverte fournisseur</field>
+            <field name="res_model">is.cde.ouverte.fournisseur</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{
+                    'search_default_group_by_partner_id_filter': 1
+                }
+            </field>
+
+        </record>
+
+
+
+        <!-- Intégrer les commandes et les SA -->
+        <record id="integrer_commandes_action_server" model="ir.actions.server">
+             <field name="name">Intégrer les commandes et les SA</field>
+            <field name="model_id" ref="model_is_cde_ouverte_fournisseur"/>
+            <field name="code">action = self.integrer_commandes(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="integrer_commandes_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.cde.ouverte.fournisseur'" name="model"/>
+            <field name="name">Intégrer les commandes et les SA</field>
+            <field eval="'ir.actions.server,%d'%integrer_commandes_action_server" name="value"/>
+        </record>
+
+
+
+
+  </data>
+</openerp>
