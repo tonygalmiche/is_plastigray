@@ -37,7 +37,7 @@
                             </group>
                         </group>
                         <group string="Commandes">
-                            <field name="line_ids" nolabel="1">
+                            <field name="line_ids" nolabel="1" readonly="1">
                                 <tree colors="gray:type_cde == 'prev'">
                                     <field name="date"/>
                                     <field name="type_cde"/>

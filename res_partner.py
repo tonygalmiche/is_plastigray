@@ -2,7 +2,7 @@
 
 from openerp import models,fields,api
 from openerp.tools.translate import _
-
+import os
 import time
 import datetime
 
@@ -294,30 +294,79 @@ class res_partner(models.Model):
         return new_date.strftime('%Y-%m-%d')
 
 
+    @api.multi
+    def imprimer_commande_ouverte(self):
+        '''
+        Action pour imprimer les commandes ouvertes depuis la fiche du fournisseur
+        '''
+        for obj in self:
+            orders=self.env['is.cde.ouverte.fournisseur'].search([('partner_id','=',obj.id)])
+            ids=[]
+            for order in orders:
+                ids.append(order.id)
 
+            # ** Récupération du fichier PDF du rapport indiqué ****************
+            pdf = self.pool.get('report').get_pdf(self._cr, self._uid, ids, 'is_plastigray.report_cde_ouverte_fournisseur', context=self._context)
+            # ******************************************************************
 
+            # Enregistrement du PDF sur le serveur *****************************
+            path="/tmp/commande_ouverte.pdf"
+            err=""
+            try:
+                fichier = open(path, "w")
+            except IOError, e:
+                err="Problème d'accès au fichier '"+path+"' => "+ str(e)
+            if err=="":
+                fichier.write(pdf)
+                fichier.close()
+                #Envoi du fichier dans l'imprimante
+                cmd="lpr -h -PSamsung-M2070-Raspberry "+path
+                #os.system(cmd)
+            # ******************************************************************
 
+            # ** Creation ou modification de la pièce jointe *******************
+            if err=="":
+                r = open(path,'rb').read().encode('base64')
+                name='Commande ouverte.pdf'
+                model='res.partner'
+                vals = {
+                    'name':        name,
+                    'datas_fname': name,
+                    'type':        'binary',
+                    'res_model':   model,
+                    'res_id':      obj.id,
+                    'datas':       r,
+                }
+                res_model_ids = self.env['ir.attachment'].search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+                if res_model_ids:
+                    res_model_ids.write(vals)
+                else:
+                    attachment_id = self.env['ir.attachment'].create(vals)
+                os.system("rm -f "+path)
+            #*******************************************************************
 
+            #** Envoi d'un mail avec le PDF en pièce jointe ********************
+            if err=="":
+                email = self.env['res.users'].browse(self._uid).email
+                if email:
+                    attachment_id = self.env['ir.attachment'].search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+                    email_vals = {}
+                    msg = u"Voici les commandes ouvertes <br>sur deux lignes avec des accents é@€"
+                    email_vals.update({
+                        'subject':"Commande ouverte éà",
+                        'email_to':email, 
+                        'email_from': email, 
+                        'body_html':msg.encode('utf-8'), 
+                        'attachment_ids': [(6, 0, [attachment_id.id])] 
+                    })
+                    email_id=self.env['mail.mail'].create(email_vals)
+                    if email_id:
+                        self.env['mail.mail'].send(email_id)
+            #*******************************************************************
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            #** Envoie du fichier PDF dans le navigateur ***********************
+            pdf=self.pool['report'].get_action(self._cr, self._uid, ids, 'is_plastigray.report_cde_ouverte_fournisseur', context=self._context)
+            return pdf
+            #*******************************************************************
 
 

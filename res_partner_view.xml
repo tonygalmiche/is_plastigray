@@ -247,6 +247,27 @@
             <field name="filter" eval="True"/>
         </record>
 
+
+
+
+
+
+        <!-- Imprimer les commandes ouvertes -->
+        <record id="imprimer_commande_ouverte_action_server" model="ir.actions.server">
+             <field name="name">Imprimer les commandes ouvertes</field>
+            <field name="model_id" ref="model_res_partner"/>
+            <field name="code">action = self.imprimer_commande_ouverte(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="imprimer_commande_ouverte_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'res.partner'" name="model"/>
+            <field name="name">Imprimer les commandes ouvertes</field>
+            <field eval="'ir.actions.server,%d'%imprimer_commande_ouverte_action_server" name="value"/>
+        </record>
+
+
+
+
 <!--
         <record id="base.view_partner_tree" model="ir.ui.view">
             <field name="name">res.partner.tree</field>
