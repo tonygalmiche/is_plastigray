@@ -124,7 +124,7 @@ class mrp_prevision(models.Model):
                 name=obj.name
                 try:
                     workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
-                    break
+                    #break
                 except Exception as inst:
                     msg="Impossible de convertir la "+name+'\n('+str(inst)+')'
                     #obj.note=msg
