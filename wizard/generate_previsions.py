@@ -37,7 +37,7 @@ def duree(debut):
 
 
 #TODO : Permet d'indiquer le produit à analyser
-product_id_test=0
+product_id_test=962
 
 #class mrp_generate_previsions(osv.osv_memory):
 
@@ -157,6 +157,37 @@ class mrp_generate_previsions(models.TransientModel):
                 print "_cde_cli : ",row[0], row[1], date_debut, date_fin
 
         return res
+
+
+    def _cde_fou(self, date_debut, date_fin):
+        cr=self._cr
+        now=datetime.datetime.now().strftime('%Y-%m-%d')
+        if date_debut<=now:
+            date_debut="2000-01-01"
+        sql="""
+            select product_id, sum(product_qty)
+            from stock_move 
+            where state not in ('done','cancel','none') and picking_id is not null
+                  and date_expected>='"""+str(date_debut)+""" 02:00:00'
+                  and date_expected<'"""+str(date_fin)+""" 02:00:00'
+            group by product_id
+        """
+        res={}
+        cr.execute(sql)
+        for row in cr.fetchall():
+            res[row[0]]=row[1]
+            if row[0]==product_id_test:
+                print "_cde_fou : ",row[0], row[1], date_debut, date_fin
+
+        return res
+
+#plastigray=# select id,origin,product_qty,date_expected,picking_id from stock_move where product_id=962 and state not in ('done','cancel','none') and picking_id is not null;
+#  id   | origin  | product_qty |    date_expected    | picking_id 
+#-------+---------+-------------+---------------------+------------
+# 11537 | PO00173 |     10000.0 | 2016-11-14 11:00:00 |        142
+# 11540 | PO00174 |     10000.0 | 2016-12-31 11:00:00 |        143
+
+#plastigray=# select id,origin,product_qty,picking_id from stock_move where product_id=962 and state not in ('done','cancel','none') and picking_id is not null;                                           
 
 
     def _fl(self, date_debut, date_fin):
@@ -408,6 +439,7 @@ class mrp_generate_previsions(models.TransientModel):
                     date_debut  = date
                     date_fin    = self._date_fin(date)
                     cde_cli     = self._cde_cli(date_debut, date_fin)
+                    cde_fou     = self._cde_fou(date_debut, date_fin)
                     fs          = self._suggestions(date_debut, date_fin, 'fs')
                     sa          = self._suggestions(date_debut, date_fin, 'sa')
                     ft          = self._suggestions(date_debut, date_fin, 'ft')
@@ -416,6 +448,7 @@ class mrp_generate_previsions(models.TransientModel):
                     for product in articles:
                         qt_stock      = stocks.get(product.id, 0)
                         qt_cde_cli    = cde_cli.get(product.id, 0)
+                        qt_cde_fou    = cde_fou.get(product.id, 0)
                         qt_fs         = fs.get(product.id, 0)
                         qt_sa         = sa.get(product.id, 0)
                         qt_ft         = ft.get(product.id, 0)
@@ -452,13 +485,14 @@ class mrp_generate_previsions(models.TransientModel):
                         if product.id==product_id_test:
                             print "stock_theorique avant calcul=",stock_theorique[product.id]
 
-                        stock_theorique[product.id] = stock_theorique[product.id] - qt_cde_cli + qt_fl - qt_fm + qt_fs + qt_sa - qt_ft
+                        stock_theorique[product.id] = stock_theorique[product.id] - qt_cde_cli + qt_cde_fou + qt_fl - qt_fm + qt_fs + qt_sa - qt_ft
 
                         #** Uniquement pour le debuggage à l'écran *****************
                         if product.id==product_id_test:
                             print str(product.id)+"\t"+ \
                                 str(date)+"\t"+ \
                                 "cde_cli:"     +str(qt_cde_cli)+"\t"+ \
+                                "cde_fou:"     +str(qt_cde_fou)+"\t"+ \
                                 "fl:"          +str(qt_fl)+"\t"+ \
                                 "fm:"          +str(qt_fm)+"\t"+ \
                                 "fs:"          +str(qt_fs)+"\t"+ \
