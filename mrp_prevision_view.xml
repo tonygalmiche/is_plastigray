@@ -141,16 +141,16 @@
 
         <!-- Analyse du CBN -->
         <record model="ir.actions.act_url" id="is_url_analyse_cbn_action">
-            <field name="name">http://odoo/cbn/Sugestion_CBN.php</field>
-            <field name="url">http://odoo/cbn/Sugestion_CBN.php</field>
+            <field name="name">http://odoo/odoo-erp/cbn/Sugestion_CBN.php</field>
+            <field name="url">http://odoo/odoo-erp/cbn/Sugestion_CBN.php</field>
             <field name="type">ir.actions.act_url</field>
         </record>
 
 
         <!-- Planning -->
         <record model="ir.actions.act_url" id="is_url_planning_action">
-            <field name="name">http://odoo/planning/</field>
-            <field name="url">http://odoo/planning/</field>
+            <field name="name">http://odoo/odoo-erp/planning/</field>
+            <field name="url">http://odoo/odoo-erp/planning/</field>
             <field name="type">ir.actions.act_url</field>
         </record>
 
