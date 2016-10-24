@@ -62,7 +62,7 @@ class mrp_generate_previsions(models.TransientModel):
 
     def _max_date():
         now = datetime.date.today()                # Date du jour
-        date = now + datetime.timedelta(days=1)   # Date + 30 jours
+        date = now + datetime.timedelta(days=30)   # Date + 30 jours
         return date.strftime('%Y-%m-%d')           # Formatage
 
     _defaults = {
@@ -387,29 +387,11 @@ class mrp_generate_previsions(models.TransientModel):
             partner_obj   = self.env['res.partner']
             company       = obj.company_id
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             #** supprimer les previsions existantes ****************************
             prevision_ids = prevision_obj.search([('active','=',True),]).unlink()
             #*******************************************************************
 
             dates    = self._dates(obj.max_date)
-
-            print dates
-
             articles = self._articles()
             stocks   = self._stocks(articles)
             num_od=1
