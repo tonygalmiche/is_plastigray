@@ -352,10 +352,13 @@ class is_edi_cde_cli(models.Model):
                         type_commande="previsionnel"
                     else:
                         type_commande="ferme"
+                    date_livraison=lig[9].strip()
+                    d=datetime.strptime(date_livraison, '%d.%m.%Y')
+                    date_livraison=d.strftime('%Y-%m-%d')
                     ligne = {
                         'quantite'      : qt,
                         'type_commande' : type_commande,
-                        'date_livraison': lig[9],
+                        'date_livraison': date_livraison,
                     }
                     val.update({'lignes':[ligne]})
                     res.append(val)
