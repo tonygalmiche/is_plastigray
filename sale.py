@@ -83,7 +83,8 @@ class sale_order(models.Model):
             if vals['is_type_commande']=='ouverte':
                 product_id=vals['is_article_commande_id']
                 product   = self.env['product.product'].browse([product_id])
-                partner   = self.env['res.partner'].browse(vals['partner_invoice_id'])
+                #partner   = self.env['res.partner'].browse(vals['partner_invoice_id'])
+                partner   = self.env['res.partner'].browse(vals['partner_id'])
                 pricelist_id=vals['pricelist_id']
                 context={}
                 if pricelist_id:
