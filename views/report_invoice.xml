@@ -258,6 +258,25 @@
                 <strong>Fiscal Position Remark:</strong>
                 <span t-field="o.fiscal_position.note"/>
             </p>
+
+
+            <table class="table table-condensed" style="width:50%" t-if="o.partner_id.is_rib_id">
+                <thead>
+                    <tr>
+                        <th>IBAN</th>
+                        <th>Banque</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span t-field="o.partner_id.is_rib_id.acc_number"/></td>
+                        <td><span t-field="o.partner_id.is_rib_id.bank_name"/></td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
         </div>
     </t>
 </template>

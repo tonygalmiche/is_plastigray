@@ -506,9 +506,23 @@ class is_cout(models.Model):
     cout_act_st            = fields.Float("Coût act sous-traitance" , digits=(12, 4))
     cout_act_total         = fields.Float("Coût act Total"          , digits=(12, 4))
 
+    amortissement_moule    = fields.Float("Amortissement Moule"     , digits=(12, 4), compute='_compute')
+    surcout_pre_serie      = fields.Float("Surcôut pré-série"       , digits=(12, 4), compute='_compute')
+    prix_vente             = fields.Float("Prix de Vente"           , digits=(12, 4), compute='_compute')
+
     nomenclature_ids       = fields.One2many('is.cout.nomenclature', 'cout_id', u"Lignes de la nomenclature")
     gamme_ma_ids           = fields.One2many('is.cout.gamme.ma'    , 'cout_id', u"Lignes gamme machine")
     gamme_mo_ids           = fields.One2many('is.cout.gamme.mo'    , 'cout_id', u"Lignes gamme MO")
+
+
+    @api.depends('name')
+    def _compute(self):
+        for obj in self:
+            tarifs=self.env['is.tarif.cial'].search([('product_id', '=', obj.name.product_tmpl_id.id),('indice_prix', '=', 999)])
+            for tarif in tarifs:
+                obj.amortissement_moule = tarif.amortissement_moule
+                obj.surcout_pre_serie   = tarif.surcout_pre_serie
+                obj.prix_vente          = tarif.prix_vente
 
 
     @api.multi

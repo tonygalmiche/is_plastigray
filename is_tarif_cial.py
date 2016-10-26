@@ -65,9 +65,16 @@ class is_tarif_cial(models.Model):
                 raise Warning(u"Ecart prix de vente différent de 0 !")
         return res
 
+
     @api.multi
-    def copy(self,vals):
+    def evolution_indice_prix(self):
+        if len(self)>1:
+            raise Warning(u"Impossible de faire évoluer plusieurs tarifs en même temps !")
         for obj in self:
+            if obj.indice_prix!=999:
+                raise Warning(u"Cette fonction n'est possible que depuis l'indice 999 !")
+
+            new_obj=obj.copy({})
             res=self.env['is.tarif.cial'].search([
                 ['partner_id', '=', obj.partner_id.id], 
                 ['product_id', '=', obj.product_id.id],
@@ -76,15 +83,42 @@ class is_tarif_cial(models.Model):
             indice_prix=1
             for line in res:
                 indice_prix=line.indice_prix+1
-            vals.update({
-                'indice_prix': indice_prix,
-            })
-            res=super(is_tarif_cial, self).copy(vals)
+            new_obj.indice_prix=indice_prix
 
             if obj.indice_prix==999:
                 obj.numero_dossier=""
                 obj.type_evolution=""
-        return res
+
+
+    @api.multi
+    def copy(self,vals):
+        print vals
+        for obj in self:
+            vals['indice_prix']=0
+            res=super(is_tarif_cial, self).copy(vals)
+            return res
+
+
+#    @api.multi
+#    def copy(self,vals):
+#        for obj in self:
+#            res=self.env['is.tarif.cial'].search([
+#                ['partner_id', '=', obj.partner_id.id], 
+#                ['product_id', '=', obj.product_id.id],
+#                ['indice_prix', '!=', 999],
+#            ], order="indice_prix desc", limit=1)
+#            indice_prix=1
+#            for line in res:
+#                indice_prix=line.indice_prix+1
+#            vals.update({
+#                'indice_prix': indice_prix,
+#            })
+#            res=super(is_tarif_cial, self).copy(vals)
+
+#            if obj.indice_prix==999:
+#                obj.numero_dossier=""
+#                obj.type_evolution=""
+#        return res
 
 
 

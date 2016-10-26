@@ -35,7 +35,6 @@ class product_template(models.Model):
                 id = model.create(vals)
             model = self.env['product.packaging']
             for item in obj.packaging_ids:
-                
                 vals = {
                     'product_tmpl_id': res.id,
                     'ean'            : item.ean,
@@ -47,10 +46,16 @@ class product_template(models.Model):
                     'weight'         : item.weight,
                 }
                 id = model.create(vals)
-
-            
-
-
+            model = self.env['is.product.client']
+            for item in obj.is_client_ids:
+                vals = {
+                    'product_id'         : res.id,
+                    'client_id'          : item.client_id.id,
+                    'client_defaut'      : item.client_defaut,
+                    'lot_livraison'      : item.lot_livraison,
+                    'multiple_livraison' : item.multiple_livraison,
+                }
+                id = model.create(vals)
         return res
 
 

@@ -82,5 +82,26 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+
+
+
+
+        <!-- Évolution de l'indice du prix -->
+        <record id="evolution_indice_prix_action_server" model="ir.actions.server">
+             <field name="name">Évolution de l'indice du prix</field>
+            <field name="model_id" ref="model_is_tarif_cial"/>
+            <field name="code">action = self.evolution_indice_prix(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="evolution_indice_prix_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.tarif.cial'" name="model"/>
+            <field name="name">Évolution de l'indice du prix</field>
+            <field eval="'ir.actions.server,%d'%evolution_indice_prix_action_server" name="value"/>
+        </record>
+
+
+
+
+
     </data>
 </openerp>

@@ -114,6 +114,7 @@
                                 <field name="prix_force_commentaire"  attrs="{'invisible': [('prix_force', '=', 0)], 'required':  [('prix_force', '!=', 0)] }"/> 
                                 <field name="prix_sous_traitance"/> 
                             </group>
+
                             <group string="Coût standard">
                                 <field name="cout_std_matiere"/> 
                                 <field name="cout_std_condition"     attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
@@ -137,6 +138,14 @@
                             </group>
                         </group>
 
+                        <group>
+                            <group string="Tarif commercial" attrs="{'invisible': [('type_article', '=', 'A')] }">
+                                <field name="amortissement_moule"/> 
+                                <field name="surcout_pre_serie"  /> 
+                                <field name="prix_vente"         /> 
+                            </group>
+                        </group>
+
                         <group string="Nomenclature" attrs="{'invisible': [('type_article', '=', 'A')] }">
                             <field name="nomenclature_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
@@ -151,8 +160,6 @@
                                 </tree>
                             </field>
                         </group>
-
-
 
                         <group string="Coût machine" attrs="{'invisible': [('type_article', '=', 'A')] }">
                             <field name="gamme_ma_ids" nolabel="1">

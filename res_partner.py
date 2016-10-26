@@ -138,6 +138,7 @@ class res_partner(models.Model):
     is_certifications     = fields.One2many('is.certifications.qualite', 'partner_id', u'Certification qualité')
     is_type_contact       = fields.Many2one('is.type.contact', "Type de contact")
     is_source_location_id = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
+    is_rib_id             = fields.Many2one('res.partner.bank', 'RIB') 
 
     _defaults = {
         'delai_transport': 0,
