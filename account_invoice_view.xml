@@ -31,5 +31,25 @@
             </field>
         </record>
 
+
+
+
+
+        <!-- Export des factures dans Série-M -->
+        <record id="export_ventes_seriem_action_server" model="ir.actions.server">
+             <field name="name">Exportation des ventes dans Série-M</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="code">action = self.export_ventes_seriem(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="export_ventes_seriem_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'account.invoice'" name="model"/>
+            <field name="name">Exportation des ventes dans Série-M</field>
+            <field eval="'ir.actions.server,%d'%export_ventes_seriem_action_server" name="value"/>
+        </record>
+
+
+
+
     </data>
 </openerp>

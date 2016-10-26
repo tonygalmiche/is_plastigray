@@ -4,6 +4,13 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 
 
+class account_move_line(models.Model):
+    _inherit = "account.move.line"
+
+    #is_section_analytique_id  = fields.Many2one('is.section.analytique', 'Section analytique')
+    is_account_invoice_line_id = fields.Many2one('account.invoice.line', 'Ligne de facture')
+
+
 class account_invoice(models.Model):
     _inherit = "account.invoice"
 
@@ -68,6 +75,43 @@ class account_invoice(models.Model):
                     }
                     tax_obj.create(tax_vals)
 
+
+    @api.model
+    def line_get_convert(self, line, part, date):
+        '''
+        Permet d'ajouter dans la table account_move_line le lien vers la ligne de facture,
+        pour récupérer en particulier la section analytique
+        '''
+        res=super(account_invoice, self).line_get_convert(line, part, date)
+        res['is_account_invoice_line_id']=line.get('invl_id', False)
+        return res
+
+
+    #TODO : Finaliser ce module un mardi pour pouvoir tester
+    @api.multi
+    def export_ventes_seriem(self):
+        '''
+        Exportation des ventes dans Série-M
+        '''
+        for obj in self:
+            print obj
+            cr=self._cr
+            sql="""
+                SELECT  ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, sum(aml.debit), sum(aml.credit)
+                FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
+                                           inner join account_account aa             on aml.account_id=aa.id
+                                           inner join res_partner rp                 on ai.partner_id=rp.id
+                                           left outer join account_invoice_line ail  on aml.is_account_invoice_line_id=ail.id
+                                           left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
+                WHERE ai.id="""+str(obj.id)+"""
+                GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name
+            """
+            res={}
+            cr.execute(sql)
+            for row in cr.fetchall():
+                print row
+
+
 class account_invoice_line(models.Model):
     _inherit = "account.invoice.line"
 
@@ -85,5 +129,11 @@ class account_invoice_line(models.Model):
             is_section_analytique_id=product.is_section_analytique_id.id or False
             res['value']['is_section_analytique_id']=is_section_analytique_id
         return res
+
+
+
+
+
+
 
 
