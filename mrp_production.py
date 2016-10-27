@@ -66,7 +66,6 @@ class MrpProduction(models.Model):
         precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Product Unit of Measure')
         main_production_move = False
         if production_mode == 'consume_produce':
-            # To produce remaining qty of final product
             produced_products = {}
             for produced_product in production.move_created_ids2:
                 if produced_product.scrapped:
@@ -88,8 +87,6 @@ class MrpProduction(models.Model):
                     stock_mov_obj.write(cr, uid, new_moves, {'production_id': production_id}, context=context)
                     remaining_qty = subproduct_factor * production_qty_uom - qty
                     if not float_is_zero(remaining_qty, precision_digits=precision):
-                        # In case you need to make more than planned
-                        #consumed more in wizard than previously planned
                         extra_move_id = stock_mov_obj.copy(cr, uid, produce_product.id, default={'product_uom_qty': remaining_qty,
                                                                                                  'production_id': production_id}, context=context)
                         stock_mov_obj.action_confirm(cr, uid, [extra_move_id], context=context)
@@ -101,8 +98,6 @@ class MrpProduction(models.Model):
                 e_move_id = False
                 if production.move_created_ids2:
                     e_move_id = production.move_created_ids2[0]
-#                     subproduct_factor = self._get_subproduct_factor(cr, uid, production.id, e_move_id.id, context=context)
-#                     e_qty = min(subproduct_factor * production_qty_uom, e_move_id.product_qty)
                     extra_move_id = stock_mov_obj.copy(cr, uid, e_move_id.id, default={
                         'product_uom_qty'  : production_qty_uom, 
                         'production_id'    : production_id,
@@ -112,8 +107,8 @@ class MrpProduction(models.Model):
                     stock_mov_obj.action_done(cr, uid, [extra_move_id], context=context)
 
     
-#                     if produce_product.product_id.id == production.product_id.id:
-#                         main_production_move = produce_product.id
+
+
         if production_mode in ['consume', 'consume_produce']:
             if wiz:
                 consume_lines = []
@@ -135,7 +130,6 @@ class MrpProduction(models.Model):
                                                  restrict_lot_id=consume['lot_id'], consumed_for=main_production_move, context=context)
                     remaining_qty -= consumed_qty
                 if not float_is_zero(remaining_qty, precision_digits=precision):
-                    #consumed more in wizard than previously planned
                     product = self.pool.get('product.product').browse(cr, uid, consume['product_id'], context=context)
                     extra_move_id = self._make_consume_line_from_data(cr, uid, production, product, product.uom_id.id, remaining_qty, False, 0, context=context)
                     stock_mov_obj.write(cr, uid, [extra_move_id], {'restrict_lot_id': consume['lot_id'],

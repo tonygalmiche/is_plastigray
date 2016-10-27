@@ -3,6 +3,19 @@
     <data>
 
 
+       <record id="is_view_res_partner_filter" model="ir.ui.view">
+            <field name="name">is_view_res_partner_filter</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter" />
+            <field name="arch" type="xml">
+
+                <field name="user_id" position="before">
+                   <field name="is_segment_achat"/>
+                </field>
+
+            </field>
+        </record>
+
         <record id="is_view_partner_form" model="ir.ui.view">
             <field name="name">is_view_partner_form</field>
             <field name="model">res.partner</field>
@@ -313,6 +326,7 @@
                     <field name="name"/>
                     <field name="is_code"/>
                     <field name="is_adr_code"/>
+                    <field name="is_segment_achat"/>
                     <field name="phone"/>
                     <field name="email"/>
                     <field name="city"/>

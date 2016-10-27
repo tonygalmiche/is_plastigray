@@ -78,6 +78,7 @@ class mrp_prevision(models.Model):
                     partner.id, False, False, obj.end_date, False, False, 'draft')
                 vals=res['value']
                 vals['order_id']=order.id
+                vals['product_id']=obj.product_id.id
                 order_line=order_line_obj.create(vals)
                 obj.unlink()
 
