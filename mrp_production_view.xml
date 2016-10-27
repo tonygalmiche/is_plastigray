@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_mrp_production_form_view_extended_form">
+            <field name="name">mrp.production.form</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view" />
+            <field name="arch" type="xml">
+
+
+                <xpath expr="//sheet" position="attributes">
+                    <attribute name="class">oe_form_sheet_width_wider</attribute>
+                </xpath>
+
+
+                <xpath expr="//form/header/button[@name='action_cancel']"
+                    position="after">
+                    <button name="action_done" class="oe_highlight" type="object"
+                         attrs="{'invisible':['|',('is_done','=',False),('state','!=','in_production')]}" string="Solder cet OF" />
+                </xpath>
+                <xpath expr="//form/header/button[@string='Produce']" position="replace">
+                    <button 
+                        name="%(mrp.act_mrp_product_produce)d" 
+                        attrs="{'invisible':[('state','not in',('ready','in_production'))]}"
+                        string="Produce" type="action" class="oe_highlight"
+                    />
+                </xpath>
+
+
+
+                <!--
+                <field name="product_uom" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+                -->
+
+
+                <field name="date_planned" position="after">
+                    <field name="is_qt_prevue" />
+                    <field name="is_qt_fabriquee" />
+                    <field name="is_qt_reste" />
+                </field>
+
+
+                <field name="origin" position="after">
+                    <field name="product_package" />
+                    <field name="package_qty" />
+                    <field name="is_done" invisible="1" />
+                </field>
+            </field>
+        </record>
+
+
+
+
+        <record model="ir.ui.view" id="is_mrp_production_tree_view">
+            <field name="name">is_mrp_production_tree_view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view" />
+            <field name="arch" type="xml">
+                <field name="product_uom" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="routing_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="hour_total" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="cycle_total" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="origin" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="product_qty" position="after">
+                    <field name="is_qt_prevue" />
+                    <field name="is_qt_fabriquee" />
+                    <field name="is_qt_reste" />
+                </field>
+            </field>
+        </record>
+
+
+        <record id="is_declaration_fab_action" model="ir.actions.act_window">
+            <field name="name">Déclaration de fab</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.production</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar,graph,gantt</field>
+            <field name="view_id" eval="False"/>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',['ready','in_production'])]</field>
+        </record>
+
+
+
+
+
+    </data>
+</openerp>

@@ -164,20 +164,6 @@ class mrp_workcenter(models.Model):
 
 
 
-class mrp_production(models.Model):
-    _inherit = "mrp.production"
-
-    mrp_product_suggestion_id = fields.Many2one('mrp.prevision','MRP Product Suggestion')
-
-    @api.multi
-    def action_confirm(self):
-        for rec in self:
-            if rec.mrp_product_suggestion_id:
-                rec.mrp_product_suggestion_id.unlink()
-        return super(mrp_production, self).action_confirm()
-
-
-
 class mrp_production_workcenter_line(models.Model):
     _inherit = 'mrp.production.workcenter.line'
 

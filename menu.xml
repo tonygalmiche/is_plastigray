@@ -143,10 +143,11 @@
 
 
     <menuitem id="menu_is_production"            sequence="4"  name="Production"/>
-    <menuitem id="menu_is_production_production" sequence="10" name="Production"             parent="menu_is_production"/>
-    <menuitem id="menu_is_production_10"         sequence="10" name="Ordres de fabrication"  parent="menu_is_production_production" action="mrp.mrp_production_action" />
-    <menuitem id="menu_is_production_20"         sequence="20" name="Ordres de Travail"      parent="menu_is_production_production" action="mrp_operations.mrp_production_wc_action_form" />
-    <menuitem id="menu_is_production_30"         sequence="30" name="Planning"               parent="menu_is_production_production" action="is_url_planning_action"    groups="mrp.group_mrp_manager"/>
+    <menuitem id="menu_is_production_production" sequence="10" name="Production"                 parent="menu_is_production"/>
+    <menuitem id="menu_is_production_10"         sequence="10" name="Ordres de fabrication"      parent="menu_is_production_production" action="mrp.mrp_production_action" />
+    <menuitem id="menu_is_production_15"         sequence="15" name="Déclaration de fabrication" parent="menu_is_production_production" action="is_declaration_fab_action" />
+    <menuitem id="menu_is_production_20"         sequence="20" name="Ordres de Travail"          parent="menu_is_production_production" action="mrp_operations.mrp_production_wc_action_form" />
+    <menuitem id="menu_is_production_30"         sequence="30" name="Planning"                   parent="menu_is_production_production" action="is_url_planning_action"    groups="mrp.group_mrp_manager"/>
 
     <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"/>
     <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="stock.quantsact" groups=""/>

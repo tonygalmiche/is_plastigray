@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_mrp_product_produce_inherit_wizard" model="ir.ui.view">
+            <field name="name">MRP Product Produce</field>
+            <field name="model">mrp.product.produce</field>
+            <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard" />
+            <field name="arch" type="xml">
+                <field name="mode" position="before">
+                    <field name="product_package" readonly="1" />
+                    <field name="package_qty"     readonly="1" />
+                    <field name="product_package_qty" context="{'is_product_package_qty':1}" />
+                    <field name="finished_products_location_id" />
+                </field>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
