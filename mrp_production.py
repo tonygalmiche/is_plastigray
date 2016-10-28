@@ -48,6 +48,9 @@ class MrpProduction(models.Model):
 
 
 
+
+
+
     def action_produce(self, cr, uid, production_id, production_qty, production_mode, wiz=False, context=None):
         """ To produce final product based on production mode (consume/consume&produce).
         If Production mode is consume, all stock move lines of raw materials will be done/consumed.
@@ -81,9 +84,9 @@ class MrpProduction(models.Model):
                         lot_id = wiz.lot_id.id
                     qty = min(subproduct_factor * production_qty_uom, produce_product.product_qty) #Needed when producing more than maximum quantity
 
-                    location_id=production.location_dest_id.id
+                    #location_id=production.location_dest_id.id
                     new_moves = stock_mov_obj.action_consume(cr, uid, [produce_product.id], qty,
-                                                             location_id=location_id, restrict_lot_id=lot_id, context=context)
+                                                             location_id=produce_product.location_id.id, restrict_lot_id=lot_id, context=context)
                     stock_mov_obj.write(cr, uid, new_moves, {'production_id': production_id}, context=context)
                     remaining_qty = subproduct_factor * production_qty_uom - qty
                     if not float_is_zero(remaining_qty, precision_digits=precision):

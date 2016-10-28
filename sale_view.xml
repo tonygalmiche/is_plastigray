@@ -85,6 +85,17 @@
                 </xpath>
                 -->
 
+                <!--
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="replace">
+                    <field name="product_uom_qty" 
+                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                        on_change="product_id_change(
+                            parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, 
+                            name, parent.partner_id, False, False, date_livraison, False, parent.fiscal_position, True, context
+                        )"/>
+                </xpath>
+                -->
+
 
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
                     <field  name="is_date_livraison"  

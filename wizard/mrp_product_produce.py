@@ -70,13 +70,9 @@ class mrp_product_produce(models.TransientModel):
     
     @api.v7
     def on_change_qty(self, cr, uid, ids, product_qty, consume_lines, context=None):
-
-        return
-
         context = dict(context or {})
         prod_obj = self.pool.get("mrp.production")
         production = prod_obj.browse(cr, uid, context['active_id'], context=context)
-        
 #         if product_qty > production.product_qty and context.get('is_product_package_qty',False) == False:
 #             raise except_orm('Warning','Please enter valid product quantity.')
         ret_val = super(mrp_product_produce, self).on_change_qty(cr, uid, ids, product_qty, consume_lines, context=context)

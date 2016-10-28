@@ -124,12 +124,27 @@ class sale_order(models.Model):
                 line.is_client_order_ref=obj.client_order_ref
 
 
+    @api.multi
+    def _verif_article_livrable(self, obj):
+        for line in obj.order_line:
+            ok=False
+            for l in line.product_id.is_client_ids:
+                if l.client_id.id==obj.partner_id.id:
+                    ok=True
+            if ok==False:
+                raise Warning(u"L'article "+line.product_id.is_code+u" n'est pas livrable à ce client (cf fiche article) !")
+
+
+
+
+
     @api.model
     def create(self, vals):
         self._verif_tarif(vals)
         self._verif_existe(vals)
         obj = super(sale_order, self).create(vals)
         self._client_order_ref(obj)
+        self._verif_article_livrable(obj)
         return obj
 
 
@@ -147,6 +162,7 @@ class sale_order(models.Model):
             self._verif_tarif(vals2)
             self._verif_existe(vals2)
             self._client_order_ref(obj)
+            self._verif_article_livrable(obj)
         return res
 
 
@@ -347,7 +363,24 @@ class sale_order_line(models.Model):
                                                                      fiscal_position, flag, context=context)
         vals['value']['product_uom_qty'] = qty
         # Le prix est forcé à 0, car il sera calculé avec la date d'expédition
-        vals['value']['price_unit'] = 0    
+
+
+
+        #** Recherche prix dans liste de prix pour la date et qt ***********
+        price=0
+#        if pricelist_id:
+#            ctx = dict(
+#                context,
+#                uom=uom,
+#                date=date_order,
+#            )
+#            price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
+#                    product_id, qty or 1.0, partner_id, ctx)[pricelist]
+#            v['price_unit'] = price
+        #*******************************************************************
+
+
+        vals['value']['price_unit'] = price
 
         return vals
 
