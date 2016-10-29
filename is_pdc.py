@@ -46,11 +46,10 @@ class is_pdc(models.Model):
     def action_importer_cbn(self):
         cr      = self._cr
         for obj in self:
-
-            print obj.date_debut, obj.date_fin
-
             for row in obj.mold_ids:
                 row.unlink()
+
+            #** Importation des FS *********************************************
             cr.execute("""
                 select  mrw.workcenter_id                        as workcenter_id,
                         pt.is_mold_id                            as mold_id, 
@@ -68,15 +67,68 @@ class is_pdc(models.Model):
                 order by mrw.workcenter_id;
             """)
             result = cr.fetchall()
-            pdc_mold_obj = self.env['is.pdc.mold']
+            res={}
             for row in result:
+                key=str(row[0])+"/"+str(row[1])+"/"+str(row[2])
                 vals={
-                    'pdc_id'       : obj.id,
                     'workcenter_id': row[0],
                     'mold_id'      : row[1],
                     'matiere'      : row[2],
                     'quantite'     : row[3],
                     'temps_h'      : row[4],
+                }
+                res[key]=vals
+            #*******************************************************************
+
+
+            #** Importation des FL *********************************************
+            cr.execute("""
+                select  mrw.workcenter_id                        as workcenter_id,
+                        pt.is_mold_id                            as mold_id, 
+                        pt.is_couleur                            as matiere,
+                        sum(sm.product_uom_qty)                         as quantite,
+                        sum(sm.product_uom_qty*mrw.is_nb_secondes)/3600 as temps_h
+                from stock_move sm    inner join product_product  pp on sm.product_id=pp.id
+                                      inner join product_template pt on pp.product_tmpl_id=pt.id
+                                      inner join mrp_bom          mb on pt.id=mb.product_tmpl_id and mb.sequence=0
+                                      inner join mrp_routing_workcenter mrw on mb.routing_id=mrw.routing_id
+                where sm.state in('confirmed','assigned') 
+                        and sm.date>='"""+str(obj.date_debut)+"""'
+                        and sm.date<='"""+str(obj.date_fin)+"""'
+                group by mrw.workcenter_id, pt.is_mold_id, pt.is_couleur
+                order by mrw.workcenter_id;
+            """)
+            result = cr.fetchall()
+
+
+
+
+            for row in result:
+                key=str(row[0])+"/"+str(row[1])+"/"+str(row[2])
+                vals={
+                    'workcenter_id': row[0],
+                    'mold_id'      : row[1],
+                    'matiere'      : row[2],
+                    'quantite'     : row[3],
+                    'temps_h'      : row[4],
+                }
+                if not key in res:
+                    res[key]=vals
+                else:
+                    res[key]['quantite'] = res[key]['quantite']+row[4]
+                    res[key]['temps_h']  = res[key]['temps_h']+row[4]
+
+            #*******************************************************************
+
+            pdc_mold_obj = self.env['is.pdc.mold']
+            for key in res:
+                vals={
+                    'pdc_id'       : obj.id,
+                    'workcenter_id': res[key]['workcenter_id'],
+                    'mold_id'      : res[key]['mold_id'],
+                    'matiere'      : res[key]['matiere'],
+                    'quantite'     : res[key]['quantite'],
+                    'temps_h'      : res[key]['temps_h'],
                     'capacite'     : obj.temps_ouverture,
                 }
                 pdc_mold_obj.create(vals)
@@ -88,14 +140,17 @@ class is_pdc(models.Model):
     def action_recalculer(self):
         cr      = self._cr
         for obj in self:
+            obj.mod_ids.unlink()
+            obj.workcenter_ids.unlink()
             cr.execute("""select sum(temps_h) from is_pdc_mold where pdc_id="""+str(obj.id))
             nb_heures_total = cr.fetchone()[0]
+            if not nb_heures_total:
+                return
+            
             obj.nb_heures_total=nb_heures_total
             obj.tps_brut=nb_heures_total/0.8
-            for row in obj.mod_ids:
-                row.unlink()
             mod_obj = self.env['is.pdc.mod']
-            if obj.nb_jours_ouvrables>0 and obj.nb_inscrits>0:
+            if obj.nb_jours_ouvrables>0 and obj.nb_inscrits>0 and nb_heures_total:
                 def _heures_par_jour(heures_par_semaine):
                     return heures_par_semaine/5.0
 
@@ -203,8 +258,8 @@ class is_pdc_mold(models.Model):
     matiere        = fields.Char('Matière')
     quantite       = fields.Integer('Quantité')
     temps_h        = fields.Float('Temps (H)')
-    capacite       = fields.Float('Capacité'        , store=True, compute='_cumul', readonly=1)
-    temps_pourcent = fields.Float('Temps (%)'       , store=True, compute='_cumul', readonly=1)
+    capacite       = fields.Float('Capacité'        , store=True,  compute='_cumul', readonly=1)
+    temps_pourcent = fields.Float('Temps (%)'       , store=True,  compute='_cumul', readonly=1)
     cumul_pourcent = fields.Float('Temps Cumulé (%)', store=False, compute='_cumul', readonly=1)
     cumul_h        = fields.Float('Cumul (H)'       , store=False, compute='_cumul', readonly=1)
     cumul_j        = fields.Float('Cumul (J)'       , store=False, compute='_cumul', readonly=1)
