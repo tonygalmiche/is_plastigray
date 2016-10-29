@@ -19,6 +19,7 @@
         "account_accountant",     # Comptabilité et finance
         "sale",                   # Gestion des ventes
         "stock",                  # Stock
+        "sale_stock",
         "mrp",                    # MRP
         "mrp_operations",         # Gammes
         "purchase",               # Gestion des achats

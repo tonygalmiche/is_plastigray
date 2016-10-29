@@ -61,6 +61,9 @@ class product_pricelist(osv.osv):
             prod_tmpl_ids = [product.product_tmpl_id.id for product in products]
 
         #Added date filter
+
+
+
         cr.execute(
             'SELECT i.id '
             'FROM product_pricelist_item AS i '

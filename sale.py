@@ -362,28 +362,20 @@ class sale_order_line(models.Model):
                                                                      lang, update_tax, date_order, packaging,
                                                                      fiscal_position, flag, context=context)
         vals['value']['product_uom_qty'] = qty
-        # Le prix est forcé à 0, car il sera calculé avec la date d'expédition
-
-
 
         #** Recherche prix dans liste de prix pour la date et qt ***********
         price=0
-#        if pricelist_id:
-#            ctx = dict(
-#                context,
-#                uom=uom,
-#                date=date_order,
-#            )
-#            price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
-#                    product_id, qty or 1.0, partner_id, ctx)[pricelist]
-#            v['price_unit'] = price
+        if date_order:
+            if len(date_order)==10:
+                if pricelist_id:
+                    ctx = dict(
+                        context,
+                        uom=uom,
+                        date=date_order,
+                    )
+                    price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist_id],
+                            product_id, qty or 1.0, partner_id, ctx)[pricelist_id]
         #*******************************************************************
-
-
         vals['value']['price_unit'] = price
-
         return vals
-
-
-
 

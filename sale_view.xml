@@ -5,6 +5,7 @@
         <record id="is_view_order_form" model="ir.ui.view">
             <field name="name">is_view_order_form</field>
             <field name="model">sale.order</field>
+            <field name="priority" eval="20"/>
             <field name="inherit_id" ref="sale.view_order_form" />
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="attributes">
@@ -69,11 +70,11 @@
                     <attribute name="required">True</attribute>
                 </xpath>
 
-
+<!--
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
                     <attribute name="readonly">1</attribute>
                 </xpath>
-
+-->
 
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -85,16 +86,30 @@
                 </xpath>
                 -->
 
-                <!--
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_id']" position="replace">
+                    <field 
+                        name="product_id"
+                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                        groups="base.group_user"
+                        on_change="product_id_change(
+                            parent.pricelist_id, product_id, 0, False, 0, False, name, 
+                            parent.partner_id, False, True, is_date_livraison, False, parent.fiscal_position, False, context
+                        )"
+                    />
+                </xpath>
+
+
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="replace">
-                    <field name="product_uom_qty" 
+                    <field 
+                        name="product_uom_qty" 
                         context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
                         on_change="product_id_change(
                             parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, 
-                            name, parent.partner_id, False, False, date_livraison, False, parent.fiscal_position, True, context
-                        )"/>
+                            name, parent.partner_id, False, False, is_date_livraison, False, parent.fiscal_position, True, context
+                        )"
+                    />
                 </xpath>
-                -->
+
 
 
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="before">
@@ -143,6 +158,27 @@
 
             </field>
         </record>
+
+
+<!--
+        <record id="is_view_order_form_inherit" model="ir.ui.view">
+            <field name="name">is_view_order_form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit" />
+            <field name="arch" type="xml">
+               <xpath expr="//field[@name='order_line']/tree//field[@name='product_uom_qty']" position="replace">
+                  <field 
+                        string="Test Qt 2"
+                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                        name="product_uom_qty" 
+                        on_change="product_id_change_with_wh2(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,False,name,parent.partner_id, False, False, parent.date_order, product_packaging, parent.fiscal_position, True, parent.warehouse_id, context)"
+                    />
+               </xpath>
+            </field>
+        </record>
+-->
+
+
 
 
         <!-- Désactive la vue formulaire des lignes de commandes -->
