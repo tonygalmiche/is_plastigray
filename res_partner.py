@@ -122,7 +122,6 @@ class res_partner(models.Model):
     is_cofor              = fields.Char('N° fournisseur (COFOR)', help="Notre code fourniseur chez le client")
     is_incoterm           = fields.Many2one('stock.incoterms', "Incoterm")
     is_escompte           = fields.Many2one('is.escompte', "Escompte")
-    is_num_fournisseur    = fields.Char(u'N° de fournisseur')
     is_type_reglement     = fields.Many2one('account.journal', u'Type règlement', domain=[('type', 'in', ['bank','cash'])])
     is_num_siret          = fields.Char(u'N° de SIRET')
     is_code_client        = fields.Char('Code client', help=u'Notre code client chez le fourniseur')

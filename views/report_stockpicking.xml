@@ -88,7 +88,7 @@ TODO :
                             N°Identification T.V.A. FR 65 377 846 381 <br />
                             <span t-if="o.partner_id.lang == 'fr_FR'">Fournisseur N°</span>
                             <span t-if="o.partner_id.lang != 'fr_FR'">Supplier N°</span>
-                            <span t-field="o.partner_id.is_num_fournisseur"/>
+                            <span t-field="o.partner_id.is_cofor"/>
 
 
                         </div>
@@ -104,7 +104,7 @@ TODO :
                         <div t-if="o.partner_id.lang == 'fr_FR'">Destinataire : </div>
                         <div t-if="o.partner_id.lang != 'fr_FR'">Addressee : </div>
                         <div class="destinataire">
-                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>)
+                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>-<span t-field="o.partner_id.is_adr_code"/>)
                             <div t-field="o.partner_id"
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
                             <div t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></div>
@@ -211,8 +211,7 @@ TODO :
                                         <t t-set="pds" t-value="qt1*move.product_id.weight"/>
                                         <t t-set="pds_total" t-value="pds_total + pds"/>
                                         <td>
-                                            <span t-field="move.is_sale_line_id.is_client_order_ref"/> <br />
-                                            pour le <span t-field="move.is_sale_line_id.is_date_livraison"/>
+                                            <span t-field="move.is_sale_line_id.is_client_order_ref"/>
                                         </td>
                                         <td>
 
@@ -225,11 +224,18 @@ TODO :
                                         </td>
 
                                         <td>
-                                            <span t-field="move.product_id.name"/><br />
+                                            <span t-field="move.product_id.name"/>
+                                            <br />
                                             <span t-field="move.product_id.is_code"/> - 
                                             <span t-field="move.product_id.is_ref_client"/> / 
                                             <span t-field="move.product_id.is_ind_plan"/> 
                                             <br />
+                                            <t t-if="move.product_id.is_origine_produit_id">
+                                                <i>Origine : <span t-field="move.product_id.is_origine_produit_id.name"/></i><br />
+                                            </t>
+                                            <t t-if="move.product_id.is_nomenclature_douaniere">
+                                                <i>Nomenclature douanière : <span t-field="move.product_id.is_nomenclature_douaniere"/></i>
+                                            </t>
                                         </td>
                                         <td class="text-right">
 
@@ -270,7 +276,7 @@ TODO :
                             </table>
 
                             <br />
-                            <table class="table table-condensed">
+                            <table class="table table-condensed" style="page-break-inside: avoid" >
                                 <thead>
                                     <tr>
                                         <th class="text-left"  t-if="o.partner_id.lang == 'fr_FR'">Transporteur</th> 
@@ -309,6 +315,9 @@ TODO :
                                     </td>
                                 </tbody>
                             </table>
+                            <t t-if="o.note">
+                                <b>Note : </b><span t-field="o.note" />
+                            </t>
 
                         </div>
                     </t>

@@ -26,11 +26,11 @@
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="is_secteur_activite" placeholder="Secteur d'activité" attrs="{'invisible': [('is_company', '=', False)]}"/> 
                 </xpath>
-                -->
+
                 <xpath expr="//field[@name='ref']" position="before">
                     <field name="is_num_fournisseur" attrs="{'invisible': ['|',('is_company', '=', False),('customer','=', False)]}"/>
                 </xpath>
-
+                -->
 
                 <xpath expr="//field[@name='street2']" position="after">
                     <field name="is_rue3" placeholder="Rue 3 ou Boite Postale" />
