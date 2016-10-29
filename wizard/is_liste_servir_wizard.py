@@ -66,7 +66,9 @@ class is_liste_servir_wizard(osv.osv_memory):
                                    inner join product_product   pp  on sol.product_id=pp.id
                                    inner join  product_template pt  on pp.product_tmpl_id=pt.id
                 where sol.is_date_expedition<='"""+str(data['date_fin'])+"""' 
-                      and so.state='draft' """
+                      and so.state='draft' 
+                      and sol.is_type_commande='ferme' 
+            """
             if data['livrable']:
                 SQL=SQL+"""
                       and (

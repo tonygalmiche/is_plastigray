@@ -349,20 +349,32 @@ class is_liste_servir(models.Model):
                 stocka=self.env['product.product'].get_stock(product_id,'f')
                 stockq=self.env['product.product'].get_stock(product_id,'t')
                 qt=row[5]
-                vals={
-                    'liste_servir_id'   : obj.id,
-                    'order_id'          : row[0],
-                    'product_id'        : row[1],
-                    'client_order_ref'  : row[2],
-                    'date_livraison'    : row[3],
-                    'date_expedition'   : row[4],
-                    'prix'              : row[6],
-                    'quantite'          : qt,
-                    'stocka'            : stocka,
-                    'stockq'            : stockq,
-                    'certificat_matiere': certificat_matiere,
-                }
-                line_obj.create(vals)
+
+                livrable=False
+                if qt<=stocka:
+                    livrable=True
+
+
+                test=True
+                if obj.livrable==True and livrable==False:
+                    test=False
+
+                if test:
+                    vals={
+                        'liste_servir_id'   : obj.id,
+                        'order_id'          : row[0],
+                        'product_id'        : row[1],
+                        'client_order_ref'  : row[2],
+                        'date_livraison'    : row[3],
+                        'date_expedition'   : row[4],
+                        'prix'              : row[6],
+                        'quantite'          : qt,
+                        'livrable'          : livrable,
+                        'stocka'            : stocka,
+                        'stockq'            : stockq,
+                        'certificat_matiere': certificat_matiere,
+                    }
+                    line_obj.create(vals)
             obj.state="analyse"
 
 
@@ -516,6 +528,7 @@ class is_liste_servir_line(models.Model):
     stockq             = fields.Float('Stock Q')
     date_livraison     = fields.Date('Date de livraison', readonly=True)
     quantite           = fields.Float('Quantité')
+    livrable           = fields.Boolean("Livrable")
     date_expedition    = fields.Date("Date d'expédition"   , readonly=True)
     prix               = fields.Float("Prix", digits=(14,4), readonly=True)
     uc_id              = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)

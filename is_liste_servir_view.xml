@@ -52,10 +52,11 @@
                                 <field  name="partner_id" 
                                         domain="[('customer','=',True),('is_company','=',True)]" 
                                         on_change="onchange_partner_id(partner_id)"
+                                        attrs="{'readonly':[('state','!=','creation')]}" 
                                 /> 
-                                <field name="date_debut"/> 
-                                <field name="date_fin"/> 
-                                <field name="livrable"/> 
+                                <field name="date_debut" attrs="{'readonly':[('state','!=','creation')]}" /> 
+                                <field name="date_fin"   attrs="{'readonly':[('state','!=','creation')]}"/> 
+                                <field name="livrable"   attrs="{'readonly':[('state','!=','creation')]}"/> 
                             </group>
                             <group>
                                 <field name="is_source_location_id"/> 
@@ -67,11 +68,12 @@
                         </group>
                         <group>
                             <field name="line_ids" nolabel="1">
-                                <tree editable="bottom"  create="true">
+                                <tree editable="bottom"  create="true" colors="red:livrable == False">
                                     <field name="product_id" widget="many2one_clickable"/>
                                     <field name="stocka"/>
                                     <field name="stockq"/>
                                     <field name="quantite"/>
+                                    <field name="livrable" invisible="1"/>
                                     <field name="date_livraison"/>
                                     <field name="date_expedition"/>
                                     <field name="prix"/>
