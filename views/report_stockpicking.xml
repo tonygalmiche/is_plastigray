@@ -104,7 +104,7 @@ TODO :
                         <div t-if="o.partner_id.lang == 'fr_FR'">Destinataire : </div>
                         <div t-if="o.partner_id.lang != 'fr_FR'">Addressee : </div>
                         <div class="destinataire">
-                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>-<span t-field="o.partner_id.is_adr_code"/>)
+                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)
                             <div t-field="o.partner_id"
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
                             <div t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></div>
