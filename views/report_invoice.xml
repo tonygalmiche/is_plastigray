@@ -106,25 +106,6 @@
                             <span t-field="o.date_due"  t-field-options='{"format": "dd/MM/yyyy"}' />
                         </div>
 
-                        <!-- Recherche du BL -->
-                        <t t-set="picking" t-value="0"/>
-                        <div t-foreach="o.invoice_line" t-as="l">
-                            <t t-set="picking" t-value="l.is_move_id.picking_id"/>
-                        </div>
-                        <div t-if="picking">
-                            Livraison N° <span t-field="picking.name" /> du <span t-field="picking.date" t-field-options='{"format": "dd/MM/yyyy"}' /><br />
-                            <i>
-                                Adresse de livraison : 
-                                <span t-field="picking.partner_id.name" />
-                                <span t-field="picking.partner_id.street" />
-                                <span t-field="picking.partner_id.street2" /><br />
-                                <span t-field="picking.partner_id.zip" />
-                                <span t-field="picking.partner_id.city" /> - 
-                                <span t-field="picking.partner_id.country_id.name" />
-                            </i>
-                        </div>
-
-                             <!--<span t-field="l.is_move_id.is_sale_line_id.name" />-->
 
 
                         <b>
@@ -206,8 +187,28 @@
 <template id="is_report_invoice_document">
     <t t-call="is_plastigray.is_report_invoice_external_layout">
         <div class="page">
+
             <div t-if="o.is_document"><b>Document            : </b><span t-field="o.is_document"/></div>
             <div t-if="o.is_num_bl_manuel"><b>N° BL manuel   : </b><span t-field="o.is_num_bl_manuel"/></div>
+
+            <!-- Recherche du BL -->
+            <t t-set="picking" t-value="0"/>
+            <div t-foreach="o.invoice_line" t-as="l">
+                <t t-set="picking" t-value="l.is_move_id.picking_id"/>
+            </div>
+            <div t-if="picking">
+                <b>Livraison N° </b><span t-field="picking.name" /> du <span t-field="picking.date" t-field-options='{"format": "dd/MM/yyyy"}' /><br />
+                <i>
+                    <b>Adresse de livraison : </b>
+                    <span t-field="picking.partner_id.name" />
+                    <span t-field="picking.partner_id.street" />
+                    <span t-field="picking.partner_id.street2" /> - 
+                    <span t-field="picking.partner_id.zip" />
+                    <span t-field="picking.partner_id.city" /> - 
+                    <span t-field="picking.partner_id.country_id.name" />
+                </i>
+            </div>
+
             <p />
             <table class="table table-condensed">
                 <thead>
