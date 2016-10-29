@@ -191,19 +191,22 @@ class res_partner(models.Model):
                 name = "%s <%s>" % (name, record.email)
             res.append((record.id, name))
         return res
-    
-    
-    def copy(self, cr, uid, id, default=None, context=None):
-        if default is None:
-            default = {}        
-        partner = self.browse(cr, uid, id, context=context)   
-        if partner.is_company:           
-            default.update({
-                'is_code': partner.is_code + ' (copie)',
-                'is_adr_code': partner.is_adr_code + ' (copie)',
-        })
-        return super(res_partner, self).copy(cr, uid, id, default, context=context)
-    
+
+
+    @api.multi
+    def copy(self, default=None):
+        for partner in self:
+            if partner.is_company:
+                default.update({
+                    'is_code'     : partner.is_code + ' (copie)',
+                    'is_adr_code' : partner.is_adr_code + ' (copie)',
+            })
+        res=super(res_partner, self).copy(default)
+        res.property_account_position      = partner.property_account_position
+        res.property_payment_term          = partner.property_payment_term
+        res.property_supplier_payment_term = partner.property_supplier_payment_term
+        return res
+
 
     def onchange_segment_id(self, cr, uid, ids, segment_id, context=None):
         domain = []
