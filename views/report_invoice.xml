@@ -207,8 +207,6 @@
     <t t-call="is_plastigray.is_report_invoice_external_layout">
         <div class="page">
             <div t-if="o.is_document"><b>Document            : </b><span t-field="o.is_document"/></div>
-            <div t-if="o.is_document"><b>Document            : </b><span t-field="o.is_document"/></div>
-            <div t-if="o.is_num_cde_client"><b>N° Cde Client : </b><span t-field="o.is_num_cde_client"/></div>
             <div t-if="o.is_num_bl_manuel"><b>N° BL manuel   : </b><span t-field="o.is_num_bl_manuel"/></div>
             <p />
             <table class="table table-condensed">
@@ -225,7 +223,14 @@
                 </thead>
                 <tbody class="invoice_tbody">
                     <tr t-foreach="o.invoice_line" t-as="l">
-                        <td><span t-field="l.is_move_id.is_sale_line_id.is_client_order_ref"/></td>
+                        <td>
+                            <t t-if="l.is_move_id.is_sale_line_id.is_client_order_ref">
+                                <span t-field="l.is_move_id.is_sale_line_id.is_client_order_ref"/><br />
+                            </t>
+                            <t t-if="o.is_num_cde_client">
+                                <span t-field="o.is_num_cde_client"/>
+                            </t>
+                        </td>
                         <td><span t-field="l.name"/></td>
                         <td><span t-field="l.product_id.is_ref_client"/></td>
                         <td class="text-right"><span style="white-space: nowrap;" t-field="l.price_unit"/></td>
