@@ -8,6 +8,7 @@ from openerp.tools.translate import _
      
 class stock_picking(models.Model):
     _inherit = "stock.picking"
+    _order   = "date desc, name desc"
     
     location_id        = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
     is_sale_order_id   = fields.Many2one('sale.order', 'Commande')
@@ -19,8 +20,32 @@ class stock_picking(models.Model):
             move.location_id = self.location_id
 
 
-
-
+    def action_invoice_create(self, cr, uid, ids, journal_id, group=False, type='out_invoice', context=None):
+        """
+            Permet de fixer la date de la facture à la date de la livraison lors 
+            de la création des factures à partir des livraisons
+        """
+        context = context or {}
+        todo = {}
+        for picking in self.browse(cr, uid, ids, context=context):
+            partner = self._get_partner_to_invoice(cr, uid, picking, dict(context, type=type))
+            if group:
+                key = partner
+            else:
+                key = picking.id
+            for move in picking.move_lines:
+                if move.invoice_state == '2binvoiced':
+                    if (move.state != 'cancel') and not move.scrapped:
+                        todo.setdefault(key, [])
+                        todo[key].append(move)
+        invoices = []
+        for moves in todo.values():
+            date_inv=False
+            for move in moves:
+                date_inv=move.picking_id.date
+            context['date_inv']=date_inv
+            invoices += self._invoice_create_line(cr, uid, moves, journal_id, type, context=context)
+        return invoices
 
 
 class stock_move(models.Model):
