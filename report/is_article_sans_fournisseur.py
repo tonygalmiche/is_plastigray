@@ -10,25 +10,27 @@ class is_article_sans_fournisseur(models.Model):
     _order='is_code'
     _auto = False
 
-    is_code     = fields.Char('Code PG')
-    designation = fields.Char('Désignation')
-    nb          = fields.Char('Nb fournisseurs')
+    product_id     = fields.Many2one('product.template', 'Article')
+    is_code        = fields.Char('Code Article')
+    is_category_id = fields.Many2one('is.category', 'Catégorie')
+    designation    = fields.Char('Désignation')
+    nb             = fields.Integer('Nb fournisseurs')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_article_sans_fournisseur')
         cr.execute("""
             CREATE OR REPLACE view is_article_sans_fournisseur AS (
                 SELECT 
-                    pt.id          as id,
-                    pt.is_code     as is_code,
-                    pt.name        as designation,
+                    pt.id             as id,
+                    pt.id             as product_id,
+                    pt.is_code        as is_code,
+                    pt.is_category_id as is_category_id,
+                    pt.name           as designation,
                     (select count(id) from product_supplierinfo ps where pt.id=ps.product_tmpl_id) as nb 
                 FROM product_template pt inner join stock_route_product srp on pt.id=srp.product_id
-                WHERE pt.id>0 and srp.route_id=5
+                                         inner join is_category ic          on pt.is_category_id=ic.id
+                WHERE pt.id>0 and srp.route_id=5 and pt.active='t'
+                      and pt.is_category_id is not null and ic.name<'80'
             )
         """)
-
-# id  | create_uid | product_code |        create_date         | name | sequence | product_name | company_id | write_uid | delay |         
-#write_date         | min_qty |  qty   | product_tmpl_id 
-#plastigray=# select * from product_supplierinfo;
 

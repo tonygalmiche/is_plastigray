@@ -42,7 +42,6 @@ class is_tarif_cial(models.Model):
     @api.one
     @api.depends('product_id', 'indice_prix')
     def _compute_display_name(self):
-        #names = [self.parent_id.name, self.name]
         for obj in self:
             self.display_name = obj.product_id.is_code + " ("+str(obj.indice_prix)+")"
 
@@ -50,12 +49,14 @@ class is_tarif_cial(models.Model):
         'indice_prix': 999,
     }
 
+
     @api.model
     def create(self, vals):
         res=super(is_tarif_cial, self).create(vals)
         if res.ecart!=0:
             raise Warning(u"Ecart prix de vente différent de 0 !")
         return res
+
 
     @api.multi
     def write(self, vals):
@@ -99,26 +100,13 @@ class is_tarif_cial(models.Model):
             return res
 
 
-#    @api.multi
-#    def copy(self,vals):
-#        for obj in self:
-#            res=self.env['is.tarif.cial'].search([
-#                ['partner_id', '=', obj.partner_id.id], 
-#                ['product_id', '=', obj.product_id.id],
-#                ['indice_prix', '!=', 999],
-#            ], order="indice_prix desc", limit=1)
-#            indice_prix=1
-#            for line in res:
-#                indice_prix=line.indice_prix+1
-#            vals.update({
-#                'indice_prix': indice_prix,
-#            })
-#            res=super(is_tarif_cial, self).copy(vals)
-
-#            if obj.indice_prix==999:
-#                obj.numero_dossier=""
-#                obj.type_evolution=""
-#        return res
+    @api.multi
+    def name_get(self):
+        res = []
+        for obj in self:
+            name=obj.product_id.is_code
+            res.append((obj.id,name))
+        return res
 
 
 

@@ -10,30 +10,28 @@ class is_article_sans_nomenclature(models.Model):
     _order='is_code'
     _auto = False
 
-    is_code     = fields.Char('Code PG')
-    designation = fields.Char('Désignation')
-    nb          = fields.Char('Nb nomenclatures')
+    product_id     = fields.Many2one('product.template', 'Article')
+    is_code        = fields.Char('Code Article')
+    designation    = fields.Char('Désignation')
+    is_category_id = fields.Many2one('is.category', 'Catégorie')
+
+    nb          = fields.Integer('Nb nomenclatures')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_article_sans_nomenclature')
         cr.execute("""
             CREATE OR REPLACE view is_article_sans_nomenclature AS (
                 SELECT 
-                    pt.id          as id,
-                    pt.is_code     as is_code,
-                    pt.name        as designation,
+                    pt.id             as id,
+                    pt.id             as product_id,
+                    pt.is_code        as is_code,
+                    pt.name           as designation,
+                    pt.is_category_id as is_category_id,
                     (select count(id) from mrp_bom mb where pt.id=mb.product_tmpl_id) as nb 
                 FROM product_template pt inner join stock_route_product srp on pt.id=srp.product_id
-                WHERE pt.id>0 and srp.route_id=6
+                                         inner join is_category ic          on pt.is_category_id=ic.id
+                WHERE pt.id>0 and srp.route_id=6 and pt.active='t'
             )
         """)
-
-#select * from stock_route_product;
-#product_id | route_id 
-#plastigray=# select id,name from stock_location_route;                                                                                                                                                    
-# id |            name                                                                                                                                                                                     
-#----+-----------------------------                                                                                                                                                                        
-#  5 | Buy
-#  6 | Manufacture
 
 
