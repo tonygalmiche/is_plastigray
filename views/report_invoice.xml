@@ -292,6 +292,11 @@
                 <span t-field="o.fiscal_position.note"/>
             </p>
 
+            <p t-if="o.fiscal_position.name=='Franchise de Taxe'">
+                <strong>N° d'autorisation de franchise de taxe : </strong>
+                <span t-field="o.partner_id.is_num_autorisation_tva"/>
+            </p>
+
             <p t-if="o.partner_id.is_type_reglement">
                 <strong>Type de règlement : </strong>
                 <span t-field="o.partner_id.is_type_reglement.name"/>

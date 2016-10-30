@@ -87,6 +87,18 @@ class account_invoice(models.Model):
         return res
 
 
+    @api.model
+    def _prepare_refund(self, invoice, date=None, period_id=None, description=None, journal_id=None):
+        """
+        Permet d'ajouter les champs personnalisés de la facture sur l'avoir
+        """
+        res=super(account_invoice, self)._prepare_refund(invoice, date, period_id, description, journal_id)
+        res['is_document']=invoice.is_document
+        res['is_num_cde_client']=invoice.is_num_cde_client
+        res['is_num_bl_manuel']=invoice.is_num_bl_manuel
+        return res
+
+
     #TODO : Finaliser ce module un mardi pour pouvoir tester
     @api.multi
     def export_ventes_seriem(self):
