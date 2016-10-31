@@ -97,6 +97,39 @@
 
 
 
+        <!-- Liste OF sans gamme -->
+        <record id="is_liste_of_sans_gamme_tree_view" model="ir.ui.view">
+            <field name="name">is_liste_of_sans_gamme_tree_view</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <tree colors="red:True">
+                    <field name="product_id"/>
+                    <field name="product_qty"/>
+                    <field name="date_planned"/>
+                    <field name="bom_id"/>
+                    <field name="state"/>
+                    <field name="routing_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_liste_of_sans_gamme_action" model="ir.actions.act_window">
+            <field name="name">Liste OF sans gamme</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.production</field>
+            <field name="domain">[('routing_id','=', False),('state','not in', ('cancel','done'))]</field>
+            <field name="context">{} </field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_liste_of_sans_gamme_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+
+
+
 
     </data>
 </openerp>

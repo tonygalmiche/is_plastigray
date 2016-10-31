@@ -54,6 +54,64 @@
         </record>
 
 
+        <!-- Liste des manquants -->
+        <record id="is_liste_des_manquants_tree_view" model="ir.ui.view">
+            <field name="name">is_liste_des_manquants_tree_view</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree colors="red:virtual_available &lt; 0">
+                    <field name="is_code"/>
+                    <field name="name"/>
+                    <field name="is_category_id"/>
+                    <field name="is_gestionnaire_id"/>
+                    <field name="is_mold_id"/>
+                    <field name="qty_available"/>
+                    <field name="virtual_available"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_liste_des_manquants_action" model="ir.actions.act_window">
+            <field name="name">Liste des manquants (stock réservé / quantité prévue négatif)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="domain">[('virtual_available','&lt;', 0)]</field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_liste_des_manquants_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Liste des stocks négatifs -->
+        <record id="is_liste_stock_negatif_tree_view" model="ir.ui.view">
+            <field name="name">is_liste_stock_negatif_tree_view</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree colors="red:qty_available &lt; 0 ">
+                    <field name="is_code"/>
+                    <field name="name"/>
+                    <field name="is_category_id"/>
+                    <field name="is_gestionnaire_id"/>
+                    <field name="is_mold_id"/>
+                    <field name="qty_available"/>
+                    <field name="virtual_available"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_liste_stock_negatif_action" model="ir.actions.act_window">
+            <field name="name">Liste des stocks négatifs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="domain">[('qty_available','&lt;', 0)]</field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_liste_stock_negatif_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
 
 
 

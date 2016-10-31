@@ -241,6 +241,39 @@
 
 
 
+
+
+    <!-- Liste nomenclatures sans gamme -->
+    <record id="is_liste_nomenclature_sans_gamme_tree_view" model="ir.ui.view">
+        <field name="name">is_liste_nomenclature_sans_gamme_tree_view</field>
+        <field name="model">mrp.bom</field>
+        <field name="arch" type="xml">
+            <tree colors="red:True">
+                <field name="product_tmpl_id"/>
+                <field name="is_sous_traitance"/>
+                <field name="is_negoce"/>
+                <field name="is_inactive"/>
+                <field name="routing_id"/>
+                <field name="is_gamme_generique_id"/>
+            </tree>
+        </field>
+    </record>
+    <record id="is_liste_nomenclature_sans_gamme_action" model="ir.actions.act_window">
+        <field name="name">Nomenclatures sans gamme</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.bom</field>
+        <field name="domain">['|',('routing_id','=', False),('is_gamme_generique_id','=', False)]</field>
+        <field name="limit">500</field>
+        <field name="view_id" ref="is_liste_nomenclature_sans_gamme_tree_view"/>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+
+
+
+
     <!-- Ordre de fabrication -->
     <record id="is_mrp_production_form_view" model="ir.ui.view">
         <field name="name">is_mrp_production_form_view</field>

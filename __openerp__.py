@@ -70,6 +70,7 @@
         "report/is_comparatif_gamme_standard_generique.xml",
         "report/is_comparatif_tps_article_gamme.xml",
         "report/is_comparatif_tarif_cial_vente.xml",
+        "report/is_comparatif_uc_lot.xml",
         "report/is_article_sans_nomenclature.xml",
         "report/is_article_sans_fournisseur.xml",
         "report/is_pricelist_item.xml",
