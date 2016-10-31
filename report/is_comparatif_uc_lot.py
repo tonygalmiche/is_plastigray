@@ -44,7 +44,7 @@ CREATE OR REPLACE view is_comparatif_uc_lot AS (
     from is_product_client ipc inner join product_template pt on ipc.product_id=pt.id
                                inner join res_partner rp      on ipc.client_id=rp.id
     where 
-        pt.id>0 
+        is_qt_par_uc(pt.id)!=0 
         and (
             round(cast(ipc.lot_livraison/is_qt_par_uc(pt.id) as numeric),0)      != round(cast(ipc.lot_livraison/is_qt_par_uc(pt.id) as numeric),4) 
             or
