@@ -224,8 +224,10 @@ class is_edi_cde_cli(models.Model):
     def get_data_GXS(self, attachment):
         res = []
         for obj in self:
-            csvfile=base64.decodestring(attachment.datas)
-            csvfile=csvfile.split("\r")
+            attachment=base64.decodestring(attachment.datas)
+            csvfile=attachment.split("\r")
+            if len(csvfile)==1:
+                csvfile=attachment.split("\n")
             tab=[]
             ct=0
             for row in csvfile:

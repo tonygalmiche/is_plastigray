@@ -10,8 +10,9 @@
                 <xpath expr="//page[@string='Configuration']" position="inside">
                     <group>
                         <group string="MySQL">
-                            <field name="is_mysql_pwd" password="True"/>
+                            <field name="is_mysql_pwd"    password="True"/>
                             <field name="is_dynacase_pwd" password="True"/>
+                            <field name="is_cpta_pwd"     password="True"/>
                         </group>
                     </group>
                 </xpath>

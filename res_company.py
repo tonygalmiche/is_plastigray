@@ -10,3 +10,4 @@ class res_company(models.Model):
 
     is_mysql_pwd    = fields.Char('Mot de passe MySQL')
     is_dynacase_pwd = fields.Char('Mot de passe Dynacase')
+    is_cpta_pwd     = fields.Char('Mot de passe AS400 CPTA')
