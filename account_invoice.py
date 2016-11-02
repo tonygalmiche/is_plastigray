@@ -4,6 +4,7 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import time
+from datetime import date, datetime
 from ftplib import FTP
 import os
 
@@ -119,6 +120,8 @@ class account_invoice(models.Model):
                         aa.code, 
                         isa.name, 
                         aa.type, 
+                        ai.date_due,
+                        aj.code,
                         sum(aml.debit), 
                         sum(aml.credit)
                 FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
@@ -126,9 +129,10 @@ class account_invoice(models.Model):
                                            inner join res_partner rp                 on ai.partner_id=rp.id
                                            left outer join account_invoice_line ail  on aml.is_account_invoice_line_id=ail.id
                                            left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
+                                           left outer join account_journal aj        on rp.is_type_reglement=aj.id
                 WHERE ai.id="""+str(obj.id)+"""
-                GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type
-                ORDER BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type
+                GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code
+                ORDER BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code
             """
             res={}
             cr.execute(sql)
@@ -146,15 +150,15 @@ class account_invoice(models.Model):
                 NumCompte       = row[4]
 
 
-                Debit           = row[7]
-                Credit          = row[8]
+                Debit   = row[9]
+                Credit  = row[10]
+                Montant = Credit - Debit
+
                 Sens=u"D"
-                if Debit>0:
-                    Sens    = u"D"
-                    Montant = Debit
-                else:
+                if Montant>0:
                     Sens    = u"C"
-                    Montant = Credit
+                else:
+                    Sens    = u"D"
 
 
                 CodeAuxiliaire=row[2]
@@ -166,7 +170,7 @@ class account_invoice(models.Model):
                     CodeFournisseur = "      "
                     TotalTTC2 = TotalTTC2 + Montant
 
-                Montant=int(round(100*Montant))
+                Montant=abs(int(round(100*Montant)))
                 Montant=(u"00000000000"+str(Montant))[-11:]
 
                 TypeFacture=row[6]
@@ -179,27 +183,34 @@ class account_invoice(models.Model):
 
                 NumFacture=(u"000000"+str(row[0]))[-6:]
 
+                DateEcheance=row[7]
+                DateEcheance=datetime.strptime(DateEcheance, '%Y-%m-%d')
+                DateEcheance=DateEcheance.strftime('%y%m%d')
+
+                TypeReglement=(row[8]+"  ")[:2]
+
+
                 #TODO : La section analytique ne passe pas de la fiche article à la facture automatiquement
                 SectionAnalytique=str(row[5] or u'    ')
 
                 DateFacture=str(row[1])
                 JourFacture=(u"00"+DateFacture)[-2:]
-                res.append(u"L"+NumCompte+CodeFournisseur+Montant+Sens+TypeFacture+Client+NumFacture+SectionAnalytique+JourFacture+u"   00000000000   00000000000")
+                Ligne=u"L"+NumCompte+CodeFournisseur+Montant+Sens+TypeFacture+Client+NumFacture+SectionAnalytique+JourFacture+u"   00000000000   00000000000"
+                res.append(Ligne)
+
 
             # ** Ligne de fin type H *******************************************
 
             TotalTTC=int(round(100*TotalTTC))
             TotalTTC=(u"000000000"+str(TotalTTC))[-9:]
 
-            XX1=u'161215' # TODO : Je pense que c'est la date d'échéance => A confirmer
-            XX2=u'TA'     # TODO : ??
-
-            res.append(u'H'+Soc+CompteCollectif+CodeAuxiliaire+NumFacture+u'01'+TotalTTC+u' '+XX1+XX2+'  0000000 1')
+            Ligne=u'H'+Soc+CompteCollectif+CodeAuxiliaire+NumFacture+u'01'+TotalTTC+u' '+DateEcheance+TypeReglement+'  0000000 1'
+            res.append(Ligne)
             #*******************************************************************
 
             # Enregistrement du fichier ****************************************
             os.chdir('/tmp')
-            name = 'PGVMFCO3'
+            name = 'PGVMFCO'
             #path    = '/tmp/'+fichier
             err=""
             try:
