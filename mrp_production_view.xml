@@ -101,6 +101,7 @@
         <record id="is_liste_of_sans_gamme_tree_view" model="ir.ui.view">
             <field name="name">is_liste_of_sans_gamme_tree_view</field>
             <field name="model">mrp.production</field>
+            <field eval="99" name="priority"/>
             <field name="arch" type="xml">
                 <tree colors="red:True">
                     <field name="product_id"/>

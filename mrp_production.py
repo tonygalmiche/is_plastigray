@@ -18,7 +18,7 @@ class MrpProduction(models.Model):
         if self.product_id and self.product_id.packaging_ids:
             pack_brw        = self.product_id.packaging_ids[0]
             product_package = pack_brw.ul and pack_brw.ul.id or False
-            package_qty     = pack_brw.ul_qty * pack_brw.rows
+            package_qty     = pack_brw.qty
             is_qt_prevue    = self.product_qty 
         if package_qty==0:
             package_qty=1
