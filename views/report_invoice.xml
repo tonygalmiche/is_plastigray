@@ -116,6 +116,7 @@
                             <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)
                             <div t-field="o.partner_id"
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
+                            <div t-if="o.partner_id.vat">VAT : <span t-field="o.partner_id.vat"/></div>
                         </div>
 
                     </div>
@@ -247,6 +248,17 @@
                 </tbody>
             </table>
 
+            <!-- Affichage de l'escompte -->
+            <t t-set="escompte" t-value="0"/>
+            <t t-set="tva"      t-value="0"/>
+            <t t-foreach="o.tax_line" t-as="tax">
+                <t t-if="tax.account_id.code=='665000'">
+                    <t t-set="escompte" t-value="escompte + tax.amount"/>
+                </t>
+                <t t-if="tax.account_id.code!='665000'">
+                    <t t-set="tva" t-value="tva + tax.amount"/>
+                </t>
+            </t>
             <div class="row">
                 <div class="col-xs-4 pull-right">
                     <table class="table table-condensed">
@@ -256,10 +268,16 @@
                                 <span t-field="o.amount_untaxed" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
                             </td>
                         </tr>
+                        <tr t-if="escompte" >
+                            <td>Escompte</td>
+                            <td class="text-right">
+                                <span t-esc='"{:,.2f}".format(abs(escompte)).replace(","," ").replace(".",",")'/> €
+                            </td>
+                        </tr>
                         <tr>
                             <td>T.V.A.</td>
                             <td class="text-right">
-                                <span t-field="o.amount_tax" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                                <span t-esc='"{:,.2f}".format(abs(tva)).replace(","," ").replace(".",",")'/> €
                             </td>
                         </tr>
                         <tr class="border-black">

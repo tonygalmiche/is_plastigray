@@ -11,13 +11,12 @@ import os
 
 class account_move_line(models.Model):
     _inherit = "account.move.line"
-
-    #is_section_analytique_id  = fields.Many2one('is.section.analytique', 'Section analytique')
     is_account_invoice_line_id = fields.Many2one('account.invoice.line', 'Ligne de facture')
 
 
 class account_invoice(models.Model):
-    _inherit = "account.invoice"
+    _inherit = 'account.invoice'
+    _order   = 'date_invoice desc'
 
     is_document       = fields.Char('Document'     , help="Ce champ est utilisé dans les factures diverses pour saisir le moule ou le n° d'investissement")
     is_num_cde_client = fields.Char('N° Cde Client', help="Ce champ est utilisé dans les factures diverses sans commande client dans Odoo")

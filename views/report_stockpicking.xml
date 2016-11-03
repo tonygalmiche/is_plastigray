@@ -107,7 +107,7 @@ TODO :
                             <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)
                             <div t-field="o.partner_id"
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
-                            <div t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></div>
+                            <div t-if="o.partner_id.vat">VAT : <span t-field="o.partner_id.vat"/></div>
                         </div>
                         <div>
                             <span t-if="o.partner_id.lang == 'fr_FR'">Arrivée prévue le</span>

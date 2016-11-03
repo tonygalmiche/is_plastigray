@@ -51,5 +51,21 @@
 
 
 
+
+        <!-- Factures brouillons -->
+        <record id="is_factures_a_valider_action" model="ir.actions.act_window">
+            <field name="name">Factures à valider</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.invoice</field>
+            <field name="domain">[('state','=', 'draft')]</field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+
     </data>
 </openerp>

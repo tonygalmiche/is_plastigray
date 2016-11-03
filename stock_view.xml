@@ -78,6 +78,39 @@
         </record>
 
 
+        <!-- Livraisons à traiter -->
+        <record id="is_livraisons_a_traiter_action" model="ir.actions.act_window">
+            <field name="name">Livraisons à traiter</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="domain">[('state','not in', ('cancel','done'))]</field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Toutes les livraisons -->
+        <record id="is_toutes_les_livraisons_action" model="ir.actions.act_window">
+            <field name="name">Livraisons à traiter</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Livraisons à facturer -->
+        <record id="is_livraisons_a_facturer_action" model="ir.actions.act_window">
+            <field name="name">Livraisons à facturer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="domain">[('invoice_state','=', '2binvoiced'),('state','=', 'done')]</field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
 
 
     </data>
