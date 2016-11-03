@@ -262,7 +262,7 @@
         <field name="name">Nomenclatures sans gamme</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">mrp.bom</field>
-        <field name="domain">['|',('routing_id','=', False),('is_gamme_generique_id','=', False)]</field>
+        <field name="domain">['&amp;','&amp;',('is_negoce','=', False),('is_sous_traitance','=', False), '|', ('routing_id','=', False),('is_gamme_generique_id','=', False)]</field>
         <field name="limit">500</field>
         <field name="view_id" ref="is_liste_nomenclature_sans_gamme_tree_view"/>
         <field name="view_type">form</field>
