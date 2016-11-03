@@ -244,6 +244,7 @@
 
 
     <!-- Liste nomenclatures sans gamme -->
+<!--
     <record id="is_liste_nomenclature_sans_gamme_tree_view" model="ir.ui.view">
         <field name="name">is_liste_nomenclature_sans_gamme_tree_view</field>
         <field name="model">mrp.bom</field>
@@ -268,7 +269,7 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
-
+-->
 
 
 

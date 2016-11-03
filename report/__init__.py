@@ -9,3 +9,7 @@ import is_article_sans_nomenclature
 import is_article_sans_fournisseur
 import is_pricelist_item
 import is_cas_emplois
+import is_nomenclature_sans_gamme
+import is_comparatif_uc_lot_mini
+import is_comparatif_lot_prix
+import is_comparatif_tarif_commande
