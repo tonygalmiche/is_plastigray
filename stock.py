@@ -52,14 +52,16 @@ class stock_move(models.Model):
     _inherit = "stock.move"
 
 
-
     def _create_invoice_line_from_vals(self, cr, uid, move, invoice_line_vals, context=None):
-
+        """
+        Permet d'ajouter le lien avec la livraison et la section analytique sur
+        les lignes des factures
+        """
         if move:
+            is_section_analytique_id=move.product_id.is_section_analytique_id.id
             invoice_line_vals['is_move_id']=move.id
-
+            invoice_line_vals['is_section_analytique_id']=is_section_analytique_id
         res = super(stock_move, self)._create_invoice_line_from_vals(cr, uid, move, invoice_line_vals, context)
-        print "RES = ", res, move, invoice_line_vals
         return res
 
 

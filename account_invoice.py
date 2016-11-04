@@ -100,6 +100,7 @@ class account_invoice(models.Model):
         res['is_document']=invoice.is_document
         res['is_num_cde_client']=invoice.is_num_cde_client
         res['is_num_bl_manuel']=invoice.is_num_bl_manuel
+
         return res
 
 
