@@ -35,12 +35,11 @@
                                 <tree editable="bottom"  create="false">
                                     <field name="ref_article_client"  readonly="1"/>
                                     <field name="num_commande_client" readonly="1"/>
-                                    <field name="product_id"          readonly="1" widget="many2one_clickable"/>
-                                    <field name="quantite"            readonly="1"/>
-                                    <field name="date_livraison"      readonly="1"/>
-                                    <field name="type_commande"       readonly="1"/>
-                                    <field name="prix"                readonly="1"/>
-                                    <!--<button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" attrs="{'invisible':[('order_id','=',False)]}" />-->
+                                    <field name="product_id"          readonly="0" widget="many2one_clickable"/>
+                                    <field name="quantite"            />
+                                    <field name="date_livraison"      />
+                                    <field name="type_commande"       />
+                                    <field name="prix"                />
                                     <field name="order_id"            readonly="1" widget="many2one_clickable"/>
                                     <field name="anomalie"            readonly="1"/>
                                     <field name="file_id"             readonly="1"/>

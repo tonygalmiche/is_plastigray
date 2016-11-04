@@ -83,6 +83,9 @@ class is_edi_cde_cli(models.Model):
                 row.unlink()
 
             line_obj = self.env['is.edi.cde.cli.line']
+            
+
+
             for attachment in obj.file_ids:
                 datas = self.get_data(obj.import_function, attachment)
 
@@ -109,7 +112,7 @@ class is_edi_cde_cli(models.Model):
 
                         product_id = False
                         prix       = 0;
-                        anomalie2  = False
+                        anomalie2  = []
                         if len(order):
                             quantite   = int(ligne["quantite"])
                             product    = order[0].is_article_commande_id
@@ -129,19 +132,28 @@ class is_edi_cde_cli(models.Model):
                                         self._cr, self._uid,
                                         pricelist_id, product.id, quantite, partner_id, ctx)[pricelist_id]
                                 if prix==0:
-                                    anomalie2="Prix à 0"
+                                    anomalie2.append("Prix à 0")
                             #***************************************************
 
                             #** Vérification que qt >= lot livraison ***********
                             lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, obj.partner_id)
                             if quantite<lot and quantite>0:
-                                anomalie2="Quantité < Lot de livraison ("+str(int(lot))+")"
+                                anomalie2.append("Quantité < Lot de livraison ("+str(int(lot))+")")
                             #***************************************************
 
-                        anomalie=anomalie2
+                            #** Vérification de la date de livraison livraison *
+                            check_date = self.env['sale.order.line'].check_date_livraison(ligne["date_livraison"], partner_id)
+                            print ligne["date_livraison"], check_date
+                            if not check_date:
+                                anomalie2.append("Date de livraison pendant la fermeture du client")
+                            #***************************************************
+
                         if anomalie1:
-                            anomalie=anomalie1
-                        anomalie=anomalie or ''
+                            anomalie2.append(anomalie1)
+                        anomalie=''
+                        if len(anomalie2)>0:
+                            anomalie='\n'.join(anomalie2)
+
 
                         vals={
                             'edi_cde_cli_id'     : obj.id,
