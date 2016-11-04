@@ -558,14 +558,7 @@ class mrp_generate_previsions(models.TransientModel):
             #** Date de début des SA en tenant compte du délai de livraison ****
             for sa in sas:
                 product=sa.product_id
-                if len(product.seller_ids)>0:
-                    delay=product.seller_ids[0].delay
-                    partner_id=product.seller_ids[0].name
-                    new_date = datetime.datetime.strptime(sa.end_date, '%Y-%m-%d')
-                    new_date = new_date - datetime.timedelta(days=delay)
-                    new_date = new_date.strftime('%Y-%m-%d')
-                    new_date = partner_obj.get_date_dispo(product.seller_ids[0].name, new_date)
-                    sa.start_date=new_date
+                sa.start_date=prevision_obj.get_start_date_sa(product, sa.end_date)
             #*******************************************************************
 
             x=duree(debut)

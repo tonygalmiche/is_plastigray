@@ -151,39 +151,28 @@ class mrp_prevision(models.Model):
         return start_date
 
 
-    @api.multi
-    def _quantity2lot(self, product, quantity):
-        if quantity<product.lot_mini:
-            quantity=product.lot_mini
-        delta=quantity-product.lot_mini
-        if delta>0:
-            if product.multiple!=0:
-                x=ceil(delta/product.multiple)
-                quantity=product.lot_mini+x*product.multiple
-        return quantity
 
 
     @api.model
     def create(self, vals):
-        type=vals.get('type', None)
-        quantity = vals.get('quantity', 0)
-        if type=='fs' or type=='sa':
-            product_id = vals.get('product_id', False)
-            if product_id:
-                product_obj = self.pool.get('product.product')
-                for product in product_obj.browse(self._cr, self._uid, [product_id], context=self._context):
-                    quantity=self._quantity2lot(product, quantity)
-                    vals["quantity"]=quantity
-        vals["quantity_origine"]=quantity
-        end_date   = vals.get('end_date', None)
+
+        #** Quantité arrondie au lot à la création uniquement ******************
+        type       = vals.get('type'    , None)
+        quantity   = vals.get('quantity', None)
         product_id = vals.get('product_id', None)
-        type       = vals.get('type', None)
+        if (type=='sa' or type=='fs') and quantity:
+            product=self.env['product.product'].browse(product_id)
+            quantity=self.get_quantity2lot(product, quantity)
+            vals["quantity"]         = quantity
+            vals["quantity_origine"] = quantity
+        #***********************************************************************
+
+        end_date   = vals.get('end_date', None)
         if quantity and end_date and product_id and type=="fs":
             start_date=self._start_date(product_id, quantity, end_date)
             vals["start_date"]=start_date
 
         data_obj = self.pool.get('ir.model.data')
-
         sequence_ids = data_obj.search(self._cr, self._uid, [('name','=','seq_mrp_prevision_'+str(type))], context=self._context)
         if sequence_ids:
             sequence_id = data_obj.browse(self._cr, self._uid, sequence_ids[0], self._context).res_id
@@ -222,15 +211,29 @@ class mrp_prevision(models.Model):
         context = self._context
         ids = [self.id]
 
-        quantity = vals.get('quantity', None)
-        end_date = vals.get('end_date', None)
-        if quantity or end_date:
+        for obj in self:
+            #** Date de début des SA en tenant compte du délai de livraison ****
+            end_date = vals.get('end_date', None)
+            if obj.type=='sa' and end_date:
+                vals["start_date"]=self.get_start_date_sa(obj.product_id, end_date)
+            #*******************************************************************
+
+#            #** Quantité arrondie au lot ***************************************
+#            quantity = vals.get('quantity', None)
+#            if obj.type=='sa' and quantity:
+#                vals["quantity"]=self.get_quantity2lot(obj.product_id, quantity)
+#            #*******************************************************************
+
+
+
+
+        if end_date:
             for fs in self.browse(ids):
                 if fs.type=='fs':
-                    if not quantity:
-                        quantity=fs.quantity
-                    quantity=self._quantity2lot(fs.product_id, quantity)
-                    vals["quantity"]=quantity
+                    #if not quantity:
+                    #    quantity=fs.quantity
+                    #quantity=self._quantity2lot(fs.product_id, quantity)
+                    #vals["quantity"]=quantity
                     if not end_date:
                         end_date=fs.end_date
                     start_date=self._start_date(fs.product_id.id, quantity, end_date)
@@ -259,6 +262,35 @@ class mrp_prevision(models.Model):
         return res
 
 
+
+    @api.multi
+    def get_quantity2lot(self, product, quantity):
+        if quantity<product.lot_mini:
+            quantity=product.lot_mini
+        delta=quantity-product.lot_mini
+        if delta>0:
+            if product.multiple!=0:
+                x=ceil(delta/product.multiple)
+                quantity=product.lot_mini+x*product.multiple
+        return quantity
+
+
+    @api.multi
+    def get_start_date_sa(self,product, end_date):
+        """
+        Date de début des SA en tenant compte du délai de livraison
+        """
+        start_date=end_date
+        if len(product.seller_ids)>0:
+            partner_obj=self.env['res.partner']
+            delay=product.seller_ids[0].delay
+            partner_id=product.seller_ids[0].name
+            new_date = datetime.strptime(end_date, '%Y-%m-%d')
+            new_date = new_date - timedelta(days=delay)
+            new_date = new_date.strftime('%Y-%m-%d')
+            new_date = partner_obj.get_date_dispo(product.seller_ids[0].name, new_date)
+            start_date=new_date
+        return start_date
 
 
 
