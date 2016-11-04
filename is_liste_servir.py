@@ -116,7 +116,7 @@ class is_liste_servir(models.Model):
     transporteur_id        = fields.Many2one('res.partner', 'Transporteur')
     message                = fields.Text("Message")
     state                  = fields.Selection([('creation', u'Création'),('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
-    order_id               = fields.Many2one('sale.order', 'Commande générée', readonly=True)
+    order_ids              = fields.One2many('sale.order', 'is_liste_servir_id', 'Commandes générées', readonly=False)
     line_ids               = fields.One2many('is.liste.servir.line', 'liste_servir_id', u"Lignes")
     uc_ids                 = fields.One2many('is.liste.servir.uc', 'liste_servir_id', u"UCs")
     um_ids                 = fields.One2many('is.liste.servir.um', 'liste_servir_id', u"UMs")
@@ -292,12 +292,18 @@ class is_liste_servir(models.Model):
                   and sol.is_date_expedition<='"""+str(obj.date_fin)+"""' 
                   and sol.product_id>0
                   and sol.is_type_commande='ferme' 
+                  and so.is_type_commande!='ls' 
         """
-        if obj.order_id:
-            SQL=SQL+" and so.id!="+str(obj.order_id.id)+" "
+        #if obj.order_id:
+        #    SQL=SQL+" and so.id!="+str(obj.order_id.id)+" "
         if obj.date_debut:
             SQL=SQL+" and sol.is_date_expedition>='"+str(obj.date_debut)+"' "
-        SQL=SQL+"group by sol.order_id,sol.product_id, sol.is_client_order_ref"
+        SQL=SQL+"group by sol.order_id,sol.product_id, sol.is_client_order_ref "
+        if obj.partner_id.is_caracteristique_bl=='cde_client':
+            OrderBy="sol.is_client_order_ref"
+        else:
+            OrderBy="sol.product_id"
+        SQL=SQL+"order by "+OrderBy
         return SQL
 
 
@@ -387,6 +393,7 @@ class is_liste_servir(models.Model):
     def action_generer_bl(self):
         cr = self._cr
         for obj in self:
+            obj.order_ids.unlink()
             SQL=self._get_sql(obj)
             cr.execute(SQL)
             result = cr.fetchall()
@@ -403,10 +410,27 @@ class is_liste_servir(models.Model):
                 line.anomalie=anomalie
                 if anomalie!="":
                     Test=False
+            #** Accèder à la liste des commandes générées **********************
             if Test:
                 self.generer_bl(obj)
                 obj.state="traite"
-                return _acceder_commande(self,obj.order_id.id)
+                ids=[]
+                for order in obj.order_ids:
+                    ids.append(order.id)
+                res= {
+                    'domain': "[('id','in',[" + ','.join(map(str, list(ids))) + "])]",
+                    'name': 'Commandes',
+                    'view_mode': 'tree,form',
+                    'view_type': 'form',
+                    'context': {'tree_view_ref': 'sale.view_order_tree'},
+                    'res_model': 'sale.order',
+                    'type': 'ir.actions.act_window',
+                }
+                return res
+            #*******************************************************************
+
+
+
 
 
     @api.multi
@@ -419,7 +443,23 @@ class is_liste_servir(models.Model):
         order_obj = self.pool.get('sale.order')
         vals={}
         lines = []
+        mem=''
         for line in obj.line_ids:
+            key=''
+            if obj.partner_id.is_caracteristique_bl=='cde_odoo':
+                key=''
+            if obj.partner_id.is_caracteristique_bl=='cde_client':
+                key=str(line.client_order_ref)
+            if obj.partner_id.is_caracteristique_bl=='ref_article':
+                key=str(line.product_id.id)
+            if mem!=key:
+                if vals:
+                    new_id = order_obj.create(cr, uid, vals, context=context)
+                    vals={}
+                    lines = []
+                mem=key
+
+
             quotation_line = order_line_obj.product_id_change(cr, uid, ids, obj.partner_id.property_product_pricelist.id, 
                                                               line.product_id.id, 0, False, 0, False, '', obj.partner_id.id, 
                                                              False, True, False, False, False, False, context=context)['value']
@@ -434,28 +474,22 @@ class is_liste_servir(models.Model):
                 'price_unit'          : line.prix,
             })
             lines.append([0,False,quotation_line]) 
-        values = {
-            'partner_id': obj.partner_id.id,
-            'is_source_location_id': obj.is_source_location_id.id,
-            'client_order_ref'     : obj.name,
-            'origin'               : obj.name,
-            'order_line'           : lines,
-            'picking_policy'       : 'direct',
-            'order_policy'         : 'picking',
-            'is_transporteur_id'   : obj.transporteur_id.id,
-            'is_type_commande'     : 'ls',
-        }
-        vals.update(values)
-        if obj.order_id:
-            order=self.env['sale.order'].search([('id', '=', obj.order_id.id)])
-            for row in order.order_line:
-                row.unlink()
-            order_obj.write(cr, uid, obj.order_id.id, vals, context=context)
-        else:
+
+            values = {
+                'partner_id': obj.partner_id.id,
+                'is_source_location_id': obj.is_source_location_id.id,
+                'client_order_ref'     : obj.name,
+                'is_liste_servir_id'   : obj.id,
+                'origin'               : obj.name,
+                'order_line'           : lines,
+                'picking_policy'       : 'direct',
+                'order_policy'         : 'picking',
+                'is_transporteur_id'   : obj.transporteur_id.id,
+                'is_type_commande'     : 'ls',
+            }
+            vals.update(values)
+        if vals:
             new_id = order_obj.create(cr, uid, vals, context=context)
-            obj.order_id=new_id
-
-
 
         #** Supprimer les lignes des commandes d'origine ***********************
         SQL="""
@@ -484,13 +518,9 @@ class is_liste_servir(models.Model):
         #***********************************************************************
 
 
-
-
-
-
 class is_liste_servir_line(models.Model):
     _name='is.liste.servir.line'
-    _order='product_id'
+    _order='id'
 
 
     @api.depends('product_id','quantite')
@@ -563,9 +593,14 @@ class is_liste_servir_line(models.Model):
 
     @api.multi
     def action_acceder_commande(self):
-        dummy, view_id = self.env['ir.model.data'].get_object_reference('sale', 'view_order_form')
+        dummy, view_id = self.env['ir.model.data'].get_object_reference('sale', 'view_order_tree')
         for obj in self:
-            return _acceder_commande(self,obj.order_id.id)
+            ids=[]
+            for id in obj.order_ids:
+                ids.append(id)
+
+
+            return _acceder_commande(self,ids)
 
 
     @api.multi

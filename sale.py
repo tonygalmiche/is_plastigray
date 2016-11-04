@@ -26,6 +26,9 @@ class sale_order(models.Model):
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
     is_transporteur_id     = fields.Many2one('res.partner', 'Transporteur')
 
+    is_liste_servir_id     = fields.Many2one('is.liste.servir', 'Liste à servir')
+
+
     _defaults = {
         'is_type_commande': 'standard',
     }

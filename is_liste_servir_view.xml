@@ -63,7 +63,13 @@
                                 <field name="poids_brut"/> 
                                 <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
                                 <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
-                                <field name="order_id"/> 
+                                <field name="order_ids" >
+                                    <tree editable="bottom">
+                                        <field name="name"  />
+                                        <field name="state" invisible="1" />
+                                    </tree>
+                                </field>
+
                             </group>
                         </group>
                         <group>
@@ -82,7 +88,6 @@
                                     <field name="nb_um"/>
                                     <field name="um_id"/>
                                     <field name="mixer"/>
-                                    <field name="order_id" widget="many2one_clickable"/>
                                     <field name="client_order_ref" readonly="1" />
                                     <field name="certificat_matiere" invisible="1"/>
                                     <button 

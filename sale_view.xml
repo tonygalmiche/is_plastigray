@@ -29,6 +29,9 @@
                     <field  name="is_type_commande"
                             required="1"
                             attrs="{'invisible': [('partner_id', '=', False)] }   " />
+
+                    <field name="is_liste_servir_id" attrs="{'invisible' : [('is_type_commande', '!=', 'ls')]}" />
+
                     <field  name="is_article_commande_id" 
                             attrs="{
                                 'required' : [    ('is_type_commande', '!=', 'standard'),('is_type_commande', '!=', 'ls')], 

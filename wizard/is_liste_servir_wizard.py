@@ -68,6 +68,7 @@ class is_liste_servir_wizard(osv.osv_memory):
                 where sol.is_date_expedition<='"""+str(data['date_fin'])+"""' 
                       and so.state='draft' 
                       and sol.is_type_commande='ferme' 
+                      and so.is_type_commande!='ls'
             """
             if data['livrable']:
                 SQL=SQL+"""
@@ -75,18 +76,14 @@ class is_liste_servir_wizard(osv.osv_memory):
                         select sum(sq.qty) 
                         from stock_quant sq inner join stock_location sl on sq.location_id=sl.id
                         where sq.product_id=pp.id and sl.usage='internal' and sl.active='t'
-                      )>0
+                      )>=sol.product_uom_qty
                 """
             if data['date_debut']:
                 SQL=SQL+" and sol.is_date_expedition>='"+str(data['date_debut'])+"' "
             SQL=SQL+"group by so.partner_id, rp.zip, rp.city, rp.is_delai_transport"
-
-
             cr.execute(SQL)
             result = cr.fetchall()
             for row in result:
-                print row
-
                 SQL="""
                     select id 
                     from is_liste_servir 
