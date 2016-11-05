@@ -2,7 +2,81 @@
 <openerp>
     <data>
 
+        <!-- Folio -->
+        <record id="is_account_folio_tree_view" model="ir.ui.view">
+            <field name="name">is.account.folio.tree.view</field>
+            <field name="model">is.account.folio</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="date_creation"/> 
+                    <field name="createur_id"/> 
+                </tree>
+            </field>
+        </record>
+        <record id="is_account_folio_form_view" model="ir.ui.view">
+            <field name="name">is.account.folio.form.view</field>
+            <field name="model">is.account.folio</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="date_creation"/> 
+                                <field name="createur_id"/> 
+                            </group> 
+                        </group> 
+                        <group>
+                            <field name="invoice_ids" >
+                                <tree>
+                                    <field name="number"  />
+                                    <field name="name"  />
+                                    <field name="state" invisible="1" />
+                                </tree>
+                            </field>
+                        </group> 
 
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_account_folio_action" model="ir.actions.act_window">
+            <field name="name">Folio</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.account.folio</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- account.view_account_invoice_filter -->
+        <record id="is_view_account_invoice_filter" model="ir.ui.view">
+            <field name="name">is_view_account_invoice_filter</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter" />
+            <field name="arch" type="xml">
+                <field name='number' position="after" >
+                    <field name="is_folio_id"/> 
+                </field>
+            </field>
+        </record>
+
+
+        <!-- account.invoice_tree -->
+        <record id="is_invoice_tree" model="ir.ui.view">
+            <field name="name">is_invoice_tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after" >
+                    <field name="is_folio_id"/> 
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- account.invoice_form -->
         <record id="is_invoice_form" model="ir.ui.view">
             <field name="name">is_invoice_form</field>
             <field name="model">account.invoice</field>
@@ -12,6 +86,9 @@
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
 
+                <xpath expr="//field[@name='account_id']" position="after" >
+                    <field name="is_folio_id"/> 
+                </xpath>
 
                 <xpath expr="//label[@for='amount_tax']"  position="attributes" >
                     <attribute name="invisible">1</attribute> 
@@ -60,6 +137,7 @@
 
 
         <!-- Export des factures dans Série-M -->
+        <!--
         <record id="export_ventes_seriem_action_server" model="ir.actions.server">
              <field name="name">Exportation des ventes dans Série-M</field>
             <field name="model_id" ref="model_account_invoice"/>
@@ -71,7 +149,7 @@
             <field name="name">Exportation des ventes dans Série-M</field>
             <field eval="'ir.actions.server,%d'%export_ventes_seriem_action_server" name="value"/>
         </record>
-
+        -->
 
 
 
