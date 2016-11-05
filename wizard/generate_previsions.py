@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 import datetime
+import pytz
+#from pytz import timezone
 
 #from openerp.osv import fields, osv
 from openerp import models,fields,api
@@ -9,24 +11,16 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp import netsvc
 
+
+#TODO : Permet d'indiquer l'id du produit à analyser
+product_id_test=0
+
+
 #TODO : 
-# Lors de la création d'une suggestion, vérfier s'il en existe déja une ou pas. 
-# => Modifier celle existante pour n'avoir qu'une suggestion par semaine et regrouper celle-ci au lot
-# Reste à supprimer les anciennes suggestions avant de les créer. Eviter de supprimer et recréer si seulement une FS
-# Tenir compte des lots et multuple de lots lors de la création des FS/SA (lot_mini et multiple) 
-# => Cela genere du surstock => Voir pour faire cela à la fin
-# => Mettre une case à cochée dans l'assistant pour paramètrer cela
-# Tenir compte des délais de fabrication ou de livraiosn lors de la création des FS/SA (dates de début et de fin des FS et SA)
 # Tester les résultats avec des commandes partielles, des réceptions partielles ou des OF partiels
 # => Avec une livraison partielle, le calcul semble bon, mais l'affichage n'est pas bon dans l'intranet
-# => Dans l'intranet utilser les routes pour distiniquer si un produit est acheté ou fabriqué
 # Lancer le calcul dans un ordre logique : prendu vendu, produits fabriqués (semi-fini) produit achetés
 # Le calcul ne tient pas compte des SF actullement
-# Renommer mrp_prevision en mrp_suggestion
-# Renommer fs en FS, ft en FT et sa en SA
-# Remettre à 0 les compteurs avant chaque lancement
-# Tenir compte du lot mini => TODO : Voir pour faire cela a la fin du traitement car cela génére du surstock
-
 
 
 def duree(debut):
@@ -36,11 +30,8 @@ def duree(debut):
     return ms
 
 
-#TODO : Permet d'indiquer le produit à analyser
-product_id_test=962
-
-#class mrp_generate_previsions(osv.osv_memory):
-
+def _now(debut):
+    return datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S') + ' : '+ str(int(duree(debut)/1000))+"s"
 
 
 class mrp_generate_previsions(models.TransientModel):
@@ -50,8 +41,6 @@ class mrp_generate_previsions(models.TransientModel):
 
     max_date   = fields.Date('Date limite', required=True)
     company_id = fields.Many2one('res.company', 'Société', required=True)
-
-
 
     @api.multi
     def _check_date_max(self):
@@ -106,21 +95,15 @@ class mrp_generate_previsions(models.TransientModel):
         date_debut = date_debut.strftime('%Y-%m-%d')
         return date_debut
 
+
     @api.multi
     def _articles(self):
         articles=[]
         for product in self.env['product.product'].search([]):
             articles.append(product)
-
-#        cr=self._cr
-#        obj = self.pool.get('product.product')
-#        ids = obj.search([])
-#        articles=[]
-#        if ids:
-#            for product in obj.browse(cr, uid, ids, context=context):
-#                    articles.append(product)
         articles.sort()
         return articles
+
 
     @api.multi
     def _stocks(self,articles):
@@ -135,6 +118,7 @@ class mrp_generate_previsions(models.TransientModel):
         for row in cr.fetchall():
             res[row[0]]=row[1]
         return res
+
 
     def _cde_cli(self, date_debut, date_fin):
         cr=self._cr
@@ -180,14 +164,6 @@ class mrp_generate_previsions(models.TransientModel):
                 print "_cde_fou : ",row[0], row[1], date_debut, date_fin
 
         return res
-
-#plastigray=# select id,origin,product_qty,date_expected,picking_id from stock_move where product_id=962 and state not in ('done','cancel','none') and picking_id is not null;
-#  id   | origin  | product_qty |    date_expected    | picking_id 
-#-------+---------+-------------+---------------------+------------
-# 11537 | PO00173 |     10000.0 | 2016-11-14 11:00:00 |        142
-# 11540 | PO00174 |     10000.0 | 2016-12-31 11:00:00 |        143
-
-#plastigray=# select id,origin,product_qty,picking_id from stock_move where product_id=962 and state not in ('done','cancel','none') and picking_id is not null;                                           
 
 
     def _fl(self, date_debut, date_fin):
@@ -243,20 +219,6 @@ class mrp_generate_previsions(models.TransientModel):
     @api.multi
     def _suggestions(self, date_debut, date_fin, type):
         cr=self._cr
-#        obj = self.pool.get('mrp.prevision')
-#        start_date = date_debut
-#        now=datetime.datetime.now().strftime('%Y-%m-%d')
-#        if start_date<=now:
-#            start_date="2000-01-01"
-#        end_date   = date_fin
-
-#        if type=='fs':
-#            ids = obj.search(cr, uid, ['&','&',('type','=',type),('start_date','>=',start_date),('start_date','<',end_date)])
-#            if len(ids)>1:
-#                for row in obj.browse(cr, uid, ids, context=context):
-#                    print "-- type=",type, row.name, row.quantity, start_date, end_date, row.product_id
-
-
         now=datetime.datetime.now().strftime('%Y-%m-%d')
         if date_debut<=now:
             date_debut="2000-01-01"
@@ -274,37 +236,6 @@ class mrp_generate_previsions(models.TransientModel):
             res[row[0]]=row[1]
         return res
 
-
-#    #** Déterminer le premier niveau de la nomenclature d'un produit ***********
-#    def get_product_boms(self, cr, uid, product, context=None):
-#        boms = []
-#        bom_obj = self.pool.get('mrp.bom')
-#        template_id = product.product_tmpl_id and product.product_tmpl_id.id or False
-#        if template_id:
-#            bom_ids = bom_obj.search(cr, uid, [('product_tmpl_id','=',template_id),], context=context)
-#            if bom_ids:
-#                for line in bom_obj.browse(cr, uid, bom_ids[0], context=context).bom_line_ids:
-#                    boms.append(line.id)
-#        return boms
-
-
-#    def _creer_mrp_prevision(self, cr, uid, type, product_id, quantity, start_date, end_date, note='', parent_id=False, context=None):
-#        vals = {
-#            'type': type,
-#            'parent_id': parent_id,
-#            'product_id': product_id,
-#            'quantity': quantity,
-#            'quantity_origine': quantity,
-#            'start_date': start_date,
-#            'end_date': end_date,
-#            'note': note,
-#        }
-#        obj = self.pool.get('mrp.prevision')
-#        id = obj.create(cr, uid, vals, context=context)
-#        if product_id==product_id_test:
-#            print "creer_mrp_prevision : id=",id, vals
-
-#        return id
 
     @api.multi
     def _creer_suggestion(self, product, quantity, date):
@@ -325,15 +256,10 @@ class mrp_generate_previsions(models.TransientModel):
             rows = obj.search(['&','&','&',('type','=',type),('product_id','=',product.id),('start_date','>',start_date),('start_date','<=',end_date)])
             for row in rows:
                 quantity=row.quantity+quantity
-
-
                 obj.browse([row.id]).write({'quantity': quantity})
-
-
                 if product.id==product_id_test:
                     print "creer_mrp_prevision : write : ", row.quantity
                 return quantity
-
         vals = {
             'type': type,
             'product_id': product.id,
@@ -349,57 +275,11 @@ class mrp_generate_previsions(models.TransientModel):
         return vals["quantity"]
 
 
-#creer_mrp_prevision : id= 44537 {'product_id': 10, 'end_date': '2016-04-25', 'name': u'FS-2108', 'start_date': '2016-03-12', 'type': 'fs', 'quantity_origine': 1010.0, 'quantity': 1010.0}
-
-
-#    def _regrouper_suggestion(self, cr, uid, date, product, type, quantity, context=None):
-#        id=None
-#        obj = self.pool.get('mrp.prevision')
-#        start_date = date
-#        now=datetime.datetime.now().strftime('%Y-%m-%d')
-#        if start_date<=now:
-#            start_date="2000-01-01"
-#        end_date   = self._date_fin(cr, uid, date)
-#        ids = obj.search(cr, uid, ['&','&','&',('type','=',type),('product_id','=',product.id),('start_date','>=',start_date),('start_date','<',end_date)])
-#        if len(ids)>1:
-#            #print "#Regroupement ici : ", date, product, quantity, ids, len(ids)
-#            #for row in obj.browse(cr, uid, ids, context=context):
-#            #    print row.name, row.quantity, date, start_date, end_date, product.id
-#            id=self._creer_suggestion(cr, uid, product, quantity, date)
-#            obj.unlink(cr, uid, ids)
-#        return id
-
-
-#    def _multiple_lot(self, cr, uid, date, product, type, quantity, context=None):
-#        rep=False
-#        id=None
-#        obj = self.pool.get('mrp.prevision')
-#        start_date = date
-#        now=datetime.datetime.now().strftime('%Y-%m-%d')
-#        if start_date<=now:
-#            start_date="2000-01-01"
-#        end_date   = self._date_fin(cr, uid, date)
-#        ids = obj.search(cr, uid, ['&','&','&',('type','=',type),('product_id','=',product.id),('start_date','>=',start_date),('start_date','<',end_date)])
-#        if ids:
-#            #print "#Multiple du lot ici : ", date, product, quantity, ids, len(ids)
-#            for row in obj.browse(cr, uid, ids, context=context):
-#                quantity=row.quantity
-#                if quantity<row.product_id.lot_mini:
-#                    quantity=row.product_id.lot_mini
-#                    obj.write(cr, uid, [row.id], {'quantity': quantity}, context=context)
-#                    #qty = product.lot_mini + (qty2 * product.multiple)
-#                    rep=True
-
-#                    print "multiple_lot : ",row.name, row.quantity, quantity, product.id
-#        return rep
-
-
-
-
     @api.multi
     def generate_previsions(self):
         cr=self._cr
         debut=datetime.datetime.now()
+        print _now(debut), "## DEBUT"
 
         #TODO : Mettre en place une liste d'étapes pour gérer les différentes phases du CBN 
         #=> calcul brut => Regroupement des suggestions => Suggestions multiples du lot
@@ -410,19 +290,18 @@ class mrp_generate_previsions(models.TransientModel):
         #states=["cbb","regrouper_suggestion","multiple_lot"]
         states=["cbb"]
 
-
         for obj in self:
             prevision_obj = self.env['mrp.prevision']
             bom_line_obj  = self.env['mrp.bom.line']
             company_obj   = self.env['res.company']
             partner_obj   = self.env['res.partner']
             company       = obj.company_id
+            dates         = self._dates(obj.max_date)
 
             #** supprimer les previsions existantes ****************************
             prevision_ids = prevision_obj.search([('active','=',True),]).unlink()
             #*******************************************************************
 
-            dates    = self._dates(obj.max_date)
             articles = self._articles()
             stocks   = self._stocks(articles)
             num_od=1
@@ -432,9 +311,7 @@ class mrp_generate_previsions(models.TransientModel):
             state=states[niveau]
             while True:
                 nb=0
-                print "##### DEBUT Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)+"#####"
-
-
+                print _now(debut), "## Début Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)
                 for date in dates:
                     date_debut  = date
                     date_fin    = self._date_fin(date)
@@ -454,31 +331,6 @@ class mrp_generate_previsions(models.TransientModel):
                         qt_ft         = ft.get(product.id, 0)
                         qt_fl         = fl.get(product.id, 0)
                         qt_fm         = fm.get(product.id, 0)
-
-#                        #** Regroupement des suggestions ***********************
-#                        #if regroupement:
-#                        if state=="regrouper_suggestion":
-#                            if qt_fs!=0:
-#                                id=self._regrouper_suggestion(cr, uid, date, product, 'fs', qt_fs)
-#                                if id:
-#                                    nb=nb+1
-#                            if qt_sa!=0:
-#                                id=self._regrouper_suggestion(cr, uid, date, product, 'sa', qt_sa)
-#                                if id:
-#                                    nb=nb+1
-#                        #*******************************************************
-
-
-                        #** Suggestions multiples du lot ***********************
-                        # TODO : Modifier les fs suivantes si trop importantes (ou les supprimer)
-#                        if state=="multiple_lot":
-#                            if qt_fs!=0:
-#                                rep=self._multiple_lot(cr, uid, date, product, 'fs', qt_fs)
-#                                if rep:
-#                                    nb=nb+1
-                        #*******************************************************
-
-
                         if date==dates[0]:
                             stock_theorique[product.id] = qt_stock - product.is_stock_secu
                         
@@ -503,9 +355,7 @@ class mrp_generate_previsions(models.TransientModel):
 
                         #** Création des suggestions *******************************
                         if stock_theorique[product.id]<0:
-                            #id=self._creer_suggestion(cr, uid, num_od, product, -stock_theorique[product.id], date)
                             qt=self._creer_suggestion(product, -stock_theorique[product.id], date)
-                            #TODO : Le stock dépend de la quantité réélement créée en tenant comte du lot (à revoir à ce momement là)
                             stock_theorique[product.id]=stock_theorique[product.id]+qt
                             if product.id==product_id_test:
                                 print "Création qt=",qt,stock_theorique[product.id]
@@ -515,8 +365,7 @@ class mrp_generate_previsions(models.TransientModel):
                             print "stock_theorique=",stock_theorique[product.id]
                         #***********************************************************
 
-                print "##### Fin Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)+"#####"
-
+                print _now(debut), "## Fin Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)
 
                 if nb==0:
                     niveau=niveau+1
@@ -525,51 +374,72 @@ class mrp_generate_previsions(models.TransientModel):
                     else:
                         compteur=0
                         state=states[niveau]
-
-
-                #if nb==0:
-                #    regroupement=True
-                #    compteur=0
-#               # if nb==0 and regroupement==True:
-#                    multiple_lot=True
-#                    compteur=0
                 compteur=compteur+1
                 if compteur>10:
                     break
 
 
-            x=duree(debut)
-            print "Fin du CBN = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
+            print _now(debut), "## Fin du CBN"
 
 
-
-            #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
-            sas = prevision_obj.search([('type','=','sa'),])
-            for sa in sas:
-                new_date=partner_obj.get_date_dispo(company.partner_id, sa.end_date)
-                sa.end_date=new_date
+            ##** Regroupement des FS et SA par semaine *************************
+            for date in dates:
+                date_debut  = date
+                date_fin    = self._date_fin(date)
+                now=datetime.datetime.now().strftime('%Y-%m-%d')
+                if date_debut<=now:
+                    date_debut="2000-01-01"
+                sql="""
+                    select product_id, type, count(*), sum(quantity)
+                    from mrp_prevision 
+                    where   start_date>='"""+date_debut+"""' 
+                        and start_date<'"""+date_fin+"""'
+                        and type in ('fs', 'sa')
+                    group by product_id, type
+                    having count(*)>1
+                """
+                cr.execute(sql)
+                for row in cr.fetchall():
+                    previsions = prevision_obj.search([
+                        ('product_id','=',row[0]),
+                        ('type','=',row[1]),
+                        ('start_date','>=',date_debut),
+                        ('start_date','<',date_fin),
+                    ])
+                    ct=0
+                    for prevision in previsions:
+                        if ct==0:
+                            prevision.quantity=row[3]
+                        else:
+                            prevision.unlink()
+                        ct=ct+1
+            print _now(debut), "## Fin du regroupement des SA et FS par semaine"
             #*******************************************************************
 
 
-            x=duree(debut)
-            print "Fin traitement date de fin des SA = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
 
 
-            #** Date de début des SA en tenant compte du délai de livraison ****
-            for sa in sas:
-                product=sa.product_id
-                sa.start_date=prevision_obj.get_start_date_sa(product, sa.end_date)
-            #*******************************************************************
+#            #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
+#            sas = prevision_obj.search([('type','=','sa'),])
+#            for sa in sas:
+#                new_date=partner_obj.get_date_dispo(company.partner_id, sa.end_date)
+#                sa.end_date=new_date
+#            #*******************************************************************
 
-            x=duree(debut)
-            print "Fin traitement date de début des SA = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
-
-
-
+#            x=duree(debut)
+#            print _now(debut), "## Fin traitement date de fin des SA = "
 
 
-        x=duree(debut)
-        print "Durée de traitement = "+str(x)+"ms" + " / "+ str(int(x/1000))+"s"
+#            #** Date de début des SA en tenant compte du délai de livraison ****
+#            for sa in sas:
+#                product=sa.product_id
+#                sa.start_date=prevision_obj.get_start_date_sa(product, sa.end_date)
+
+#            print _now(debut), "## Fin du recalcul des dates de début et de fin des SA"
+#            #*******************************************************************
+
+
+        print _now(debut), "## FIN"
 
         #** Action pour retourner à la liste des prévisions ********************
         action =  {

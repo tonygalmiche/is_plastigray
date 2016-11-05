@@ -43,8 +43,6 @@ class mrp_prevision(models.Model):
     }
 
 
-
-
     @api.multi
     def convertir_sa(self):
         ids=[]
@@ -81,14 +79,6 @@ class mrp_prevision(models.Model):
                 vals['product_id']=obj.product_id.id
                 order_line=order_line_obj.create(vals)
                 obj.unlink()
-
-
-
-
-        
-            
-
-
 
 
     @api.multi
@@ -132,13 +122,6 @@ class mrp_prevision(models.Model):
                     raise Warning(msg)
 
 
-
-
-
-
-
-
-
     @api.multi
     def _start_date(self, product_id, quantity, end_date):
         start_date=end_date
@@ -151,15 +134,17 @@ class mrp_prevision(models.Model):
         return start_date
 
 
-
-
     @api.model
     def create(self, vals):
+        partner_obj = self.env['res.partner']
+        user = self.env["res.users"].browse(self._uid)
+        company = user.company_id
 
         #** Quantité arrondie au lot à la création uniquement ******************
-        type       = vals.get('type'    , None)
-        quantity   = vals.get('quantity', None)
+        type       = vals.get('type'      , None)
+        quantity   = vals.get('quantity'  , None)
         product_id = vals.get('product_id', None)
+        end_date   = vals.get('end_date'  , None)
         if (type=='sa' or type=='fs') and quantity:
             product=self.env['product.product'].browse(product_id)
             quantity=self.get_quantity2lot(product, quantity)
@@ -167,29 +152,44 @@ class mrp_prevision(models.Model):
             vals["quantity_origine"] = quantity
         #***********************************************************************
 
-        end_date   = vals.get('end_date', None)
-        if quantity and end_date and product_id and type=="fs":
-            start_date=self._start_date(product_id, quantity, end_date)
-            vals["start_date"]=start_date
+        if type=='sa' and end_date:
+            #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
+            end_date=partner_obj.get_date_dispo(company.partner_id, end_date)
+            vals["end_date"]=end_date
+            #** Date de début des SA en tenant compte du délai de livraison ****
+            product=self.env['product.product'].browse(product_id)
+            vals["start_date"]=self.get_start_date_sa(product, end_date)
+            #*******************************************************************
 
-        data_obj = self.pool.get('ir.model.data')
-        sequence_ids = data_obj.search(self._cr, self._uid, [('name','=','seq_mrp_prevision_'+str(type))], context=self._context)
+        if type=='fs':
+            #** Date début des FS en tenant compte du temps de fabrication *****
+            start_date=self._start_date(product_id, quantity, end_date)
+            #** Date début des FS pendant les jours ouvrés de l'entreprise *****
+            start_date=partner_obj.get_date_dispo(company.partner_id, start_date)
+            vals["start_date"]=start_date
+            #*******************************************************************
+
+        #** Numérotation *******************************************************
+        data_obj = self.env['ir.model.data']
+        sequence_ids = data_obj.search([('name','=','seq_mrp_prevision_'+str(type))])
         if sequence_ids:
-            sequence_id = data_obj.browse(self._cr, self._uid, sequence_ids[0], self._context).res_id
-            vals['name'] = self.pool.get('ir.sequence').get_id(self._cr, self._uid, sequence_id, 'id', context=self._context)
+            sequence_id = sequence_ids[0].res_id
+            vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
         obj = super(mrp_prevision, self).create(vals)
+        #***********************************************************************
 
         #** Recherche des composants de la nomenclature pour les fs ************
         if obj:
             id=obj.id
             for row in self.browse([id]):
                 if row.type=='fs':
-                    bom_obj = self.pool.get('mrp.bom')
+                    bom_obj = self.env['mrp.bom']
                     template_id = row.product_id.product_tmpl_id.id
                     if template_id:
-                        bom_ids = bom_obj.search(self._cr, self._uid, [('product_tmpl_id','=',template_id),], context=self._context)
-                        if bom_ids:
-                            for line in bom_obj.browse(self._cr, self._uid, bom_ids[0], context=self._context).bom_line_ids:
+                        bom_ids = bom_obj.search([('product_tmpl_id','=',template_id),])
+                        if len(bom_ids)>0:
+                            bom=bom_ids[0]
+                            for line in bom.bom_line_ids:
                                 vals={
                                     'parent_id': row.id,
                                     'type': 'ft',
@@ -201,66 +201,55 @@ class mrp_prevision(models.Model):
                                     'state': 'valide',
                                 }
                                 self.create(vals)
+        #***********************************************************************
         return obj
 
 
     @api.multi
     def write(self,vals):
-        cr      = self._cr
-        uid     = self._uid
-        context = self._context
-        ids = [self.id]
+        partner_obj = self.env['res.partner']
+        user = self.env["res.users"].browse(self._uid)
+        company = user.company_id
 
         for obj in self:
-            #** Date de début des SA en tenant compte du délai de livraison ****
-            end_date = vals.get('end_date', None)
+            product_id = vals.get('product_id', obj.product_id.id)
+            quantity   = vals.get('quantity'  , obj.quantity)
+            end_date   = vals.get('end_date'  , obj.end_date)
+
             if obj.type=='sa' and end_date:
+                #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
+                end_date=partner_obj.get_date_dispo(company.partner_id, end_date)
+                vals["end_date"]=end_date
+                #** Date de début des SA en tenant compte du délai de livraison ****
                 vals["start_date"]=self.get_start_date_sa(obj.product_id, end_date)
-            #*******************************************************************
+                #*******************************************************************
 
-#            #** Quantité arrondie au lot ***************************************
-#            quantity = vals.get('quantity', None)
-#            if obj.type=='sa' and quantity:
-#                vals["quantity"]=self.get_quantity2lot(obj.product_id, quantity)
-#            #*******************************************************************
+            if obj.type=='fs':
+                #** Date début des FS en tenant compte du temps de fabrication *****
+                start_date=self._start_date(product_id, quantity, end_date)
+                #** Date début des FS pendant les jours ouvrés de l'entreprise *****
+                start_date=partner_obj.get_date_dispo(company.partner_id, start_date)
+                vals["start_date"]=start_date
+                #*******************************************************************
 
-
-
-
-        if end_date:
-            for fs in self.browse(ids):
-                if fs.type=='fs':
-                    #if not quantity:
-                    #    quantity=fs.quantity
-                    #quantity=self._quantity2lot(fs.product_id, quantity)
-                    #vals["quantity"]=quantity
-                    if not end_date:
-                        end_date=fs.end_date
-                    start_date=self._start_date(fs.product_id.id, quantity, end_date)
-                    vals["start_date"]=start_date
-        state = vals.get('state', False)
-        if not state:
-            vals['state']='valide'
         res = super(mrp_prevision, self).write(vals)
-        for fs in self.browse(ids):
-            obj = self.pool.get('mrp.prevision')
-            coef=0
-            if fs.quantity!=0:
-                coef=fs.quantity_origine/fs.quantity
-            ft_ids = obj.search(self._cr, self._uid, [('type','=','ft'),('parent_id','=',fs.id),],context=self._context)
-            if ft_ids:
-                for row in obj.browse(self._cr, self._uid, ft_ids, context=self._context):
-                    quantity=fs.quantity
+
+        #** Calcul quantity et date des FT *************************************
+        for obj in self:
+            if obj.type=='fs':
+                coef=0
+                if obj.quantity!=0:
+                    coef=obj.quantity_origine/obj.quantity
+                ft_ids = self.search([('type','=','ft'),('parent_id','=',obj.id),])
+                for row in ft_ids:
+                    quantity=row.quantity
                     if coef!=0:
                         quantity=row.quantity_origine/coef
-                    vals={
-                        'quantity'  : quantity,
-                        'start_date': fs.start_date,
-                        'end_date'  : fs.start_date,
-                    }
-                    obj.write(cr, uid, row.id, vals, context=context)
+                    row.quantity   = quantity
+                    row.start_date = obj.start_date
+                    row.end_date   = obj.start_date
+        #***********************************************************************
         return res
-
 
 
     @api.multi
