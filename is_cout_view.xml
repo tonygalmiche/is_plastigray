@@ -225,15 +225,16 @@
                     <field name="is_category_id"/> 
                     <field name="is_gestionnaire_id"/> 
                     <field name="type_article"/> 
+                    <field name="cout_act_matiere"/> 
+                    <field name="cout_act_st"/> 
+                    <field name="cout_act_machine"/> 
+                    <field name="cout_act_mo"/> 
                     <field name="prix_tarif" /> 
                     <field name="prix_commande"/> 
                     <field name="prix_facture"/> 
                     <field name="prix_force"/> 
                     <field name="prix_calcule"/> 
-                    <field name="cout_act_matiere"/> 
-                    <field name="cout_act_st"/> 
                     <field name="ecart_calcule_matiere"/> 
-                    <field name="cout_calcul_id"/> 
                 </tree>
             </field>
         </record>
@@ -250,6 +251,15 @@
             <field name="res_model">is.cout</field>
             <field name="view_type">form</field>
             <field name="domain">[('type_article','=','A'),('ecart_calcule_matiere','!=',0.0)]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Prix forcés -->
+        <record model="ir.actions.act_window" id="is_cout_prix_force_action">
+            <field name="name">Prix forcés</field>
+            <field name="res_model">is.cout</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('prix_force','>',0)]</field>
             <field name="view_mode">tree,form</field>
         </record>
 

@@ -38,6 +38,6 @@ delete from sale_order      where state!='draft';
 -- Commandes Fournisseur --
 delete from purchase_order;
 
--- Cout Article --
-delete from is_cout_calcul;
-delete from is_cout;
+-- Cout Article => Prix forcés à conserver --
+-- delete from is_cout_calcul;
+-- delete from is_cout;
