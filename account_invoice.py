@@ -22,6 +22,21 @@ class account_invoice(models.Model):
     is_num_cde_client = fields.Char('N° Cde Client', help="Ce champ est utilisé dans les factures diverses sans commande client dans Odoo")
     is_num_bl_manuel  = fields.Char('N° BL manuel' , help="Ce champ est utilisé dans les factures diverses sans bon de livraison dans Odoo")
 
+    is_escompte       = fields.Float("Escompte", compute='_compute')
+    is_tva            = fields.Float("TVA"     , compute='_compute', help="Taxes sans l'escompte")
+
+    def _compute(self):
+        for obj in self:
+            escompte = tva = 0
+            for tax in obj.tax_line:
+                if tax.account_id.code=='665000':
+                    escompte=escompte+tax.amount
+                else:
+                    tva=tva++tax.amount
+            obj.is_escompte = escompte
+            obj.is_tva      = tva
+
+
 
     @api.multi
     def invoice_print(self):
@@ -256,16 +271,38 @@ class account_invoice_line(models.Model):
     is_section_analytique_id = fields.Many2one('is.section.analytique', 'Section analytique')
     is_move_id               = fields.Many2one('stock.move', 'Mouvement de stock')
 
+
     @api.multi
-    def product_id_change(self, product, uom_id, qty=0, name='', type='out_invoice',
+    def product_id_change(self, product_id, uom_id, qty=0, name='', type='out_invoice',
             partner_id=False, fposition_id=False, price_unit=False, currency_id=False,
             company_id=None):
-        res=super(account_invoice_line, self).product_id_change(product, uom_id, qty, name, type,
+
+        res=super(account_invoice_line, self).product_id_change(product_id, uom_id, qty, name, type,
             partner_id, fposition_id, price_unit, currency_id,company_id)
-        if product:
-            product = self.env['product.product'].browse(product)
+
+        #** Recherche de la section analytique *********************************
+        if product_id:
+            product = self.env['product.product'].browse(product_id)
             is_section_analytique_id=product.is_section_analytique_id.id or False
             res['value']['is_section_analytique_id']=is_section_analytique_id
+        #***********************************************************************
+
+        #** Recherche prix dans liste de prix pour la date et qt ***************
+        partner = self.env['res.partner'].browse(partner_id)
+        pricelist = partner.property_product_pricelist.id
+        if product_id:
+            date = time.strftime('%Y-%m-%d',time.gmtime()) # Date du jour
+            if pricelist:
+                ctx = dict(
+                    self._context,
+                    uom=uom_id,
+                    date=date,
+                )
+                price_unit = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
+                        product_id, qty or 1.0, partner_id, ctx)[pricelist]
+            res['value']['price_unit']=price_unit
+        #***********************************************************************
+
         return res
 
 
