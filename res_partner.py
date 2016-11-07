@@ -5,6 +5,7 @@ from openerp.tools.translate import _
 import os
 import time
 import datetime
+import base64
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -303,6 +304,40 @@ class res_partner(models.Model):
         return new_date.strftime('%Y-%m-%d')
 
 
+
+
+    @api.multi
+    def bon_sortie_matiere(self, filename):
+        '''
+        Test génération 'Bon de sortie matière' pour être utilisée en PHP
+        '''
+        for obj in self:
+            orders=self.env['is.cde.ouverte.fournisseur'].search([('partner_id','=',obj.id)])
+            ids=[]
+            for order in orders:
+                ids.append(order.id)
+
+            # ** Récupération du fichier PDF du rapport indiqué ****************
+            pdf = self.pool.get('report').get_pdf(self._cr, self._uid, ids, 'is_plastigray.report_cde_ouverte_fournisseur', context=self._context)
+            # ******************************************************************
+
+            # Enregistrement du PDF sur le serveur *****************************
+            path=u"/tmp/"+filename+u".pdf"
+            err=""
+            try:
+                fichier = open(path, "w")
+            except IOError, e:
+                err="Problème d'accès au fichier '"+path+"' => "+ str(e)
+            if err=="":
+                fichier.write(pdf)
+                fichier.close()
+            # ******************************************************************
+
+            #print pdf
+
+            return {'pdf': base64.b64encode(pdf)}
+
+
     @api.multi
     def imprimer_commande_ouverte(self):
         '''
@@ -351,7 +386,7 @@ class res_partner(models.Model):
                     res_model_ids.write(vals)
                 else:
                     attachment_id = self.env['ir.attachment'].create(vals)
-                os.system("rm -f "+path)
+                #os.system("rm -f "+path)
             #*******************************************************************
 
             #** Envoi d'un mail avec le PDF en pièce jointe ********************
