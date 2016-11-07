@@ -336,7 +336,7 @@ class sale_order_line(models.Model):
 
 
             #** Recherche prix dans liste de prix pour la date et qt ***********
-            if pricelist:
+            if pricelist and product_id:
                 ctx = dict(
                     context,
                     uom=uom,

@@ -32,8 +32,18 @@ class product_pricelist(osv.osv):
         product_uom_obj = self.pool.get('product.uom')
         price_type_obj = self.pool.get('product.price.type')
 
-        if not products:
-            return {}
+
+
+        for product in products:
+            if product.id==False:
+                return {}
+        #if not products:
+        #    return {}
+
+
+        print "products=",products
+
+
         version = False
         for v in pricelist.version_id:
             if ((v.date_start is False) or (v.date_start <= date)) and ((v.date_end is False) or (v.date_end >= date)):

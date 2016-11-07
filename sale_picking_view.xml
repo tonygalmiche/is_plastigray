@@ -37,9 +37,17 @@
                     <attribute name="invisible">1</attribute>>
                 </field>
 
+
                 <field name="origin" position="after">
                     <field name="is_sale_order_id" readonly="1"/> 
                     <field name="is_transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
+                </field>
+
+                <field name="min_date" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </field>
+                <field name="min_date" position="after">
+                    <field name="is_date_livraison"/> 
                 </field>
 
 

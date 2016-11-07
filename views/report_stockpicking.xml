@@ -112,7 +112,7 @@ TODO :
                         <div>
                             <span t-if="o.partner_id.lang == 'fr_FR'">Arrivée prévue le</span>
                             <span t-if="o.partner_id.lang != 'fr_FR'">Delivery Date</span>
-                            <span t-field="o.min_date" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                            <span t-field="o.is_date_livraison" t-field-options='{"format": "dd/MM/yyyy"}'/>
 
                         </div>
 

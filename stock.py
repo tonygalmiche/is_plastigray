@@ -13,6 +13,8 @@ class stock_picking(models.Model):
     location_id        = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
     is_sale_order_id   = fields.Many2one('sale.order', 'Commande')
     is_transporteur_id = fields.Many2one('res.partner', 'Transporteur')
+    is_date_livraison  = fields.Date('Date de livraison')
+
     
     @api.onchange('location_id')
     def onchange_location(self):
@@ -81,12 +83,17 @@ class stock_move(models.Model):
             }
 
 
-    @api.cr_uid_ids_context
-    def _picking_assign(self, cr, uid, move_ids, procurement_group, location_from, location_to, context=None):
+    @api.multi
+    def _picking_assign(self, procurement_group, location_from, location_to):
+        cr       = self._cr
+        uid      = self._uid
+        context  = self._context
+        move_ids = self._ids
+
         """Assign a picking on the given move_ids, which is a list of move supposed to share the same procurement_group, location_from and location_to
         (and company). Those attributes are also given as parameters.
         """
-        pick_obj = self.pool.get("stock.picking")
+        pick_obj = self.env["stock.picking"]
         # Use a SQL query as doing with the ORM will split it in different queries with id IN (,,)
         # In the next version, the locations on the picking should be stored again.
         query = """
@@ -106,23 +113,31 @@ class stock_move(models.Model):
         cr.execute(query, params)
         [pick] = cr.fetchone() or [None]
         if not pick:
-            move = self.browse(cr, uid, move_ids, context=context)[0]
-            print "MOVE", move.origin, move.id
-            sale_obj = self.pool.get('sale.order')
-            sale_id = sale_obj.search(cr, uid, [('name','=',move.origin)])
-            if sale_id:
-                sale_data = sale_obj.browse(cr, uid, sale_id[0])
+            move = self.browse(move_ids)[0]
+            sale_obj = self.env['sale.order']
+            sales = sale_obj.search([('name','=',move.origin)])
+            for sale_data in sales:
+
+                date_livraison=False
+                for line in sale_data.order_line:
+                    if line.is_date_livraison>date_livraison:
+                        date_livraison=line.is_date_livraison
+
                 values = {
-                    'origin': move.origin,
+                    'origin'            : move.origin,
                     'company_id'        : move.company_id and move.company_id.id or False,
                     'move_type'         : move.group_id and move.group_id.move_type or 'direct',
                     'partner_id'        : move.partner_id.id or False,
                     'picking_type_id'   : move.picking_type_id and move.picking_type_id.id or False,
                     'is_sale_order_id'  : sale_data and sale_data.id or False,
                     'is_transporteur_id': sale_data and sale_data.is_transporteur_id.id or False,
+                    'is_date_livraison' : date_livraison,
+
+
                 }
-                pick = pick_obj.create(cr, uid, values, context=context)
-        return self.write(cr, uid, move_ids, {'picking_id': pick}, context=context)
+                pick = pick_obj.create(values)
+
+        return self.write({'picking_id': pick.id})
     
 
 
