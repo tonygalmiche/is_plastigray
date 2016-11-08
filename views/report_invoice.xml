@@ -96,7 +96,7 @@
                                 <span t-if="o.partner_id.lang != 'fr_FR'">AVOIR N°</span>
                             </t>
 
-                            <span t-field="o.number"/>
+                            <span t-field="o.internal_number"/>
                              du <span t-field="o.date_invoice"  t-field-options='{"format": "dd/MM/yyyy"}' /><br />
                         </div>
 

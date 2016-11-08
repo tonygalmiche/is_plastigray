@@ -27,6 +27,7 @@
         "is_mold",                # Moules et Projets pour l'injection plastique
         "is_pg_product",          # Fiche article
         "is_gestion_lot",         # Gestion des lots pour le contrôle qualité
+        "account_cancel",         # Permet d'autoriser l'annulation des factures 
     ], 
     "data" : [
         "res_partner_view.xml",  # Vue partenaire modifiée

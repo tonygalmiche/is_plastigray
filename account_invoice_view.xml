@@ -69,6 +69,12 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_tree" />
             <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='number']" position="after" >
+                    <field name="internal_number"/> 
+                </xpath>
+
+
                 <xpath expr="//field[@name='state']" position="after" >
                     <field name="is_folio_id"/> 
                 </xpath>
@@ -89,6 +95,9 @@
                 <xpath expr="//field[@name='account_id']" position="after" >
                     <field name="is_folio_id"/> 
                 </xpath>
+
+
+
 
                 <xpath expr="//label[@for='amount_tax']"  position="attributes" >
                     <attribute name="invisible">1</attribute> 
@@ -128,6 +137,11 @@
                     <field name="is_num_cde_client"/>
                     <field name="is_num_bl_manuel"/>
                 </xpath>
+
+                <xpath expr="//field[@name='move_id']" position="after" >
+                    <field name="internal_number"/> 
+                </xpath>
+
 
             </field>
         </record>
