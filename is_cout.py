@@ -311,8 +311,7 @@ class is_cout_calcul(models.Model):
                         # cout_total=quantite_unitaire*(\
                         #    line.workcenter_id.costs_hour*line.workcenter_id.time_start/lot_mini+\
                         #    line.is_nb_secondes*line.workcenter_id.costs_hour/3600)
-
-                        cout_total=quantite_unitaire*(line.is_nb_secondes*line.workcenter_id.costs_hour/3600)
+                        cout_total=quantite_unitaire*line.workcenter_id.costs_hour*round(line.is_nb_secondes/3600,4)
                         vals={
                             'composant'     : '----------'[:niveau]+product.is_code,
                             'sequence'      : line.sequence,
