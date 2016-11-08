@@ -144,8 +144,8 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         self._verif_tarif(vals)
-        self._verif_existe(vals)
         obj = super(sale_order, self).create(vals)
+        self._verif_existe(vals)
         self._client_order_ref(obj)
         self._verif_article_livrable(obj)
         return obj
