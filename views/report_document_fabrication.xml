@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+        <template id="report_document_fabrication_style">
+            h1{
+                font-size:17pt;
+                text-align:center;
+                font-weight: bold;
+                padding:0mm;
+                margin:0mm;
+                margin-top:2mm;
+                margin-bottom:2mm;
+            }
+            .header {
+                font-size:9pt;
+            }
+            .footer {
+                font-size:9pt;
+            }
+            .page {
+                font-size:11pt;
+            }
+            table{
+                border:1px solid black;
+            }
+            td{
+                padding:1mm;
+                border:1px solid black;
+            }
+            th{
+                padding:1mm;
+                border:1px solid black;
+            }
+
+
+        </template>
+        <template id="report_document_fabrication_layout" inherit_id="web.layout" primary="True">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_document_fabrication_style"/>
+                </style>
+            </xpath>
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+        <template id="report_document_fabrication_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_document_fabrication_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+
+        <!-- Entête personnalisé Plastigray -->
+        <template id="report_bon_de_sortie_matiere_external_layout_header">
+            <div class="header">
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:15%"><h1>PLASTIGRAY</h1></td>
+                        <td style="width:70%"><h1>BON DE SORTIE MATIERE</h1></td>
+                        <td style="width:15%"><h1>OF 63217</h1></td>
+                    </tr>
+                </table>
+            </div>
+        </template>
+
+
+
+        <!-- Pied de page personnalisé Plastigray -->
+        <template id="report_bon_de_sortie_matiere_external_layout_footer">
+            <div class="footer">
+                <div class="row" style="border-top: 1px solid black">
+                    <div class="col-xs-5  text-left">
+                        FO-0-PROD-59 - Imprimé le <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H:%M"/>
+                    </div>
+                    <div class="col-xs-2" />
+                    <div class="col-xs-5 text-right">
+                        Page <span class="page" style="font-size:9pt;"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+            <br />
+        </template>
+        <!-- Squelette de la page personnalisé pour Plastigray -->
+        <template id="report_bon_de_sortie_matiere_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <t t-call="is_plastigray.report_bon_de_sortie_matiere_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_bon_de_sortie_matiere_external_layout_footer"/>
+        </template>
+
+
+
+
+
+<template id="report_bon_de_sortie_matiere_external_layout">
+    <t t-if="o and 'company_id' in o">
+        <t t-set="company" t-value="o.company_id"></t>
+    </t>
+    <t t-if="not o or not 'company_id' in o">
+        <t t-set="company" t-value="res_company"></t>
+    </t>
+    <t t-call="is_plastigray.report_bon_de_sortie_matiere_external_layout_header" />
+    <t t-raw="0" />
+    <t t-call="is_plastigray.report_bon_de_sortie_matiere_external_layout_footer" />
+</template>
+
+
+
+<template id="report_bon_de_sortie_matiere">
+    <t t-call="is_plastigray.report_document_fabrication_html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="is_plastigray.report_bon_de_sortie_matiere_external_layout">
+                <div class="page">
+
+
+                   <div class="row">
+                        <div class="col-xs-5">
+                            <table style="width:100%">
+                                <tr><th style="width:40%">Code PG      </th><td><span t-field="o.product_id.is_code"/></td></tr>
+                                <tr><th style="width:40%">Désignation  </th><td><span t-field="o.product_id.name"/></td></tr>
+                                <tr><th style="width:40%">Moule        </th><td><span t-field="o.product_id.is_mold_id.name"/></td></tr>
+                            </table>
+                        </div>
+                        <div class="col-xs-2" />
+                        <div class="col-xs-5">
+                            <table style="border:1px solid black; width:100%">
+                                <tr><th style="width:40%">N°Lot                  </th><td><span t-field="o.name"/></td></tr>
+                                <tr><th style="width:40%">Date Début Planning    </th><td><span t-field="o.date_planned"/></td></tr>
+                                <tr><th style="width:40%">Nb Pièces à fabriquer  </th><td><span t-field="o.product_qty"/></td></tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Code PG</th>
+                                        <th>Désignation / Recyclage</th>
+                                        <th>Kanban</th>
+                                        <th>Stock *</th>
+                                        <th>Besoin OF</th>
+                                        <th>US</th>
+                                        <th>T°Etu. +/-10%C</th>
+                                        <th>Tps.Etu</th>
+                                        <th>DS</th>
+                                        <th>Lots Matières / Composants</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.product_lines" t-as="l">
+                                        <td class="text-left">   <span t-field="l.product_id.is_code"/> </td>
+                                        <td class="text-left">   <span t-field="l.product_id.name"/>    </td>
+                                        <td class="text-center">                                        </td>
+                                        <td class="text-center">                                        </td>
+                                        <td class="text-right">  <span t-field="l.product_qty"/>        </td>
+                                        <td class="text-center"> <span t-field="l.product_uom.name"/>   </td>
+                                        <td class="text-center">                                        </td>
+                                        <td class="text-center">                                        </td>
+                                        <td class="text-center">                                        </td>
+                                        <td class="text-center">                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>
