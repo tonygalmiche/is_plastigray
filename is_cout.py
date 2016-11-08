@@ -136,6 +136,7 @@ class is_cout_calcul(models.Model):
                         pricelist=partner.property_product_pricelist_purchase
                     #***********************************************************
 
+
                     #** Recherche du prix d'achat ******************************
 
                     date=time.strftime('%Y-%m-%d') # Date du jour
@@ -144,11 +145,15 @@ class is_cout_calcul(models.Model):
                     if pricelist:
                         #Convertion du lot_mini de US vers UA
                         min_quantity = product_uom_obj._compute_qty(cout.name.uom_id.id, cout.name.lot_mini, cout.name.uom_po_id.id)
+
+                        
+
+
                         SQL="""
                             select ppi.price_surcharge
                             from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
                             where ppv.pricelist_id="""+str(pricelist.id)+ """ 
-                                  and min_quantity>="""+str(min_quantity)+"""
+                                  and min_quantity<="""+str(min_quantity)+"""
                                   and (ppv.date_start <= '"""+date+"""' or ppv.date_start is null)
                                   and (ppv.date_end   >= '"""+date+"""' or ppv.date_end   is null)
 
@@ -161,7 +166,10 @@ class is_cout_calcul(models.Model):
                         cr.execute(SQL)
                         result = cr.fetchall()
                         for row in result:
-                            coef=product.uom_po_id.factor_inv
+                            #coef=product.uom_po_id.factor_inv
+                            coef=1
+                            if min_quantity:
+                                coef=cout.name.lot_mini/min_quantity
                             prix_tarif=row[0]/coef
                     #***********************************************************
 
@@ -219,9 +227,12 @@ class is_cout_calcul(models.Model):
                             prix_calcule=cout.cout_act_st
                         ecart_calcule_matiere  = prix_calcule - cout.cout_act_st
 
+                if prix_tarif:
+                    cout.prix_tarif=prix_tarif
+
 
                 cout.type_article  = type_article
-                cout.prix_tarif    = prix_tarif
+
                 cout.prix_commande = prix_commande
                 cout.prix_facture  = prix_facture
                 cout.prix_calcule  = prix_calcule
