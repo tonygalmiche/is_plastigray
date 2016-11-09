@@ -84,6 +84,8 @@ class is_pdc(models.Model):
             res={}
             for row in result:
                 key=str(row[0])+"/"+str(row[1])+"/"+str(row[2])
+
+
                 vals={
                     'workcenter_id': row[0],
                     'mold_id'      : row[1],
@@ -109,14 +111,11 @@ class is_pdc(models.Model):
                 where sm.state in('confirmed','assigned') 
                         and sm.date>='"""+str(obj.date_debut)+"""'
                         and sm.date<='"""+str(obj.date_fin)+"""'
+                        and sm.production_id is not null
                 group by mrw.workcenter_id, pt.is_mold_id, pt.is_couleur
                 order by mrw.workcenter_id;
             """)
             result = cr.fetchall()
-
-
-
-
             for row in result:
                 key=str(row[0])+"/"+str(row[1])+"/"+str(row[2])
                 vals={
@@ -129,7 +128,7 @@ class is_pdc(models.Model):
                 if not key in res:
                     res[key]=vals
                 else:
-                    res[key]['quantite'] = res[key]['quantite']+row[4]
+                    res[key]['quantite'] = res[key]['quantite']+row[3]
                     res[key]['temps_h']  = res[key]['temps_h']+row[4]
 
             #*******************************************************************
