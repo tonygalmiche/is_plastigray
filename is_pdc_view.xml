@@ -61,6 +61,7 @@
                         <group>
                             <field name="workcenter_ids" readonly="1" nolabel="1">
                                 <tree>
+                                    <button string="Liste des moules" name= "action_acces_moules" type="object" icon="gtk-justify-fill"/>
                                     <field name="workcenter_id"/>
                                     <field name="presse_heure"      digits="(14, 0)" />
                                     <field name="presse_pourcent"   digits="(14, 0)" />

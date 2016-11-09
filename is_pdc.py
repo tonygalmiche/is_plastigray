@@ -2,6 +2,20 @@
 
 from openerp import models,fields,api
 from openerp.tools.translate import _
+import datetime
+import pytz
+
+
+#def duree(debut):
+#    dt = datetime.datetime.now() - debut
+#    ms = (dt.days * 24 * 60 * 60 + dt.seconds) * 1000 + dt.microseconds / 1000.0
+#    ms=int(ms)
+#    return ms
+
+#def _now(debut):
+#    return datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S') + ' : '+ str(duree(debut))+"ms"
+
+
 
 
 class is_pdc(models.Model):
@@ -247,6 +261,13 @@ class is_pdc(models.Model):
                 workcenter_obj.create(vals)
 
 
+
+
+
+
+
+
+
 class is_pdc_mold(models.Model):
     _name='is.pdc.mold'
     _order='pdc_id desc, workcenter_id, mold_id'
@@ -265,6 +286,11 @@ class is_pdc_mold(models.Model):
     cumul_j        = fields.Float('Cumul (J)'       , store=False, compute='_cumul', readonly=1)
 
 
+
+
+
+
+
     @api.depends('workcenter_id')
     def _resource_type(self):
         for obj in self:
@@ -273,7 +299,10 @@ class is_pdc_mold(models.Model):
 
     @api.depends('quantite','temps_h','pdc_id.temps_ouverture')
     def _cumul(self):
+        debut=datetime.datetime.now()
         for obj in self:
+            context = self._context
+            cr      = self._cr
             temps_h=obj.temps_h
             capacite=obj.pdc_id.temps_ouverture
             temps_pourcent=0
@@ -285,16 +314,23 @@ class is_pdc_mold(models.Model):
             mem=0
             cumul_pourcent=0
             cumul_h=0
-            for row in obj.pdc_id.mold_ids:
-                if mem!=row.workcenter_id.id:
-                    cumul_pourcent=0.0
-                    cumul_h=0.0
-                    mem=row.workcenter_id.id
-                cumul_pourcent = cumul_pourcent + row.temps_pourcent
-                cumul_h = cumul_h + row.temps_h
-                row.cumul_pourcent = cumul_pourcent
-                row.cumul_h        = cumul_h
-                row.cumul_j        = cumul_h/24
+
+            if obj.mold_id.name and obj.workcenter_id.id and obj.pdc_id.id:
+                sql="""
+                    select sum(temps_pourcent), sum(temps_h)
+                    from is_pdc_mold ipm inner join is_mold im on ipm.mold_id=im.id
+                    where im.name<='"""+str(obj.mold_id.name)+"""'
+                          and workcenter_id="""+str(obj.workcenter_id.id)+"""
+                          and pdc_id="""+str(obj.pdc_id.id)+"""
+                """
+                cr.execute(sql)
+                for row in cr.fetchall():
+                    if row[0]:
+                        cumul_pourcent = row[0]
+                        cumul_h        = row[1]
+            obj.cumul_pourcent = cumul_pourcent
+            obj.cumul_h        = cumul_h   
+            obj.cumul_j        = cumul_h/24
 
 
     def _get_default_pdc_id(self, cr, uid, context=None):
@@ -315,6 +351,25 @@ class is_pdc_workcenter(models.Model):
     presse_pourcent   = fields.Float('% Presse')
     presse_heure85    = fields.Float('H presse au rendement de 85%')
     presse_pourcent85 = fields.Float('% presse au rendement de 85%')
+
+    @api.multi
+    def action_acces_moules(self):
+        for obj in self:
+            return {
+                'name': u'Moules de la section '+obj.workcenter_id.name,
+                'view_mode': 'tree,form',
+                'view_type': 'form',
+                'res_model': 'is.pdc.mold',
+                'domain': [('workcenter_id','=',obj.workcenter_id.id)],
+                'context':{
+                    'default_pdc_id'        : obj.pdc_id.id,
+                    'default_workcenter_id' : obj.workcenter_id.id,
+                },
+                'type': 'ir.actions.act_window',
+            }
+
+
+
 
 
 class is_pdc_mod(models.Model):
