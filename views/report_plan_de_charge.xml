@@ -32,7 +32,7 @@
                 font-size:9pt;
             }
             .page {
-                font-size:11pt;
+                font-size:10.5pt;
             }
             table{
                 border:0px solid black;
