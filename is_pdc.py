@@ -272,7 +272,9 @@ class is_pdc(models.Model):
             
 
             #Totaux
-            presse_pourcent=100*total_presse_heure/obj.nb_heures_periode
+            presse_pourcent=0
+            if obj.nb_heures_periode>0:
+                presse_pourcent=100*total_presse_heure/obj.nb_heures_periode
             vals={
                 'pdc_id': obj.id,
                 'presse_heure'     : total_presse_heure,
