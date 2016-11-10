@@ -20,7 +20,7 @@ import pytz
 
 class is_pdc(models.Model):
     _name='is.pdc'
-    _order='name'
+    _order='name desc'
 
     name                  = fields.Date("Date du calcul")
     date_debut            = fields.Date("Date de début de période", required=True)
@@ -32,7 +32,11 @@ class is_pdc(models.Model):
     nb_absents            = fields.Float("Absents sur la totalité de la période")
     effectif_operationnel = fields.Float("Effectif opérationnel", readonly=True, store=True, compute='_effectif_operationnel')
     decision_prise        = fields.Char("Décision prise")
-    temps_ouverture       = fields.Float("Temps d'ouverture")
+    nb_presses            = fields.Integer("Nombre de presses")
+    temps_ouverture       = fields.Integer("Temps d'ouverture")
+    nb_heures_periode     = fields.Integer("Nombre d'heures total dans la période")
+
+
     mold_ids              = fields.One2many('is.pdc.mold'      , 'pdc_id', u'Moules')
     workcenter_ids        = fields.One2many('is.pdc.workcenter', 'pdc_id', u'Postes de charge')
     mod_ids               = fields.One2many('is.pdc.mod'       , 'pdc_id', u"Nombres d'heures par semaine")
@@ -235,32 +239,49 @@ class is_pdc(models.Model):
 
             for row in obj.workcenter_ids:
                 row.unlink()
-            cr.execute("select workcenter_id, sum(temps_h) \
-                        from is_pdc_mold ipm inner join mrp_workcenter mw on ipm.workcenter_id=mw.id \
-                                             inner join resource_resource rr on mw.resource_id=rr.id   \
-                        where pdc_id="+str(obj.id)+" and rr.resource_type='material'   \
-                        group by workcenter_id")
+            cr.execute("""
+                select workcenter_id, sum(temps_h) 
+                from is_pdc_mold ipm inner join mrp_workcenter mw on ipm.workcenter_id=mw.id 
+                                     inner join resource_resource rr on mw.resource_id=rr.id   
+                where pdc_id="""+str(obj.id)+""" and rr.resource_type='material'
+                      and rr.code<'9000'
+                group by workcenter_id
+            """)
             result=cr.fetchall()
+            obj.nb_presses=len(result)
+            obj.nb_heures_periode=obj.nb_presses*obj.temps_ouverture
             workcenter_obj = self.env['is.pdc.workcenter']
+            total_presse_heure = 0
             for r in result:
                 presse_pourcent=0
                 presse_pourcent85=0
                 if obj.temps_ouverture!=0:
                     presse_pourcent   = 100*r[1]/obj.temps_ouverture
                     presse_pourcent85 = 100*r[1]/0.85/obj.temps_ouverture
+                total_presse_heure=total_presse_heure+r[1]
+
                 vals={
                     'pdc_id': obj.id,
-                    'workcenter_id': r[0],
-                    'presse_heure': r[1],
-                    'presse_pourcent': presse_pourcent,
-                    'presse_heure85': r[1]/0.85,
-                    'presse_pourcent85': presse_pourcent85,
-
+                    'workcenter_id'    : r[0],
+                    'presse_heure'     : int(r[1]),
+                    'presse_pourcent'  : int(presse_pourcent),
+                    'presse_heure85'   : int(r[1]/0.85),
+                    'presse_pourcent85': int(presse_pourcent85),
                 }
                 workcenter_obj.create(vals)
+            
 
+            #Totaux
+            presse_pourcent=100*total_presse_heure/obj.nb_heures_periode
+            vals={
+                'pdc_id': obj.id,
+                'presse_heure'     : total_presse_heure,
+                'presse_pourcent'  : presse_pourcent,
+                'presse_heure85'   : total_presse_heure/0.85,
+                'presse_pourcent85': presse_pourcent/0.85,
 
-
+            }
+            workcenter_obj.create(vals)
 
 
 

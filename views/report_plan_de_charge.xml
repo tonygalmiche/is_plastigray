@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+        <template id="report_plan_de_charge_style">
+            .entete{
+                text-align:center;
+            }
+            .entete h1{
+                font-size:16pt;
+                font-weight: bold;
+                color:black;
+                margin-top:0;
+                margin-bottom:0;
+            }
+
+            .contenu h1{
+                font-size:16pt;
+                font-weight: bold;
+                text-align:center;
+                padding:0mm;
+                margin:0mm;
+                margin-top:4mm;
+                margin-bottom:2mm;
+                color:black;
+            }
+            .header {
+                font-size:9pt;
+            }
+            .footer {
+                font-size:9pt;
+            }
+            .page {
+                font-size:11pt;
+            }
+            table{
+                border:0px solid black;
+            }
+            td{
+                padding:1mm;
+                border:1px solid black;
+                text-align:center;
+            }
+            th{
+                font-weight: normal;
+                padding:1mm;
+                border:1px solid black;
+            }
+
+
+        </template>
+        <template id="report_plan_de_charge_layout" inherit_id="web.layout" primary="True">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_plan_de_charge_style"/>
+                </style>
+            </xpath>
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+        <template id="report_plan_de_charge_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_plan_de_charge_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+
+        <!-- Entête personnalisé Plastigray -->
+        <template id="report_plan_de_charge_external_layout_header">
+            <div class="header">
+            </div>
+        </template>
+        <!-- Pied de page personnalisé Plastigray -->
+        <template id="report_plan_de_charge_external_layout_footer">
+            <div class="footer">
+                <div class="row" style="border-top: 1px solid black">
+                    <div class="col-xs-5  text-left">
+                        Imprimé le <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H:%M"/>
+                    </div>
+                    <div class="col-xs-2" />
+                    <div class="col-xs-5 text-right">
+                        Page <span class="page" style="font-size:9pt;"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+            <br />
+        </template>
+        <!-- Squelette de la page personnalisé pour Plastigray -->
+        <template id="report_plan_de_charge_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <t t-call="is_plastigray.report_plan_de_charge_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_plan_de_charge_external_layout_footer"/>
+        </template>
+
+
+
+
+        <!-- Plan de charge -->
+        <template id="report_plan_de_charge">
+            <t t-call="is_plastigray.report_plan_de_charge_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.report_plan_de_charge_external_layout">
+                        <div class="page">
+                            <table style="width:100%" class="entete">
+                                <tr>
+                                    <td style="width:20%;font-size:1pt;" rowspan="3"><img t-att-src="'data:image/png;base64,%s' % res_company.logo" style="height: 60px;"/></td>
+                                    <td style="width:20%" rowspan="1">Processus Logistique</td>
+                                    <td style="width:20%" rowspan="1">FO-1-LOG-1</td>
+                                </tr>
+                                <tr>
+                                    <td style="width:60%" rowspan="2"><h1>Analyse du Plan de charge de production<br />de Plastigray ST-Brice</h1></td>
+                                    <td style="width:20%" rowspan="1">Le <span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%" rowspan="1">Page 1/1</td>
+                                </tr>
+                            </table>
+                            <div class="row contenu">
+                                <div class="col-xs-12 text-center">
+                                    <div>Réalisé le : <b><span t-field="o.name"/></b></div>
+                                    <div>Pour la période du : <b><span t-field="o.date_debut"/></b> au <b><span t-field="o.date_fin"/></b></div>
+                                </div>
+                            </div>
+                            <div class="row contenu">
+                                <h1>Besoin en MOD</h1>
+                            </div>
+                            <div class="row contenu">
+                                <div class="col-xs-12">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <th style="width:80%">Nombres d'heures issues du calcul de charge dans la période </th>
+                                            <td><t t-esc='"{:,.0f}".format(o.nb_heures_total).replace(","," ").replace(".",",")'/></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:80%"><b>Temps brut au rendement de 80%</b></th>
+                                            <td><b><t t-esc='"{:,.0f}".format(o.tps_brut).replace(","," ").replace(".",",")'/></b></td>
+                                        </tr>
+                                    </table>
+                                    <br /><br />
+                                    <table style="width:100%">
+                                        <tr>
+                                            <th style="width:80%">Nombre de jours ouvrables</th>
+                                            <td><t t-esc='"{:,.0f}".format(o.nb_jours_ouvrables).replace(","," ").replace(".",",")'/></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:80%">Nombre de personnes inscrites à l'effectif</th>
+                                            <td><t t-esc='"{:,.0f}".format(o.nb_inscrits).replace(","," ").replace(".",",")'/></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:80%">Absents sur la totalité de la période</th>
+                                            <td><t t-esc='"{:,.0f}".format(o.nb_absents).replace(","," ").replace(".",",")'/></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:80%"><b>Effectif opérationnel</b></th>
+                                            <td><b><t t-esc='"{:,.0f}".format(o.effectif_operationnel).replace(","," ").replace(".",",")'/></b></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row contenu">
+                                <div class="col-xs-12">
+                                    <table style="width:100%">
+                                        <tr><th style="width:55%;border:0"></th><td><b>35 H</b></td><td><b>37,5 H</b></td><td><b>40 H</b></td></tr>
+                                        <tr t-foreach="o.mod_ids" t-as="l">
+                                            <th><span t-field="l.intitule"/></th>
+                                            <td><span t-field="l.semaine_35"/></td>
+                                            <td><span t-field="l.semaine_37"/></td>
+                                            <td><span t-field="l.semaine_40"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row contenu">
+                                <div class="col-xs-12">
+                                    <b>Décision prise : <span t-field="o.decision_prise"/></b>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row contenu">
+                                <h1>Charge du parc presse</h1>
+                            </div>
+                            <div class="row contenu">
+                                <div class="col-xs-2" style="padding-right:5mm">
+                                    <table style="width:100%">
+                                        <tr><td style="width:40%">Nombre de presses                     </td></tr>
+                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.nb_presses).replace(","," ").replace(".",",")'      /></b></td></tr>
+                                    </table>
+                                    <br /><br />
+                                    <table style="width:100%">
+                                        <tr><td style="width:40%">Temps d'ouverture                     </td></tr>
+                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.temps_ouverture).replace(","," ").replace(".",",")'      /></b></td></tr>
+                                    </table>
+                                    <br /><br />
+                                    <table style="width:100%">
+                                        <tr><td style="width:40%">Nombre d'heures total dans la période </td></tr>
+                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.nb_heures_periode).replace(","," ").replace(".",",")'      /></b></td></tr>
+                                    </table>
+                                </div>
+                                <div class="col-xs-10">
+                                    <table style="border:1px solid black; width:100%">
+                                        <tr>
+                                            <th style="width:20%;text-align:center"><b>Presse</b></th>
+                                            <th style="width:20%;text-align:center"><b>H / Presse</b></th>
+                                            <th style="width:20%;text-align:center"><b>% Presse</b></th>
+                                            <th style="width:20%;text-align:center"><b>H / Presse au rendement de 85%</b></th>
+                                            <th style="width:20%;text-align:center"><b>% Presse au rendement de 85%</b></th>
+                                        </tr>
+                                        <tr t-foreach="o.workcenter_ids" t-as="l">
+                                            <td><span t-field="l.workcenter_id.code"/></td>
+                                            <td><t t-esc='"{:,.0f}".format(l.presse_heure).replace(","," ").replace(".",",")'      /></td>
+                                            <td><t t-esc='"{:,.0f}".format(l.presse_pourcent).replace(","," ").replace(".",",")'    /> %</td>
+                                            <td><t t-esc='"{:,.0f}".format(l.presse_heure85).replace(","," ").replace(".",",")'    /></td>
+                                            <td><t t-esc='"{:,.0f}".format(l.presse_pourcent85).replace(","," ").replace(".",",")' /> %</td>
+                                        </tr>
+                                   </table>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+        <!-- Détail charge injection -->
+        <template id="report_detail_charge_injection">
+            <t t-call="is_plastigray.report_plan_de_charge_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.report_plan_de_charge_external_layout">
+                        <div class="page">
+                            <table style="width:100%" class="entete">
+                                <tr>
+                                    <td style="width:20%;font-size:1pt;" rowspan="3"><img t-att-src="'data:image/png;base64,%s' % res_company.logo" style="height: 60px;"/></td>
+                                    <td style="width:20%" rowspan="1">Processus Logistique</td>
+                                    <td style="width:20%" rowspan="1">FO-1-LOG-1</td>
+                                </tr>
+                                <tr>
+                                    <td style="width:60%" rowspan="2"><h1>Analyse du Plan de charge de production<br />de Plastigray ST-Brice</h1></td>
+                                    <td style="width:20%" rowspan="1">Le <span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:20%" rowspan="1"></td>
+                                </tr>
+                            </table>
+                            <div class="row contenu">
+                                <div class="col-xs-12 text-center">
+                                    <div>Réalisé le : <b><span t-field="o.name"/></b></div>
+                                    <div>Pour la période du : <b><span t-field="o.date_debut"/></b> au <b><span t-field="o.date_fin"/></b></div>
+                                </div>
+                            </div>
+                            <div class="row contenu" t-foreach="o.workcenter_ids" t-as="w" style="page-break-after:always;">
+                                <t t-if="w.workcenter_id.id != False"> 
+                                    <h1>Détail charge injection <span t-field="w.workcenter_id.name"/></h1>
+                                    <div class="col-xs-12">
+                                        <table style="border:1px solid black; width:100%">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:10%;text-align:center"><b>Moule</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Matière</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Quantité</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Temps</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Capacité</b></th>
+                                                    <th style="width:10%;text-align:center"><b>% Temps</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Cumul (%)</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Cumul (H)</b></th>
+                                                    <th style="width:10%;text-align:center"><b>Cumul (J)</b></th>
+                                                </tr>
+                                            </thead>
+                                            <tboby>
+                                                <tr t-foreach="o.mold_ids" t-as="l" >
+                                                    <t t-if="w.workcenter_id.id == l.workcenter_id.id"> 
+
+                                                        <td><span t-field="l.mold_id.name"/></td>
+                                                        <td><span t-field="l.matiere"/></td>
+                                                        <td><t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'      /></td>
+                                                        <td><t t-esc='"{:,.0f}".format(l.temps_h).replace(","," ").replace(".",",")'      /></td>
+                                                        <td><t t-esc='"{:,.0f}".format(l.capacite).replace(","," ").replace(".",",")'      /></td>
+                                                        <td><t t-esc='"{:,.0f}".format(l.temps_pourcent).replace(","," ").replace(".",",")'      /></td>
+                                                        <t t-if="l.cumul_pourcent &lt;= 100"> 
+                                                            <td style="background-color:white"><t t-esc='"{:,.0f}".format(l.cumul_pourcent).replace(","," ").replace(".",",")'      /></td>
+                                                        </t>
+                                                        <t t-if="l.cumul_pourcent > 100"> 
+                                                            <td style="background-color:orange"><t t-esc='"{:,.0f}".format(l.cumul_pourcent).replace(","," ").replace(".",",")'      /></td>
+                                                        </t>
+                                                        <td><t t-esc='"{:,.0f}".format(l.cumul_h).replace(","," ").replace(".",",")'      /></td>
+                                                        <td><t t-esc='"{:,.2f}".format(l.cumul_j).replace(","," ").replace(".",",")'      /></td>
+                                                    </t>
+                                                </tr>
+                                            </tboby>
+                                       </table>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+
+    </data>
+</openerp>
+
+

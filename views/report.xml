@@ -63,6 +63,30 @@
         </record>
 
 
+        <report 
+            id="report_plan_de_charges"
+            model="is.pdc"
+            string="Plan de charge"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_plan_de_charge"
+            file="is_plastigray.report_plan_de_charge"
+        />
+        <record id="report_plan_de_charges" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.plan_de_charge_portrait_paperformat"/>
+        </record>
+
+        <report 
+            id="report_detail_charge_injections"
+            model="is.pdc"
+            string="Détail charge injection"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_detail_charge_injection"
+            file="is_plastigray.report_detail_charge_injection"
+        />
+        <record id="report_detail_charge_injections" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.plan_de_charge_landscape_paperformat"/>
+        </record>
+
 
 
 

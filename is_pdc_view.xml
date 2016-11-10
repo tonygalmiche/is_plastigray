@@ -36,17 +36,24 @@
                         </div>
                         -->
                         <group>
-                            <field name="name"       attrs="{'readonly':[('state','in',['analyse'])]}"/>
-                            <field name="date_debut" attrs="{'readonly':[('state','in',['analyse'])]}"/> 
-                            <field name="date_fin"   attrs="{'readonly':[('state','in',['analyse'])]}"/> 
+                            <group>
+                                <field name="name"       attrs="{'readonly':[('state','in',['analyse'])]}"/>
+                                <field name="date_debut" attrs="{'readonly':[('state','in',['analyse'])]}"/> 
+                                <field name="date_fin"   attrs="{'readonly':[('state','in',['analyse'])]}"/> 
+                            </group>
+                        </group>
+                        <group>
                             <field name="nb_heures_total" digits="(14, 0)"/> 
                             <field name="tps_brut"        digits="(14, 0)"/> 
+                        </group>
+                        <group>
                             <field name="nb_jours_ouvrables"/> 
                             <field name="nb_inscrits"/> 
                             <field name="nb_absents"/> 
                             <field name="effectif_operationnel"/> 
+                        </group>
+                        <group>
                             <field name="decision_prise"/> 
-                            <field name="temps_ouverture"/> 
                         </group>
                         <group>
                             <field name="mod_ids" readonly="1" nolabel="1">
@@ -59,9 +66,18 @@
                             </field>
                         </group>
                         <group>
+                            <field name="nb_presses"        readonly="1"/> 
+                            <field name="temps_ouverture"/> 
+                            <field name="nb_heures_periode" readonly="1"/> 
+                        </group>
+                        <group>
                             <field name="workcenter_ids" readonly="1" nolabel="1">
                                 <tree>
-                                    <button string="Liste des moules" name= "action_acces_moules" type="object" icon="gtk-justify-fill"/>
+                                    <button 
+                                        string="Liste des moules" 
+                                        name= "action_acces_moules" type="object" icon="gtk-justify-fill"
+                                        attrs="{'invisible':[('workcenter_id','=',False)]}"
+                                    />
                                     <field name="workcenter_id"/>
                                     <field name="presse_heure"      digits="(14, 0)" />
                                     <field name="presse_pourcent"   digits="(14, 0)" />
@@ -70,24 +86,6 @@
                                 </tree>
                             </field>
                         </group>
-                        <!--
-                        <group>
-                            <field name="mold_ids" >
-                                <tree editable="bottom">
-                                    <field name="workcenter_id"/>
-                                    <field name="mold_id"/>
-                                    <field name="matiere"/>
-                                    <field name="quantite"/>
-                                    <field name="temps_s"/>
-                                    <field name="temps_h"/>
-                                    <field name="capacite"/>
-                                    <field name="cumul_pourcent"/>
-                                    <field name="cumul_h"/>
-                                    <field name="cumul_j"/>
-                                </tree>
-                            </field>
-                        </group>
-                        -->
                     </sheet>
                 </form>
             </field>
