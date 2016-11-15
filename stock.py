@@ -114,30 +114,32 @@ class stock_move(models.Model):
         [pick] = cr.fetchone() or [None]
         if not pick:
             move = self.browse(move_ids)[0]
-            sale_obj = self.env['sale.order']
-            sales = sale_obj.search([('name','=',move.origin)])
-            for sale_data in sales:
+            if move.origin:
+                sale_obj = self.env['sale.order']
+                sales = sale_obj.search([('name','=',move.origin)])
+                for sale_data in sales:
 
-                date_livraison=False
-                for line in sale_data.order_line:
-                    if line.is_date_livraison>date_livraison:
-                        date_livraison=line.is_date_livraison
+                    date_livraison=False
+                    for line in sale_data.order_line:
+                        if line.is_date_livraison>date_livraison:
+                            date_livraison=line.is_date_livraison
 
-                values = {
-                    'origin'            : move.origin,
-                    'company_id'        : move.company_id and move.company_id.id or False,
-                    'move_type'         : move.group_id and move.group_id.move_type or 'direct',
-                    'partner_id'        : move.partner_id.id or False,
-                    'picking_type_id'   : move.picking_type_id and move.picking_type_id.id or False,
-                    'is_sale_order_id'  : sale_data and sale_data.id or False,
-                    'is_transporteur_id': sale_data and sale_data.is_transporteur_id.id or False,
-                    'is_date_livraison' : date_livraison,
+                    values = {
+                        'origin'            : move.origin,
+                        'company_id'        : move.company_id and move.company_id.id or False,
+                        'move_type'         : move.group_id and move.group_id.move_type or 'direct',
+                        'partner_id'        : move.partner_id.id or False,
+                        'picking_type_id'   : move.picking_type_id and move.picking_type_id.id or False,
+                        'is_sale_order_id'  : sale_data and sale_data.id or False,
+                        'is_transporteur_id': sale_data and sale_data.is_transporteur_id.id or False,
+                        'is_date_livraison' : date_livraison,
 
 
-                }
-                pick = pick_obj.create(values)
-
-        return self.write({'picking_id': pick.id})
+                    }
+                    pick = pick_obj.create(values)
+        if pick:
+            self.write({'picking_id': pick.id})
+        return
     
 
 
