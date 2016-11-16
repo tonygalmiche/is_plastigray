@@ -64,6 +64,9 @@ access_mrp_prevision,access_mrp_prevision,model_mrp_prevision,mrp.group_mrp_mana
 
 access_is_cde_ouverte_fournisseur,access_is_cde_ouverte_fournisseur,model_is_cde_ouverte_fournisseur,base.group_sale_manager,1,1,1,1
 access_is_cde_ouverte_fournisseur_line,access_is_cde_ouverte_fournisseur_line,model_is_cde_ouverte_fournisseur_line,base.group_sale_manager,1,1,1,1
+access_is_cde_ouverte_fournisseur_product,access_is_cde_ouverte_fournisseur_product,model_is_cde_ouverte_fournisseur_product,base.group_sale_manager,1,1,1,1
+
+
 
 access_is_account_folio,access_is_account_folio,model_is_account_folio,base.group_sale_manager,1,1,1,1
 

@@ -84,7 +84,7 @@
 
     <menuitem id="menu_is_achats_cde_ouverte"     sequence="35" name="Commandes ouvertes"   parent="menu_is_achats" />
     <menuitem id="menu_is_achats_cde_ouverte_10"  sequence="10" name="Commandes ouvertes"   parent="menu_is_achats_cde_ouverte" action="is_cde_ouverte_fournisseur_action" />
-
+    <menuitem id="menu_is_achats_cde_ouverte_20"  sequence="20" name="Lignes"               parent="menu_is_achats_cde_ouverte" action="is_cde_ouverte_fournisseur_product_action" />
 
 
 

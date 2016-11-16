@@ -3,7 +3,7 @@
 <data>
 
 
-        <template id="report_cde_ouverte_fournisseur_style">
+        <template id="report_appel_de_livraison_style">
             .header {
                 font-size:10pt;
             }
@@ -30,7 +30,7 @@
         </template>
 
 
-        <template id="report_cde_ouverte_fournisseur_layout" inherit_id="web.layout" primary="True">
+        <template id="report_appel_de_livraison_layout" inherit_id="web.layout" primary="True">
             <!-- Add report attributes -->
             <xpath expr="//html" position="attributes">
                 <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
@@ -44,7 +44,7 @@
                 <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
                 <style type="text/css">
                     <t t-call="report.style"/>
-                    <t t-call="is_plastigray.report_cde_ouverte_fournisseur_style"/>
+                    <t t-call="is_plastigray.report_appel_de_livraison_style"/>
                 </style>
             </xpath>
             <!-- Remove conflicting style -->
@@ -53,16 +53,16 @@
 
 
 
-        <template id="report_cde_ouverte_fournisseur_html_container">
+        <template id="report_appel_de_livraison_html_container">
             <t t-set="body_classname" t-value="'container'"/>
-            <t t-call="is_plastigray.report_cde_ouverte_fournisseur_layout">
+            <t t-call="is_plastigray.report_appel_de_livraison_layout">
                 <t t-raw="0"/>
             </t>
         </template>
 
 
         <!-- Entête personnalisé Plastigray -->
-        <template id="report_cde_ouverte_fournisseur_external_layout_header">
+        <template id="report_appel_de_livraison_external_layout_header">
             <div class="header">
 
                 <div class="row">
@@ -81,7 +81,7 @@
                     <div class="col-xs-1" />
                     <div class="col-xs-7">
                         <div class="titre">
-                            <span>Commande ouverte N°</span>
+                            <span>Appel de livraison sur contrat N°</span>
                             <span t-field="o.name"/>
                              du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
                         </div>
@@ -98,7 +98,7 @@
 
 
         <!-- Pied de page personnalisé Plastigray -->
-        <template id="report_cde_ouverte_fournisseur_external_layout_footer">
+        <template id="report_appel_de_livraison_external_layout_footer">
             <div class="footer">
                 <div class="text-center" style="border-top: 1px solid black">
                     <table>
@@ -120,96 +120,70 @@
         </template>
 
         <!-- Squelette de la page personnalisé pour Plastigray -->
-        <template id="report_cde_ouverte_fournisseur_external_layout">
+        <template id="report_appel_de_livraison_external_layout">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
             </t>
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
-            <t t-call="is_plastigray.report_cde_ouverte_fournisseur_external_layout_header"/>
+            <t t-call="is_plastigray.report_appel_de_livraison_external_layout_header"/>
             <t t-raw="0"/>
-            <t t-call="is_plastigray.report_cde_ouverte_fournisseur_external_layout_footer"/>
+            <t t-call="is_plastigray.report_appel_de_livraison_external_layout_footer"/>
         </template>
 
 
 
 
 
-<template id="report_cde_ouverte_fournisseur_external_layout">
+<template id="report_appel_de_livraison_external_layout">
     <t t-if="o and 'company_id' in o">
         <t t-set="company" t-value="o.company_id"></t>
     </t>
     <t t-if="not o or not 'company_id' in o">
         <t t-set="company" t-value="res_company"></t>
     </t>
-    <t t-call="is_plastigray.report_cde_ouverte_fournisseur_external_layout_header" />
+    <t t-call="is_plastigray.report_appel_de_livraison_external_layout_header" />
     <t t-raw="0" />
-    <t t-call="is_plastigray.report_cde_ouverte_fournisseur_external_layout_footer" />
+    <t t-call="is_plastigray.report_appel_de_livraison_external_layout_footer" />
 </template>
 
 
-<template id="report_cde_ouverte_fournisseur_document">
-    <t t-call="is_plastigray.report_cde_ouverte_fournisseur_external_layout">
+<template id="report_appel_de_livraison_document">
+    <t t-call="is_plastigray.report_appel_de_livraison_external_layout">
         <div class="page">
 
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th class="text-left">Article</th>
-                        <th class="text-right">Lot d'appro</th>
-                        <th class="text-right">Prix d'achat</th>
-                        <th class="text-left">Unité</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="o.product_ids" t-as="l">
-                        <td class="text-left">  <span t-field="l.product_id"/> </td>
-                        <td class="text-right"> <span t-field="l.lot_appro"/>  </td>
-                        <td class="text-right"> <span t-field="l.prix_achat"/> </td>
-                        <td class="text-left">  <span t-field="l.uom_po_id"/>  </td>
-                    </tr>
-                </tbody>
-            </table>
-
-
-
-
-            <!--
-            <div><b>Code plastigray       : </b><span t-field="o.product_id.is_code"/></div>
-            <div><b>Référence fournisseur : </b><span t-field="o.product_id.is_ref_fournisseur"/></div>
-            <div><b>Désignation           : </b><span t-field="o.product_id.name"/></div>
-            <p />
-
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th class="text-center">Date</th>
-                        <th class="text-center">Type</th>
-                        <th class="text-right">Quantité</th>
-                        <th class="text-center">N°Commande</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="o.line_ids" t-as="l">
-                        <td class="text-center"><span t-field="l.date"/></td>
-                        <td class="text-center"><span t-field="l.type_cde"/></td>
-                        <td class="text-right"><span t-field="l.quantite"/></td>
-                        <td class="text-center"><span t-field="l.purchase_order_id.name"/></td>
-                    </tr>
-                </tbody>
-            </table>
-            -->
+            <div t-foreach="o.product_ids" t-as="p" style="page-break-after:always;">
+                <div>Article : <b><span t-field="p.product_id"/></b></div>
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Date</th>
+                            <th class="text-center">Type</th>
+                            <th class="text-right">Quantité</th>
+                            <th class="text-center">N°Commande</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="p.line_ids" t-as="l">
+                            <td class="text-center"><span t-field="l.date"/></td>
+                            <td class="text-center"><span t-field="l.type_cde"/></td>
+                            <td class="text-right"><span t-field="l.quantite"/></td>
+                            <td class="text-center"><span t-field="l.purchase_order_id.name"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </t>
 </template>
 
 
-<template id="report_cde_ouverte_fournisseur">
-    <t t-call="is_plastigray.report_cde_ouverte_fournisseur_html_container">
+<template id="report_appel_de_livraison">
+    <t t-call="is_plastigray.report_appel_de_livraison_html_container">
         <t t-foreach="doc_ids" t-as="doc_id">
-            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'is_plastigray.report_cde_ouverte_fournisseur_document')"/>
+            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'is_plastigray.report_appel_de_livraison_document')"/>
         </t>
     </t>
 </template>
