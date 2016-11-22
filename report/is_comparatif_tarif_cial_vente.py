@@ -16,9 +16,9 @@ class is_comparatif_tarif_cial_vente(models.Model):
     is_code        = fields.Char('Code Article')
     is_category_id = fields.Many2one('is.category', 'Catégorie')
     designation    = fields.Char('Désignation')
-    tarif_cial     = fields.Float('Prix de vente tarif commercial')
-    tarif_vente    = fields.Float('Prix de vente liste de prix')
-    delta          = fields.Float('Delta')
+    tarif_cial     = fields.Float('Prix de vente tarif commercial', digits=(12, 4))
+    tarif_vente    = fields.Float('Prix de vente liste de prix'   , digits=(12, 4))
+    delta          = fields.Float('Delta'                         , digits=(12, 4))
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_comparatif_tarif_cial_vente')
