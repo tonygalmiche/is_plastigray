@@ -13,7 +13,7 @@ from openerp import netsvc
 
 
 #TODO : Permet d'indiquer l'id du produit à analyser
-product_id_test=0
+product_id_test=374
 
 
 #TODO : 
@@ -137,8 +137,8 @@ class mrp_generate_previsions(models.TransientModel):
         cr.execute(sql)
         for row in cr.fetchall():
             res[row[0]]=row[1]
-            if row[0]==product_id_test:
-                print "_cde_cli : ",row[0], row[1], date_debut, date_fin
+            #if row[0]==product_id_test:
+            #    print "_cde_cli : ",row[0], row[1], date_debut, date_fin
 
         return res
 
@@ -258,7 +258,7 @@ class mrp_generate_previsions(models.TransientModel):
                 quantity=row.quantity+quantity
                 obj.browse([row.id]).write({'quantity': quantity})
                 if product.id==product_id_test:
-                    print "creer_mrp_prevision : write : ", row.quantity
+                    print "creer_mrp_prevision : write : ", row.quantity, row.start_date, row.end_date
                 return quantity
         vals = {
             'type': type,
@@ -271,7 +271,7 @@ class mrp_generate_previsions(models.TransientModel):
         obj = self.env['mrp.prevision']
         id = obj.create(vals)
         if product.id==product_id_test:
-            print "creer_mrp_prevision : create : id=",id, date, vals
+            print "creer_mrp_prevision : create : ", vals["quantity"], vals["start_date"], vals["end_date"]
         return vals["quantity"]
 
 
@@ -299,7 +299,7 @@ class mrp_generate_previsions(models.TransientModel):
             dates         = self._dates(obj.max_date)
 
             #** supprimer les previsions existantes ****************************
-            prevision_ids = prevision_obj.search([('active','=',True),]).unlink()
+            prevision_ids = prevision_obj.search([]).unlink()
             #*******************************************************************
 
             articles = self._articles()
@@ -316,6 +316,9 @@ class mrp_generate_previsions(models.TransientModel):
                     date_debut  = date
                     date_fin    = self._date_fin(date)
                     cde_cli     = self._cde_cli(date_debut, date_fin)
+
+                    #print cde_cli, date_debut, date_fin
+
                     cde_fou     = self._cde_fou(date_debut, date_fin)
                     fs          = self._suggestions(date_debut, date_fin, 'fs')
                     sa          = self._suggestions(date_debut, date_fin, 'sa')
@@ -334,8 +337,8 @@ class mrp_generate_previsions(models.TransientModel):
                         if date==dates[0]:
                             stock_theorique[product.id] = qt_stock - product.is_stock_secu
                         
-                        if product.id==product_id_test:
-                            print "stock_theorique avant calcul=",stock_theorique[product.id]
+                        #if product.id==product_id_test:
+                        #    print "stock_theorique avant calcul=",stock_theorique[product.id]
 
                         stock_theorique[product.id] = stock_theorique[product.id] - qt_cde_cli + qt_cde_fou + qt_fl - qt_fm + qt_fs + qt_sa - qt_ft
 
@@ -357,12 +360,12 @@ class mrp_generate_previsions(models.TransientModel):
                         if stock_theorique[product.id]<0:
                             qt=self._creer_suggestion(product, -stock_theorique[product.id], date)
                             stock_theorique[product.id]=stock_theorique[product.id]+qt
-                            if product.id==product_id_test:
-                                print "Création qt=",qt,stock_theorique[product.id]
+                            #if product.id==product_id_test:
+                            #    print "Création qt=",qt,stock_theorique[product.id]
                             num_od=num_od+1
                             nb=nb+1
-                        if product.id==product_id_test:
-                            print "stock_theorique=",stock_theorique[product.id]
+                        #if product.id==product_id_test:
+                        #    print "stock_theorique=",stock_theorique[product.id]
                         #***********************************************************
 
                 print _now(debut), "## Fin Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)
@@ -419,24 +422,6 @@ class mrp_generate_previsions(models.TransientModel):
 
 
 
-#            #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
-#            sas = prevision_obj.search([('type','=','sa'),])
-#            for sa in sas:
-#                new_date=partner_obj.get_date_dispo(company.partner_id, sa.end_date)
-#                sa.end_date=new_date
-#            #*******************************************************************
-
-#            x=duree(debut)
-#            print _now(debut), "## Fin traitement date de fin des SA = "
-
-
-#            #** Date de début des SA en tenant compte du délai de livraison ****
-#            for sa in sas:
-#                product=sa.product_id
-#                sa.start_date=prevision_obj.get_start_date_sa(product, sa.end_date)
-
-#            print _now(debut), "## Fin du recalcul des dates de début et de fin des SA"
-#            #*******************************************************************
 
 
         print _now(debut), "## FIN"

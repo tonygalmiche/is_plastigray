@@ -59,7 +59,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                         'mrp_prevision_id' : row.id,
                     }
                     line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
-                for row in self.env['purchase.order.line'].search([('state','=','draft'),('product_id','=',product.product_id.id)]):
+                for row in self.env['purchase.order.line'].search([('state','=','confirmed'),('product_id','=',product.product_id.id)]):
                     vals={
                         'product_id'        : product.id,
                         'date'              : row.date_planned,
