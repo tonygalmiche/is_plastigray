@@ -93,18 +93,19 @@
     <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Mouvements en attente"  parent="menu_is_achats_rcp" action="stock.action_receipt_picking_move" />
 
     <menuitem id="menu_is_achats_fac"     sequence="50" name="Facturation"            parent="menu_is_achats" />
-    <menuitem id="menu_is_achats_fac_10"  sequence="10" name="Factures fournisseur"   parent="menu_is_achats_fac" action="account.action_invoice_tree2" />
-    <menuitem id="menu_is_achats_fac_20"  sequence="20" name="Avoirs fournisseurs"    parent="menu_is_achats_fac" action="account.action_invoice_tree4" />
-    <menuitem id="menu_is_achats_fac_30"  sequence="30" name="Paiements fournisseurs" parent="menu_is_achats_fac" action="account_voucher.action_vendor_payment" />
+    <menuitem id="menu_is_achats_fac_10"  sequence="10" name="Création facture"       parent="menu_is_achats_fac" action="is_facturation_fournisseur_action" />
+    <menuitem id="menu_is_achats_fac_20"  sequence="20" name="Factures fournisseur"   parent="menu_is_achats_fac" action="account.action_invoice_tree2" />
+    <menuitem id="menu_is_achats_fac_30"  sequence="30" name="Avoirs fournisseurs"    parent="menu_is_achats_fac" action="account.action_invoice_tree4" />
+    <menuitem id="menu_is_achats_fac_40"  sequence="40" name="Paiements fournisseurs" parent="menu_is_achats_fac" action="account_voucher.action_vendor_payment" />
 
-    <menuitem id="menu_is_achats_table"    sequence="90" name="Tables"                 parent="menu_is_achats"  groups="base.group_no_one"/>
-    <menuitem id="menu_is_achats_table_10" sequence="10" name="Segment d'achat"        parent="menu_is_achats_table" action="action_is_segment_achat"/>
-    <menuitem id="menu_is_achats_table_20" sequence="20" name="Famille d'achat"        parent="menu_is_achats_table" action="action_is_famille_achat"/>
-    <menuitem id="menu_is_achats_table_30" sequence="30" name="Site livré"             parent="menu_is_achats_table" action="action_is_site"/>
-    <menuitem id="menu_is_achats_table_40" sequence="40" name="Mode transmission cde"  parent="menu_is_achats_table" action="action_is_transmission_cde"/>
-    <menuitem id="menu_is_achats_table_50" sequence="50" name="Norme Certificat"       parent="menu_is_achats_table" action="action_is_norme_certificats"/>
-    <menuitem id="menu_is_achats_table_60" sequence="60" name="Certifications Qualité" parent="menu_is_achats_table" action="action_is_certifications_qualite"/>
-
+    <menuitem id="menu_is_achats_table"    sequence="90" name="Tables"                    parent="menu_is_achats"  groups="base.group_no_one"/>
+    <menuitem id="menu_is_achats_table_10" sequence="10" name="Segment d'achat"           parent="menu_is_achats_table" action="action_is_segment_achat"/>
+    <menuitem id="menu_is_achats_table_20" sequence="20" name="Famille d'achat"           parent="menu_is_achats_table" action="action_is_famille_achat"/>
+    <menuitem id="menu_is_achats_table_30" sequence="30" name="Site livré"                parent="menu_is_achats_table" action="action_is_site"/>
+    <menuitem id="menu_is_achats_table_40" sequence="40" name="Mode transmission cde"     parent="menu_is_achats_table" action="action_is_transmission_cde"/>
+    <menuitem id="menu_is_achats_table_50" sequence="50" name="Norme Certificat"          parent="menu_is_achats_table" action="action_is_norme_certificats"/>
+    <menuitem id="menu_is_achats_table_60" sequence="60" name="Certifications Qualité"    parent="menu_is_achats_table" action="action_is_certifications_qualite"/>
+    <menuitem id="menu_is_achats_table_70" sequence="70" name="Justification facturation" parent="menu_is_achats_table" action="is_facturation_fournisseur_justification_action"/>
 
     <menuitem id="menu_is_ventes"             sequence="3"  name="Ventes"/>
 

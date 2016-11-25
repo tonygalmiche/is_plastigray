@@ -55,6 +55,7 @@
         "is_cde_ouverte_fournisseur_view.xml",
         "mrp_production_view.xml",
         "account_invoice_sequence.xml",
+        "is_facturation_fournisseur_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
         "wizard/generate_previsions_view.xml",
         "wizard/mrp_product_produce_view.xml",

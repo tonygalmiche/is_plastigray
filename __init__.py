@@ -25,4 +25,5 @@ import is_cout
 import is_tarif_cial
 import is_cde_ouverte_fournisseur
 import mrp_production
+import is_facturation_fournisseur
 

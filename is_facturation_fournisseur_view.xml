@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="is_facturation_fournisseur_form_view" model="ir.ui.view">
+            <field name="name">is_facturation_fournisseur_from_view</field>
+            <field name="model">is.facturation.fournisseur</field>
+            <field name="arch" type="xml">
+                <form string="Facturation fournisseur 2">
+                    <header>
+                        <button name="action_creer_facture" type="object" class="oe_highlight" string="Générer la facture fournisseur" states="creation" />
+                        <field name="state" widget="statusbar"  clickable="True" />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field 
+                                    name="name" 
+                                    domain="[('supplier','=',True),('is_company','=',True)]"
+                                    on_change="cherche_receptions(name, date_fin)"
+                                    attrs="{'readonly':[('state','=','termine')]}"
+                                />
+                                <field 
+                                    name="date_fin" 
+                                    on_change="cherche_receptions(name, date_fin)"
+                                    attrs="{'readonly':[('state','=','termine')]}"
+                                />
+                            </group>
+                            <group>
+                                <field name="total_ht" attrs="{'readonly':[('state','=','termine')]}" />
+                                <field name="total_ht_calcule" />
+                                <field name="ecart_ht"  />
+                                <field name="justification_id" attrs="{'required':[('ecart_ht', '!=', 0)], 'readonly':[('state','=','termine')]}" />
+                                <field name="total_ttc_calcule" attrs="{'readonly':[('state','=','termine')]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1"  attrs="{'readonly':[('state','=','termine')]}" >
+                                <tree editable="bottom" create="false" delete="false">
+                                    <field name="num_bl_fournisseur" />
+                                    <field name="num_reception" />
+                                    <field name="date_reception" />
+                                    <field name="product_id" />
+                                    <field name="ref_fournisseur" />
+                                    <field name="quantite" />
+                                    <field name="uom_id" />
+                                    <field name="prix" />
+                                    <field name="total" />
+                                    <field name="taxe_id" />
+                                    <field name="taxe_taux" />
+                                    <field name="selection" />
+                                    <field name="move_id" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="is_facturation_fournisseur_tree_view">
+            <field name="name">is_facturation_fournisseur_tree_view</field>
+            <field name="model">is.facturation.fournisseur</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="gray:state=='termine'">
+                    <field name="name" />
+                    <field name="date_fin" />
+                    <field name="total_ht" />
+                    <field name="ecart_ht"  />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="is_facturation_fournisseur_action" model="ir.actions.act_window">
+            <field name="name">Facturation fournisseur</field>
+            <field name="res_model">is.facturation.fournisseur</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+        </record>
+
+
+        <!-- Justification -->
+        <record id="is_facturation_fournisseur_justification_tree_view" model="ir.ui.view">
+            <field name="name">is_facturation_fournisseur_justification_tree_view</field>
+            <field name="model">is.facturation.fournisseur.justification</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_facturation_fournisseur_justification_form_view" model="ir.ui.view">
+            <field name="name">is_facturation_fournisseur_justification_form_view</field>
+            <field name="model">is.facturation.fournisseur.justification</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_facturation_fournisseur_justification_action" model="ir.actions.act_window">
+            <field name="name">Justification facturation fournisseur</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.facturation.fournisseur.justification</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+
+    </data>
+</openerp>
