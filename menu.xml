@@ -120,16 +120,19 @@
     <menuitem id="menu_is_ventes_prix_10"  sequence="10" name="Liste de prix"         parent="menu_is_ventes_prix" action="product.product_pricelist_action2" />
     <menuitem id="menu_is_ventes_prix_20"  sequence="20" name="Lignes liste de prix"  parent="menu_is_ventes_prix" action="is_pricelist_item_sale_action" />
 
-    <menuitem id="menu_is_ventes_liste_servir"     sequence="35" name="Liste à servir"          parent="menu_is_ventes" />
-    <menuitem id="menu_is_ventes_liste_servir_10"  sequence="10" name="Clients à livrer"        parent="menu_is_ventes_liste_servir" action="is_liste_servir_wizard_action" />
-    <menuitem id="menu_is_ventes_liste_servir_20"  sequence="20" name="Liste à servir"          parent="menu_is_ventes_liste_servir" action="is_liste_servir_action" />
-    <menuitem id="menu_is_ventes_liste_servir_90"  sequence="90" name="Message liste à service" parent="menu_is_ventes_liste_servir" action="is_liste_servir_message_action" />
-
-    <menuitem id="menu_is_ventes_cde"      sequence="30" name="Commandes"             parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_cde"      sequence="25" name="Commandes"             parent="menu_is_ventes" />
     <menuitem id="menu_is_ventes_cde_10"   sequence="10" name="Commandes"             parent="menu_is_ventes_cde" action="is_sale_order_action" />
     <menuitem id="menu_is_ventes_cde_20"   sequence="20" name="Lignes de commandes"   parent="menu_is_ventes_cde" action="is_order_line_tree_action" />
     <menuitem id="menu_is_ventes_cde_30"   sequence="30" name="EDI commandes clients" parent="menu_is_ventes_cde" action="is_edi_cde_cli_action" />
     <menuitem id="menu_is_ventes_cde_40"   sequence="40" name="PIC à 3 mois"          parent="menu_is_ventes_cde" action="is_url_pic_3_mois" />
+
+    <menuitem id="menu_is_ventes_liste_servir"     sequence="30" name="Liste à servir"          parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_liste_servir_10"  sequence="10" name="Clients à livrer"        parent="menu_is_ventes_liste_servir" action="is_liste_servir_wizard_action" />
+    <menuitem id="menu_is_ventes_liste_servir_20"  sequence="20" name="Liste à servir"          parent="menu_is_ventes_liste_servir" action="is_liste_servir_action" />
+    <menuitem id="menu_is_ventes_liste_servir_90"  sequence="90" name="Message liste à service" parent="menu_is_ventes_liste_servir" action="is_liste_servir_message_action" />
+
+    <menuitem id="menu_is_ventes_bon_transfert"     sequence="35" name="Bon de transfert" parent="menu_is_ventes" />
+    <menuitem id="menu_is_ventes_bon_transfert_10"  sequence="10" name="Bon de transfert" parent="menu_is_ventes_bon_transfert" action="is_bon_transfert_action" />
 
     <menuitem id="menu_is_ventes_liv"      sequence="40" name="Livraisons"            parent="menu_is_ventes" />
     <menuitem id="menu_is_ventes_liv_10"   sequence="10" name="Livraisons à traiter"  parent="menu_is_ventes_liv" action="is_livraisons_a_traiter_action" />

@@ -103,6 +103,20 @@
 
 
 
+        <report 
+            id="report_bon_transferts"
+            model="is.bon.transfert"
+            string="Bon de transfert"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_bon_transfert"
+            file="is_plastigray.report_bon_transfert"
+        />
+        <record id="report_bon_transferts" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.bon_transfert_paperformat"/>
+        </record>
+
+
+
 
     </data>
 </openerp>

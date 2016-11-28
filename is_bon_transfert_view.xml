@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Sequence --> 
+        <record id="is_bon_transfert_type_seq" model="ir.sequence.type">
+            <field name="name">Bon de transfert</field>
+            <field name="code">is.bon.transfert</field>
+        </record>
+        <record id="is_bon_transfert_seq" model="ir.sequence">
+            <field name="name">Bon de transfert</field>
+            <field name="code">is.bon.transfert</field>
+            <field name="prefix">BT-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- Bon de transfert -->
+        <record id="is_bon_transfert_form_view" model="ir.ui.view">
+            <field name="name">is_bon_transfert_from_view</field>
+            <field name="model">is.bon.transfert</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field 
+                                    name="location_id" 
+                                    on_change="on_change(location_id, date_fin)" 
+                                    domain="[('usage','=','internal')]"  />
+                                <field name="date_fin"    on_change="on_change(location_id, date_fin)"/>
+                                <field name="partner_id" domain="[('customer','=',True),('is_company','=',True)]" />
+                            </group>
+                            <group>
+                                <field name="date_creation" />
+                                <field name="qt_total" />
+                                <field name="total_uc" />
+                                <field name="total_um" />
+
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                     <field name="product_id" />
+                                     <field name="mold_id" />
+                                     <field name="ref_client" />
+                                     <field name="quantite" />
+                                     <field name="uom_id" />
+                                     <field name="uc_id" />
+                                     <field name="nb_uc" />
+                                     <field name="um_id" />
+                                     <field name="nb_um" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_bon_transfert_tree_view">
+            <field name="name">is_bon_transfert_tree_view</field>
+            <field name="model">is.bon.transfert</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="location_id" />
+                    <field name="date_creation" />
+                    <field name="date_fin" />
+                    <field name="partner_id" />
+                    <field name="qt_total" />
+                    <field name="total_uc" />
+                    <field name="total_um" />
+                    <field name="commentaire" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_bon_transfert_action" model="ir.actions.act_window">
+            <field name="name">Bon de transfert</field>
+            <field name="res_model">is.bon.transfert</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>
