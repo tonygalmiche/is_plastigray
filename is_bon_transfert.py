@@ -61,25 +61,22 @@ class is_bon_transfert(models.Model):
         value = {}
         lines = []
         if location_id and date_fin==False:
-            for obj in self:
-                SQL="""
-                    select sq.product_id, sum(sq.qty)
-                    from stock_quant sq
-                    where sq.location_id="""+str(location_id)+"""
-                    group by sq.product_id
-                    order by sq.product_id
-                    limit 200
-                """
-                cr.execute(SQL)
-                result = cr.fetchall()
-                for row in result:
-                    vals = {
-                        'product_id': row[0],
-                        'quantite'  : row[1],
-                    }
-                    lines.append(vals)
-
-
+            SQL="""
+                select sq.product_id, sum(sq.qty)
+                from stock_quant sq
+                where sq.location_id="""+str(location_id)+"""
+                group by sq.product_id
+                order by sq.product_id
+                limit 200
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row in result:
+                vals = {
+                    'product_id': row[0],
+                    'quantite'  : row[1],
+                }
+                lines.append(vals)
         if location_id and date_fin:
             for obj in self:
                 SQL="""
@@ -102,14 +99,6 @@ class is_bon_transfert(models.Model):
                     lines.append(vals)
         value.update({'line_ids': lines})
         return {'value': value}
-
-
-
-
-
-
-
-
 
 
 class is_bon_transfert_line(models.Model):
