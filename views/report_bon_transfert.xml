@@ -19,7 +19,7 @@
             }
             .expediteur {
                 font-size:9pt;
-                text-align:center;
+                text-align:left;
             }
             .destinataire {
                 text-align:left;
@@ -66,16 +66,15 @@
             <div class="header">
 
                 <div class="row">
-                    <div class="col-xs-4  text-center">
+                    <div class="col-xs-4  text-left">
                         <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
                         <div class="expediteur">
-                            S.A.S. au capital de 2 102 400 € <br />
-                            Siège social : ZAC de Gray Sud <br />
-                            CS 10133 - <b>70104 GRAY Cedex</b><br />
-                            Tél. : 03 84 64 77 00 - Fax : 03 84 65 51 09 <br />
-                            Siret B 377 846 381 00020 - Code NAF 2229 A <br />
-                            Registre du Commerce GRAY <br />
-                            N°Identification T.V.A. FR 65 377 846 381 <br />
+                            <div>Expéditeur : </div>
+                            <b><div t-field="company.name"/></b>
+                            <b><div t-field="company.street"/></b>
+                            <div t-field="company.street2"/>
+                            <div><span t-field="company.zip"/> - <span t-field="company.city"/></div>
+                            <div t-field="company.country_id.name"/>
                         </div>
                     </div>
                     <div class="col-xs-1" />
@@ -112,6 +111,8 @@
                     <table style="width:100%">
                         <tr>
                             <td class="text-left" style="width:80%">
+                                S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud - CS 10133 - 70104 GRAY Cedex<br />
+                                Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381
                             </td>
                             <td class="text-right">
                                 Page <span class="page" style="font-size:7pt;"/> / <span class="topage"/>
