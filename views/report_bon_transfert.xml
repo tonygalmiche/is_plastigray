@@ -92,6 +92,7 @@
                                 du <span t-field="o.date_fin"/>
                             </t>
                         </div>
+                        <div>Transporteur : <span t-field="o.transporteur_id.name"/></div>
                         <div class="destinataire">
                             <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>)
                             <div t-field="o.partner_id"

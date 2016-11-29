@@ -32,6 +32,7 @@
                                     domain="[('usage','=','internal')]"  />
                                 <field name="date_fin"    on_change="on_change(location_id, date_fin)"/>
                                 <field name="partner_id" domain="[('customer','=',True),('is_company','=',True)]" />
+                                <field name="transporteur_id" domain="[('supplier','=',True),('is_company','=',True)]" /> 
                             </group>
                             <group>
                                 <field name="date_creation" />

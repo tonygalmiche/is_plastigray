@@ -10,15 +10,16 @@ class is_bon_transfert(models.Model):
     _description = "Bon de transfert"
     _order='name desc'
 
-    name          = fields.Char('N° de bon de transfert', readonly=True)
-    location_id   = fields.Many2one('stock.location', 'Emplacement (Navette)', required=True)
-    date_creation = fields.Date('Date de création', readonly=True)
-    date_fin      = fields.Date('Date de dernière entrée')
-    partner_id    = fields.Many2one('res.partner', 'Client')
-    commentaire   = fields.Text('Commentaire')
-    qt_total      = fields.Float('Quantité totale', compute='_compute', readonly=True, store=True, digits=(14,0))
-    total_uc      = fields.Float('Total UC'       , compute='_compute', readonly=True, store=True, digits=(14,1))
-    total_um      = fields.Float('Total UM'       , compute='_compute', readonly=True, store=True, digits=(14,1))
+    name            = fields.Char('N° de bon de transfert', readonly=True)
+    location_id     = fields.Many2one('stock.location', 'Emplacement (Navette)', required=True)
+    date_creation   = fields.Date('Date de création', readonly=True)
+    date_fin        = fields.Date('Date de dernière entrée')
+    partner_id      = fields.Many2one('res.partner', 'Client')
+    transporteur_id = fields.Many2one('res.partner', 'Transporteur')
+    commentaire     = fields.Text('Commentaire')
+    qt_total        = fields.Float('Quantité totale', compute='_compute', readonly=True, store=True, digits=(14,0))
+    total_uc        = fields.Float('Total UC'       , compute='_compute', readonly=True, store=True, digits=(14,1))
+    total_um        = fields.Float('Total UM'       , compute='_compute', readonly=True, store=True, digits=(14,1))
 
     line_ids      = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
 
