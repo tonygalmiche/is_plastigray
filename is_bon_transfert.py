@@ -79,25 +79,24 @@ class is_bon_transfert(models.Model):
                 }
                 lines.append(vals)
         if location_id and date_fin:
-            for obj in self:
-                SQL="""
-                    select sm.product_id, sum(sm.product_uom_qty)
-                    from stock_move sm
-                    where sm.location_dest_id="""+str(location_id)+"""
-                          and date>='"""+str(date_fin)+""" 00:00:00'
-                          and date<='"""+str(date_fin)+""" 23:59:59'
-                    group by sm.product_id
-                    order by sm.product_id
-                    limit 200
-                """
-                cr.execute(SQL)
-                result = cr.fetchall()
-                for row in result:
-                    vals = {
-                        'product_id': row[0],
-                        'quantite'  : row[1],
-                    }
-                    lines.append(vals)
+            SQL="""
+                select sm.product_id, sum(sm.product_uom_qty)
+                from stock_move sm
+                where sm.location_dest_id="""+str(location_id)+"""
+                      and date>='"""+str(date_fin)+""" 00:00:00'
+                      and date<='"""+str(date_fin)+""" 23:59:59'
+                group by sm.product_id
+                order by sm.product_id
+                limit 200
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row in result:
+                vals = {
+                    'product_id': row[0],
+                    'quantite'  : row[1],
+                }
+                lines.append(vals)
         value.update({'line_ids': lines})
         return {'value': value}
 
