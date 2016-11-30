@@ -92,7 +92,7 @@
         <report 
             id="report_detail_charge_injections"
             model="is.pdc"
-            string="Détail charge injection"
+            string="Détail charge par poste"
             report_type="qweb-pdf"
             name="is_plastigray.report_detail_charge_injection"
             file="is_plastigray.report_detail_charge_injection"

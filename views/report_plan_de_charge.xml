@@ -223,8 +223,36 @@
                                             <th style="width:20%;text-align:center"><b>H / Presse au rendement de 85%</b></th>
                                             <th style="width:20%;text-align:center"><b>% Presse au rendement de 85%</b></th>
                                         </tr>
+                                        <t t-set="presse_heure"      t-value="0"/>
                                         <tr t-foreach="o.workcenter_ids" t-as="l">
-                                            <t t-if="l.resource_type!='user'"> 
+                                            <t t-if="l.workcenter_id.code  &lt; '9000'"> 
+                                                <t t-set="presse_heure" t-value="presse_heure+l.presse_heure"/>
+                                                <td><span t-field="l.workcenter_id.code"/></td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_heure).replace(","," ").replace(".",",")'      /></td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_pourcent).replace(","," ").replace(".",",")'    /> %</td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_heure85).replace(","," ").replace(".",",")'    /></td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_pourcent85).replace(","," ").replace(".",",")' /> %</td>
+                                            </t>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Total : </b></td>
+                                            <td><b><t t-esc='"{:,.0f}".format(presse_heure).replace(","," ").replace(".",",")'      /></b></td>
+                                            <td></td>
+                                            <td><b><t t-esc='"{:,.0f}".format(presse_heure/0.85).replace(","," ").replace(".",",")'    /></b></td>
+                                            <td></td>
+                                        </tr>
+                                   </table><br />
+
+                                    <table style="border:1px solid black; width:100%">
+                                        <tr>
+                                            <th style="width:20%;text-align:center"><b>Poste</b></th>
+                                            <th style="width:20%;text-align:center"><b>H / Poste</b></th>
+                                            <th style="width:20%;text-align:center"><b>% Poste</b></th>
+                                            <th style="width:20%;text-align:center"><b>H / Poste au rendement de 85%</b></th>
+                                            <th style="width:20%;text-align:center"><b>% Poste au rendement de 85%</b></th>
+                                        </tr>
+                                        <tr t-foreach="o.workcenter_ids" t-as="l">
+                                            <t t-if="l.workcenter_id.code>='9000'"> 
                                                 <td><span t-field="l.workcenter_id.code"/></td>
                                                 <td><t t-esc='"{:,.0f}".format(l.presse_heure).replace(","," ").replace(".",",")'      /></td>
                                                 <td><t t-esc='"{:,.0f}".format(l.presse_pourcent).replace(","," ").replace(".",",")'    /> %</td>
@@ -246,7 +274,7 @@
         </template>
 
 
-        <!-- Détail charge injection -->
+        <!-- Détail charge par poste -->
         <template id="report_detail_charge_injection">
             <t t-call="is_plastigray.report_plan_de_charge_html_container">
                 <t t-foreach="docs" t-as="o">
@@ -274,7 +302,7 @@
                             </div>
                             <div class="row contenu" t-foreach="o.workcenter_ids" t-as="w" style="page-break-after:always;">
                                 <t t-if="w.workcenter_id.id != False"> 
-                                    <h1>Détail charge injection <span t-field="w.workcenter_id.name"/></h1>
+                                    <h1>Détail charge poste <span t-field="w.workcenter_id.name"/></h1>
                                     <div class="col-xs-12">
                                         <table style="border:1px solid black; width:100%">
                                             <thead>
@@ -293,10 +321,6 @@
                                             <tboby>
                                                 <tr t-foreach="o.mold_ids" t-as="l" >
                                                     <t t-if="w.workcenter_id.id == l.workcenter_id.id"> 
-
-
-
-
                                                         <td><span t-field="l.mold_id.name"/></td>
                                                         <td><span t-field="l.matiere"/></td>
                                                         <td><t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'      /></td>

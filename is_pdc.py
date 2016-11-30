@@ -274,19 +274,19 @@ class is_pdc(models.Model):
                 workcenter_obj.create(vals)
             
 
-            #Totaux
-            presse_pourcent=0
-            if obj.nb_heures_periode>0:
-                presse_pourcent=100*total_presse_heure/obj.nb_heures_periode
-            vals={
-                'pdc_id': obj.id,
-                'presse_heure'     : total_presse_heure,
-                'presse_pourcent'  : presse_pourcent,
-                'presse_heure85'   : total_presse_heure/0.85,
-                'presse_pourcent85': presse_pourcent/0.85,
+#            #Totaux
+#            presse_pourcent=0
+#            if obj.nb_heures_periode>0:
+#                presse_pourcent=100*total_presse_heure/obj.nb_heures_periode
+#            vals={
+#                'pdc_id': obj.id,
+#                'presse_heure'     : total_presse_heure,
+#                'presse_pourcent'  : presse_pourcent,
+#                'presse_heure85'   : total_presse_heure/0.85,
+#                'presse_pourcent85': presse_pourcent/0.85,
 
-            }
-            workcenter_obj.create(vals)
+#            }
+#            workcenter_obj.create(vals)
 
 
 
