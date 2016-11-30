@@ -224,13 +224,19 @@
                                             <th style="width:20%;text-align:center"><b>% Presse au rendement de 85%</b></th>
                                         </tr>
                                         <tr t-foreach="o.workcenter_ids" t-as="l">
-                                            <td><span t-field="l.workcenter_id.code"/></td>
-                                            <td><t t-esc='"{:,.0f}".format(l.presse_heure).replace(","," ").replace(".",",")'      /></td>
-                                            <td><t t-esc='"{:,.0f}".format(l.presse_pourcent).replace(","," ").replace(".",",")'    /> %</td>
-                                            <td><t t-esc='"{:,.0f}".format(l.presse_heure85).replace(","," ").replace(".",",")'    /></td>
-                                            <td><t t-esc='"{:,.0f}".format(l.presse_pourcent85).replace(","," ").replace(".",",")' /> %</td>
+                                            <t t-if="l.resource_type!='user'"> 
+                                                <td><span t-field="l.workcenter_id.code"/></td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_heure).replace(","," ").replace(".",",")'      /></td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_pourcent).replace(","," ").replace(".",",")'    /> %</td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_heure85).replace(","," ").replace(".",",")'    /></td>
+                                                <td><t t-esc='"{:,.0f}".format(l.presse_pourcent85).replace(","," ").replace(".",",")' /> %</td>
+                                            </t>
                                         </tr>
                                    </table>
+
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -287,6 +293,9 @@
                                             <tboby>
                                                 <tr t-foreach="o.mold_ids" t-as="l" >
                                                     <t t-if="w.workcenter_id.id == l.workcenter_id.id"> 
+
+
+
 
                                                         <td><span t-field="l.mold_id.name"/></td>
                                                         <td><span t-field="l.matiere"/></td>

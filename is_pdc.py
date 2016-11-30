@@ -240,12 +240,12 @@ class is_pdc(models.Model):
             for row in obj.workcenter_ids:
                 row.unlink()
             cr.execute("""
-                select workcenter_id, sum(temps_h) 
+                select rr.resource_type, ipm.workcenter_id, sum(temps_h) 
                 from is_pdc_mold ipm inner join mrp_workcenter mw on ipm.workcenter_id=mw.id 
                                      inner join resource_resource rr on mw.resource_id=rr.id   
-                where pdc_id="""+str(obj.id)+""" and rr.resource_type='material'
-                      and rr.code<'9000'
-                group by workcenter_id
+                where pdc_id="""+str(obj.id)+"""
+                      and rr.resource_type='material' 
+                group by rr.resource_type, ipm.workcenter_id
             """)
             result=cr.fetchall()
             obj.nb_presses=len(result)
@@ -255,17 +255,20 @@ class is_pdc(models.Model):
             for r in result:
                 presse_pourcent=0
                 presse_pourcent85=0
-                if obj.temps_ouverture!=0:
-                    presse_pourcent   = 100*r[1]/obj.temps_ouverture
-                    presse_pourcent85 = 100*r[1]/0.85/obj.temps_ouverture
-                total_presse_heure=total_presse_heure+r[1]
+
+                if r[0]=='material':
+                    if obj.temps_ouverture!=0:
+                        presse_pourcent   = 100*r[2]/obj.temps_ouverture
+                        presse_pourcent85 = 100*r[2]/0.85/obj.temps_ouverture
+                    total_presse_heure=total_presse_heure+r[2]
 
                 vals={
                     'pdc_id': obj.id,
-                    'workcenter_id'    : r[0],
-                    'presse_heure'     : int(r[1]),
+                    'resource_type'    : r[0],
+                    'workcenter_id'    : r[1],
+                    'presse_heure'     : int(r[2]),
                     'presse_pourcent'  : int(presse_pourcent),
-                    'presse_heure85'   : int(r[1]/0.85),
+                    'presse_heure85'   : int(r[2]/0.85),
                     'presse_pourcent85': int(presse_pourcent85),
                 }
                 workcenter_obj.create(vals)
@@ -306,9 +309,6 @@ class is_pdc_mold(models.Model):
     cumul_pourcent = fields.Float('Temps Cumulé (%)', store=False, compute='_cumul', readonly=1)
     cumul_h        = fields.Float('Cumul (H)'       , store=False, compute='_cumul', readonly=1)
     cumul_j        = fields.Float('Cumul (J)'       , store=False, compute='_cumul', readonly=1)
-
-
-
 
 
 
@@ -365,9 +365,10 @@ class is_pdc_mold(models.Model):
 
 class is_pdc_workcenter(models.Model):
     _name='is.pdc.workcenter'
-    _order='workcenter_id'
+    _order='resource_type, workcenter_id'
 
     pdc_id            = fields.Many2one('is.pdc', 'PDC', required=True, ondelete='cascade')
+    resource_type     = fields.Selection([('material', u'Machine'),('user', u'MO')], u"Type de ressource", select=True)
     workcenter_id     = fields.Many2one('mrp.workcenter', 'Poste de charge')
     presse_heure      = fields.Float('H Presse')
     presse_pourcent   = fields.Float('% Presse')
