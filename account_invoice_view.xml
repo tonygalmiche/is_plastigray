@@ -91,14 +91,9 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
-
                 <xpath expr="//field[@name='account_id']" position="after" >
                     <field name="is_folio_id"/> 
                 </xpath>
-
-
-
-
                 <xpath expr="//label[@for='amount_tax']"  position="attributes" >
                     <attribute name="invisible">1</attribute> 
                 </xpath>
@@ -109,63 +104,31 @@
                     <field name="is_escompte" widget="monetary" options="{'currency_field': 'currency_id'}" attrs="{'invisible': [('is_escompte', '=', 0)]}"/>
                     <field name="is_tva"      widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 </xpath>
-
-
                 <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='product_id']" position="replace">
                     <field 
                         name="product_id"
                         on_change="product_id_change(product_id, uos_id, quantity, name, parent.type, parent.partner_id, parent.fiscal_position, price_unit, parent.currency_id, parent.company_id, context)"
                     />
                 </xpath>
-
                 <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='quantity']" position="replace">
                     <field 
                         name="quantity"
                         on_change="product_id_change(product_id, uos_id, quantity, name, parent.type, parent.partner_id, parent.fiscal_position, price_unit, parent.currency_id, parent.company_id, context)"
                     />
                 </xpath>
-
-
-
                 <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='account_id']" position="after">
                     <field name="is_section_analytique_id"/>
                 </xpath>
-
-
                 <xpath expr="//field[@name='fiscal_position']" position="after">
                     <field name="is_document"/>
                     <field name="is_num_cde_client"/>
                     <field name="is_num_bl_manuel"/>
                 </xpath>
-
                 <xpath expr="//field[@name='move_id']" position="after" >
                     <field name="internal_number"/> 
                 </xpath>
-
-
             </field>
         </record>
-
-
-
-
-
-        <!-- Export des factures dans Série-M -->
-        <!--
-        <record id="export_ventes_seriem_action_server" model="ir.actions.server">
-             <field name="name">Exportation des ventes dans Série-M</field>
-            <field name="model_id" ref="model_account_invoice"/>
-            <field name="code">action = self.export_ventes_seriem(cr, uid, context.get('active_ids', []), context=context)</field>
-        </record>
-        <record id="export_ventes_seriem_ir_value" model="ir.values">
-            <field eval="'client_action_multi'" name="key2"/>
-            <field eval="'account.invoice'" name="model"/>
-            <field name="name">Exportation des ventes dans Série-M</field>
-            <field eval="'ir.actions.server,%d'%export_ventes_seriem_action_server" name="value"/>
-        </record>
-        -->
-
-
 
 
         <!-- Factures à valider -->
@@ -190,6 +153,34 @@
             <field name="view_id" ref="account.invoice_form"/>
             <field name="act_window_id" ref="is_factures_a_valider_action"/>
         </record>
+
+
+
+
+
+        <!-- Facture fournisseur -->
+        <record id="is_invoice_supplier_form" model="ir.ui.view">
+            <field name="name">is_invoice_supplier_form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="attributes">
+                    <attribute name="class">oe_form_sheet_width_wider</attribute>
+                </xpath>
+
+                <xpath expr="/form/sheet/notebook/page[@string='Invoice']/field[@name='invoice_line']/tree/field[@name='account_id']" position="after">
+                    <field name="is_document"/>
+                </xpath>
+
+
+
+            </field>
+        </record>
+
+
+
+
+
 
 
 

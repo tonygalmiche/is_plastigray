@@ -10,10 +10,24 @@ class stock_picking(models.Model):
     _inherit = "stock.picking"
     _order   = "date desc, name desc"
     
-    location_id        = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
-    is_sale_order_id   = fields.Many2one('sale.order', 'Commande')
-    is_transporteur_id = fields.Many2one('res.partner', 'Transporteur')
-    is_date_livraison  = fields.Date('Date de livraison')
+    location_id          = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
+    is_sale_order_id     = fields.Many2one('sale.order', 'Commande Client')
+    is_purchase_order_id = fields.Many2one('purchase.order', 'Commande Fournisseur')
+    is_transporteur_id   = fields.Many2one('res.partner', 'Transporteur')
+    is_date_livraison    = fields.Date('Date de livraison')
+
+
+
+#    @api.multi
+#    def write(self, vals):
+#        res = super(stock_picking, self).write(vals)
+#        for obj in self:
+#            print obj
+#            for line in obj.move_lines:
+#                print "line=",line
+
+#        return res
+
 
     
     @api.onchange('location_id')
@@ -50,8 +64,24 @@ class stock_picking(models.Model):
         return invoices
 
 
+
+
+
+
 class stock_move(models.Model):
     _inherit = "stock.move"
+
+
+
+    @api.model
+    def create(self, vals):
+        obj = super(stock_move, self).create(vals)
+        if obj.purchase_line_id and obj.picking_id:
+            obj.picking_id.is_purchase_order_id=obj.purchase_line_id.order_id.id
+        return obj
+
+
+
 
 
     def _create_invoice_line_from_vals(self, cr, uid, move, invoice_line_vals, context=None):
@@ -85,14 +115,13 @@ class stock_move(models.Model):
 
     @api.multi
     def _picking_assign(self, procurement_group, location_from, location_to):
+        """Assign a picking on the given move_ids, which is a list of move supposed to share the same procurement_group, location_from and location_to
+        (and company). Those attributes are also given as parameters.
+        """
         cr       = self._cr
         uid      = self._uid
         context  = self._context
         move_ids = self._ids
-
-        """Assign a picking on the given move_ids, which is a list of move supposed to share the same procurement_group, location_from and location_to
-        (and company). Those attributes are also given as parameters.
-        """
         pick_obj = self.env["stock.picking"]
         # Use a SQL query as doing with the ORM will split it in different queries with id IN (,,)
         # In the next version, the locations on the picking should be stored again.
@@ -123,7 +152,6 @@ class stock_move(models.Model):
                     for line in sale_data.order_line:
                         if line.is_date_livraison>date_livraison:
                             date_livraison=line.is_date_livraison
-
                     values = {
                         'origin'            : move.origin,
                         'company_id'        : move.company_id and move.company_id.id or False,
@@ -133,8 +161,6 @@ class stock_move(models.Model):
                         'is_sale_order_id'  : sale_data and sale_data.id or False,
                         'is_transporteur_id': sale_data and sale_data.is_transporteur_id.id or False,
                         'is_date_livraison' : date_livraison,
-
-
                     }
                     pick = pick_obj.create(values)
         if pick:

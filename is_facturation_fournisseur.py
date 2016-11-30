@@ -132,6 +132,7 @@ class is_facturation_fournisseur(models.Model):
                         'quantity'            : quantite,
                         'price_unit'          : line.prix,
                         'invoice_line_tax_id' : invoice_line_tax_id,
+                        'is_document'         : line.move_id.purchase_line_id.order_id.is_document
                     })
                     lines.append([0,False,v]) 
             vals.update({

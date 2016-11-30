@@ -41,8 +41,6 @@ class product_pricelist(osv.osv):
         #    return {}
 
 
-        print "products=",products
-
 
         version = False
         for v in pricelist.version_id:
@@ -88,11 +86,11 @@ class product_pricelist(osv.osv):
         item_ids = [x[0] for x in cr.fetchall()]
 
         items = self.pool.get('product.pricelist.item').browse(cr, uid, item_ids, context=context)
-
         price_types = {}
-
         results = {}
         for product, qty, partner in products_by_qty_by_partner:
+            #TODO : Permet de résoudre un bug de 0.99999999
+            qty=round(qty,5)
             results[product.id] = 0.0
             rule_id = False
             price = False
@@ -108,7 +106,6 @@ class product_pricelist(osv.osv):
 
             qty_in_product_uom = qty
             product_qty = qty
-
             if qty_uom_id != price_uom_id:
                 try:
 
@@ -224,7 +221,6 @@ class product_pricelist(osv.osv):
 
             # Final price conversion to target UoM
             price = product_uom_obj._compute_price(cr, uid, price_uom_id, price, qty_uom_id)
-
             results[product.id] = (price, rule_id)
         return results
 
