@@ -62,6 +62,7 @@
         "wizard/generate_previsions_view.xml",
         "wizard/mrp_product_produce_view.xml",
         "wizard/is_export_seriem_view.xml",
+        "wizard/stock_transfer_details.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",
         "views/webclient_templates.xml",

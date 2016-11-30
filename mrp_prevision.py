@@ -21,9 +21,10 @@ class mrp_prevision(models.Model):
                               ('ft', u"FT"),
                               ('sa', "SA")], "Type", required=True)
     product_id = fields.Many2one('product.product', 'Article', required=True)
+    partner_id = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
     start_date = fields.Date('Date de début')
-    end_date = fields.Date('Date de fin', required=True)
-    quantity = fields.Float('Quantité')
+    end_date   = fields.Date('Date de fin', required=True)
+    quantity   = fields.Float('Quantité')
     quantity_origine = fields.Float("Quantité d'origine")
     note = fields.Text('Information')
     niveau = fields.Integer('Niveau', readonly=True, required=True)
@@ -138,16 +139,17 @@ class mrp_prevision(models.Model):
     @api.model
     def create(self, vals):
         partner_obj = self.env['res.partner']
-        user = self.env["res.users"].browse(self._uid)
-        company = user.company_id
+        user        = self.env["res.users"].browse(self._uid)
+        product_id  = vals.get('product_id', None)
+        product     = self.env['product.product'].browse(product_id)
+        company     = user.company_id
 
         #** Quantité arrondie au lot à la création uniquement ******************
         type       = vals.get('type'      , None)
         quantity   = vals.get('quantity'  , None)
-        product_id = vals.get('product_id', None)
+
         end_date   = vals.get('end_date'  , None)
         if (type=='sa' or type=='fs') and quantity:
-            product=self.env['product.product'].browse(product_id)
             quantity=self.get_quantity2lot(product, quantity)
             vals["quantity"]         = quantity
             vals["quantity_origine"] = quantity
@@ -158,7 +160,6 @@ class mrp_prevision(models.Model):
             end_date=partner_obj.get_date_dispo(company.partner_id, end_date)
             vals["end_date"]=end_date
             #** Date de début des SA en tenant compte du délai de livraison ****
-            product=self.env['product.product'].browse(product_id)
             vals["start_date"]=self.get_start_date_sa(product, end_date)
             #*******************************************************************
 
@@ -168,6 +169,13 @@ class mrp_prevision(models.Model):
             #** Date début des FS pendant les jours ouvrés de l'entreprise *****
             start_date=partner_obj.get_date_dispo(company.partner_id, start_date)
             vals["start_date"]=start_date
+            #*******************************************************************
+
+
+        if type=='sa':
+            #** Fournisseur par défaur *****************************************
+            if len(product.seller_ids)>0:
+                vals["partner_id"]=product.seller_ids[0].name.id
             #*******************************************************************
 
         #** Numérotation *******************************************************

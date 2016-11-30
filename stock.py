@@ -15,21 +15,10 @@ class stock_picking(models.Model):
     is_purchase_order_id = fields.Many2one('purchase.order', 'Commande Fournisseur')
     is_transporteur_id   = fields.Many2one('res.partner', 'Transporteur')
     is_date_livraison    = fields.Date('Date de livraison')
+    is_num_bl            = fields.Char("N° BL fournisseur")
+    is_date_reception    = fields.Date('Date de réception')
 
 
-
-#    @api.multi
-#    def write(self, vals):
-#        res = super(stock_picking, self).write(vals)
-#        for obj in self:
-#            print obj
-#            for line in obj.move_lines:
-#                print "line=",line
-
-#        return res
-
-
-    
     @api.onchange('location_id')
     def onchange_location(self):
         for move in self.move_lines:

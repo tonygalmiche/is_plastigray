@@ -5,5 +5,5 @@ import stock_transfer_details
 import is_liste_servir_wizard
 import generate_previsions
 import is_export_seriem
-
+import stock_transfer_details
 

@@ -45,7 +45,34 @@ class is_cde_ouverte_fournisseur(models.Model):
 
     @api.multi
     def integrer_commandes(self):
+        cr = self._cr
         for obj in self:
+
+            #** Recherche du dernier numéro de BL ******************************
+            for product in obj.product_ids:
+                SQL="""
+                    select sp.is_num_bl, sp.is_date_reception, sm.product_uom_qty
+                    from stock_picking sp inner join stock_move sm on sm.picking_id=sp.id
+                    where sm.product_id="""+str(product.product_id.id)+""" 
+                          and sp.is_date_reception is not null
+                          and sm.state='done' 
+                    order by sp.is_date_reception desc, sm.date desc
+                    limit 1
+                """
+                cr.execute(SQL)
+                result = cr.fetchall()
+                num_bl  = False
+                date_bl = False
+                qt_bl   = 0
+                for row in result:
+                    num_bl  = row[0]
+                    date_bl = row[1]
+                    qt_bl   = row[2]
+
+                product.num_bl  = num_bl
+                product.date_bl = date_bl
+                product.qt_bl   = qt_bl
+            #*******************************************************************
 
             for product in obj.product_ids:
                 product.line_ids.unlink()
@@ -80,6 +107,9 @@ class is_cde_ouverte_fournisseur_product(models.Model):
     uom_po_id     = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
     lot_appro     = fields.Float("Lot d'appro."                   , related='product_id.lot_mini' , readonly=True)
     prix_achat    = fields.Float("Prix d'achat")
+    num_bl        = fields.Char("Dernier BL", readonly=True)
+    date_bl       = fields.Date("Date BL"   , readonly=True)
+    qt_bl         = fields.Float("Qt reçue" , readonly=True)
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 
 

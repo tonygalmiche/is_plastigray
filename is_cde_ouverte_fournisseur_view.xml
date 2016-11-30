@@ -48,6 +48,9 @@
                                     <field name="lot_appro"  /> 
                                     <field name="prix_achat"  /> 
                                     <field name="uom_po_id"  /> 
+                                    <field name="num_bl"  /> 
+                                    <field name="date_bl" /> 
+                                    <field name="qt_bl"   /> 
                                 </tree>
                             </field>
                         </group>

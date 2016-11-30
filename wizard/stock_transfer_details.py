@@ -3,13 +3,35 @@
 from openerp import models, fields, api
 from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
-from datetime import datetime
+import datetime
 
 class stock_transfer_details(models.TransientModel):
     _inherit = 'stock.transfer_details'
     _description = 'Picking wizard'
 
-    def default_get(self, cr, uid, fields, context=None):        
+
+    is_purchase_order_id = fields.Many2one('purchase.order', 'Commande Fournisseur')
+    is_num_bl            = fields.Char("N° BL fournisseur")
+    is_date_reception    = fields.Date('Date de réception')
+
+    def _date():
+        return datetime.date.today().strftime('%Y-%m-%d')
+
+    _defaults = {
+        'is_date_reception':  _date(),
+    }
+
+
+    @api.one
+    def do_detailed_transfer(self):
+        res = super(stock_transfer_details, self).do_detailed_transfer()
+        for obj in self:
+            obj.picking_id.is_num_bl         = obj.is_num_bl
+            obj.picking_id.is_date_reception = obj.is_date_reception
+        return res
+
+
+    def default_get(self, cr, uid, fields, context=None):
         if context is None: context = {}
         picking_ids = context.get('active_ids', [])
         picking_id, = picking_ids
@@ -28,6 +50,8 @@ class stock_transfer_details(models.TransientModel):
                     }, context=context)
                 if lot_id:
                     item['lot_id']=lot_id
+        if picking.is_purchase_order_id:
+            res.update({'is_purchase_order_id': picking.is_purchase_order_id.id})
         return res
         
 
