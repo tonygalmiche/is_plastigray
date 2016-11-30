@@ -213,7 +213,9 @@
     <menuitem id="menu_is_analyse_stock"      sequence="30" name="Analyses Stocks"             parent="menu_is_analyse"/>
     <menuitem id="menu_is_analyse_stock_10"   sequence="10" name="Liste des manquants"         parent="menu_is_analyse_stock"    action="is_liste_des_manquants_action"   groups="mrp.group_mrp_manager" />
     <menuitem id="menu_is_analyse_stock_20"   sequence="20" name="Liste stocks négatifs"       parent="menu_is_analyse_stock"    action="is_liste_stock_negatif_action"   groups="mrp.group_mrp_manager" />
-    <menuitem id="menu_is_analyse_stock_30"   sequence="30" name="Liste stocks sans lot"       parent="menu_is_analyse_stock"    action="is_liste_stock_sans_lot_action"   groups="mrp.group_mrp_manager" />
+    <menuitem id="menu_is_analyse_stock_30"   sequence="30" name="Liste stocks sans lot"       parent="menu_is_analyse_stock"    action="is_liste_stock_sans_lot_action"  groups="mrp.group_mrp_manager" />
+    <menuitem id="menu_is_analyse_stock_40"   sequence="40" name="Stocks valorisés"            parent="menu_is_analyse_stock"    action="is_stock_valorise_action"        groups="mrp.group_mrp_manager" />
+
 
     <!-- Déplacement des menus standards sous le menu 'Autre' -->
     <menuitem id="base.menu_purchase_root"    sequence="20" name="Achats"               parent="menu_is_autre"/>

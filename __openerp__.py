@@ -88,6 +88,7 @@
         "report/is_pricelist_item.xml",
         "report/is_cas_emplois.xml",
         "report/is_nomenclature_sans_gamme.xml",
+        "report/is_stock_valorise.xml",
         "menu.xml",  
         "security/res.groups.xml",
         "security/ir.model.access.csv",
