@@ -32,19 +32,19 @@
                 font-size:9pt;
             }
             .page {
-                font-size:10.5pt;
+                font-size:10pt;
             }
             table{
                 border:0px solid black;
             }
             td{
-                padding:1mm;
+                padding:0.5mm;
                 border:1px solid black;
                 text-align:center;
             }
             th{
                 font-weight: normal;
-                padding:1mm;
+                padding:0.5mm;
                 border:1px solid black;
             }
 
