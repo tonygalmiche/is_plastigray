@@ -146,6 +146,11 @@ class res_partner(models.Model):
         ('ref_article', '1 référence client = 1 BL'),
     ], 'Caractéristique des BL')
 
+    is_type_cde_fournisseur = fields.Selection([
+        ('ouverte', 'Commande ouverte'),
+        ('ferme', 'Commande ferme avec horizon.')
+    ], "Type commande fourniseur", readonly=True)
+
     _defaults = {
         'delai_transport': 0,
         'is_adr_code': 0,
@@ -155,8 +160,6 @@ class res_partner(models.Model):
         ('code_adr_uniq', 'unique(is_code, is_adr_code, company_id)', u'Le code et le code adresse doivent être uniques par société!'),
     ]
     
-
-
 
     # Le champ display_name est un champ standard d'Odoo correspondant au titre de la fiche
     # Cette fonction appelle la fonction name_get => Elle permet de définir les dépendances de champs

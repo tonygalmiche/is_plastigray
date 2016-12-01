@@ -51,7 +51,7 @@
         <report 
             id="report_appel_de_livraisons"
             model="is.cde.ouverte.fournisseur"
-            string="Appel de livraison"
+            string="Appel de livraison / Horizon des besoins"
             report_type="qweb-pdf"
             name="is_plastigray.report_appel_de_livraison"
             file="is_plastigray.report_appel_de_livraison"

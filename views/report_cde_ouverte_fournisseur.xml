@@ -19,7 +19,7 @@
             }
             .expediteur {
                 font-size:9pt;
-                text-align:center;
+                text-align:left;
             }
             .destinataire {
                 text-align:left;
@@ -64,18 +64,17 @@
         <!-- Entête personnalisé Plastigray -->
         <template id="report_cde_ouverte_fournisseur_external_layout_header">
             <div class="header">
-
                 <div class="row">
-                    <div class="col-xs-4  text-center">
+                    <div class="col-xs-4  text-left">
                         <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
                         <div class="expediteur">
-                            S.A.S. au capital de 2 102 400 € <br />
-                            Siège social : ZAC de Gray Sud <br />
-                            CS 10133 - <b>70104 GRAY Cedex</b><br />
-                            Tél. : 03 84 64 77 00 - Fax : 03 84 65 51 09 <br />
-                            Siret B 377 846 381 00020 - Code NAF 2229 A <br />
-                            Registre du Commerce GRAY <br />
-                            N°Identification T.V.A. FR 65 377 846 381 <br />
+                        <b>Adresse de livraison : <span t-field="company.name"/><br />
+                            <span t-field="company.street"/><br />
+                            <span t-field="company.street2"/><br />
+                            <span t-field="company.zip"/> <span t-field="company.city"/></b><br /><br />
+                        <i>Adrese de facturation : PLASTIGRAY SAS <br />
+                            ZAC de Gray Sud CS 10133 <br />
+                            70104 GRAY Cedex</i>
                         </div>
                     </div>
                     <div class="col-xs-1" />
@@ -91,6 +90,15 @@
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
                         </div>
                     </div>
+                </div><br />
+                <div class="row">
+                    <div class="col-xs-12">
+                        <i>
+                        Conditions de paiement :  <span t-field="o.partner_id.property_supplier_payment_term.name"/> <br />
+                        Type de réglement :       <span t-field="o.partner_id.is_type_reglement.name"/> <br />
+                        Incoterm :                <span t-field="o.partner_id.is_incoterm.name"/> <br />
+                        </i>
+                    </div>
                 </div>
             </div>
         </template>
@@ -100,17 +108,19 @@
         <!-- Pied de page personnalisé Plastigray -->
         <template id="report_cde_ouverte_fournisseur_external_layout_footer">
             <div class="footer">
-                <div class="text-center" style="border-top: 1px solid black">
-                    <table>
+                <div style="border-top: 1px solid black">
+                    <table style="width:100%">
                         <tr>
                             <td class="text-left" style="width:90%">
-                                <b>Clause de réserve de propriété : </b>De convention expresse, nous nous réservons la plein propriété des marchandises fournies jusqu'au dernier jour de leur parfait paiement.<br />
-                                <b>Reserve of title : </b>On express convention, we reserve ourselves the freehold of the provides goods until the last day of their total payment.<br />
-                                <b>T.V.A. acquitée sur les débits</b><br />
-                                <b>V.A.T. on debits</b><br />
+                                <b>Cette commande est soumise à l'acceptation de nos conditions générales d'achats. 
+                                En cas de désaccord ou de contradiction se référer au contrat cadre.
+                                Nos conditions générales d'achats sont accessibles et téléchargeables sur notre site internet. </b><br />
+
+                                PLASTIGRAY - S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud CS 10133 70104 GRAY Cedex<br />
+                                Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381<br />
                             </td>
                             <td class="text-right">
-                                Page <span class="page" style="font-size:7pt;"/> / <span class="topage"/>
+                                Page <span class="page" style="font-size:9pt;"/> / <span class="topage"/>
                             </td>
                         </tr>
                     </table>
@@ -157,50 +167,28 @@
                 <thead>
                     <tr>
                         <th class="text-left">Article</th>
+                        <th class="text-left">Désignation</th>
+                        <th class="text-left">Référence fournisseur</th>
+                        <th class="text-left">Plan</th>
                         <th class="text-right">Lot d'appro</th>
+                        <th class="text-left">Unité</th>
                         <th class="text-right">Prix d'achat</th>
                         <th class="text-left">Unité</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="o.product_ids" t-as="l">
-                        <td class="text-left">  <span t-field="l.product_id"/> </td>
+                        <td class="text-left">  <span t-field="l.product_id.is_code"/> </td>
+                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.name"/> </td>
+                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
+                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
                         <td class="text-right"> <span t-field="l.lot_appro"/>  </td>
+                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.uom_id"/>  </td>
                         <td class="text-right"> <span t-field="l.prix_achat"/> </td>
                         <td class="text-left">  <span t-field="l.uom_po_id"/>  </td>
                     </tr>
                 </tbody>
             </table>
-
-
-
-
-            <!--
-            <div><b>Code plastigray       : </b><span t-field="o.product_id.is_code"/></div>
-            <div><b>Référence fournisseur : </b><span t-field="o.product_id.is_ref_fournisseur"/></div>
-            <div><b>Désignation           : </b><span t-field="o.product_id.name"/></div>
-            <p />
-
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th class="text-center">Date</th>
-                        <th class="text-center">Type</th>
-                        <th class="text-right">Quantité</th>
-                        <th class="text-center">N°Commande</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr t-foreach="o.line_ids" t-as="l">
-                        <td class="text-center"><span t-field="l.date"/></td>
-                        <td class="text-center"><span t-field="l.type_cde"/></td>
-                        <td class="text-right"><span t-field="l.quantite"/></td>
-                        <td class="text-center"><span t-field="l.purchase_order_id.name"/></td>
-                    </tr>
-                </tbody>
-            </table>
-            -->
-
         </div>
     </t>
 </template>

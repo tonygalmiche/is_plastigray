@@ -12,6 +12,8 @@ class is_cde_ouverte_fournisseur(models.Model):
     name          = fields.Char("N°", readonly=True)
     partner_id    = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
     pricelist_id  = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
+    type_commande = fields.Selection([('ouverte', 'Commande ouverte'),('ferme', 'Commande ferme avec horizon.')], "Type de commande", required=True)
+    sans_commande = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
     commentaire   = fields.Text("Commentaire")
     product_ids   = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
 
@@ -24,16 +26,30 @@ class is_cde_ouverte_fournisseur(models.Model):
         if sequence_ids:
             sequence_id = data_obj.browse(sequence_ids[0].id).res_id
             vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
-        res = super(is_cde_ouverte_fournisseur, self).create(vals)
-        return res
+        obj = super(is_cde_ouverte_fournisseur, self).create(vals)
+        self.update_partner(obj)
+        return obj
 
 
     @api.multi
     def write(self,vals):
         res=super(is_cde_ouverte_fournisseur, self).write(vals)
         for obj in self:
+            self.update_partner(obj)
             self.test_unique(obj.partner_id.id)
         return res
+
+
+    @api.multi
+    def unlink(self):
+        for obj in self:
+            obj.partner_id.is_type_cde_fournisseur=False
+        res=super(is_cde_ouverte_fournisseur, self).unlink()
+
+
+    @api.multi
+    def update_partner(self, obj):
+        obj.partner_id.is_type_cde_fournisseur=obj.type_commande
 
 
     @api.multi
@@ -47,6 +63,8 @@ class is_cde_ouverte_fournisseur(models.Model):
     def integrer_commandes(self):
         cr = self._cr
         for obj in self:
+            for product in obj.product_ids:
+                product.imprimer=False
 
             #** Recherche du dernier numéro de BL ******************************
             for product in obj.product_ids:
@@ -110,6 +128,7 @@ class is_cde_ouverte_fournisseur_product(models.Model):
     num_bl        = fields.Char("Dernier BL", readonly=True)
     date_bl       = fields.Date("Date BL"   , readonly=True)
     qt_bl         = fields.Float("Qt reçue" , readonly=True)
+    imprimer      = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 
 

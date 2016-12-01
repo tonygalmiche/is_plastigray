@@ -31,7 +31,8 @@
                                 <field name="name"  /> 
                                 <field name="partner_id" domain="[('supplier','=',True),('is_company','=',True)]"/> 
                                 <field name="pricelist_id"  /> 
-
+                                <field name="type_commande"  /> 
+                                <field name="sans_commande"  /> 
                             </group>
                         </group>
                         <group string="Articles">
@@ -45,31 +46,19 @@
                                             parent.pricelist_id,
                                             product_id
                                         )" /> 
-                                    <field name="lot_appro"  /> 
-                                    <field name="prix_achat"  /> 
-                                    <field name="uom_po_id"  /> 
-                                    <field name="num_bl"  /> 
-                                    <field name="date_bl" /> 
-                                    <field name="qt_bl"   /> 
+                                    <field name="lot_appro" /> 
+                                    <field name="prix_achat"/> 
+                                    <field name="uom_po_id" /> 
+                                    <field name="num_bl"    /> 
+                                    <field name="date_bl"   /> 
+                                    <field name="qt_bl"     /> 
+                                    <field name="imprimer"  /> 
                                 </tree>
                             </field>
                         </group>
                         <group>
                             <field name="commentaire"  /> 
                         </group>
-                        <!--
-                        <group string="Commandes">
-                            <field name="line_ids" nolabel="1" readonly="1">
-                                <tree colors="gray:type_cde == 'prev'">
-                                    <field name="date"/>
-                                    <field name="type_cde"/>
-                                    <field name="quantite"/>
-                                    <field name="mrp_prevision_id"   widget="many2one_clickable"/> 
-                                    <field name="purchase_order_id"  widget="many2one_clickable"/> 
-                                </tree>
-                            </field>
-                        </group>
-                        -->
                     </sheet>
                 </form>
             </field>
@@ -82,6 +71,8 @@
                 <tree>
                     <field name="partner_id"/> 
                     <field name="pricelist_id"/> 
+                    <field name="type_commande"  /> 
+                    <field name="sans_commande"  /> 
                     <field name="name"/> 
                 </tree>
             </field>
@@ -93,11 +84,12 @@
                 <search>
                     <field name="name"/> 
                     <field name="partner_id"/> 
+                    <field name="type_commande"/> 
                 </search>
             </field>
         </record>
         <record model="ir.actions.act_window" id="is_cde_ouverte_fournisseur_action">
-            <field name="name">Commande ouverte fournisseur</field>
+            <field name="name">Commande prévisionnelle fournisseur</field>
             <field name="res_model">is.cde.ouverte.fournisseur</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -120,14 +112,6 @@
             <field eval="'ir.actions.server,%d'%integrer_commandes_action_server" name="value"/>
         </record>
 
-
-
-    order_id      = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
-    product_id    = fields.Many2one('product.product', 'Article'  , required=True)
-    uom_po_id     = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
-    lot_appro     = fields.Float("Lot d'appro."                   , related='product_id.lot_mini' , readonly=True)
-    prix_achat    = fields.Float("Prix d'achat")
-    line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 
 
        <!-- Lignes is.cde.ouverte.fournisseur --> 
