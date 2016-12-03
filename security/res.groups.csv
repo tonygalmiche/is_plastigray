@@ -1,0 +1,52 @@
+id,name,active
+account.group_account_invoice,Facturation et règlements,1
+account.group_account_manager,Responsable des finances,1
+account.group_account_user,Comptable,1
+account.group_proforma_invoices,Factures proforma,1
+account.group_supplier_inv_check_total,Vérifier le total des factures fournisseurs,1
+analytic.group_analytic_accounting,Comptabilité analytique,1
+base.group_erp_manager,Droits d'accès,1
+base.group_mono_salesteams,Ne pas utiliser les équipes commerciales,1
+base.group_multi_company,Multi-sociétés,1
+base.group_multi_currency,Multi devises,1
+base.group_multi_salesteams,Gérer les équipes commerciales,1
+base.group_no_one,Caractéristiques techniques,1
+base.group_partner_manager,Création de contact,1
+base.group_portal,Portail,1
+base.group_public,Publique,1
+base.group_sale_manager,Responsable,1
+base.group_sale_salesman,Voir ses propres pistes,1
+base.group_sale_salesman_all_leads,Voir toutes les pistes,1
+base.group_system,Configuration,1
+base.group_user,Employé,1
+crm.group_fund_raising,Gérer les levées de fonds,1
+crm.group_scheduled_calls,Affiche le menu des appels planifiés,1
+mrp.group_mrp_manager,Responsable,1
+mrp.group_mrp_routings,Gérer les gammes,1
+mrp.group_mrp_user,Utilisateur,1
+product.group_mrp_properties,Gérer les propriétés d'article,1
+product.group_purchase_pricelist,Liste de prix d'achat,1
+product.group_sale_pricelist,Listes de prix de vente,1
+product.group_stock_packaging,Gérer le conditionnement des articles,1
+product.group_uom,Gérer plusieurs unités de mesure,1
+product.group_uos,Gérer l'unité de mesure secondaire,1
+purchase.group_advance_bidding,Processus d'appel d'offre Avancé,1
+purchase.group_analytic_accounting,Comptabilité analytique  pour les achats,1
+purchase.group_purchase_manager,Responsable,1
+purchase.group_purchase_user,Utilisateur,1
+sale_stock.group_invoice_deli_orders,Active la facturation basée sur les bons de livraison,1
+sale_stock.group_route_so_lines,Permettre les routes par ligne de commande,1
+sale.group_analytic_accounting,Comptes analytiques des ventes,1
+sale.group_delivery_invoice_address,Adresses des commandes,1
+sale.group_discount_per_so_line,Remise sur les lignes,1
+sale.group_invoice_so_lines,Activer la facturation par ligne de commande,1
+sale.group_mrp_properties,Propriétés sur les lignes,1
+share.group_share_user,Utilisateur,1
+stock_account.group_inventory_valuation,Gérer les méthodes de valorisation des stocks,1
+stock.group_adv_location,Gérer les règles de  flux tirés/poussés.,1
+stock.group_locations,Gérer les emplacements multiples et les entrepôts,1
+stock.group_production_lot,Gérer les lots/numéros de série,1
+stock.group_stock_manager,Responsable,1
+stock.group_stock_user,Utilisateur,1
+stock.group_tracking_lot,Gérer les colis,1
+stock.group_tracking_owner,Gérer différents propriétaires de stock,1

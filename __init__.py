@@ -28,4 +28,5 @@ import mrp_production
 import is_facturation_fournisseur
 import is_bon_transfert
 import purchase
+import res_users
 
