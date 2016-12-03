@@ -43,6 +43,29 @@
             </field>
         </record>
 
+        <record id="is_vpicktree" model="ir.ui.view">
+            <field name="name">is_vpicktree</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <field name="date" position="after" >
+                    <field name="is_num_bl" />
+                </field>
+            </field>
+        </record>
+
+
+        <!-- Réceptions à facturer -->
+        <record id="is_reception_a_facturer_action" model="ir.actions.act_window">
+            <field name="name">Réceptions à facturer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="domain">[('invoice_state','=', '2binvoiced'),('picking_type_id','=', 1),('state','=', 'done')]</field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
 
 
@@ -147,7 +170,7 @@
             <field name="name">Livraisons à facturer</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
-            <field name="domain">[('invoice_state','=', '2binvoiced'),('state','=', 'done')]</field>
+            <field name="domain">[('invoice_state','=', '2binvoiced'),('picking_type_id','=', 2),('state','=', 'done')]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

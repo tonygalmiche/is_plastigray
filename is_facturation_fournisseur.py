@@ -11,11 +11,14 @@ class is_facturation_fournisseur(models.Model):
 
     name              = fields.Many2one('res.partner', 'Fournisseur'   , required=True)
     date_fin          = fields.Date('Date de fin'                      , required=True)
+    date_facture      = fields.Date('Date facture fournisseur'         , required=True)
+    num_facture       = fields.Char('N° facture fournisseur'           , required=True)
     total_ht          = fields.Float("Total HT"         , digits=(14,4), required=True)
     total_ht_calcule  = fields.Float("Total HT Calculé" , digits=(14,4), compute='_compute', readonly=True, store=False)
     ecart_ht          = fields.Float("Ecart HT"         , digits=(14,4), compute='_compute', readonly=True, store=False)
     total_ttc_calcule = fields.Float("Total TTC Calculé", digits=(14,4), compute='_compute', readonly=True, store=False)
     justification_id  = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
+    total_tva         = fields.Float("Total TVA"         , digits=(14,4))
     line_ids          = fields.One2many('is.facturation.fournisseur.line', 'facturation_id', u"Lignes")
     state             = fields.Selection([('creation', u'Création'),('termine', u'Terminé')], u"État", readonly=True, select=True)
 
@@ -53,13 +56,13 @@ class is_facturation_fournisseur(models.Model):
         if partner_id and date_fin:
             sql="""
                 select  sp.name, 
-                        sp.note, 
-                        sp.date_done, 
+                        sp.is_num_bl, 
+                        sp.is_date_reception, 
                         sm.product_id,
                         pt.is_ref_fournisseur,
                         sm.product_uom_qty,
                         sm.product_uom, 
-                        sm.price_unit,
+                        pol.price_unit,
                         pot.tax_id,
                         at.amount,
                         sm.id
@@ -73,7 +76,7 @@ class is_facturation_fournisseur(models.Model):
                       and sm.invoice_state='2binvoiced' 
                       and sp.picking_type_id=1 """
             sql=sql+" and sp.partner_id="+str(partner_id)+" "
-            sql=sql+" and sp.date_done<='"+str(date_fin)+" 23:59:59' "
+            sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
             cr.execute(sql)
             for row in cr.fetchall():
                 vals = {
@@ -89,7 +92,7 @@ class is_facturation_fournisseur(models.Model):
                     'taxe_id'           : row[8],
                     'taxe_taux'         : row[9],
                     'move_id'           : row[10],
-                    'selection'         : True,
+                    'selection'         : False,
                 }
                 lines.append(vals)
         value.update({'line_ids': lines})
@@ -108,7 +111,8 @@ class is_facturation_fournisseur(models.Model):
                 'account_id'  : obj.name.property_account_payable.id,
                 'journal_id'  : 2,
                 'type'        : 'in_invoice',
-                'date_invoice': date_invoice,
+                'date_invoice': obj.date_facture,
+                'supplier_invoice_number': obj.num_facture,
             })
             lines = []
             for line in obj.line_ids:
@@ -116,7 +120,7 @@ class is_facturation_fournisseur(models.Model):
                     product_id      = line.product_id.id
                     uom_id          = line.uom_id.id 
                     quantite        = line.quantite
-                    name            = 'toto'
+                    name            = line.product_id.name
                     invoice_type    = 'in_invoice'
                     partner_id      = obj.name.id
                     fiscal_position = vals['fiscal_position']
@@ -139,6 +143,7 @@ class is_facturation_fournisseur(models.Model):
                 'invoice_line': lines,
             })
             res=self.env['account.invoice'].create(vals)
+            res.button_reset_taxes()
 
             dummy, view_id = self.env['ir.model.data'].get_object_reference('account', 'invoice_supplier_form')
             obj.state='termine'
@@ -179,7 +184,7 @@ class is_facturation_fournisseur_line(models.Model):
     facturation_id     = fields.Many2one('is.facturation.fournisseur', 'Facturation fournisseur', required=True, ondelete='cascade')
     num_reception      = fields.Char('N° de réception')
     num_bl_fournisseur = fields.Char('N° BL fournisseur')
-    date_reception     = fields.Datetime('Date réception')
+    date_reception     = fields.Date('Date réception')
     product_id         = fields.Many2one('product.product', 'Article')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     quantite           = fields.Float('Quantité', digits=(14,4))

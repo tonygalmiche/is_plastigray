@@ -28,11 +28,14 @@
                                 />
                             </group>
                             <group>
-                                <field name="total_ht" attrs="{'readonly':[('state','=','termine')]}" />
+                                <field name="date_facture"  />
+                                <field name="num_facture"  />
+                                <field name="total_ht"  attrs="{'readonly':[('state','=','termine')]}"/>
+                                <field name="total_tva" attrs="{'readonly':[('state','=','termine')]}"/>
                                 <field name="total_ht_calcule" />
                                 <field name="ecart_ht"  />
                                 <field name="justification_id" attrs="{'required':[('ecart_ht', '!=', 0)], 'readonly':[('state','=','termine')]}" />
-                                <field name="total_ttc_calcule" attrs="{'readonly':[('state','=','termine')]}"/>
+                                <field name="total_ttc_calcule" />
                             </group>
                         </group>
                         <group>
