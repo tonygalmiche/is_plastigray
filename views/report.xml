@@ -43,6 +43,7 @@
             report_type="qweb-pdf"
             name="is_plastigray.report_cde_ouverte_fournisseur"
             file="is_plastigray.report_cde_ouverte_fournisseur"
+            multi="True"
         />
         <record id="report_cde_ouverte_fournisseurs" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="is_plastigray.cde_ouverte_fournisseur_paperformat"/>
@@ -55,8 +56,9 @@
             report_type="qweb-pdf"
             name="is_plastigray.report_appel_de_livraison"
             file="is_plastigray.report_appel_de_livraison"
+            multi="True"
         />
-        <record id="report_appel_de_livraisons" model="ir.actions.report.xml">
+        <record id="report_appel_de_livraisons" model="ir.actions.report.xml" >
             <field name="paperformat_id" ref="is_plastigray.cde_ouverte_fournisseur_paperformat"/>
         </record>
 

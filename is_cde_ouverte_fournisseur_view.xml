@@ -25,6 +25,12 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Form">  
+                    <header>
+                        <button name="integrer_commandes"       string="Intégrer les commandes et les SA" class="oe_highlight" type="object"  />
+                        <button name="print_commande_ouverte"   string="Imprimer la commande ouverte"     attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}" type="object"  />
+                        <button name="print_appel_de_livraison" string="Imprimer l'appel de livraison"    attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}" type="object" />
+                        <button name="print_appel_de_livraison" string="Imprimer l'horizon des besoins"   attrs="{'invisible': [('type_commande', '!=', 'ferme')]}" type="object" />
+                    </header>
                     <sheet>
                         <group>
                             <group>
@@ -38,17 +44,7 @@
                         <group string="Articles">
                             <field name="product_ids" nolabel="1">
                                 <tree editable="bottom">
-                                    <field 
-                                        name="product_id" 
-                                        context="{'pricelist': parent.pricelist_id}" 
-                                        on_change="onchange_product_id(
-                                            parent.partner_id,
-                                            parent.pricelist_id,
-                                            product_id
-                                        )" /> 
-                                    <field name="lot_appro" /> 
-                                    <field name="prix_achat"/> 
-                                    <field name="uom_po_id" /> 
+                                    <field name="product_id" widget="many2one_clickable" /> 
                                     <field name="num_bl"    /> 
                                     <field name="date_bl"   /> 
                                     <field name="qt_bl"     /> 
@@ -58,6 +54,17 @@
                         </group>
                         <group>
                             <field name="commentaire"  /> 
+                        </group>
+                       <group string="Tarifs">
+                            <field name="tarif_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="product_id" /> 
+                                    <field name="sequence" /> 
+                                    <field name="minimum" /> 
+                                    <field name="prix_achat"/> 
+                                    <field name="uom_po_id" /> 
+                                </tree>
+                            </field>
                         </group>
                     </sheet>
                 </form>
@@ -126,9 +133,6 @@
                             <group>
                                 <field name="order_id"/> 
                                 <field name="product_id"/> 
-                                <field name="uom_po_id"/> 
-                                <field name="lot_appro"/> 
-                                <field name="prix_achat"/> 
                             </group>
                         </group>
                         <group string="Commandes">
@@ -154,9 +158,6 @@
                 <tree>
                     <field name="order_id"/> 
                     <field name="product_id"/> 
-                    <field name="uom_po_id"/> 
-                    <field name="lot_appro"/> 
-                    <field name="prix_achat"/> 
                 </tree>
             </field>
         </record>

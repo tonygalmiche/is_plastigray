@@ -17,16 +17,22 @@
                 font-size:11pt;
                 font-weight: bold;
             }
-            .expediteur {
-                font-size:9pt;
+            .livraison {
+                font-size:11pt;
+                font-weight: bold;
                 text-align:left;
             }
-            .destinataire {
+            .facturation {
+                font-size:10pt;
+                font-style: italic;
+                text-align:left;
+
+            }
+            .fournisseur {
                 text-align:left;
                 border: 1px solid black;
                 padding:5mm;
             }
-
         </template>
 
 
@@ -67,14 +73,16 @@
                 <div class="row">
                     <div class="col-xs-4  text-left">
                         <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
-                        <div class="expediteur">
-                        <b>Adresse de livraison : <span t-field="company.name"/><br />
-                            <span t-field="company.street"/><br />
+                        <div class="livraison">
+                            Adresse de livraison : <br />
+                            <span t-field="company.name"/> <span t-field="company.street"/><br />
                             <span t-field="company.street2"/><br />
-                            <span t-field="company.zip"/> <span t-field="company.city"/></b><br /><br />
-                        <i>Adrese de facturation : PLASTIGRAY SAS <br />
+                            <span t-field="company.zip"/> <span t-field="company.city"/><br /><br />
+                        </div>
+                        <div class="facturation">
+                            Adrese de facturation : PLASTIGRAY SAS <br />
                             ZAC de Gray Sud CS 10133 <br />
-                            70104 GRAY Cedex</i>
+                            70104 GRAY Cedex
                         </div>
                     </div>
                     <div class="col-xs-1" />
@@ -82,7 +90,7 @@
                         <div class="titre">
                             <t t-if="o.type_commande=='ouverte'">
                                 <span>Appel de livraison sur contrat N°</span>
-                                <span t-field="o.name"/>
+                                <span style="font-size:12pt;" t-field="o.name"/>
                                  du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
                             </t>
                             <t t-if="o.type_commande!='ouverte'">
@@ -90,7 +98,7 @@
                                  du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
                             </t>
                         </div>
-                        <div class="destinataire">
+                        <div class="fournisseur">
                             <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>)
                             <div t-field="o.partner_id"
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
@@ -119,8 +127,7 @@
                         <tr>
                             <td class="text-left" style="width:90%">
                                 <b>Cette commande est soumise à l'acceptation de nos conditions générales d'achats. 
-                                En cas de désaccord ou de contradiction se référer au contrat cadre.
-                                Nos conditions générales d'achats sont accessibles et téléchargeables sur notre site internet. </b><br />
+                                En cas de désaccord ou de contradiction se référer au contrat cadre. </b><br />
 
                                 PLASTIGRAY - S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud CS 10133 70104 GRAY Cedex<br />
                                 Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381<br />
@@ -196,7 +203,7 @@
                 <t t-if="test>0">
                     <t t-if="test_imprimer==1">
                         <div>Article : <b><span t-field="p.product_id"/></b></div>
-                        <div t-if="p.date_bl">Dernier BL : <span t-field="p.num_bl"/> du <span t-field="p.date_bl"/> (Qt=<span t-field="p.qt_bl"/> <span t-field="p.uom_po_id"/>)</div>
+                        <div t-if="p.date_bl">Dernier BL : <span t-field="p.num_bl"/> du <span t-field="p.date_bl"/> (Qt=<span t-field="p.qt_bl"/> <span t-field="p.product_id.uom_po_id"/>)</div>
                         <div t-if="p.date_bl==False">Dernier BL : Aucun</div>
                         <table class="table table-condensed">
                             <thead>
@@ -215,9 +222,9 @@
                                     <td class="text-center"><span t-field="l.date"/></td>
                                     <td class="text-center"><span t-field="l.type_cde"/></td>
                                     <td class="text-right"><span t-field="l.quantite"/></td>
-                                    <td class="text-right"><span t-field="p.uom_po_id"/></td>
+                                    <td class="text-right"><span t-field="p.product_id.uom_po_id"/></td>
                                     <t t-if="o.type_commande!='ouverte'">
-                                        <td class="text-center"><span t-field="l.purchase_order_id.name"/></td>
+                                        <td class="text-center"><b><span t-field="l.purchase_order_id.name"/></b></td>
                                     </t>
                                 </tr>
                             </tbody>

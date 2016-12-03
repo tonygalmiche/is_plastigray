@@ -16,7 +16,7 @@ class is_cde_ouverte_fournisseur(models.Model):
     sans_commande = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
     commentaire   = fields.Text("Commentaire")
     product_ids   = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
-
+    tarif_ids     = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
 
     @api.model
     def create(self, vals):
@@ -60,11 +60,49 @@ class is_cde_ouverte_fournisseur(models.Model):
 
 
     @api.multi
+    def print_commande_ouverte(self):
+        return self.env['report'].get_action(self, 'is_plastigray.report_cde_ouverte_fournisseur')
+
+
+    @api.multi
+    def print_appel_de_livraison(self):
+        return self.env['report'].get_action(self, 'is_plastigray.report_appel_de_livraison')
+
+
+    @api.multi
     def integrer_commandes(self):
         cr = self._cr
         for obj in self:
             for product in obj.product_ids:
                 product.imprimer=False
+
+            ##** Rechercher les tarifs *****************************************
+            for tarif in obj.tarif_ids:
+                tarif.unlink()
+            for product in obj.product_ids:
+                SQL="""
+                    select ppi.sequence, ppi.min_quantity, ppi.price_surcharge
+                    from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
+                    where ppi.product_id="""+str(product.product_id.id)+""" 
+                          and ppv.pricelist_id="""+str(obj.pricelist_id.id)+"""
+                          and (ppv.date_end   is null or ppv.date_end   >= CURRENT_DATE) 
+                          and (ppv.date_start is null or ppv.date_start <= CURRENT_DATE) 
+                          and (ppi.date_end   is null or ppi.date_end   >= CURRENT_DATE) 
+                          and (ppi.date_start is null or ppi.date_start <= CURRENT_DATE) 
+                    order by ppi.sequence
+                """
+                cr.execute(SQL)
+                result = cr.fetchall()
+                for row in result:
+                    vals={
+                        'order_id'  : obj.id,
+                        'product_id': product.product_id.id,
+                        'sequence'  : row[0],
+                        'minimum'   : row[1],
+                        'prix_achat': row[2],
+                    }
+                    line=self.env['is.cde.ouverte.fournisseur.tarif'].create(vals)
+            #*******************************************************************
 
             #** Recherche du dernier numéro de BL ******************************
             for product in obj.product_ids:
@@ -122,9 +160,6 @@ class is_cde_ouverte_fournisseur_product(models.Model):
 
     order_id      = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
     product_id    = fields.Many2one('product.product', 'Article'  , required=True)
-    uom_po_id     = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
-    lot_appro     = fields.Float("Lot d'appro."                   , related='product_id.lot_mini' , readonly=True)
-    prix_achat    = fields.Float("Prix d'achat")
     num_bl        = fields.Char("Dernier BL", readonly=True)
     date_bl       = fields.Date("Date BL"   , readonly=True)
     qt_bl         = fields.Float("Qt reçue" , readonly=True)
@@ -132,16 +167,29 @@ class is_cde_ouverte_fournisseur_product(models.Model):
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 
 
-    @api.multi
-    def onchange_product_id(self, partner_id, pricelist_id, product_id):
-        if pricelist_id and product_id:
-            product=self.env['product.product'].browse(product_id)
-            prix_achat = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist_id],
-                    product_id, product.lot_mini, partner_id, self._context)[pricelist_id]
-            vals={}
-            vals['value']={}
-            vals['value']['prix_achat'] = prix_achat
-            return vals
+#    @api.multi
+#    def onchange_product_id(self, partner_id, pricelist_id, product_id):
+#        if pricelist_id and product_id:
+#            product=self.env['product.product'].browse(product_id)
+#            prix_achat = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist_id],
+#                    product_id, product.lot_mini, partner_id, self._context)[pricelist_id]
+#            vals={}
+#            vals['value']={}
+#            vals['value']['prix_achat'] = prix_achat
+#            return vals
+
+
+
+class is_cde_ouverte_fournisseur_tarif(models.Model):
+    _name='is.cde.ouverte.fournisseur.tarif'
+    _order='product_id, sequence'
+
+    order_id      = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
+    product_id    = fields.Many2one('product.product', 'Article'  , required=True)
+    sequence      = fields.Integer("Séquence")
+    minimum       = fields.Float("Minimum")
+    prix_achat    = fields.Float("Prix d'achat")
+    uom_po_id     = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
 
 
 class is_cde_ouverte_fournisseur_line(models.Model):
