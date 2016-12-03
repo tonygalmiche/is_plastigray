@@ -55,9 +55,9 @@
                         <group>
                             <field name="commentaire"  /> 
                         </group>
-                       <group string="Tarifs">
-                            <field name="tarif_ids" nolabel="1">
-                                <tree editable="bottom">
+                       <group string="Tarifs"> 
+                            <field name="tarif_ids" nolabel="1" readonly="1">
+                                <tree>
                                     <field name="product_id" /> 
                                     <field name="sequence" /> 
                                     <field name="minimum" /> 
