@@ -45,7 +45,6 @@
 
     <menuitem id="menu_is_societes"      sequence="40" name="Sociétés"               parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_societes_10"   sequence="10" name="Sociétés"               parent="menu_is_societes" action="is_action_partner_supplier_form" />
-    <menuitem id="menu_is_societes_20"   sequence="20" name="Jours de fermeture"     parent="menu_is_societes" action="resource.action_resource_calendar_leave_tree" />
  
     <menuitem id="menu_is_dt_tables"    sequence="90" name="Tables"                 parent="menu_is_donnees_techniques"/>
     <menuitem id="menu_is_dt_tables_02" sequence="02" name="Gestionnaires"          parent="menu_is_dt_tables"   action="is_pg_product.is_gestionnaire_action" />
@@ -89,8 +88,8 @@
 
 
     <menuitem id="menu_is_achats_rcp"     sequence="40" name="Réceptions"             parent="menu_is_achats" />
-    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions"             parent="menu_is_achats_rcp" action="purchase.action_picking_tree_picking_to_invoice" />
-    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Mouvements en attente"  parent="menu_is_achats_rcp" action="stock.action_receipt_picking_move" />
+    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions à traiter"   parent="menu_is_achats_rcp" action="is_reception_a_traiter_action" />
+    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Toutes les réceptions"  parent="menu_is_achats_rcp" action="is_reception_toutes_action" />
 
     <menuitem id="menu_is_achats_fac"     sequence="50" name="Facturation"            parent="menu_is_achats" />
     <menuitem id="menu_is_achats_fac_10"  sequence="10" name="Réceptions à facturer"  parent="menu_is_achats_fac" action="is_reception_a_facturer_action" />

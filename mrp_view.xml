@@ -139,6 +139,7 @@
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="product_tmpl_id" position="after" > 
+                <field name="segment_id" />
                 <field name="is_qt_uc" />
                 <field name="is_qt_um" />
             </field>
@@ -187,6 +188,7 @@
             <tree>
                 <field name="product_tmpl_id"       widget="many2one_clickable"/>
                 <field name="sequence"/>
+                <field name="segment_id"/>
                 <field name="is_sous_traitance"/>
                 <field name="is_negoce"/>
                 <field name="is_inactive"/>
@@ -195,7 +197,17 @@
             </tree>
         </field>
     </record>
-
+    <record id="is_view_mrp_bom_filter" model="ir.ui.view">
+        <field name="name">is_view_mrp_bom_filter</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.view_mrp_bom_filter" />
+        <field name="arch" type="xml">
+            <field name="product_tmpl_id" position="after" > 
+                <field name="segment_id" /> 
+            </field>
+            <field name="product_id" position="replace" /> 
+        </field>
+    </record>
 
 
 
@@ -273,24 +285,6 @@
 
 
 
-
-
-    <!-- Ordre de fabrication -->
-    <record id="is_mrp_production_form_view" model="ir.ui.view">
-        <field name="name">is_mrp_production_form_view</field>
-        <field name="model">mrp.production</field>
-        <field name="inherit_id" ref="mrp.mrp_production_form_view" />
-        <field name="arch" type="xml">
-
-            <button icon="terp-gtk-jump-to-ltr" position="before" > 
-                <button string="Ligne" name="action_acceder_mouvement_stock" type="object" icon="gtk-zoom-in" />
-            </button>
-
-            <button icon="terp-gtk-jump-to-ltr" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </button>
-        </field>
-    </record>
 
 
     <!-- Atelier -->

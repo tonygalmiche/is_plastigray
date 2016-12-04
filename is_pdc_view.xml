@@ -167,7 +167,8 @@
                     <field name="mold_id"/>
                     <field name="matiere"/>
                     <field name="quantite" sum="Total"/>
-                    <field name="temps_h"         digits="(14, 0)" sum="Total"/>
+                    <field name="temps_u"         digits="(14, 2)" />
+                    <field name="temps_h"         digits="(14, 2)" sum="Total"/>
                     <field name="capacite"        digits="(14, 0)" />
                     <field name="temps_pourcent"  digits="(14, 0)" />
                     <field name="cumul_pourcent"  digits="(14, 0)" />

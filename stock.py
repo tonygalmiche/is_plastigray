@@ -55,6 +55,12 @@ class stock_picking(models.Model):
 
 
 
+class stock_quant(models.Model):
+    _inherit = "stock.quant"
+    _order   = "product_id, location_id"
+
+    is_mold_id = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
+
 
 
 class stock_move(models.Model):

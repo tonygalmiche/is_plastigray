@@ -62,7 +62,15 @@ class mrp_product_produce(models.TransientModel):
         return res
 
     
-    finished_products_location_id = fields.Many2one('stock.location', string="Emplacement des produits finis", domain="[('usage','=','internal')]", default=_get_default_finished_pro_location)
+    finished_products_location_id = fields.Many2one(
+        'stock.location', 
+        string="Emplacement des produits finis", 
+        domain="['|','&',('usage','=','internal'),('usage','!=','view'),('scrap_location','=',True)]", 
+        default=_get_default_finished_pro_location
+    )
+
+
+
     product_package = fields.Many2one('product.ul', default=_get_default_package, string="Conditionnement (UC)")
     package_qty = fields.Float(string='Quantité par UC', default=_get_default_package_qty)
     product_package_qty = fields.Float(string="Nombre d'UC à déclarer", default=_get_default_product_package_qty)

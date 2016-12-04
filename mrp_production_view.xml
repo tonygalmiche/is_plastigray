@@ -2,17 +2,16 @@
 <openerp>
     <data>
 
+    <!-- Ordre de fabrication -->
         <record model="ir.ui.view" id="view_mrp_production_form_view_extended_form">
             <field name="name">mrp.production.form</field>
             <field name="model">mrp.production</field>
             <field name="inherit_id" ref="mrp.mrp_production_form_view" />
             <field name="arch" type="xml">
 
-
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
-
 
                 <xpath expr="//form/header/button[@name='action_cancel']"
                     position="after">
@@ -27,15 +26,6 @@
                     />
                 </xpath>
 
-
-
-                <!--
-                <field name="product_uom" position="attributes">
-                    <attribute name="readonly">1</attribute>
-                </field>
-                -->
-
-
                 <field name="date_planned" position="after">
                     <field name="is_qt_prevue" />
                     <field name="is_qt_fabriquee" />
@@ -48,6 +38,14 @@
                     <field name="package_qty" />
                     <field name="is_done" invisible="1" />
                 </field>
+
+                <button icon="terp-gtk-jump-to-ltr" position="before" > 
+                    <button string="Ligne" name="action_acceder_mouvement_stock" type="object" icon="gtk-zoom-in" />
+                </button>
+
+                <button icon="terp-gtk-jump-to-ltr" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </button>
             </field>
         </record>
 

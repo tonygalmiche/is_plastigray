@@ -17,6 +17,8 @@ class mrp_bom(models.Model):
     is_inactive           = fields.Boolean('Nomenclature inactive')
     is_qt_uc              = fields.Integer("Qt par UC", compute='_compute')
     is_qt_um              = fields.Integer("Qt par UM", compute='_compute')
+    segment_id            = fields.Many2one('is.product.segment', 'Segment', related='product_tmpl_id.segment_id', readonly=True)
+
 
     @api.one
     @api.depends('product_tmpl_id')

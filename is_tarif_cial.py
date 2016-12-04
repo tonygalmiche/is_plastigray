@@ -15,6 +15,7 @@ class is_tarif_cial(models.Model):
     display_name        = fields.Char(string='Name', compute='_compute_display_name')
     partner_id          = fields.Many2one('res.partner', 'Client'      , required=True)
     product_id          = fields.Many2one('product.template', 'Article', required=True)
+    is_mold_id          = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
     indice_prix         = fields.Integer("Indice Prix"                 , required=True)
     date_debut          = fields.Date("Date de début")
     date_fin            = fields.Date("Date de fin")

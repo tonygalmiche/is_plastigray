@@ -73,7 +73,7 @@ class is_pdc(models.Model):
                         pt.is_mold_id                            as mold_id, 
                         pt.is_couleur                            as matiere,
                         sum(mp.quantity)                         as quantite,
-                        sum(mp.quantity*mrw.is_nb_secondes)/3600 as temps_h
+                        sum(mp.quantity*mrw.is_nb_secondes)      as temps_total
                 from mrp_prevision mp inner join product_product  pp on mp.product_id=pp.id
                                       inner join product_template pt on pp.product_tmpl_id=pt.id
                                       inner join mrp_bom          mb on pt.id=mb.product_tmpl_id and mb.sequence=0
@@ -88,14 +88,17 @@ class is_pdc(models.Model):
             res={}
             for row in result:
                 key=str(row[0])+"/"+str(row[1])+"/"+str(row[2])
-
-
+                temps_u=temps_h=0
+                if row[3]!=0:
+                    temps_u=row[4]/row[3]
+                    temps_h=row[4]/3600
                 vals={
                     'workcenter_id': row[0],
                     'mold_id'      : row[1],
                     'matiere'      : row[2],
                     'quantite'     : row[3],
-                    'temps_h'      : row[4],
+                    'temps_u'      : temps_u,
+                    'temps_h'      : temps_h,
                 }
                 res[key]=vals
             #*******************************************************************
@@ -107,7 +110,7 @@ class is_pdc(models.Model):
                         pt.is_mold_id                            as mold_id, 
                         pt.is_couleur                            as matiere,
                         sum(sm.product_uom_qty)                         as quantite,
-                        sum(sm.product_uom_qty*mrw.is_nb_secondes)/3600 as temps_h
+                        sum(sm.product_uom_qty*mrw.is_nb_secondes) as temps_total
                 from stock_move sm    inner join product_product  pp on sm.product_id=pp.id
                                       inner join product_template pt on pp.product_tmpl_id=pt.id
                                       inner join mrp_bom          mb on pt.id=mb.product_tmpl_id and mb.sequence=0
@@ -122,12 +125,17 @@ class is_pdc(models.Model):
             result = cr.fetchall()
             for row in result:
                 key=str(row[0])+"/"+str(row[1])+"/"+str(row[2])
+                temps_u=temps_h=0
+                if row[3]!=0:
+                    temps_u=row[4]/row[3]
+                    temps_h=row[4]/3600
                 vals={
                     'workcenter_id': row[0],
                     'mold_id'      : row[1],
                     'matiere'      : row[2],
                     'quantite'     : row[3],
-                    'temps_h'      : row[4],
+                    'temps_u'      : temps_u,
+                    'temps_h'      : temps_h,
                 }
                 if not key in res:
                     res[key]=vals
@@ -145,7 +153,7 @@ class is_pdc(models.Model):
                     'mold_id'      : res[key]['mold_id'],
                     'matiere'      : res[key]['matiere'],
                     'quantite'     : res[key]['quantite'],
-                    'temps_h'      : res[key]['temps_h'],
+                    'temps_u'      : res[key]['temps_u'],
                     'capacite'     : obj.temps_ouverture,
                 }
                 pdc_mold_obj.create(vals)
@@ -303,7 +311,8 @@ class is_pdc_mold(models.Model):
     mold_id        = fields.Many2one('is.mold', 'Moule')
     matiere        = fields.Char('Matière')
     quantite       = fields.Integer('Quantité')
-    temps_h        = fields.Float('Temps (H)')
+    temps_u        = fields.Float('Temps unitaire (s)', digits=(14, 4))
+    temps_h        = fields.Float('Temps (H)'       , store=True,  compute='_cumul', readonly=1)
     capacite       = fields.Float('Capacité'        , store=True,  compute='_cumul', readonly=1)
     temps_pourcent = fields.Float('Temps (%)'       , store=True,  compute='_cumul', readonly=1)
     cumul_pourcent = fields.Float('Temps Cumulé (%)', store=False, compute='_cumul', readonly=1)
@@ -319,13 +328,18 @@ class is_pdc_mold(models.Model):
             obj.resource_type = obj.workcenter_id.resource_type
 
 
-    @api.depends('quantite','temps_h','pdc_id.temps_ouverture')
+    @api.depends('quantite','temps_u','pdc_id.temps_ouverture')
     def _cumul(self):
         debut=datetime.datetime.now()
         for obj in self:
             context = self._context
             cr      = self._cr
-            temps_h=obj.temps_h
+            #temps_h=obj.temps_h
+            temps_h=obj.temps_u*obj.quantite/3600
+
+
+
+
             capacite=obj.pdc_id.temps_ouverture
             temps_pourcent=0
             if capacite!=0:
@@ -350,6 +364,8 @@ class is_pdc_mold(models.Model):
                     if row[0]:
                         cumul_pourcent = row[0]
                         cumul_h        = row[1]
+
+            obj.temps_h        = temps_h
             obj.cumul_pourcent = cumul_pourcent
             obj.cumul_h        = cumul_h   
             obj.cumul_j        = cumul_h/24
@@ -383,7 +399,10 @@ class is_pdc_workcenter(models.Model):
                 'view_mode': 'tree,form',
                 'view_type': 'form',
                 'res_model': 'is.pdc.mold',
-                'domain': [('workcenter_id','=',obj.workcenter_id.id)],
+                'domain': [
+                    ('pdc_id','=',obj.pdc_id.id),
+                    ('workcenter_id','=',obj.workcenter_id.id)
+                ],
                 'context':{
                     'default_pdc_id'        : obj.pdc_id.id,
                     'default_workcenter_id' : obj.workcenter_id.id,
