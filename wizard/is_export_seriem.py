@@ -35,7 +35,8 @@ class is_export_seriem(models.TransientModel):
                 ('state'       , '=' , 'open'),
                 ('date_invoice', '>=', obj.date_debut),
                 ('date_invoice', '<=', obj.date_fin),
-                ('is_folio_id', '=' , False),
+                ('is_folio_id' , '=' , False),
+                ('type'        , '=' ,'out_invoice')
             ])
             if len(invoices)==0:
                 raise Warning('Aucune facture à traiter')
@@ -49,7 +50,7 @@ class is_export_seriem(models.TransientModel):
             Folio           = folio.name
             CodeDevice      = u''
             DateJour        = time.strftime('%y%m%d') 
-            CompteCollectif = u'"411000"'
+            #CompteCollectif = u'"411000"'
             res.append("FPGVMFCO")
             res.append(u"E"+Soc+u'VE'+CodeDevice+(u"0000"+Folio)[-4:]+DateJour+u" 211")
 
@@ -74,7 +75,8 @@ class is_export_seriem(models.TransientModel):
                             ai.date_due,
                             aj.code,
                             sum(aml.debit), 
-                            sum(aml.credit)
+                            sum(aml.credit),
+                            rp.supplier
                     FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
                                                inner join account_account aa             on aml.account_id=aa.id
                                                inner join res_partner rp                 on ai.partner_id=rp.id
@@ -82,12 +84,22 @@ class is_export_seriem(models.TransientModel):
                                                left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
                                                left outer join account_journal aj        on rp.is_type_reglement=aj.id
                     WHERE ai.id="""+str(id)+"""
-                    GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code
-                    ORDER BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code
+                    GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code, rp.supplier
+                    ORDER BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code, rp.supplier
                 """
 
                 cr.execute(sql)
                 for row in cr.fetchall():
+
+
+                    #Test si client ou fournisseur
+                    if row[11]:
+                        CompteCollectif = u'401000'
+                    else:
+                        CompteCollectif = u'411000'
+
+                    #print row, CompteCollectif
+
                     NumCompte = row[4]
                     Debit     = row[9]
                     Credit    = row[10]
@@ -97,9 +109,12 @@ class is_export_seriem(models.TransientModel):
                         Sens    = u"C"
                     else:
                         Sens    = u"D"
-                    CodeAuxiliaire=row[2]
-                    if NumCompte=="411000" or NumCompte=="401000":
-                        CompteCollectif = NumCompte
+
+                    CodeAuxiliaire=(u"000000"+str(row[2]))[-6:]
+
+                    if NumCompte==u'411000' or NumCompte==u'401000':
+                        #CompteCollectif = NumCompte
+                        NumCompte       = CompteCollectif
                         CodeFournisseur = CodeAuxiliaire
                         TotalTTC=Montant
                     else:
@@ -135,6 +150,10 @@ class is_export_seriem(models.TransientModel):
                 res.append(Ligne)
                 #*******************************************************************
 
+
+            #raise Warning('test')
+
+
             # Enregistrement du fichier ****************************************
             os.chdir('/tmp')
             name = 'PGVMFCO'
@@ -151,6 +170,9 @@ class is_export_seriem(models.TransientModel):
                 raise Warning(err)
 
             # ******************************************************************
+
+
+            #raise Warning('test')
 
             # Envoi du fichier dans l'AS400 ************************************
             if err=="":

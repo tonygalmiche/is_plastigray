@@ -141,9 +141,15 @@ class is_edi_cde_cli(models.Model):
                                 anomalie2.append("Quantité < Lot de livraison ("+str(int(lot))+")")
                             #***************************************************
 
+                            #** Vérification mutliple du lot *******************
+                            arrondi_lot=self.env['product.template'].get_arrondi_lot_livraison(product.product_tmpl_id.id, obj.partner_id.id, quantite)
+                            if quantite!=arrondi_lot and quantite>0:
+                                anomalie2.append("Quantité non multiple du lot")
+                            #***************************************************
+
                             #** Vérification de la date de livraison livraison *
                             check_date = self.env['sale.order.line'].check_date_livraison(ligne["date_livraison"], partner_id)
-                            print ligne["date_livraison"], check_date
+                            #print ligne["date_livraison"], check_date
                             if not check_date:
                                 anomalie2.append("Date de livraison pendant la fermeture du client")
                             #***************************************************
@@ -197,7 +203,7 @@ class is_edi_cde_cli(models.Model):
             #** Importation des commandes **************************************
             for line in obj.line_ids:
                 if line.order_id:
-                    if line.quantite!=0 and not line.anomalie:
+                    if line.quantite!=0 and order_id:
                         vals={
                             'order_id'            : line.order_id.id, 
                             'is_date_livraison'   : line.date_livraison, 
@@ -245,7 +251,7 @@ class is_edi_cde_cli(models.Model):
             for row in csvfile:
                 ct=ct+1
                 lig=row.split(",")
-                if ct==2:
+                if len(lig)==29:
                     ref_article_client  = lig[14].strip()
                     num_commande_client = lig[16].strip()
                 date_livraison = False
