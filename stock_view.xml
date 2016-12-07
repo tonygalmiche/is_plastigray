@@ -2,6 +2,20 @@
 <openerp>
     <data>
 
+
+
+        <record id="is_view_move_picking_tree" model="ir.ui.view">
+            <field name="name">is_view_move_picking_tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+            <field name="arch" type="xml">
+                <button string="Scrap Products" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </button>
+            </field>
+        </record>
+
+
         <record id="view_picking_location_inherit_form" model="ir.ui.view">
             <field name="name">stock.picking.form</field>
             <field name="model">stock.picking</field>
