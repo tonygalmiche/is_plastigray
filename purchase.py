@@ -51,7 +51,7 @@ class purchase_order(models.Model):
     def test_prix0(self,obj):
         for line in obj.order_line:
             if not line.is_justification and not line.price_unit:
-                raise Warning(u'Prix à 0 sans justifcation')
+                raise Warning(u"Prix à 0 sans justifcation pour l'article "+str(line.product_id.is_code))
 
 
     @api.multi

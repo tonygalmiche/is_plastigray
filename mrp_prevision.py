@@ -2,6 +2,7 @@
 
 from datetime import datetime, timedelta
 import time
+import sys
 from openerp import pooler
 from openerp import models,fields,api
 from openerp.tools.translate import _
@@ -56,30 +57,34 @@ class mrp_prevision(models.Model):
 
         order_obj      = self.env['purchase.order']
         order_line_obj = self.env['purchase.order.line']
-
         for obj in ids:
             partner=obj.product_id.seller_ids[0].name
-            orders = order_obj.search([('partner_id','=',partner.id),('state','=','draft')])
-            order=False
-            if len(orders)>0:
-                order=orders[0]
-            else:
-                if partner.property_product_pricelist_purchase:
-                    vals={
-                        'partner_id'   : partner.id,
-                        'location_id'  : partner.is_source_location_id.id,
-                        'pricelist_id' : partner.property_product_pricelist_purchase.id,
-                    }
-                    order=order_obj.create(vals)
-            if order:
-                res=order_line_obj.onchange_product_id(order.pricelist_id.id, \
-                    obj.product_id.id, obj.quantity, obj.product_id.uom_id.id, \
-                    partner.id, False, False, obj.end_date, False, False, 'draft')
-                vals=res['value']
-                vals['order_id']=order.id
-                vals['product_id']=obj.product_id.id
-                order_line=order_line_obj.create(vals)
-                obj.unlink()
+            if partner.property_product_pricelist_purchase:
+                vals={
+                    'partner_id'   : partner.id,
+                    'location_id'  : partner.is_source_location_id.id,
+                    'pricelist_id' : partner.property_product_pricelist_purchase.id,
+                }
+                order=order_obj.create(vals)
+                if order:
+                    unlink=True
+                    try:
+                        res=order_line_obj.onchange_product_id(order.pricelist_id.id, \
+                            obj.product_id.id, obj.quantity, obj.product_id.uom_id.id, \
+                            partner.id, False, False, obj.end_date, False, False, 'draft')
+                        vals=res['value']
+                        vals['order_id']=order.id
+                        vals['product_id']=obj.product_id.id
+                        order_line=order_line_obj.create(vals)
+                        order.wkf_bid_received() 
+                        order.wkf_confirm_order()
+                        order.action_picking_create() 
+                        order.wkf_approve_order()
+                    except:
+                        unlink=False
+                        obj.note=unicode(sys.exc_info()[1])
+                    if unlink:
+                        obj.unlink()
 
 
     @api.multi
