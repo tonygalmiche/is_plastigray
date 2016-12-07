@@ -7,18 +7,24 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//sheet" position="attributes">
+                    <attribute name="class">oe_form_sheet_width_wider</attribute>
+                </xpath>
+                <button name="do_partial_open_barcode" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </button>
+                <button name="open_barcode_interface" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </button>
                 <xpath expr="//notebook/page[@string='Additional Info']/group/group/field[@name='location_id']" position="attributes">
                     <attribute name="invisible">0</attribute>>
                 </xpath>
-
                 <field name="origin" position="attributes">
                     <attribute name="invisible">1</attribute>>
                 </field>
-
                 <field name="min_date" position="attributes">
                     <attribute name="invisible">1</attribute>>
                 </field>
-
                 <field name="origin" position="after">
                     <field name="is_sale_order_id"  attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" /> 
                     <field name="is_date_livraison" attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" /> 
@@ -91,45 +97,34 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-
-
-
-
         <record id="is_view_production_lot_form" model="ir.ui.view">
             <field name="name">is_view_production_lot_form</field>
             <field name="model">stock.production.lot</field>
             <field name="inherit_id" ref="stock.view_production_lot_form" />
             <field name="arch" type="xml">
-
                 <field name="ref" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </field>
-
                 <field name="ref" position="after">
+                    <field name="is_lot_fournisseur" />
                     <field name="is_date_peremption" />
                 </field>
-
             </field>
         </record>
-
 
         <record id="stock.view_production_lot_tree" model="ir.ui.view">
             <field name="name">stock.production.lot.tree</field>
             <field name="model">stock.production.lot</field>
             <field name="arch" type="xml">
-
-
                 <tree colors="red:is_date_peremption and (is_date_peremption&lt;current_date)" >
-
                     <field name="name"/>
-                    <!--<field name="ref"/>-->
                     <field name="product_id"/>
+                    <field name="is_lot_fournisseur"/>
                     <field name="is_date_peremption"/>
                     <field name="create_date"/>
                 </tree>
             </field>
         </record>
-
 
         <record id="is_stock_incoterms_action" model="ir.actions.act_window">
             <field name="name">Incoterm</field>
@@ -192,13 +187,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-
         <!-- Livraisons à traiter -->
         <record id="is_livraisons_a_traiter_action" model="ir.actions.act_window">
             <field name="name">Livraisons à traiter</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
-            <field name="domain">[('state','not in', ('cancel','done'))]</field>
+            <field name="domain">[('picking_type_id','=', 2),('state','not in', ('cancel','done'))]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -209,10 +203,10 @@
             <field name="name">Livraisons à traiter</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
+            <field name="domain">[('picking_type_id','=', 2)]</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-
 
         <!-- Livraisons à facturer -->
         <record id="is_livraisons_a_facturer_action" model="ir.actions.act_window">

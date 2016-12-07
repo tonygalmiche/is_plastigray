@@ -2,8 +2,10 @@
 
 from openerp import models, fields, api
 from openerp.tools.translate import _
+from openerp.exceptions import Warning
 import openerp.addons.decimal_precision as dp
 import datetime
+
 
 class stock_transfer_details(models.TransientModel):
     _inherit = 'stock.transfer_details'
@@ -28,6 +30,10 @@ class stock_transfer_details(models.TransientModel):
         for obj in self:
             obj.picking_id.is_num_bl         = obj.is_num_bl
             obj.picking_id.is_date_reception = obj.is_date_reception
+            for row in obj.item_ids:
+                if row.lot_id:
+                    row.lot_id.is_lot_fournisseur=row.is_lot_fournisseur
+        #raise Warning('test')
         return res
 
 
@@ -54,4 +60,16 @@ class stock_transfer_details(models.TransientModel):
             res.update({'is_purchase_order_id': picking.is_purchase_order_id.id})
         return res
         
+
+
+
+class stock_transfer_details_items(models.TransientModel):
+    _inherit = 'stock.transfer_details_items'
+
+    is_lot_fournisseur = fields.Char("Lot fournisseur")
+
+
+
+
+
 

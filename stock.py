@@ -171,3 +171,9 @@ class stock_production_lot(models.Model):
     _inherit = "stock.production.lot"
 
     is_date_peremption = fields.Date("Date de péremption")
+    is_lot_fournisseur = fields.Char("Lot fournisseur")
+
+
+
+
+
