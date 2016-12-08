@@ -44,8 +44,14 @@ class purchase_order_line(models.Model):
 class purchase_order(models.Model):
     _inherit = "purchase.order"
 
-    is_document = fields.Char("Document (N° de dossier)")
+    is_document          = fields.Char("Document (N° de dossier)")
+    is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
+    is_date_confirmation = fields.Date("Date de confirmation du fournisseur")
+    is_commentaire       = fields.Text("Commentaire")
 
+    _defaults = {
+        'is_demandeur_id': lambda obj, cr, uid, ctx=None: uid,
+    }
 
     @api.multi
     def test_prix0(self,obj):

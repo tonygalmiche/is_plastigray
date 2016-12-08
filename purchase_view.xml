@@ -10,23 +10,73 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
-
-                <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                <button string="Send RFQ by Email" position="attributes" > 
                     <attribute name="invisible">1</attribute>
-                </xpath>
-
+                </button>
+                <button string="Re-Send RFQ by Email" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button string="Print RFQ" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button string="Re-Print RFQ" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button string="Send PO by Email" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </button>
                 <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="is_justification" />
                 </xpath>
-
                 <field name="partner_ref" position="after">
                     <field name="is_document" />
+                    <field name="is_demandeur_id" />
                 </field>
-
-
-
+                <field name="minimum_planned_date" position="after">
+                    <field name="is_date_confirmation" />
+                    <field name="is_commentaire" />
+                </field>
             </field>
         </record>
+
+        <record id="is_purchase_order_tree" model="ir.ui.view">
+            <field name="name">is_purchase_order_tree</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree" />
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_document" />
+                    <field name="is_demandeur_id" />
+                </field>
+                <field name="minimum_planned_date" position="after">
+                    <field name="is_date_confirmation" />
+                    <field name="is_commentaire" />
+                </field>
+            </field>
+        </record>
+
+
+        <!--
+        <record id="purchase_order_tree" model="ir.ui.view">
+            <field name="name">purchase.order.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <tree fonts="bold:message_unread==True" colors="grey:state=='cancel';blue:state in ('wait','confirmed');red:state in ('except_invoice','except_picking')" string="Purchase Order">
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Reference"/>
+                    <field name="date_order" />
+                    <field name="partner_id"/>
+                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                    <field name="minimum_planned_date" invisible="context.get('quotation_only', False)"/>
+                    <field name="origin"/>
+                    <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed"/>
+                    <field name="amount_total" sum="Total amount"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        -->
+
 
     </data>
 </openerp>

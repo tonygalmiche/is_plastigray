@@ -119,6 +119,20 @@
 
 
 
+        <report 
+            string="Bon de commande" 
+            id="purchase.action_report_purchase_order" 
+            model="purchase.order" 
+            report_type="qweb-pdf"
+            name="is_plastigray.is_report_purchaseorder" 
+            file="is_plastigray.is_report_purchaseorder" 
+        />
+        <record id="purchase.action_report_purchase_order" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.purchaseorder_paperformat"/>
+        </record>
+
+
+
 
     </data>
 </openerp>

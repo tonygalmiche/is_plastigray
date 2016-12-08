@@ -77,6 +77,7 @@
         "views/report_document_fabrication.xml",
         "views/report_plan_de_charge.xml",
         "views/report_bon_transfert.xml",
+        "views/report_purchaseorder.xml",
         "views/report.xml",
         "report/is_pic_3mois.xml",
         "report/is_comparatif_gamme_standard_generique.xml",

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<template id="report_purchaseorder_style">
+    .header {
+        font-size:10pt;
+    }
+    .footer {
+        font-size:9pt;
+    }
+    .page {
+        font-size:9pt;
+    }
+    .titre {
+        font-size:11pt;
+        font-weight: bold;
+    }
+    .livraison {
+        font-size:11pt;
+        font-weight: bold;
+        text-align:left;
+    }
+    .facturation {
+        font-size:10pt;
+        font-style: italic;
+        text-align:left;
+
+    }
+    .fournisseur {
+        text-align:left;
+        border: 1px solid black;
+        padding:5mm;
+    }
+</template>
+
+
+<template id="report_purchaseorder_layout" inherit_id="web.layout" primary="True">
+    <!-- Add report attributes -->
+    <xpath expr="//html" position="attributes">
+        <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+        <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+        <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+    </xpath>
+    <!-- Add report style -->
+    <xpath expr="//head" position="inside">
+        <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+        <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+        <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+        <style type="text/css">
+            <t t-call="report.style"/>
+            <t t-call="is_plastigray.report_purchaseorder_style"/>
+        </style>
+    </xpath>
+    <!-- Remove conflicting style -->
+    <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+</template>
+
+
+
+<template id="report_purchaseorder_html_container">
+    <t t-set="body_classname" t-value="'container'"/>
+    <t t-call="is_plastigray.report_purchaseorder_layout">
+        <t t-raw="0"/>
+    </t>
+</template>
+
+
+<!-- Entête personnalisé Plastigray -->
+<template id="report_purchaseorder_external_layout_header">
+    <div class="header">
+        <div class="row">
+            <div class="col-xs-4  text-left">
+                <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                <div class="livraison">
+                    Adresse de livraison : <br />
+                    <span t-field="company.name"/> <span t-field="company.street"/><br />
+                    <span t-field="company.street2"/><br />
+                    <span t-field="company.zip"/> <span t-field="company.city"/><br /><br />
+                </div>
+                <div class="facturation">
+                    Adrese de facturation : PLASTIGRAY SAS <br />
+                    ZAC de Gray Sud CS 10133 <br />
+                    70104 GRAY Cedex
+                </div>
+            </div>
+            <div class="col-xs-1" />
+            <div class="col-xs-7">
+                <div class="titre">
+                    <span>Commande ferme N°</span>
+                    <span style="font-size:12pt;" t-field="o.name"/>
+                     du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
+                </div>
+                <div class="fournisseur">
+                    <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>)
+                    <div t-field="o.partner_id"
+                         t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
+                </div>
+            </div>
+        </div><br />
+        <div class="row">
+            <div class="col-xs-12">
+                <i>
+                Conditions de paiement :  <span t-field="o.partner_id.property_supplier_payment_term.name"/> <br />
+                Type de réglement :       <span t-field="o.partner_id.is_type_reglement.name"/> <br />
+                Incoterm :                <span t-field="o.partner_id.is_incoterm.name"/> <br />
+                </i>
+            </div>
+        </div>
+    </div>
+</template>
+
+
+
+<!-- Pied de page personnalisé Plastigray -->
+<template id="report_purchaseorder_external_layout_footer">
+    <div class="footer">
+        <div style="border-top: 1px solid black">
+            <table style="width:100%">
+                <tr>
+                    <td class="text-left" style="width:90%">
+                        <b>Cette commande est soumise à l'acceptation de nos conditions générales d'achats. 
+                        En cas de désaccord ou de contradiction se référer au contrat cadre. </b><br />
+
+                        PLASTIGRAY - S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud CS 10133 70104 GRAY Cedex<br />
+                        Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381<br />
+                    </td>
+                    <td class="text-right">
+                        Page <span class="page" style="font-size:9pt;"/> / <span class="topage"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <br />
+</template>
+
+
+<!-- Squelette de la page personnalisé pour Plastigray -->
+<template id="report_purchaseorder_external_layout">
+    <t t-if="o and 'company_id' in o">
+        <t t-set="company" t-value="o.company_id"/>
+    </t>
+    <t t-if="not o or not 'company_id' in o">
+        <t t-set="company" t-value="res_company"/>
+    </t>
+    <t t-call="is_plastigray.report_purchaseorder_external_layout_header"/>
+    <t t-raw="0"/>
+    <t t-call="is_plastigray.report_purchaseorder_external_layout_footer"/>
+</template>
+
+
+<template id="is_report_purchaseorder_document">
+    <t t-call="is_plastigray.report_purchaseorder_external_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr >
+                        <th class="text-left"  style="vertical-align:top">Article / Désignation</th>
+                        <th class="text-left"  style="vertical-align:top">Référence<br />fournisseur</th>
+                        <th class="text-left"  style="vertical-align:top">Plan</th>
+                        <th class="text-left"  style="vertical-align:top">TVA</th>
+                        <th class="text-center" style="vertical-align:top">Date prévue</th>
+                        <th class="text-right" style="vertical-align:top">Quantité</th>
+                        <th class="text-left"  style="vertical-align:top">Unité</th>
+                        <th class="text-right" style="vertical-align:top">Prix d'achat<br />€ HT</th>
+                        <th class="text-right" style="vertical-align:top">Prix total<br />€ HT</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="o.order_line" t-as="l">
+                        <td class="text-left">  <span t-field="l.name"/> </td>
+                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
+                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
+                        <td class="text-left">  <span t-esc="', '.join(map(lambda x: x.name, l.taxes_id))"/></td>
+                        <td class="text-center"><span t-field="l.date_planned"/>  </td>
+                        <td class="text-right"> <span t-field="l.product_qty"/>  </td>
+                        <td class="text-left">  <span t-field="l.product_uom.name"/>  </td>
+                        <td class="text-right"> <span t-field="l.price_unit"/> </td>
+                        <td class="text-right">
+                            <span t-field="l.price_subtotal"
+                                t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Total HT</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_untaxed"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Taxes</td>
+                            <td class="text-right">
+                                <span t-field="o.amount_tax"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                            </td>
+                        </tr>
+                        <tr class="border-black">
+                            <td><strong>Total TTC</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_total"
+                                    t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <p t-field="o.notes"/>
+            <div class="oe_structure"/>
+        </div>
+    </t>
+</template>
+
+<template id="is_report_purchaseorder">
+    <t t-call="is_plastigray.report_purchaseorder_html_container">
+        <t t-foreach="doc_ids" t-as="doc_id">
+            <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'is_plastigray.is_report_purchaseorder_document')"/>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>
