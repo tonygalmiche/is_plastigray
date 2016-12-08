@@ -11,7 +11,9 @@
                     <field name="product_package" readonly="1" />
                     <field name="package_qty"     readonly="1" />
                     <field name="product_package_qty" context="{'is_product_package_qty':1}" />
-                    <field name="finished_products_location_id" />
+                    <field name="finished_products_location_id" widget="selection"  />
+
+
                 </field>
 
             </field>

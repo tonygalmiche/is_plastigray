@@ -113,19 +113,25 @@ class mrp_prevision(models.Model):
                         'product_uom': obj.product_id.uom_id.id,
                         'product_qty': obj.quantity,
                         'date_planned': obj.start_date,
-                        'mrp_product_suggestion_id': obj.id,
                         'bom_id': bom_id,
                         'routing_id': routing_id,
                         'origin': obj.name,
                 })
                 name=obj.name
+                unlink=True
                 try:
                     workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
+                    mrp_id.force_production()
                     #break
                 except Exception as inst:
+                    unlink=False
                     msg="Impossible de convertir la "+name+'\n('+str(inst)+')'
-                    #obj.note=msg
-                    raise Warning(msg)
+                    obj.note=msg
+                    #raise Warning(msg)
+
+                if unlink:
+                    obj.unlink()
+
 
 
     @api.multi

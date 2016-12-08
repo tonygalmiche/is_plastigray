@@ -30,6 +30,8 @@
                     <field name="is_qt_prevue" />
                     <field name="is_qt_fabriquee" />
                     <field name="is_qt_reste" />
+                    <field name="is_qt_rebut" />
+
                 </field>
 
 
@@ -76,6 +78,7 @@
                     <field name="is_qt_prevue" />
                     <field name="is_qt_fabriquee" />
                     <field name="is_qt_reste" />
+                    <field name="is_qt_rebut" />
                 </field>
             </field>
         </record>

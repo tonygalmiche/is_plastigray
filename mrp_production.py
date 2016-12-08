@@ -11,9 +11,12 @@ class MrpProduction(models.Model):
 
     @api.one
     def _compute(self):
-        package_qty = is_qt_prevue = is_qt_fabriquee = is_qt_reste = 0
+        package_qty = is_qt_prevue = is_qt_fabriquee = is_qt_rebut = is_qt_reste = 0
         for line in self.move_created_ids2:
-            is_qt_fabriquee=is_qt_fabriquee+line.product_uom_qty
+            if line.location_dest_id.usage=='internal':
+                is_qt_fabriquee=is_qt_fabriquee+line.product_uom_qty
+            else:
+                is_qt_rebut=is_qt_rebut+line.product_uom_qty
         product_package = False
         if self.product_id and self.product_id.packaging_ids:
             pack_brw        = self.product_id.packaging_ids[0]
@@ -26,6 +29,7 @@ class MrpProduction(models.Model):
         self.package_qty     = package_qty
         self.is_qt_prevue    = is_qt_prevue / package_qty
         self.is_qt_fabriquee = is_qt_fabriquee / package_qty
+        self.is_qt_rebut     = is_qt_rebut / package_qty
         self.is_qt_reste     = self.is_qt_prevue - self.is_qt_fabriquee
 
 
@@ -33,18 +37,19 @@ class MrpProduction(models.Model):
     package_qty               = fields.Float(string='Qt par UC'        , compute="_compute")
     is_qt_prevue              = fields.Float(string="Qt prévue (UC)"   , compute="_compute")
     is_qt_fabriquee           = fields.Float(string="Qt fabriquée (UC)", compute="_compute")
+    is_qt_rebut               = fields.Float(string="Qt rebut (UC)"    , compute="_compute")
     is_qt_reste               = fields.Float(string="Qt reste (UC)"    , compute="_compute")
     date_planned              = fields.Datetime(string='Date plannifiée', required=True, readonly=False)
     is_done                   = fields.Boolean(string="Is done ?", default=False)
     mrp_product_suggestion_id = fields.Many2one('mrp.prevision','MRP Product Suggestion')
 
 
-    @api.multi
-    def action_confirm(self):
-        for rec in self:
-            if rec.mrp_product_suggestion_id:
-                rec.mrp_product_suggestion_id.unlink()
-        return super(MrpProduction, self).action_confirm()
+#    @api.multi
+#    def action_confirm(self):
+#        for rec in self:
+#            if rec.mrp_product_suggestion_id:
+#                rec.mrp_product_suggestion_id.unlink()
+#        return super(MrpProduction, self).action_confirm()
 
 
 
