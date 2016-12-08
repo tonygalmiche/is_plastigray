@@ -2,6 +2,69 @@
 <openerp>
     <data>
 
+        <record id="is_view_move_tree" model="ir.ui.view">
+            <field name="name">is_view_move_tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </field>
+                <field name="date_expected" position="after">
+                    <field name="create_uid"/>
+                    <field name="write_uid"/>
+                </field>
+                <field name="date" position="replace">
+                    <field name="date" />
+                </field>
+                <button string="Scrap Products" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </button>
+                <button name="action_done" position="attributes">
+                    <attribute name="invisible">1</attribute>>
+                </button>
+            </field>
+        </record>
+
+
+        <!-- Mouvements en cours -->
+        <record id="is_mouvements_en_cours_action" model="ir.actions.act_window">
+            <field name="name">Mouvements en cours</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain">[('state','in',['draft','waiting','confirmed','assigned'])]</field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_view_move_tree"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!-- Mouvements Terminés -->
+        <record id="is_mouvements_termines_action" model="ir.actions.act_window">
+            <field name="name">Mouvements terminés</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain">[('state','in',['done'])]</field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_view_move_tree"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!-- Mouvements annulés -->
+        <record id="is_mouvements_annules_action" model="ir.actions.act_window">
+            <field name="name">Mouvements annulés</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain">[('state','in',['cancel'])]</field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_view_move_tree"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+
 
 
         <record id="is_view_move_picking_tree" model="ir.ui.view">
@@ -14,7 +77,6 @@
                 </button>
             </field>
         </record>
-
 
         <record id="view_picking_location_inherit_form" model="ir.ui.view">
             <field name="name">stock.picking.form</field>
