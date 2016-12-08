@@ -33,7 +33,7 @@ class purchase_order_line(models.Model):
             if qty<lot:
                 qty=lot
             else:
-                delta=qty-lot
+                delta=round(qty-lot,8)
                 qty=lot+multiple*ceil(delta/multiple)
             qty = product_uom_obj._compute_qty(product.uom_id.id, qty, uom_id)
             res['value'].update({'product_qty': qty })
