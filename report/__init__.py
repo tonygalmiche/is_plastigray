@@ -14,3 +14,4 @@ import is_comparatif_uc_lot_mini
 import is_comparatif_lot_prix
 import is_comparatif_tarif_commande
 import is_stock_valorise
+import is_mouvement_stock

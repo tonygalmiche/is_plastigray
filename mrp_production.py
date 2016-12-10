@@ -13,10 +13,19 @@ class MrpProduction(models.Model):
     def _compute(self):
         package_qty = is_qt_prevue = is_qt_fabriquee = is_qt_rebut = is_qt_reste = 0
         for line in self.move_created_ids2:
-            if line.location_dest_id.usage=='internal':
-                is_qt_fabriquee=is_qt_fabriquee+line.product_uom_qty
-            else:
+            if line.location_dest_id.scrap_location:
                 is_qt_rebut=is_qt_rebut+line.product_uom_qty
+            else:
+                if line.location_dest_id.usage=='internal':
+                    is_qt_fabriquee=is_qt_fabriquee+line.product_uom_qty
+        for line in self.move_created_ids2:
+            if line.location_id.usage=='internal':
+                is_qt_fabriquee=is_qt_fabriquee-line.product_uom_qty
+
+
+
+
+
         product_package = False
         if self.product_id and self.product_id.packaging_ids:
             pack_brw        = self.product_id.packaging_ids[0]
@@ -25,18 +34,20 @@ class MrpProduction(models.Model):
             is_qt_prevue    = self.product_qty 
         if package_qty==0:
             package_qty=1
-        self.product_package = product_package
-        self.package_qty     = package_qty
-        self.is_qt_prevue    = is_qt_prevue / package_qty
-        self.is_qt_fabriquee = is_qt_fabriquee / package_qty
-        self.is_qt_rebut     = is_qt_rebut / package_qty
-        self.is_qt_reste     = self.is_qt_prevue - self.is_qt_fabriquee
+        self.product_package     = product_package
+        self.package_qty         = package_qty
+        self.is_qt_prevue        = is_qt_prevue / package_qty
+        self.is_qt_fabriquee_uom = is_qt_fabriquee 
+        self.is_qt_fabriquee     = is_qt_fabriquee / package_qty
+        self.is_qt_rebut         = is_qt_rebut / package_qty
+        self.is_qt_reste         = self.is_qt_prevue - self.is_qt_fabriquee
 
 
     product_package           = fields.Many2one('product.ul'           , compute="_compute", string="Unité de conditionnement")
     package_qty               = fields.Float(string='Qt par UC'        , compute="_compute")
     is_qt_prevue              = fields.Float(string="Qt prévue (UC)"   , compute="_compute")
     is_qt_fabriquee           = fields.Float(string="Qt fabriquée (UC)", compute="_compute")
+    is_qt_fabriquee_uom       = fields.Float(string="Qt fabriquée"     , compute="_compute")
     is_qt_rebut               = fields.Float(string="Qt rebut (UC)"    , compute="_compute")
     is_qt_reste               = fields.Float(string="Qt reste (UC)"    , compute="_compute")
     date_planned              = fields.Datetime(string='Date plannifiée', required=True, readonly=False)
@@ -44,114 +55,58 @@ class MrpProduction(models.Model):
     mrp_product_suggestion_id = fields.Many2one('mrp.prevision','MRP Product Suggestion')
 
 
-#    @api.multi
-#    def action_confirm(self):
-#        for rec in self:
-#            if rec.mrp_product_suggestion_id:
-#                rec.mrp_product_suggestion_id.unlink()
-#        return super(MrpProduction, self).action_confirm()
 
+    @api.multi
+    def action_produce(self, production_id, qty, production_mode, wiz=False):
+        stock_mov_obj = self.env['stock.move']
+        uom_obj       = self.env["product.uom"]
+        production    = self.browse(production_id)
+        qty_uom       = uom_obj._compute_qty(production.product_uom.id, qty, production.product_id.uom_id.id)
+        precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
 
-
-
-
-
-    def action_produce(self, cr, uid, production_id, production_qty, production_mode, wiz=False, context=None):
-        """ To produce final product based on production mode (consume/consume&produce).
-        If Production mode is consume, all stock move lines of raw materials will be done/consumed.
-        If Production mode is consume & produce, all stock move lines of raw materials will be done/consumed
-        and stock move lines of final product will be also done/produced.
-        @param production_id: the ID of mrp.production object
-        @param production_qty: specify qty to produce in the uom of the production order
-        @param production_mode: specify production mode (consume/consume&produce).
-        @param wiz: the mrp produce product wizard, which will tell the amount of consumed products needed
-        @return: True
-        """
-        stock_mov_obj = self.pool.get('stock.move')
-        uom_obj = self.pool.get("product.uom")
-        production = self.browse(cr, uid, production_id, context=context)
-        production_qty_uom = uom_obj._compute_qty(cr, uid, production.product_uom.id, production_qty, production.product_id.uom_id.id)
-        precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Product Unit of Measure')
+        #** Traitement des produits finis **************************************
         main_production_move = False
         if production_mode == 'consume_produce':
-            produced_products = {}
-            for produced_product in production.move_created_ids2:
-                if produced_product.scrapped:
-                    continue
-                if not produced_products.get(produced_product.product_id.id, False):
-                    produced_products[produced_product.product_id.id] = 0
-                produced_products[produced_product.product_id.id] += produced_product.product_qty
-            if production.move_created_ids:
-                for produce_product in production.move_created_ids:
-                    subproduct_factor = self._get_subproduct_factor(cr, uid, production.id, produce_product.id, context=context)
-                    lot_id = False
-                    if wiz:
-                        lot_id = wiz.lot_id.id
-                    qty = min(subproduct_factor * production_qty_uom, produce_product.product_qty) #Needed when producing more than maximum quantity
+            for move in production.move_created_ids:
+                dest_id=wiz.finished_products_location_id
+                reste=move.product_uom_qty
+                if not dest_id.scrap_location:
+                    reste=reste-qty_uom
+                move.product_uom_qty=reste
+                if qty_uom>=0:
+                    location_id      = move.location_id.id
+                    location_dest_id = dest_id.id
+                else:
+                    qty_uom=-qty_uom
+                    location_id      = dest_id.id
+                    location_dest_id = move.location_id.id 
+                lot_id = wiz.lot_id.id
+                new_move = move.copy(default={
+                    'product_uom_qty'  : qty_uom, 
+                    'production_id'    : production_id,
+                    'location_id'      : location_id,
+                    'location_dest_id' : location_dest_id,
+                    'restrict_lot_id'  : lot_id
+                })
+                new_move.action_confirm()
+                new_move.action_done()
+                main_production_move = new_move.id
+        #***********************************************************************
 
-                    #location_id=production.location_dest_id.id
-                    new_moves = stock_mov_obj.action_consume(cr, uid, [produce_product.id], qty,
-                                                             location_id=produce_product.location_id.id, restrict_lot_id=lot_id, context=context)
-                    stock_mov_obj.write(cr, uid, new_moves, {'production_id': production_id}, context=context)
-                    remaining_qty = subproduct_factor * production_qty_uom - qty
-                    if not float_is_zero(remaining_qty, precision_digits=precision):
-                        extra_move_id = stock_mov_obj.copy(cr, uid, produce_product.id, default={'product_uom_qty': remaining_qty,
-                                                                                                 'production_id': production_id}, context=context)
-                        stock_mov_obj.action_confirm(cr, uid, [extra_move_id], context=context)
-                        stock_mov_obj.action_done(cr, uid, [extra_move_id], context=context)
-    
-                    if produce_product.product_id.id == production.product_id.id:
-                        main_production_move = produce_product.id
-            else:
-                e_move_id = False
-                if production.move_created_ids2:
-                    e_move_id = production.move_created_ids2[0]
-                    extra_move_id = stock_mov_obj.copy(cr, uid, e_move_id.id, default={
-                        'product_uom_qty'  : production_qty_uom, 
-                        'production_id'    : production_id,
-                        'location_dest_id' : production.location_dest_id.id
-                    }, context=context)
-                    stock_mov_obj.action_confirm(cr, uid, [extra_move_id], context=context)
-                    stock_mov_obj.action_done(cr, uid, [extra_move_id], context=context)
-
-    
-
-
+        #** Traitement des composants ******************************************
         if production_mode in ['consume', 'consume_produce']:
-            if wiz:
-                consume_lines = []
-                for cons in wiz.consume_lines:
-                    consume_lines.append({'product_id': cons.product_id.id, 'lot_id': cons.lot_id.id, 'product_qty': cons.product_qty})
-            else:
-                consume_lines = self._calculate_qty(cr, uid, production, production_qty_uom, context=context)
-            for consume in consume_lines:
-                remaining_qty = consume['product_qty']
-                for raw_material_line in production.move_lines:
-                    if raw_material_line.state in ('done', 'cancel'):
-                        continue
-                    if remaining_qty <= 0:
-                        break
-                    if consume['product_id'] != raw_material_line.product_id.id:
-                        continue
-                    consumed_qty = min(remaining_qty, raw_material_line.product_qty)
-                    stock_mov_obj.action_consume(cr, uid, [raw_material_line.id], consumed_qty, raw_material_line.location_id.id,
-                                                 restrict_lot_id=consume['lot_id'], consumed_for=main_production_move, context=context)
-                    remaining_qty -= consumed_qty
-                if not float_is_zero(remaining_qty, precision_digits=precision):
-                    product = self.pool.get('product.product').browse(cr, uid, consume['product_id'], context=context)
-                    extra_move_id = self._make_consume_line_from_data(cr, uid, production, product, product.uom_id.id, remaining_qty, False, 0, context=context)
-                    stock_mov_obj.write(cr, uid, [extra_move_id], {'restrict_lot_id': consume['lot_id'],
-                                                                    'consumed_for': main_production_move}, context=context)
-                    stock_mov_obj.action_done(cr, uid, [extra_move_id], context=context)
+            sequence=0
+            for move in production.move_lines:
+                sequence=sequence+1
+                for wiz_line in wiz.consume_lines:
+                    if move.product_id==wiz_line.product_id and wiz_line.is_sequence==sequence:
+                        consumed_qty=wiz_line.product_qty
+                        move.action_consume(consumed_qty, move.location_id.id, restrict_lot_id=False, consumed_for=main_production_move)
+            return
+        #***********************************************************************
 
-        self.message_post(cr, uid, production_id, body=_("%s produced") % self._description, context=context)
 
-        # Remove remaining products to consume if no more products to produce
-        if not production.move_created_ids and production.move_lines:
-            stock_mov_obj.action_cancel(cr, uid, [x.id for x in production.move_lines], context=context)
 
-        self.signal_workflow(cr, uid, [production_id], 'button_produce_done')
-        return True
     
 
     @api.v7
@@ -198,6 +153,7 @@ class MrpProduction(models.Model):
 
     @api.multi
     def action_done(self):
+        self.action_cancel()
         self.write({'state': 'done', 'date_finished': time.strftime('%Y-%m-%d %H:%M:%S')})
         return True
     

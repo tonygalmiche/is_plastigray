@@ -31,15 +31,6 @@ class mrp_bom(models.Model):
 
 
 
-
-
-
-#    @api.one
-#    @api.depends('product_tmpl_id')
-#    def _compute_display_name(self):
-#        self.display_name = self.product_tmpl_id.is_code
-
-
 class mrp_bom_line(models.Model):
     _name = 'mrp.bom.line'
     _inherit = 'mrp.bom.line'
@@ -89,7 +80,6 @@ class mrp_bom_line(models.Model):
 
     @api.multi
     def action_acces_nomenclature(self):
-        print self
         for obj in self:
             product_tmpl_id=obj.product_id.product_tmpl_id.id
             nomenclatures=self.env['mrp.bom'].search([['product_tmpl_id', '=', product_tmpl_id]])

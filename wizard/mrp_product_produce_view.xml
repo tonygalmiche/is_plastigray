@@ -12,10 +12,10 @@
                     <field name="package_qty"     readonly="1" />
                     <field name="product_package_qty" context="{'is_product_package_qty':1}" />
                     <field name="finished_products_location_id" widget="selection"  />
-
-
                 </field>
-
+                <xpath expr="/form/group[@string='To Consume']/field/tree/field[@name='lot_id']" position="replace">
+                    <field name="is_sequence" readonly="1" />
+                </xpath>
             </field>
         </record>
 

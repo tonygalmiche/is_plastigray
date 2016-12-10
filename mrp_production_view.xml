@@ -2,6 +2,7 @@
 <openerp>
     <data>
 
+
     <!-- Ordre de fabrication -->
         <record model="ir.ui.view" id="view_mrp_production_form_view_extended_form">
             <field name="name">mrp.production.form</field>
@@ -13,11 +14,26 @@
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
 
-                <xpath expr="//form/header/button[@name='action_cancel']"
-                    position="after">
+                <!--
+                <xpath expr="//form/header/button[@name='action_cancel']" position="after">
                     <button name="action_done" class="oe_highlight" type="object"
                          attrs="{'invisible':['|',('is_done','=',False),('state','!=','in_production')]}" string="Solder cet OF" />
                 </xpath>
+                -->
+
+                <xpath expr="//form/header/button[@name='action_cancel']" position="replace">
+                    <button name="action_done" type="object"
+                         attrs="{'invisible':['|',('is_done','=',False),('state','!=','in_production')]}" string="Solder cet OF" />
+                </xpath>
+
+
+                <button string="Update" position="replace">
+                    <button type="action" name="%(mrp.action_change_production_qty)d"
+                        string="Update" states="confirmed,ready,in_production" class="oe_edit_only oe_link"/>
+                </button>
+
+
+
                 <xpath expr="//form/header/button[@string='Produce']" position="replace">
                     <button 
                         name="%(mrp.act_mrp_product_produce)d" 
@@ -27,8 +43,9 @@
                 </xpath>
 
                 <field name="date_planned" position="after">
-                    <field name="is_qt_prevue" />
+                    <field name="is_qt_fabriquee_uom" />
                     <field name="is_qt_fabriquee" />
+                    <field name="is_qt_prevue" />
                     <field name="is_qt_reste" />
                     <field name="is_qt_rebut" />
 
@@ -48,9 +65,20 @@
                 <button icon="terp-gtk-jump-to-ltr" position="attributes" > 
                     <attribute name="invisible">1</attribute>
                 </button>
+
+
+                <xpath expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']" position="replace">
+                    <field name="product_uom_qty"  string="Quantity" digits="(14, 4)" />
+                </xpath>
+                <xpath expr="//field[@name='move_lines2']/tree/field[@name='product_uom_qty']" position="replace">
+                    <field name="product_uom_qty"  string="Quantity" digits="(14, 4)" />
+                </xpath>
+
+
+
+
             </field>
         </record>
-
 
 
 

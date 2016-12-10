@@ -93,6 +93,7 @@
         "report/is_cas_emplois.xml",
         "report/is_nomenclature_sans_gamme.xml",
         "report/is_stock_valorise.xml",
+        "report/is_mouvement_stock.xml",
         "menu.xml",  
         "security/res.groups.xml",
         "security/ir.model.access.csv",

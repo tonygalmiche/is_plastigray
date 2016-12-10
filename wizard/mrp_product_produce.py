@@ -3,6 +3,14 @@
 from openerp.exceptions import except_orm
 from openerp import models, fields, api, _
 
+
+
+class mrp_product_produce_line(models.TransientModel):
+    _inherit="mrp.product.produce.line"
+
+    is_sequence = fields.Integer('Sequence')
+
+
 class mrp_product_produce(models.TransientModel):
     _inherit = "mrp.product.produce"
 
@@ -81,20 +89,29 @@ class mrp_product_produce(models.TransientModel):
         context = dict(context or {})
         prod_obj = self.pool.get("mrp.production")
         production = prod_obj.browse(cr, uid, context['active_id'], context=context)
-#         if product_qty > production.product_qty and context.get('is_product_package_qty',False) == False:
-#             raise except_orm('Warning','Please enter valid product quantity.')
         ret_val = super(mrp_product_produce, self).on_change_qty(cr, uid, ids, product_qty, consume_lines, context=context)
         new_consume_lines = []
-        if product_qty > 0:
-            context.update({'is_custom_compute':True,'qty_to_compute':product_qty})
-            lines = prod_obj._prepare_lines(cr, uid, production, properties=None, context=context)[0]
-            for line in lines:
-                new_consume_lines.append([0, False, {'lot_id': False, 
-                                                     'product_id': line.get('product_id',False),
-                                                     'product_qty': line.get('product_qty',0.0)
-                                                     }
-                                          ])
-            ret_val['value'].update({'consume_lines': new_consume_lines})
+        inverse=False
+        if product_qty<0:
+            product_qty=-product_qty
+            inverse=True
+        context.update({'is_custom_compute':True,'qty_to_compute':product_qty})
+        lines = prod_obj._prepare_lines(cr, uid, production, properties=None, context=context)[0]
+        sequence=0
+        for line in lines:
+            sequence=sequence+1
+            qty=line.get('product_qty',0.0)
+            if inverse:
+                qty=-qty
+            new_consume_lines.append([0, False, {
+                'is_sequence'   : sequence,
+                'lot_id'     : False, 
+                'product_id' : line.get('product_id',False),
+                'product_qty': qty
+            }])
+        ret_val['value'].update({'consume_lines': new_consume_lines})
+        if inverse:
+            product_qty=-product_qty
         if production.package_qty > 0:
             product_package_qty = product_qty / production.package_qty
             ret_val['value'].update({'product_package_qty': product_package_qty})
@@ -112,20 +129,30 @@ class mrp_product_produce(models.TransientModel):
     def do_produce(self):
         cr, uid, context = self.env.args
         production_id = context.get('active_id', False)
-        assert production_id, "Production Id should be specified in context as a Active ID."
-        mrp_product_obj = self.env['mrp.production']
-        stock_move_obj = self.env["stock.move"]
-        production_brw = mrp_product_obj.browse(production_id)
-        location_dest_id=production_brw.location_dest_id.id
-        if self.finished_products_location_id:
-            
 
-            production_brw.location_dest_id = self.finished_products_location_id
-            move_ids = stock_move_obj.search([('production_id','=', production_id),('state','!=', 'done')])
-            for move in move_ids:
-                move.location_dest_id = self.finished_products_location_id
+
+
+#        assert production_id, "Production Id should be specified in context as a Active ID."
+        mrp_product_obj = self.env['mrp.production']
+#        stock_move_obj = self.env["stock.move"]
+#        production_brw = mrp_product_obj.browse(production_id)
+#        location_dest_id=production_brw.location_dest_id.id
+#        if self.finished_products_location_id:
+#            production_brw.location_dest_id = self.finished_products_location_id
+#            move_ids = stock_move_obj.search([('production_id','=', production_id),('state','!=', 'done')])
+#            for move in move_ids:
+#                move.location_dest_id = self.finished_products_location_id
+
+#        print production_id,self.product_qty, self.mode
+
         mrp_product_obj.action_produce(production_id,self.product_qty, self.mode, self)
-        production_brw.location_dest_id = location_dest_id
+#        production_brw.location_dest_id = location_dest_id
         return {}
+
+
+
+
+
+
 
 

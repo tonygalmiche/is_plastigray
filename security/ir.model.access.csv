@@ -76,7 +76,7 @@ access_is_facturation_fournisseur_justification,access_is_facturation_fournisseu
 access_is_bon_transfert,access_is_bon_transfert,model_is_bon_transfert,base.group_sale_manager,1,1,1,1
 access_is_bon_transfert_line,access_is_bon_transfert_line,model_is_bon_transfert_line,base.group_sale_manager,1,1,1,1
 
-
+access_is_mouvement_stock,access_is_mouvement_stock,model_is_mouvement_stock,base.group_sale_manager,1,1,1,1
 
 
 
