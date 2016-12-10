@@ -94,6 +94,7 @@
         "report/is_nomenclature_sans_gamme.xml",
         "report/is_stock_valorise.xml",
         "report/is_mouvement_stock.xml",
+        "report/is_ligne_reception.xml",
         "menu.xml",  
         "security/res.groups.xml",
         "security/ir.model.access.csv",

@@ -79,6 +79,8 @@ access_is_bon_transfert_line,access_is_bon_transfert_line,model_is_bon_transfert
 access_is_mouvement_stock,access_is_mouvement_stock,model_is_mouvement_stock,base.group_sale_manager,1,1,1,1
 
 
+access_is_ligne_reception,access_is_ligne_reception,model_is_ligne_reception,base.group_sale_manager,1,1,1,1
+
 
 
 

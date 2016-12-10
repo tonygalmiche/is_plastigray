@@ -85,11 +85,9 @@
     <menuitem id="menu_is_achats_cde_ouverte_10"  sequence="10" name="Commandes prévisionnelles"   parent="menu_is_achats_cde_ouverte" action="is_cde_ouverte_fournisseur_action" />
     <menuitem id="menu_is_achats_cde_ouverte_20"  sequence="20" name="Lignes"               parent="menu_is_achats_cde_ouverte" action="is_cde_ouverte_fournisseur_product_action" />
 
-
-
     <menuitem id="menu_is_achats_rcp"     sequence="40" name="Réceptions"             parent="menu_is_achats" />
-    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions à traiter"   parent="menu_is_achats_rcp" action="is_reception_a_traiter_action" />
-    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Toutes les réceptions"  parent="menu_is_achats_rcp" action="is_reception_toutes_action" />
+    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions à traiter"   parent="menu_is_achats_rcp" action="is_ligne_reception_a_traiter_action" />
+    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Toutes les réceptions"  parent="menu_is_achats_rcp" action="is_ligne_reception_action" />
 
     <menuitem id="menu_is_achats_fac"     sequence="50" name="Facturation"            parent="menu_is_achats" />
     <menuitem id="menu_is_achats_fac_10"  sequence="10" name="Réceptions à facturer"  parent="menu_is_achats_fac" action="is_reception_a_facturer_action" />
