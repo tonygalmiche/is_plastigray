@@ -32,10 +32,10 @@ class is_ligne_reception(models.Model):
         cr.execute("""
             CREATE OR REPLACE view is_ligne_reception AS (
                 select  sm.id,
-                        sp.id as picking_id, 
-                        po.id as order_id,  
-                        sp.partner_id, 
-                        sm.product_id, 
+                        sp.id                 as picking_id, 
+                        po.id                 as order_id,  
+                        sp.partner_id         as partner_id, 
+                        pt.id                 as product_id, 
                         pt.is_ref_fournisseur as ref_fournisseur,
                         sm.product_uom_qty,
                         sm.product_uom,
