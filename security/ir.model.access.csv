@@ -1,4 +1,14 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_is_commentaire_mouvement_stock,access_is_commentaire_mouvement_stock,model_is_commentaire_mouvement_stock,base.group_user,1,0,0,0
+access_report_stock_lot_bloque,access_report_stock_lot_bloque,model_report_stock_lot_bloque,base.group_user,1,0,0,0
+access_report_stock_lot_debloque,access_report_stock_lot_debloque,model_report_stock_lot_debloque,base.group_user,1,0,0,0
+access_report_stock_lot_change_location,access_report_stock_lot_change_location,model_report_stock_lot_change_location,base.group_user,1,0,0,0
+access_report_stock_lot_rebut,access_report_stock_lot_rebut,model_report_stock_lot_rebut,base.group_user,1,0,0,0
+access_is_gestion_lot,access_is_gestion_lot,model_is_gestion_lot,base.group_user,1,0,0,0
+access_is_stock_mise_rebut,access_is_stock_mise_rebut,model_is_stock_mise_rebut,base.group_user,1,0,0,0
+
+
 access_is_edi_cde_cli,access_is_edi_cde_cli,model_is_edi_cde_cli,base.group_sale_manager,1,1,1,1
 access_is_edi_cde_cli_line,access_is_edi_cde_cli_line,model_is_edi_cde_cli_line,base.group_sale_manager,1,1,1,1
 access_is_pdc,access_is_pdc,model_is_pdc,mrp.group_mrp_manager,1,1,1,1

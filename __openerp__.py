@@ -23,13 +23,21 @@
         "mrp",                    # MRP
         "mrp_operations",         # Gammes
         "purchase",               # Gestion des achats
-        "is_inventory",           # Modifications Inventaires
+        #"is_inventory",           # Modifications Inventaires
         "is_mold",                # Moules et Projets pour l'injection plastique
         "is_pg_product",          # Fiche article
-        "is_gestion_lot",         # Gestion des lots pour le contrôle qualité
+        #"is_gestion_lot",         # Gestion des lots pour le contrôle qualité
         "account_cancel",         # Permet d'autoriser l'annulation des factures 
     ], 
     "data" : [
+
+
+
+
+
+
+
+
         "res_partner_view.xml",  # Vue partenaire modifiée
         "assets.xml",            # Permet d'ajouter des css et des js
         "sale_view.xml",
@@ -59,6 +67,13 @@
         "is_bon_transfert_view.xml",
         "purchase_view.xml",
         "res_users_view.xml",
+
+
+        "wizard/is_gestion_lot_view.xml",
+        "wizard/is_stock_mise_rebut_view.xml",
+
+
+
         "wizard/is_liste_servir_wizard_view.xml",
         "wizard/generate_previsions_view.xml",
         "wizard/mrp_product_produce_view.xml",
@@ -79,6 +94,12 @@
         "views/report_bon_transfert.xml",
         "views/report_purchaseorder.xml",
         "views/report.xml",
+
+        "report/stock_bloquer_lot.xml",
+        "report/stock_debloquer_lot.xml",
+        "report/stock_change_location_lot.xml",
+        "report/stock_rebut_lot.xml",
+
         "report/is_pic_3mois.xml",
         "report/is_comparatif_gamme_standard_generique.xml",
         "report/is_comparatif_tps_article_gamme.xml",

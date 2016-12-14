@@ -7,7 +7,19 @@ from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 
 
-     
+class stock_location(models.Model):
+    _inherit = 'stock.location'
+
+    control_quality = fields.Boolean(u'Contrôle qualité', default=False)
+
+
+class is_commentaire_mouvement_stock(models.Model):
+    _name = 'is.commentaire.mouvement.stock'
+    _description = 'Comentaires sur les mouvements'
+
+    name = fields.Char('Description', required=True)
+
+
 class stock_picking(models.Model):
     _inherit = "stock.picking"
     _order   = "date desc, name desc"

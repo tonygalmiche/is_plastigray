@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_is_gestion_lot_form" model="ir.ui.view">
+            <field name="name">is.gestion.lot.form</field>
+            <field name="model">is.gestion.lot</field>
+            <field name="arch" type="xml">
+                <form string="Bloquer un lot">
+                  <group>
+                	<group>
+                		<field name="operation" invisible="1" />
+                    	<field name="product_id"  />
+						<field name="prod_lot_id" />
+						<field name="product_qty" />
+                    </group>
+                    <group>
+                    	<field name="location_src_id" widget="selection" />
+						<field name="location_dest_bloq_id" widget="selection" domain="[('control_quality','=',True), ('usage','=','internal')]" attrs="{'invisible':[('operation','!=','bloque')], 'required':[('operation','=','bloque')]}" />
+						<field name="location_dest_debloq_id" widget="selection" domain="[('control_quality','=',False), ('usage','=','internal')]" attrs="{'invisible':[('operation','!=','debloque')], 'required':[('operation','=','debloque')]}" />
+						<field name="location_dest_change_id" widget="selection" domain="[('usage','=','internal')]" attrs="{'invisible':[('operation','!=','change_location')], 'required':[('operation','=','change_location')]}" />
+                    </group>
+                  </group>
+                  <group>
+                	<field name="description" placeholder="Description ..."/>
+                  </group>
+                  <footer>
+                        <button string='Valider' name="validate_lot" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_is_gestion_lot" model="ir.actions.act_window">
+            <field name="name">Gestion de lot</field>
+            <field name="res_model">is.gestion.lot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+           <field name="view_id" ref="view_is_gestion_lot_form"/>
+           <field name="target">new</field>
+        </record>
+				
+
+    </data>
+</openerp>

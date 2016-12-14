@@ -57,6 +57,7 @@
     <menuitem id="menu_is_dt_tables_25" sequence="25" name="Unités logistique"      parent="menu_is_dt_tables"   action="product.product_ul_form_action" groups="product.group_stock_packaging"/>
     <menuitem id="menu_is_dt_tables_30" sequence="30" name="Entrepôts"              parent="menu_is_dt_tables"   action="stock.action_warehouse_form" />
     <menuitem id="menu_is_dt_tables_35" sequence="35" name="Emplacements"           parent="menu_is_dt_tables"   action="stock.action_location_form" />
+    <menuitem id="menu_is_dt_tables_37" sequence="37" name="Commentaires sur stock" parent="menu_is_dt_tables"   action="is_commentaire_lot_action"      />
     <menuitem id="menu_is_dt_tables_40" sequence="40" name="Section analytique"     parent="menu_is_dt_tables"   action="is_pg_product.is_section_analytique_action" />
     <menuitem id="menu_is_dt_tables_45" sequence="45" name="Responsable budget"     parent="menu_is_dt_tables"   action="is_pg_product.is_budget_responsable_action" />
     <menuitem id="menu_is_dt_tables_50" sequence="50" name="Nature budget"          parent="menu_is_dt_tables"   action="is_pg_product.is_budget_nature_action" />
@@ -159,23 +160,22 @@
     <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"/>
     <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="stock.quantsact" groups=""/>
     <menuitem id="menu_is_production_stock_20" sequence="20" name="Lots"                     parent="menu_is_production_stock"  action="stock.action_production_lot_form" />
-    <menuitem id="menu_is_production_stock_30" sequence="30" name="Mouvements en cours"      parent="menu_is_production_stock"  action="is_mouvements_en_cours_action" />
     <menuitem id="menu_is_production_stock_40" sequence="40" name="Mouvements terminés"      parent="menu_is_production_stock"  action="is_mouvements_termines_action" />
-    <menuitem id="menu_is_production_stock_40" sequence="40" name="Tous les mouvements"      parent="menu_is_production_stock"  action="is_mouvements_tous_action" />
-    <menuitem id="menu_is_production_stock_50" sequence="40" name="Mouvements avec lot"      parent="menu_is_production_stock"  action="is_mouvement_stock_action" />
+    <menuitem id="menu_is_production_stock_50" sequence="50" name="Tous les mouvements"      parent="menu_is_production_stock"  action="is_mouvements_tous_action" />
+    <menuitem id="menu_is_production_stock_60" sequence="60" name="Mouvements avec lot"      parent="menu_is_production_stock"  action="is_mouvement_stock_action" />
 
 
 
 
     <menuitem id="menu_is_production_qualite"    sequence="25" name="Contrôle Qualité"         parent="menu_is_production"/>
-    <menuitem id="menu_is_production_qualite_10" sequence="40" name="Bloquer un lot"           parent="menu_is_production_qualite"  action="is_gestion_lot.action_stock_lot_bloque_report"          groups="is_gestion_lot.group_is_bloque_lot" />
-    <menuitem id="menu_is_production_qualite_20" sequence="50" name="Débloquer un lot"         parent="menu_is_production_qualite"  action="is_gestion_lot.action_stock_lot_debloque_report"        groups="is_gestion_lot.group_is_debloque_lot" />
-    <menuitem id="menu_is_production_qualite_30" sequence="60" name="Changement d'emplacement" parent="menu_is_production_qualite"  action="is_gestion_lot.action_stock_lot_change_location_report" groups="is_gestion_lot.group_is_change_locations" />
-    <menuitem id="menu_is_production_qualite_40" sequence="70" name="Lots au rebut"            parent="menu_is_production_qualite"  action="is_gestion_lot.action_stock_lot_rebut_report"           groups="is_gestion_lot.group_is_rebut_lot" />
+    <menuitem id="menu_is_production_qualite_10" sequence="40" name="Bloquer un lot"           parent="menu_is_production_qualite"  action="action_stock_lot_bloque_report"           />
+    <menuitem id="menu_is_production_qualite_20" sequence="50" name="Débloquer un lot"         parent="menu_is_production_qualite"  action="action_stock_lot_debloque_report"         />
+    <menuitem id="menu_is_production_qualite_30" sequence="60" name="Changement d'emplacement" parent="menu_is_production_qualite"  action="action_stock_lot_change_location_report"  />
+    <menuitem id="menu_is_production_qualite_40" sequence="70" name="Lots au rebut"            parent="menu_is_production_qualite"  action="action_stock_lot_rebut_report"            />
 
     <menuitem id="menu_is_production_inv"    sequence="30" name="Inventaires"                parent="menu_is_production"/>
     <menuitem id="menu_is_production_inv_10" sequence="10" name="Inventaires"                parent="menu_is_production_inv" action="stock.action_inventory_form" />
-    <menuitem id="menu_is_production_inv_20" sequence="20" name="Lignes d'inventaires"       parent="menu_is_production_inv" action="is_inventory.action_is_inventory" />
+    <menuitem id="menu_is_production_inv_20" sequence="20" name="Lignes d'inventaires"       parent="menu_is_production_inv" action="is_stock_inventory_line_action" />
 
     <menuitem id="menu_is_production_inv_import"    sequence="35" name="Import Inventaire"   parent="menu_is_production"/>
     <menuitem id="menu_is_production_inv_import_10" sequence="10" name="Import Inventaire"   parent="menu_is_production_inv_import" action="is_inventaire_action" />

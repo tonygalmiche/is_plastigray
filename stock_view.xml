@@ -2,6 +2,52 @@
 <openerp>
     <data>
 
+
+        <!-- Fiche Emplacement de stock -->
+        <record id="is_stock_location_view_form" model="ir.ui.view">
+            <field name="name">is.stock.location.form</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='usage']" position="after">
+                    <field name="control_quality" /> 
+                </xpath>
+            </field>
+        </record>
+        
+        <!-- Commentaire mouvement de stock -->
+        <record id="view_is_commentaire_tree" model="ir.ui.view">
+            <field name="name">is.commentaire.mouvement.stock.tree</field>
+            <field name="model">is.commentaire.mouvement.stock</field>
+            <field name="arch" type="xml">
+                <tree string="Commentaire">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="view_is_commentaire_form" model="ir.ui.view">
+            <field name="name">is.commentaire.mouvement.stock.form</field>
+            <field name="model">is.commentaire.mouvement.stock</field>
+            <field name="arch" type="xml">
+                <form string="Commentaire">
+                  <group name='comment'>
+                    <field name="name"  />
+                  </group>
+                </form>
+            </field>
+        </record>
+        <record id="is_commentaire_lot_action" model="ir.actions.act_window">
+            <field name="name">Commentaires sur stock</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.commentaire.mouvement.stock</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+        <!-- stock.move --> 
         <record id="is_view_move_tree" model="ir.ui.view">
             <field name="name">is_view_move_tree</field>
             <field name="model">stock.move</field>
@@ -26,6 +72,28 @@
             </field>
         </record>
 
+        <!-- Liste des mouvements terminés --> 
+        <record id="is_mouvements_termines_tree" model="ir.ui.view">
+            <field name="name">is_mouvements_termines_tree</field>
+            <field name="model">stock.move</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="product_id"/>
+                    <field name="location_id"/>
+                    <field name="location_dest_id"/>
+                    <field name="product_uom_qty" digits="(14,2)" sum="Total"/>
+                    <field name="product_uom" string="Unité"/>
+                    <field name="picking_type_id"/>
+                    <field name="picking_id"/>
+                    <field name="origin"/>
+                    <field name="write_uid"/>
+                    <field name="state" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+
 
         <!-- Mouvements en cours -->
         <record id="is_mouvements_en_cours_action" model="ir.actions.act_window">
@@ -45,7 +113,7 @@
             <field name="res_model">stock.move</field>
             <field name="domain">[('state','in',['done'])]</field>
             <field name="limit">200</field>
-            <field name="view_id" ref="is_view_move_tree"/>
+            <field name="view_id" ref="is_mouvements_termines_tree"/>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
@@ -294,6 +362,16 @@
             <field name="res_model">stock.picking</field>
             <field name="domain">[('invoice_state','=', '2binvoiced'),('picking_type_id','=', 2),('state','=', 'done')]</field>
             <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- Action pour accèder aux lignes de l'inventaire pour l'importation -->
+        <record id="is_stock_inventory_line_action" model="ir.actions.act_window" >
+            <field name="name">is_stock_inventory_line_action</field>
+            <field name="res_model">stock.inventory.line</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>

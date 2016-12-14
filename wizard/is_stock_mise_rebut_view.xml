@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--  Mise au rebut -->
+
+       <record id="view_is_stock_mise_rebut_wizard" model="ir.ui.view">
+            <field name="name">Gestion de rebut</field>
+            <field name="model">is.stock.mise.rebut</field>
+            <field name="arch" type="xml">
+                <form string="Gestion de rebut">
+                    <group>
+                        <field name="product_id" />
+                        <field name="product_qty"/>
+                        <field name="restrict_lot_id"  />
+                        <field name="location_src_id" invisible="1" />
+                        <field name="operation" invisible="1" />
+                        <field name="location_rebut_id" widget="selection"
+                            domain="[('usage','!=','view'),('scrap_location','=',True)]" attrs="{'invisible': [('operation','=','rebut')], 'required':[('operation','!=','rebut')]}" />
+                        <field name="location_revert_id" widget="selection"
+                            domain="[('usage','=','internal')]" attrs="{'invisible': [('operation','!=','rebut')], 'required':[('operation','=','rebut')]}" />
+                    </group>
+                    <footer>
+                        <button name="validate_scrap" string="Valider" type="object" class="oe_highlight"  />
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_is_mise_rebut" model="ir.actions.act_window">
+            <field name="name">Mettre au rebut</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.stock.mise.rebut</field>
+            <field name="view_id" ref="view_is_stock_mise_rebut_wizard"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <record id="action_is_reverse_mise_rebut" model="ir.actions.act_window">
+            <field name="name">Remettre au stock</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.stock.mise.rebut</field>
+            <field name="view_id" ref="view_is_stock_mise_rebut_wizard"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>
