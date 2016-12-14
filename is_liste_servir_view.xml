@@ -73,11 +73,16 @@
                             </group>
                         </group>
                         <group>
+
+
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="true" colors="red:livrable == False">
                                     <field name="product_id" widget="many2one_clickable"/>
-                                    <field name="stocka"/>
-                                    <field name="stockq"/>
+                                    <field name="mold_id"/>
+                                    <field name="stocka" invisible="1"/>
+                                    <field name="stockq" invisible="1"/>
+                                    <field name="stocka_uc"/>
+                                    <field name="stockq_uc"/>
                                     <field name="quantite"/>
                                     <field name="livrable" invisible="1"/>
                                     <field name="date_livraison"/>
@@ -112,6 +117,8 @@
                                     </tree>
                                 </field>
                             </group>
+                        </group>
+                        <group>
                             <group>
                                 <field name="um_ids" nolabel="1">
                                     <tree editable="bottom">
@@ -120,6 +127,9 @@
                                     </tree>
                                 </field>
                             </group>
+                        </group>
+                        <group>
+                            <a href="http://dynacase/?sole=Y&amp;app=FDL&amp;action=FDL_CARD&amp;id=69112" target="_blank">Liste des certificats matière</a>
                         </group>
                     </sheet>
                 </form>

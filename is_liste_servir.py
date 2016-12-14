@@ -520,7 +520,7 @@ class is_liste_servir(models.Model):
 
 class is_liste_servir_line(models.Model):
     _name='is.liste.servir.line'
-    _order='id'
+    _order='product_id'
 
 
     @api.depends('product_id','quantite')
@@ -539,23 +539,31 @@ class is_liste_servir_line(models.Model):
                 for row in result:
                     if row[0]:
                         qt=obj.quantite
-                        nb_uc=row[1]
-                        if row[1]!=0:
-                            nb_uc=qt/nb_uc
+                        stocka_uc=obj.stocka
+                        stockq_uc=obj.stockq
+                        uc=row[1]
+                        if uc!=0:
+                            nb_uc=qt/uc
+                            stocka_uc=stocka_uc/uc
+                            stockq_uc=stockq_uc/uc
                         nb_um=row[3]
                         if row[1]!=0 and row[3]!=0:
                             nb_um=qt/(row[1]*row[3])
-                        obj.uc_id=row[0]
-                        obj.nb_uc=nb_uc
-                        obj.um_id=row[2]
-                        obj.nb_um=nb_um
-
+                        obj.uc_id     = row[0]
+                        obj.nb_uc     = nb_uc
+                        obj.um_id     = row[2]
+                        obj.nb_um     = nb_um
+                        obj.stocka_uc = stocka_uc
+                        obj.stockq_uc = stockq_uc
 
 
     liste_servir_id    = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
     product_id         = fields.Many2one('product.product', 'Article', required=True, readonly=True)
+    mold_id            = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
     stocka             = fields.Float('Stock A')
     stockq             = fields.Float('Stock Q')
+    stocka_uc          = fields.Float('Stock A en UC', compute='_compute', readonly=True, store=True)
+    stockq_uc          = fields.Float('Stock Q en UC', compute='_compute', readonly=True, store=True)
     date_livraison     = fields.Date('Date de livraison', readonly=True)
     quantite           = fields.Float('Quantité')
     livrable           = fields.Boolean("Livrable")
