@@ -105,7 +105,7 @@ class product_product(models.Model):
         return super(product_product, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
  
 
-    def get_stock(self, product_id, control_quality=False):
+    def get_stock(self, product_id, control_quality=False, location=False):
         cr=self._cr
         SQL="""
             select sum(sq.qty) 
@@ -114,6 +114,8 @@ class product_product(models.Model):
                   and sl.usage='internal' and sl.active='t' """
         if control_quality:
             SQL=SQL+" and sl.control_quality='"+str(control_quality)+"' "
+        if location:
+            SQL=SQL+" and sl.name='"+str(location)+"' "
         cr.execute(SQL)
         result = cr.fetchall()
         stock=0

@@ -351,9 +351,9 @@ class is_liste_servir(models.Model):
                         certificat_matiere=row2[0]
                 #***************************************************************
 
-
-                stocka=self.env['product.product'].get_stock(product_id,'f')
-                stockq=self.env['product.product'].get_stock(product_id,'t')
+                stock01 = self.env['product.product'].get_stock(product_id,'f', '01')
+                stocka  = self.env['product.product'].get_stock(product_id,'f')
+                stockq  = self.env['product.product'].get_stock(product_id,'t')
                 qt=row[5]
 
                 livrable=False
@@ -376,6 +376,7 @@ class is_liste_servir(models.Model):
                         'prix'              : row[6],
                         'quantite'          : qt,
                         'livrable'          : livrable,
+                        'stock01'           : stock01,
                         'stocka'            : stocka,
                         'stockq'            : stockq,
                         'certificat_matiere': certificat_matiere,
@@ -539,13 +540,15 @@ class is_liste_servir_line(models.Model):
                 for row in result:
                     if row[0]:
                         qt=obj.quantite
-                        stocka_uc=obj.stocka
-                        stockq_uc=obj.stockq
+                        stock01_uc = obj.stock01
+                        stocka_uc  = obj.stocka
+                        stockq_uc  = obj.stockq
                         uc=row[1]
                         if uc!=0:
                             nb_uc=qt/uc
-                            stocka_uc=stocka_uc/uc
-                            stockq_uc=stockq_uc/uc
+                            stock01_uc = stock01_uc/uc
+                            stocka_uc  = stocka_uc/uc
+                            stockq_uc  = stockq_uc/uc
                         nb_um=row[3]
                         if row[1]!=0 and row[3]!=0:
                             nb_um=qt/(row[1]*row[3])
@@ -553,26 +556,30 @@ class is_liste_servir_line(models.Model):
                         obj.nb_uc     = nb_uc
                         obj.um_id     = row[2]
                         obj.nb_um     = nb_um
-                        obj.stocka_uc = stocka_uc
-                        obj.stockq_uc = stockq_uc
+                        obj.stock01_uc = stock01_uc
+                        obj.stocka_uc  = stocka_uc
+                        obj.stockq_uc  = stockq_uc
 
 
     liste_servir_id    = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
     product_id         = fields.Many2one('product.product', 'Article', required=True, readonly=True)
-    mold_id            = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
-    stocka             = fields.Float('Stock A')
-    stockq             = fields.Float('Stock Q')
-    stocka_uc          = fields.Float('Stock A en UC', compute='_compute', readonly=True, store=True)
-    stockq_uc          = fields.Float('Stock Q en UC', compute='_compute', readonly=True, store=True)
+    mold_id            = fields.Many2one('is.mold', 'Moule'          , related='product_id.is_mold_id', readonly=True)
+    dossierf_id        = fields.Many2one('is.dossierf', 'Dossier F'  , related='product_id.is_dossierf_id', readonly=True)
+    stock01            = fields.Float('Stock 01 US' , help="Stock 01 en US")
+    stocka             = fields.Float('Stock A US'  , help="Stock A en US")
+    stockq             = fields.Float('Stock Q US'  , help="Stock Q en US")
+    stock01_uc         = fields.Float('Stock 01'    , help="Stock 01 en UC", compute='_compute', readonly=True, store=True)
+    stocka_uc          = fields.Float('Stock A'     , help="Stock A en UC" , compute='_compute', readonly=True, store=True)
+    stockq_uc          = fields.Float('Stock Q'     , help="Stock Q en UC" , compute='_compute', readonly=True, store=True)
     date_livraison     = fields.Date('Date de livraison', readonly=True)
-    quantite           = fields.Float('Quantité')
+    quantite           = fields.Float('Qt Cde US')
     livrable           = fields.Boolean("Livrable")
     date_expedition    = fields.Date("Date d'expédition"   , readonly=True)
     prix               = fields.Float("Prix", digits=(14,4), readonly=True)
     uc_id              = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
-    nb_uc              = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True)
+    nb_uc              = fields.Float('Qt Cde UC'                    , compute='_compute', readonly=True, store=True)
     um_id              = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
-    nb_um              = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True)
+    nb_um              = fields.Float('Qt Cde UM'                    , compute='_compute', readonly=True, store=True)
     mixer              = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
     order_id           = fields.Many2one('sale.order', 'Commande', required=True     , readonly=True)
     client_order_ref   = fields.Char('Cde Client', readonly=True)

@@ -25,6 +25,12 @@
             .nowrap{
                 white-space: nowrap;
             }
+            .message {
+                font-size:12pt;
+                font-weight: bold;
+                background:orange;
+            }
+
 
         </template>
 
@@ -143,43 +149,76 @@
     <t t-call="is_plastigray.report_liste_servir_external_layout">
         <div class="page">
             <div class="row">
+                <div class="col-xs-8">
+                    <t t-if="o.message">
+                        <div class="message"  t-field="o.message"/>
+                    </t>
+                </div>
+            </div><br />
+            <div class="row">
                 <div class="col-xs-12">
                     <table class="table table-condensed">
                         <thead>
                             <tr >
-                                <th class="text-left"  style="vertical-align:top">Code PG</th>
-                                <th class="text-left"  style="vertical-align:top">Désignation</th>
-                                <th class="text-center"  style="vertical-align:top">Moule</th>
-                                <th class="text-right"  style="vertical-align:top">Quantité</th>
-                                <th class="text-center"  style="vertical-align:top">Date Livraison</th>
-                                <th class="text-center"  style="vertical-align:top">Date Expédition</th>
+                                <th class="text-left"   style="vertical-align:top">Code PG / Moule / Gest / Ref Client<br />Désignation</th>
+                                <th class="text-left"   style="vertical-align:top">N°Cde</th>
+                                <th class="text-center" style="vertical-align:top">Date<br />Exp/Liv</th>
+                                <th class="text-left"   style="vertical-align:top">UC</th>
+                                <th class="text-right"  style="vertical-align:top">Stock 01</th>
                                 <th class="text-right"  style="vertical-align:top">Stock A</th>
                                 <th class="text-right"  style="vertical-align:top">Stock Q</th>
-                                <th class="text-right"  style="vertical-align:top">Nb UC</th>
-                                <th class="text-left"  style="vertical-align:top">UC</th>
-                                <th class="text-right"  style="vertical-align:top">Nb UM</th>
-                                <th class="text-left"  style="vertical-align:top">UM</th>
-                                <th class="text-center"  style="vertical-align:top">Mixer</th>
-                                <th class="text-left"  style="vertical-align:top">Cde Client</th>
-                                <th class="text-left"  style="vertical-align:top">Commentaire</th>
+                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />UC</th>
+                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />US</th>
+                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />UM</th>
+                                <th class="text-left"   style="vertical-align:top">UM</th>
+                                <th class="text-right"  style="vertical-align:top">Poids<br />(en kg)</th>
+                                <th class="text-center" style="vertical-align:top">Mixer</th>
+                                <th class="text-left"   style="vertical-align:top">Commentaire</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr t-foreach="o.line_ids" t-as="l">
-                                <td class="text-left">    <span t-field="l.product_id.is_code"/> </td>
-                                <td class="text-left">    <span t-field="l.product_id.product_tmpl_id.name"/> </td>
-                                <td class="text-center">  <span t-field="l.mold_id"/> </td>
-                                <td class="text-right nowrap">   <t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'/> </td>
-                                <td class="text-center">  <span t-field="l.date_livraison"/> </td>
-                                <td class="text-center">  <span t-field="l.date_expedition"/> </td>
-                                <td class="text-right nowrap">   <t t-esc='"{:,.1f}".format(l.stocka_uc).replace(","," ").replace(".",",")'/> </td>
-                                <td class="text-right nowrap">   <t t-esc='"{:,.1f}".format(l.stockq_uc).replace(","," ").replace(".",",")'/> </td>
-                                <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(l.nb_uc).replace(","," ").replace(".",",")'/>  </td>
+                                <td class="text-left">    
+                                    <span t-field="l.product_id.is_code"/> / 
+                                    <span t-field="l.product_id.is_mold_id"/>
+                                    <span t-field="l.product_id.is_dossierf_id"/> / 
+                                    <span t-field="l.product_id.is_gestionnaire_id.name"/> / 
+                                    <span t-field="l.product_id.is_ref_client"/> <br />
+                                    <span t-field="l.product_id.product_tmpl_id.name"/>
+                                </td>
+                                <td class="text-left">
+                                    <span t-field="l.client_order_ref"/> 
+                                </td>
+                                <td class="text-center">
+                                    <span t-field="l.date_expedition"/><br />
+                                    <span t-field="l.date_livraison"/>
+                                </td>
                                 <td class="text-left">    <span t-field="l.uc_id"/> </td>
+                                <td class="text-right nowrap">   
+                                    <t t-esc='"{:,.1f}".format(l.stock01_uc).replace(","," ").replace(".",",")'/> 
+                                </td>
+                                <td class="text-right nowrap">   
+                                    <t t-esc='"{:,.1f}".format(l.stocka_uc).replace(","," ").replace(".",",")'/> 
+                                </td>
+                                <td class="text-right nowrap">  
+                                    <t t-esc='"{:,.1f}".format(l.stockq_uc).replace(","," ").replace(".",",")'/>
+                                </td>
+                                <td class="text-right nowrap">  
+                                    <t t-esc='"{:,.1f}".format(l.nb_uc).replace(","," ").replace(".",",")'/>  
+                                </td>
+                                <td class="text-right nowrap">  
+                                    <t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'/> 
+                                </td>
                                 <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(l.nb_um).replace(","," ").replace(".",",")'/>  </td>
                                 <td class="text-left">    <span t-field="l.um_id"/> </td>
+
+                                <td class="text-right nowrap">  
+                                    <t t-esc='"{:,.0f}".format(l.quantite*l.product_id.product_tmpl_id.weight).replace(","," ").replace(".",",")'/> 
+                                </td>
+
+
                                 <td class="text-center"><t t-if="l.mixer">x</t></td>
-                                <td class="text-left">    <span t-field="l.client_order_ref"/> </td>
+
                                 <td class="text-left">    <span t-field="l.anomalie"/> </td>
                             </tr>
                         </tbody>
