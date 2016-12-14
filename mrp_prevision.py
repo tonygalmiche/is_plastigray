@@ -75,6 +75,8 @@ class mrp_prevision(models.Model):
                         vals=res['value']
                         vals['order_id']=order.id
                         vals['product_id']=obj.product_id.id
+                        if 'taxes_id' in vals:
+                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
                         order_line=order_line_obj.create(vals)
                         order.wkf_bid_received() 
                         order.wkf_confirm_order()
