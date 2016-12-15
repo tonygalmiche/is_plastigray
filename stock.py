@@ -7,6 +7,12 @@ from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 
 
+class stock_pack_operation(models.Model):
+    _inherit = "stock.pack.operation"
+  
+    move_id = fields.Many2one('stock.move', 'Stock Move')
+
+
 class stock_location(models.Model):
     _inherit = 'stock.location'
 
@@ -31,6 +37,283 @@ class stock_picking(models.Model):
     is_date_livraison    = fields.Date('Date de livraison')
     is_num_bl            = fields.Char("N° BL fournisseur")
     is_date_reception    = fields.Date('Date de réception')
+
+
+
+
+    #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
+    @api.cr_uid_ids_context
+    def do_prepare_partial(self, cr, uid, picking_ids, context=None):
+        context = context or {}
+        pack_operation_obj = self.pool.get('stock.pack.operation')
+        #used to avoid recomputing the remaining quantities at each new pack operation created
+        ctx = context.copy()
+        ctx['no_recompute'] = True
+
+        #get list of existing operations and delete them
+        existing_package_ids = pack_operation_obj.search(cr, uid, [('picking_id', 'in', picking_ids)], context=context)
+        if existing_package_ids:
+            pack_operation_obj.unlink(cr, uid, existing_package_ids, context)
+        for picking in self.browse(cr, uid, picking_ids, context=context):
+            forced_qties = {}  # Quantity remaining after calculating reserved quants
+            picking_quants = []
+            #Calculate packages, reserved quants, qtys of this picking's moves
+            for move in picking.move_lines:
+                if move.state not in ('assigned', 'confirmed', 'waiting'):
+                    continue
+                move_quants = move.reserved_quant_ids
+                picking_quants += move_quants
+                forced_qty = (move.state == 'assigned') and move.product_qty - sum([x.qty for x in move_quants]) or 0
+                #if we used force_assign() on the move, or if the move is incoming, forced_qty > 0
+                if float_compare(forced_qty, 0, precision_rounding=move.product_id.uom_id.rounding) > 0:
+                    if forced_qties.get(move):
+                        forced_qties[move] += forced_qty
+                    else:
+                        forced_qties[move] = forced_qty
+            for vals in self._prepare_pack_ops(cr, uid, picking, picking_quants, forced_qties, context=context):
+                pack_operation_obj.create(cr, uid, vals, context=ctx)
+        #recompute the remaining quantities all at once
+        self.do_recompute_remaining_quantities(cr, uid, picking_ids, context=context)
+        self.write(cr, uid, picking_ids, {'recompute_pack_op': False}, context=context)
+ 
+
+    #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
+    def _prepare_pack_ops(self, cr, uid, picking, quants, forced_qties, context=None):
+        """ returns a list of dict, ready to be used in create() of stock.pack.operation.
+
+        :param picking: browse record (stock.picking)
+        :param quants: browse record list (stock.quant). List of quants associated to the picking
+        :param forced_qties: dictionary showing for each product (keys) its corresponding quantity (value) that is not covered by the quants associated to the picking
+        """
+        def _picking_putaway_apply(product):
+            location = False
+            # Search putaway strategy
+            if product_putaway_strats.get(product.id):
+                location = product_putaway_strats[product.id]
+            else:
+                location = self.pool.get('stock.location').get_putaway_strategy(cr, uid, picking.location_dest_id, product, context=context)
+                product_putaway_strats[product.id] = location
+            return location or picking.location_dest_id.id
+
+        # If we encounter an UoM that is smaller than the default UoM or the one already chosen, use the new one instead.
+        product_uom = {} # Determines UoM used in pack operations
+        location_dest_id = None
+        location_id = None
+        for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
+            if not product_uom.get(move.product_id.id):
+                product_uom[move.product_id.id] = move.product_id.uom_id
+            if move.product_uom.id != move.product_id.uom_id.id and move.product_uom.factor > product_uom[move.product_id.id].factor:
+                product_uom[move.product_id.id] = move.product_uom
+            if not move.scrapped:
+                if location_dest_id and move.location_dest_id.id != location_dest_id:
+                    raise Warning(_('The destination location must be the same for all the moves of the picking.'))
+                location_dest_id = move.location_dest_id.id
+                if location_id and move.location_id.id != location_id:
+                    raise Warning(_('The source location must be the same for all the moves of the picking.'))
+                location_id = move.location_id.id
+
+        pack_obj = self.pool.get("stock.quant.package")
+        quant_obj = self.pool.get("stock.quant")
+        vals = []
+        qtys_grouped = {}
+        #for each quant of the picking, find the suggested location
+        quants_suggested_locations = {}
+        product_putaway_strats = {}
+        for quant in quants:
+            if quant.qty <= 0:
+                continue
+            suggested_location_id = _picking_putaway_apply(quant.product_id)
+            quants_suggested_locations[quant] = suggested_location_id
+
+        #find the packages we can movei as a whole
+        top_lvl_packages = self._get_top_level_packages(cr, uid, quants_suggested_locations, context=context)
+        # and then create pack operations for the top-level packages found
+        for pack in top_lvl_packages:
+            pack_quant_ids = pack_obj.get_content(cr, uid, [pack.id], context=context)
+            pack_quants = quant_obj.browse(cr, uid, pack_quant_ids, context=context)
+            vals.append({
+                    'picking_id': picking.id,
+                    'package_id': pack.id,
+                    'product_qty': 1.0,
+                    'location_id': pack.location_id.id,
+                    'location_dest_id': quants_suggested_locations[pack_quants[0]],
+                    'owner_id': pack.owner_id.id,
+                })
+            #remove the quants inside the package so that they are excluded from the rest of the computation
+            for quant in pack_quants:
+                del quants_suggested_locations[quant]
+
+        # Go through all remaining reserved quants and group by product, package, lot, owner, source location and dest location
+        for quant, dest_location_id in quants_suggested_locations.items():
+            key = (quant.product_id.id, quant.package_id.id, quant.lot_id.id, quant.owner_id.id, quant.location_id.id, dest_location_id,quant.reservation_id.id)
+            if qtys_grouped.get(key):
+                qtys_grouped[key] += quant.qty
+            else:
+                qtys_grouped[key] = quant.qty
+
+        # Do the same for the forced quantities (in cases of force_assign or incomming shipment for example)
+        for move, qty in forced_qties.items():
+            if qty <= 0:
+                continue
+            suggested_location_id = _picking_putaway_apply(move.product_id)
+            key = (move.product_id.id, False, False, picking.owner_id.id, picking.location_id.id, suggested_location_id,move.id)
+            if qtys_grouped.get(key):
+                qtys_grouped[key] += qty
+            else:
+                qtys_grouped[key] = qty
+        # Create the necessary operations for the grouped quants and remaining qtys
+        uom_obj = self.pool.get('product.uom')
+        prevals = {}
+        for key, qty in qtys_grouped.items():
+            product = self.pool.get("product.product").browse(cr, uid, key[0], context=context)
+            uom_id = product.uom_id.id
+            qty_uom = qty
+            if product_uom.get(key[0]):
+                uom_id = product_uom[key[0]].id
+                qty_uom = uom_obj._compute_qty(cr, uid, product.uom_id.id, qty, uom_id)
+            val_dict = {
+                'picking_id': picking.id,
+                'product_qty': qty_uom,
+                'product_id': key[0],
+                'package_id': key[1],
+                'lot_id': key[2],
+                'owner_id': key[3],
+                'location_id': key[4],
+                'location_dest_id': key[5],
+                'product_uom_id': uom_id,
+                'move_id':key[6],
+            }
+            if key[6] in prevals:
+                prevals[key[6]].append(val_dict)
+            else:
+                prevals[key[6]] = [val_dict]
+        # prevals var holds the operations in order to create them in the same order than the picking stock moves if possible
+        processed_products = set()
+        for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
+            if move.id not in processed_products:
+                vals += prevals.get(move.id, [])
+                processed_products.add(move.id)
+        return vals
+    
+
+    #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
+    def recompute_remaining_qty(self, cr, uid, picking, context=None):
+        def _create_link_for_index(operation_id, index, product_id, qty_to_assign, move_id, quant_id=False):
+            move_dict = prod2move_ids[move_id][index]
+            qty_on_link = min(move_dict['remaining_qty'], qty_to_assign)
+            self.pool.get('stock.move.operation.link').create(cr, uid, {'move_id': move_dict['move'].id, 'operation_id': operation_id, 'qty': qty_on_link, 'reserved_quant_id': quant_id}, context=context)
+            if move_dict['remaining_qty'] == qty_on_link:
+                prod2move_ids[move_id].pop(index)
+            else:
+                move_dict['remaining_qty'] -= qty_on_link
+            return qty_on_link
+
+        def _create_link_for_quant(operation_id, quant, qty, move_id):
+            """create a link for given operation and reserved move of given quant, for the max quantity possible, and returns this quantity"""
+            if not quant.reservation_id.id:
+                return _create_link_for_product(operation_id, quant.product_id.id, qty, move_id)
+            qty_on_link = 0
+            for i in range(0, len(prod2move_ids[move_id])):
+                if prod2move_ids[move_id][i]['move'].id != quant.reservation_id.id:
+                    continue
+                qty_on_link = _create_link_for_index(operation_id, i, quant.product_id.id, qty, move_id,quant_id=quant.id)
+                break
+            return qty_on_link
+
+        def _create_link_for_product(operation_id, product_id, qty, move_id):
+            '''method that creates the link between a given operation and move(s) of given product, for the given quantity.
+            Returns True if it was possible to create links for the requested quantity (False if there was not enough quantity on stock moves)'''
+            qty_to_assign = qty
+            prod_obj = self.pool.get("product.product")
+            product = prod_obj.browse(cr, uid, product_id)
+            rounding = product.uom_id.rounding
+            qtyassign_cmp = float_compare(qty_to_assign, 0.0, precision_rounding=rounding)
+            if prod2move_ids.get(move_id):
+                while prod2move_ids[move_id] and qtyassign_cmp > 0:
+                    qty_on_link = _create_link_for_index(operation_id, 0, product_id, qty_to_assign, move_id, quant_id=False)
+                    qty_to_assign -= qty_on_link
+                    qtyassign_cmp = float_compare(qty_to_assign, 0.0, precision_rounding=rounding)
+            return qtyassign_cmp == 0
+
+        uom_obj = self.pool.get('product.uom')
+        package_obj = self.pool.get('stock.quant.package')
+        quant_obj = self.pool.get('stock.quant')
+        link_obj = self.pool.get('stock.move.operation.link')
+        quants_in_package_done = set()
+        prod2move_ids = {}
+        still_to_do = []
+        #make a dictionary giving for each product, the moves and related quantity that can be used in operation links
+        for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
+            if not prod2move_ids.get(move.id):
+                prod2move_ids[move.id] = [{'move': move, 'remaining_qty': move.product_qty}]
+            else:
+                prod2move_ids[move.id].append({'move': move, 'remaining_qty': move.product_qty})
+        need_rereserve = False
+        #sort the operations in order to give higher priority to those with a package, then a serial number
+        operations = picking.pack_operation_ids
+        operations = sorted(operations, key=lambda x: ((x.package_id and not x.product_id) and -4 or 0) + (x.package_id and -2 or 0) + (x.lot_id and -1 or 0))
+        #delete existing operations to start again from scratch
+        links = link_obj.search(cr, uid, [('operation_id', 'in', [x.id for x in operations])], context=context)
+        if links:
+            link_obj.unlink(cr, uid, links, context=context)
+        #1) first, try to create links when quants can be identified without any doubt
+        for ops in operations:
+            #for each operation, create the links with the stock move by seeking on the matching reserved quants,
+            #and deffer the operation if there is some ambiguity on the move to select
+            if ops.package_id and not ops.product_id:
+                #entire package
+                quant_ids = package_obj.get_content(cr, uid, [ops.package_id.id], context=context)
+                for quant in quant_obj.browse(cr, uid, quant_ids, context=context):
+                    remaining_qty_on_quant = quant.qty
+                    if quant.reservation_id:
+                        #avoid quants being counted twice
+                        quants_in_package_done.add(quant.id)
+                        qty_on_link = _create_link_for_quant(ops.id, quant, quant.qty, ops.move_id.id)
+                        remaining_qty_on_quant -= qty_on_link
+                    if remaining_qty_on_quant:
+                        still_to_do.append((ops, quant.product_id.id, remaining_qty_on_quant))
+                        need_rereserve = True
+            elif ops.product_id.id:
+                #Check moves with same product
+                qty_to_assign = uom_obj._compute_qty_obj(cr, uid, ops.product_uom_id, ops.product_qty, ops.product_id.uom_id, context=context)
+                for move_dict in prod2move_ids.get(ops.move_id.id, []):
+                    move = move_dict['move']
+                    for quant in move.reserved_quant_ids:
+                        if not qty_to_assign > 0:
+                            break
+                        if quant.id in quants_in_package_done:
+                            continue
+
+                        #check if the quant is matching the operation details
+                        if ops.package_id:
+                            flag = quant.package_id and bool(package_obj.search(cr, uid, [('id', 'child_of', [ops.package_id.id])], context=context)) or False
+                        else:
+                            flag = not quant.package_id.id
+                        flag = flag and ((ops.lot_id and ops.lot_id.id == quant.lot_id.id) or not ops.lot_id)
+                        flag = flag and (ops.owner_id.id == quant.owner_id.id)
+                        if flag:
+                            max_qty_on_link = min(quant.qty, qty_to_assign)
+                            qty_on_link = _create_link_for_quant(ops.id, quant, max_qty_on_link, ops.move_id.id)
+                            qty_to_assign -= qty_on_link
+                qty_assign_cmp = float_compare(qty_to_assign, 0, precision_rounding=ops.product_id.uom_id.rounding)
+                if qty_assign_cmp > 0:
+                    #qty reserved is less than qty put in operations. We need to create a link but it's deferred after we processed
+                    #all the quants (because they leave no choice on their related move and needs to be processed with higher priority)
+                    still_to_do += [(ops, ops.product_id.id, qty_to_assign)]
+                    need_rereserve = True
+
+        #2) then, process the remaining part
+        all_op_processed = True
+        for ops, product_id, remaining_qty in still_to_do:
+            all_op_processed = _create_link_for_product(ops.id, product_id, remaining_qty,ops.move_id.id) and all_op_processed
+        return (need_rereserve, all_op_processed)
+
+
+
+
+
+
+
 
 
     @api.onchange('location_id')
