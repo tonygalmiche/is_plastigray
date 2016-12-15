@@ -3,7 +3,24 @@
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
+import base64
+import tempfile
+import os
+from pyPdf import PdfFileWriter, PdfFileReader
+from contextlib import closing
+import datetime
 
+#TODO : 
+# - Ajouter le bouton pour envouer par mail
+# - Ajouter un tableau pour avoir l'historique des actions
+# - Pour les commandes fermes, tenir compte de la date de validation => Ne pas envoyer les commandes validées de plus de 7 jours
+
+
+type_commande_list=[
+    ('ouverte'         , 'Commande ouverte'),
+    ('ferme'           , 'Commande ferme avec horizon'),
+    ('ferme_uniquement', 'Commande ferme uniquement')
+]
 
 class is_cde_ouverte_fournisseur(models.Model):
     _name='is.cde.ouverte.fournisseur'
@@ -12,7 +29,7 @@ class is_cde_ouverte_fournisseur(models.Model):
     name          = fields.Char("N°", readonly=True)
     partner_id    = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
     pricelist_id  = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
-    type_commande = fields.Selection([('ouverte', 'Commande ouverte'),('ferme', 'Commande ferme avec horizon.')], "Type de commande", required=True)
+    type_commande = fields.Selection(type_commande_list, "Type de commande", required=True)
     sans_commande = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
     commentaire   = fields.Text("Commentaire")
     product_ids   = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
@@ -70,9 +87,100 @@ class is_cde_ouverte_fournisseur(models.Model):
 
 
     @api.multi
+    def _merge_pdf(self, documents):
+        """Merge PDF files into one.
+        :param documents: list of path of pdf files
+        :returns: path of the merged pdf
+        """
+        writer = PdfFileWriter()
+        streams = []  # We have to close the streams *after* PdfFilWriter's call to write()
+        for document in documents:
+            pdfreport = file(document, 'rb')
+            streams.append(pdfreport)
+            reader = PdfFileReader(pdfreport)
+            for page in range(0, reader.getNumPages()):
+                writer.addPage(reader.getPage(page))
+
+        merged_file_fd, merged_file_path = tempfile.mkstemp(suffix='.pdf', prefix='report.merged.tmp.')
+        with closing(os.fdopen(merged_file_fd, 'w')) as merged_file:
+            writer.write(merged_file)
+
+        for stream in streams:
+            stream.close()
+
+        return merged_file_path
+
+
+
+    @api.multi
+    def print_ferme_uniquement(self):
+        for obj in self:
+            orders=[]
+            for product in self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id)]):
+                for line in self.env['is.cde.ouverte.fournisseur.line'].search([('product_id','=',product.id)]):
+                    order=line.purchase_order_id
+                    if not order in orders:
+                        orders.append(order)
+            paths=[]
+            for order in orders:
+                pdfreport_id, pdfreport_path = tempfile.mkstemp(suffix='.pdf', prefix='order.tmp.')
+                pdf = self.env['report'].get_pdf(order, 'is_plastigray.is_report_purchaseorder')
+                f = open(pdfreport_path,'wb')
+                f.write(pdf)
+                f.close()
+                paths.append(pdfreport_path)
+            path_merged=self._merge_pdf(paths)
+            pdfs = open(path_merged,'rb').read().encode('base64')
+
+            #** Suppression des fiches temporaires *****************************
+            os.unlink(path_merged)
+            for path in paths:
+                os.unlink(path)
+            #*******************************************************************
+
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            attachment_obj = self.env['ir.attachment']
+            model=self._name
+            name='commandes.pdf'
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdfs,
+            }
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+            #*******************************************************************
+
+            return {
+                'type' : 'ir.actions.act_url',
+                'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
+                'target': 'self',
+            }
+
+
+
+
+
+
+    @api.multi
     def integrer_commandes(self):
         cr = self._cr
         for obj in self:
+
+
+
             for product in obj.product_ids:
                 product.imprimer=False
 
@@ -133,16 +241,32 @@ class is_cde_ouverte_fournisseur(models.Model):
             for product in obj.product_ids:
                 product.line_ids.unlink()
             for product in obj.product_ids:
-                for row in self.env['mrp.prevision'].search([('type','=','sa'),('product_id','=',product.product_id.id)]):
-                    vals={
-                        'product_id'       : product.id,
-                        'date'             : row.end_date,
-                        'type_cde'         : 'prev',
-                        'quantite'         : row.quantity,
-                        'mrp_prevision_id' : row.id,
-                    }
-                    line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
-                for row in self.env['purchase.order.line'].search([('state','=','confirmed'),('product_id','=',product.product_id.id)]):
+
+
+                if obj.type_commande!='ferme_uniquement':
+                    for row in self.env['mrp.prevision'].search([('type','=','sa'),('product_id','=',product.product_id.id)]):
+                        vals={
+                            'product_id'       : product.id,
+                            'date'             : row.end_date,
+                            'type_cde'         : 'prev',
+                            'quantite'         : row.quantity,
+                            'mrp_prevision_id' : row.id,
+                        }
+                        line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
+
+
+                now  = datetime.date.today()                     # Date du jour
+                date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                date_approve = date_approve.strftime('%Y-%m-%d')   # Formatage
+
+
+                where=[
+                    ('state'       ,'=', 'confirmed'),
+                    ('product_id'  ,'=', product.product_id.id),
+                    ('order_id.date_approve','>', date_approve)
+                ]
+                print where
+                for row in self.env['purchase.order.line'].search(where):
                     vals={
                         'product_id'        : product.id,
                         'date'              : row.date_planned,
@@ -165,19 +289,6 @@ class is_cde_ouverte_fournisseur_product(models.Model):
     qt_bl         = fields.Float("Qt reçue" , readonly=True)
     imprimer      = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
-
-
-#    @api.multi
-#    def onchange_product_id(self, partner_id, pricelist_id, product_id):
-#        if pricelist_id and product_id:
-#            product=self.env['product.product'].browse(product_id)
-#            prix_achat = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist_id],
-#                    product_id, product.lot_mini, partner_id, self._context)[pricelist_id]
-#            vals={}
-#            vals['value']={}
-#            vals['value']['prix_achat'] = prix_achat
-#            return vals
-
 
 
 class is_cde_ouverte_fournisseur_tarif(models.Model):

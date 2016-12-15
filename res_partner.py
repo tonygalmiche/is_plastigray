@@ -20,6 +20,14 @@ import_function=[
 # ******************************************************************************
 
 
+type_commande_list=[
+    ('ouverte'         , 'Commande ouverte'),
+    ('ferme'           , 'Commande ferme avec horizon'),
+    ('ferme_uniquement', 'Commande ferme uniquement')
+]
+
+
+
 class is_segment_achat(models.Model):
     _name = 'is.segment.achat'
     _description = "Segment d'achat"
@@ -146,10 +154,7 @@ class res_partner(models.Model):
         ('ref_article', '1 référence client = 1 BL'),
     ], 'Caractéristique des BL')
 
-    is_type_cde_fournisseur = fields.Selection([
-        ('ouverte', 'Commande ouverte'),
-        ('ferme', 'Commande ferme avec horizon.')
-    ], "Type commande fourniseur", readonly=True)
+    is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", readonly=True)
 
     _defaults = {
         'delai_transport': 0,

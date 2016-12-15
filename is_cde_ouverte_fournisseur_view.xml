@@ -26,10 +26,12 @@
             <field name="arch" type="xml">
                 <form string="Form">  
                     <header>
-                        <button name="integrer_commandes"       string="Intégrer les commandes et les SA" class="oe_highlight" type="object"  />
-                        <button name="print_commande_ouverte"   string="Imprimer la commande ouverte"     attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}" type="object"  />
-                        <button name="print_appel_de_livraison" string="Imprimer l'appel de livraison"    attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}" type="object" />
-                        <button name="print_appel_de_livraison" string="Imprimer l'horizon des besoins"   attrs="{'invisible': [('type_commande', '!=', 'ferme')]}" type="object" />
+                        <button name="integrer_commandes"       string="Intégrer les commandes"           attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" class="oe_highlight" type="object"  />
+                        <button name="integrer_commandes"       string="Intégrer les commandes et les SA" attrs="{'invisible': [('type_commande', '=' , 'ferme_uniquement')]}" class="oe_highlight" type="object"  />
+                        <button name="print_commande_ouverte"   string="Imprimer la commande ouverte"     attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object"  />
+                        <button name="print_appel_de_livraison" string="Imprimer l'appel de livraison"    attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object" />
+                        <button name="print_appel_de_livraison" string="Imprimer l'horizon des besoins"   attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"            type="object" />
+                        <button name="print_ferme_uniquement"   string="Imprimer les commandes fermes"    attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" type="object" />
                     </header>
                     <sheet>
                         <group>
