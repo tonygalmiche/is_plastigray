@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-
+        <!-- base.view_res_partner_filter --> 
        <record id="is_view_res_partner_filter" model="ir.ui.view">
             <field name="name">is_view_res_partner_filter</field>
             <field name="model">res.partner</field>
@@ -16,27 +16,15 @@
             </field>
         </record>
 
+        <!-- base.view_partner_form --> 
         <record id="is_view_partner_form" model="ir.ui.view">
             <field name="name">is_view_partner_form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
-
-                <!--
-                <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="is_secteur_activite" placeholder="Secteur d'activité" attrs="{'invisible': [('is_company', '=', False)]}"/> 
-                </xpath>
-
-                <xpath expr="//field[@name='ref']" position="before">
-                    <field name="is_num_fournisseur" attrs="{'invisible': ['|',('is_company', '=', False),('customer','=', False)]}"/>
-                </xpath>
-                -->
-
                 <xpath expr="//field[@name='street2']" position="after">
                     <field name="is_rue3" placeholder="Rue 3 ou Boite Postale" />
                 </xpath>
-
-
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="is_cofor" attrs="{'invisible': [('customer', '!=', True)] }"/>
                     <field name="is_incoterm" />
@@ -51,11 +39,6 @@
                     <field name="is_type_cde_fournisseur" attrs="{'invisible': [('supplier','=', False)]}" />
                     <field name="is_source_location_id" />
                 </xpath>
-
-                <xpath expr="//field[@name='property_payment_term']" position="after">
-                    <field name="is_escompte" />
-                </xpath>
-
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="invisible">1</attribute> 
                 </xpath>
@@ -85,24 +68,6 @@
                 <xpath expr="//page[@name='sales_purchases']" position="attributes">
                     <attribute name="attrs">{'invisible':[('is_company', '=', False)]}</attribute> 
                 </xpath>
-                <xpath expr="//page[@name='accounting_disabled']" position="attributes">
-                    <attribute name="attrs">{'invisible':True}</attribute> 
-                </xpath>
-                <xpath expr="//field[@name='last_reconciliation_date']" position="attributes">
-                    <attribute name="invisible">1</attribute> 
-                </xpath>
-                <xpath expr="//field[@name='credit_limit']" position="attributes">
-                    <attribute name="invisible">1</attribute> 
-                </xpath>
-                <xpath expr="//field[@name='credit']" position="attributes">
-                    <attribute name="invisible">1</attribute> 
-                </xpath>
-                <xpath expr="//field[@name='debit']" position="attributes">
-                    <attribute name="invisible">1</attribute> 
-                </xpath>
-                <xpath expr="//field[@name='bank_ids']" position="attributes">
-                    <attribute name="invisible">1</attribute> 
-                </xpath>
 
                 <xpath expr="//page[@name='sales_purchases']" position="after"> 
                     <page name='is_calendar' string="Calendrier" attrs="{'invisible':[('is_company', '=', False)]}">
@@ -130,10 +95,6 @@
                         </group>
                     </page>
                 </xpath>
-
-
-
-
                 <xpath expr="//page[@string='Contacts']" position="attributes">
                     <attribute name="attrs">{'invisible':True}</attribute>
                 </xpath>
@@ -150,7 +111,6 @@
                             </tree>
                         </field>
                     </page>
-
                     <page name="is_identification" string="Identification" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}">
                         <group>
                             <field name="is_segment_achat"     on_change="onchange_segment_id(is_segment_achat)"/>
@@ -171,8 +131,6 @@
                                 <field name="is_nb_jours_tolerance" attrs="{'invisible': [('is_tolerance_delai', '=', False)]}" />
                             </group>
                         </group>
-
-
                     </page>
                     <page name="is_qualite" string="Qualité" attrs="{'invisible': ['|',('is_company', '=', False),('supplier','=', False)]}">
                         <field name="is_certifications" >
@@ -180,7 +138,6 @@
                                 <group>
                                     <field name="is_norme" />
                                     <field name="is_date_validation" />
-                                    <!--<field name="is_certificat"/>-->
                               <field name="is_certificat_ids"  widget="many2many_binary"/>
                                     <field name="partner_id" invisible="1"/>
                                 </group>
@@ -193,8 +150,55 @@
                         </field>
                     </page>
                 </xpath>
+            </field>
+        </record>
+
+        <!-- Permet de masquer les boutons RDV et Opportunities -->
+        <record id="is_view_partners_form_crm1" model="ir.ui.view">
+            <field name="name">view.res.partner.form.crm.inherited1</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="crm.view_partners_form_crm1"/>
+            <field name="arch" type="xml">
+                <button icon="fa-calendar" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </button>
+                <button icon="fa-star" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </button>
+
+            </field>
+        </record>
 
 
+
+        <!-- Permet de modifier l'onglet 'Comptabilité' accessible uniquement au groupe 'account.group_account_invoice' => Sinon plantage -->
+        <record id="is_view_partner_form2" model="ir.ui.view">
+            <field name="name">is_view_partner_form2</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_payment_term']" position="after">
+                    <field name="is_escompte" />
+                </xpath>
+                <xpath expr="//page[@name='accounting_disabled']" position="attributes">
+                    <attribute name="attrs">{'invisible':True}</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='last_reconciliation_date']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='credit_limit']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='credit']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='debit']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
+                <xpath expr="//field[@name='bank_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </xpath>
                 <xpath expr="//field[@name='property_account_position']" position="after">
                     <field 
                         name="is_num_autorisation_tva" 
@@ -203,9 +207,8 @@
                             ('customer','!=', True),
                             ('property_account_position', '!=', 5 )
                         ]}" 
-                    /> <!-- 5 = Franchise de taxe -->
+                    /> 
                 </xpath>
-
                 <xpath expr="//field[@name='credit_limit']" position="after">
                     <field name="is_caracteristique_bl" attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
                     <field name="is_type_reglement"     attrs="{'invisible': [('is_company', '=', False)]}" />
@@ -213,12 +216,9 @@
                     <field name="is_code_client"        attrs="{'invisible': ['|',('is_company', '=', False),('supplier','!=', True)]}" />
                     <field name="is_rib_id"             attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
                 </xpath>
-
-
-
-
             </field>
         </record>
+
         <!-- Permet de masquer les champs opt_out et notify_email -->
        <record model="ir.ui.view" id="is_res_partner_opt_out_form">
             <field name="name">is_res_partner_opt_out_form</field>
@@ -269,62 +269,6 @@
             <field name="context">{}</field>
             <field name="domain">[('id','=',1)]</field>
         </record>
-
-
-
-
-
-
-        <!-- Imprimer les commandes ouvertes -->
-        <!--
-        <record id="imprimer_commande_ouverte_action_server" model="ir.actions.server">
-             <field name="name">Imprimer les commandes ouvertes</field>
-            <field name="model_id" ref="model_res_partner"/>
-            <field name="code">action = self.imprimer_commande_ouverte(cr, uid, context.get('active_ids', []), context=context)</field>
-        </record>
-        <record id="imprimer_commande_ouverte_ir_value" model="ir.values">
-            <field eval="'client_action_multi'" name="key2"/>
-            <field eval="'res.partner'" name="model"/>
-            <field name="name">Imprimer les commandes ouvertes</field>
-            <field eval="'ir.actions.server,%d'%imprimer_commande_ouverte_action_server" name="value"/>
-        </record>
-        -->
-
-
-
-<!--
-        <record id="base.view_partner_tree" model="ir.ui.view">
-            <field name="name">res.partner.tree</field>
-            <field name="model">res.partner</field>
-            <field eval="8" name="priority"/>
-            <field name="arch" type="xml">
-                <tree string="Contacts">
-                    <field name="name"/>
-                    <field name="is_code"/>
-                    <field name="is_adr_code"/>
-                    <field name="function" invisible="1"/>
-                    <field name="phone"/>
-                    <field name="email"/>
-                    <field name="user_id"    invisible="1"/>
-                    <field name="is_company" invisible="1"/>
-                    <field name="country_id" invisible="1"/>
-                    <field name="parent_id"  invisible="1"/>
-                </tree>
-            </field>
-        </record>
-
-
-        <record id="base.action_partner_customer_form" model="ir.actions.act_window">
-            <field name="name">Customers</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">res.partner</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,kanban,form</field>
-            <field name="domain">[]</field>
-            <field name="context">{'default_customer':1, 'search_default_customer':1}</field>
-            <field name="filter" eval="True"/>
-        </record>
--->
 
 
         <!-- Liste des fournisseurs -->

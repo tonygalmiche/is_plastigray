@@ -21,3 +21,6 @@ import is_comparatif_tarif_commande
 import is_stock_valorise
 import is_mouvement_stock
 import is_ligne_reception
+import is_users_groups
+import is_model_groups
+

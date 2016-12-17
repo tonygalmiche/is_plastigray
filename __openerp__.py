@@ -14,6 +14,7 @@
     "depends" : [
         "base",
         "mail",
+        "document",
         "crm",                    # CRM
         "account_voucher",        # eFacturation & Règlements
         "account_accountant",     # Comptabilité et finance
@@ -23,20 +24,15 @@
         "mrp",                    # MRP
         "mrp_operations",         # Gammes
         "purchase",               # Gestion des achats
-        #"is_inventory",           # Modifications Inventaires
         "is_mold",                # Moules et Projets pour l'injection plastique
         "is_pg_product",          # Fiche article
-        #"is_gestion_lot",         # Gestion des lots pour le contrôle qualité
         "account_cancel",         # Permet d'autoriser l'annulation des factures 
     ], 
     "data" : [
-
-
-
-
-
-
-
+        "security/res.groups.xml",
+        "security/ir.model.access.csv", # Permet de définir rapidement les accès de base en CSV
+        "security/ir.model.access.xml", # Permet de définit plus précisement les accès complèmenaires en XML pour mettre des commentaires
+        "security/res.groups.csv",
 
         "res_partner_view.xml",  # Vue partenaire modifiée
         "assets.xml",            # Permet d'ajouter des css et des js
@@ -67,13 +63,8 @@
         "is_bon_transfert_view.xml",
         "purchase_view.xml",
         "res_users_view.xml",
-
-
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
-
-
-
         "wizard/is_liste_servir_wizard_view.xml",
         "wizard/generate_previsions_view.xml",
         "wizard/mrp_product_produce_view.xml",
@@ -94,12 +85,10 @@
         "views/report_bon_transfert.xml",
         "views/report_purchaseorder.xml",
         "views/report.xml",
-
         "report/stock_bloquer_lot.xml",
         "report/stock_debloquer_lot.xml",
         "report/stock_change_location_lot.xml",
         "report/stock_rebut_lot.xml",
-
         "report/is_pic_3mois.xml",
         "report/is_comparatif_gamme_standard_generique.xml",
         "report/is_comparatif_tps_article_gamme.xml",
@@ -116,10 +105,9 @@
         "report/is_stock_valorise.xml",
         "report/is_mouvement_stock.xml",
         "report/is_ligne_reception.xml",
-        "menu.xml",  
-        "security/res.groups.xml",
-        "security/ir.model.access.csv",
-        "security/res.groups.csv",
+        "report/is_users_groups.xml",
+        "report/is_model_groups.xml",
+        "menu.xml",
     ], 
     "installable": True,
     "active": False

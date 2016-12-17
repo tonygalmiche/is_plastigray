@@ -2,6 +2,7 @@
 <openerp>
     <data>
 
+        <!-- Groupes -->
         <record id="is_view_groups_form" model="ir.ui.view">
             <field name="name">is_view_groups_form</field>
             <field name="model">res.groups</field>
@@ -12,6 +13,60 @@
                 </field>
             </field>
         </record>
+
+
+        <!-- Utilisateurs -->
+        <record id="is_view_users_form" model="ir.ui.view">
+            <field name="name">is_view_users_form</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="is_service_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_view_users_tree" model="ir.ui.view">
+            <field name="name">is_view_users_tree</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_tree"/>
+            <field name="arch" type="xml">
+                <field name="login" position="after">
+                    <field name="is_service_id"/>
+                </field>
+            </field>
+        </record>
+
+
+        <!-- Services -->
+        <record id="is_service_tree_view" model="ir.ui.view">
+            <field name="name">is_service_tree_view</field>
+            <field name="model">is.service</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_service_form_view" model="ir.ui.view">
+            <field name="name">is_service_form_view</field>
+            <field name="model">is.service</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" />
+                      </group> 
+                </form>
+            </field>
+        </record>
+        <record id="is_service_action" model="ir.actions.act_window">
+            <field name="name">Service</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.service</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
 
     </data>
 </openerp>

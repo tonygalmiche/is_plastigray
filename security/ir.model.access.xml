@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+
+
+    <!-- Accès au groupe 'Gestionnaire des tables' -->
+   <record id="is_gestionnaire_access"  model="ir.model.access" >
+        <field name="name">is_gestionnaire_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_gestionnaire')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_segment_access"  model="ir.model.access" >
+        <field name="name">is_product_segment_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_product_segment')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_famille_access"  model="ir.model.access" >
+        <field name="name">is_product_famille_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_product_famille')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_sous_famille_access"  model="ir.model.access" >
+        <field name="name">is_product_sous_famille_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_product_sous_famille')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_category_access"  model="ir.model.access" >
+        <field name="name">is_category_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_category')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_secteur_activite_access"  model="ir.model.access" >
+        <field name="name">is_secteur_activite_access</field>
+        <field name="model_id"    eval="ref('model_is_secteur_activite')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_budget_responsable_access"  model="ir.model.access" >
+        <field name="name">is_budget_responsable_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_budget_responsable')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_section_analytique_access"  model="ir.model.access" >
+        <field name="name">is_section_analytique_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_section_analytique')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_budget_nature_access"  model="ir.model.access" >
+        <field name="name">is_budget_nature_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_budget_nature')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_type_etiquette_access"  model="ir.model.access" >
+        <field name="name">is_type_etiquette_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_type_etiquette')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_config_champ_access"  model="ir.model.access" >
+        <field name="name">is_config_champ_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_config_champ')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_uom_access"  model="ir.model.access" >
+        <field name="name">is_product_uom_access</field>
+        <field name="model_id"    eval="ref('product.model_product_uom')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_ul_access"  model="ir.model.access" >
+        <field name="name">is_product_ul_access</field>
+        <field name="model_id"    eval="ref('product.model_product_ul')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_incoterms_access"  model="ir.model.access" >
+        <field name="name">is_stock_incoterms_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_incoterms')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_workcenter_access"  model="ir.model.access" >
+        <field name="name">is_mrp_workcenter_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_workcenter')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_resource_calendar_access"  model="ir.model.access" >
+        <field name="name">is_resource_calendar_access</field>
+        <field name="model_id"    eval="ref('resource.model_resource_calendar')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_segment_achat_access"  model="ir.model.access" >
+        <field name="name">is_segment_achat_access</field>
+        <field name="model_id"    eval="ref('model_is_segment_achat')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_famille_achat_access"  model="ir.model.access" >
+        <field name="name">is_famille_achat_access</field>
+        <field name="model_id"    eval="ref('model_is_famille_achat')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_site_access"  model="ir.model.access" >
+        <field name="name">is_site_access</field>
+        <field name="model_id"    eval="ref('model_is_site')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_transmission_cde_access"  model="ir.model.access" >
+        <field name="name">is_transmission_cde_access</field>
+        <field name="model_id"    eval="ref('model_is_transmission_cde')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_norme_certificats_access"  model="ir.model.access" >
+        <field name="name">is_norme_certificats_access</field>
+        <field name="model_id"    eval="ref('model_is_norme_certificats')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_certifications_qualite_access"  model="ir.model.access" >
+        <field name="name">is_certifications_qualite_access</field>
+        <field name="model_id"    eval="ref('model_is_certifications_qualite')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_facturation_fournisseur_access"  model="ir.model.access" >
+        <field name="name">is_facturation_fournisseur_access</field>
+        <field name="model_id"    eval="ref('model_is_facturation_fournisseur')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_facturation_fournisseur_justification_access"  model="ir.model.access" >
+        <field name="name">is_facturation_fournisseur_justification_access</field>
+        <field name="model_id"    eval="ref('model_is_facturation_fournisseur_justification')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_type_contact_access"  model="ir.model.access" >
+        <field name="name">is_type_contact_access</field>
+        <field name="model_id"    eval="ref('model_is_type_contact')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_escompte_access"  model="ir.model.access" >
+        <field name="name">is_escompte_access</field>
+        <field name="model_id"    eval="ref('model_is_escompte')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <!-- Gestionnaire des données techniques -->
+    <record id="is_product_product_access"  model="ir.model.access" >
+        <field name="name">is_product_product_access</field>
+        <field name="model_id"    eval="ref('product.model_product_product')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_template_access"  model="ir.model.access" >
+        <field name="name">is_product_template_access</field>
+        <field name="model_id"    eval="ref('product.model_product_template')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_price_history_access"  model="ir.model.access" >
+        <field name="name">is_product_price_history_access</field>
+        <field name="model_id"    eval="ref('product.model_product_price_history')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_supplierinfo_access"  model="ir.model.access" >
+        <field name="name">is_product_supplierinfo_access</field>
+        <field name="model_id"    eval="ref('product.model_product_supplierinfo')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_client_access"  model="ir.model.access" >
+        <field name="name">is_product_client_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_product_client')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_packaging_access"  model="ir.model.access" >
+        <field name="name">is_product_packaging_access</field>
+        <field name="model_id"    eval="ref('product.model_product_packaging')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_bom_access"  model="ir.model.access" >
+        <field name="name">is_mrp_bom_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_bom')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_bom_line_access"  model="ir.model.access" >
+        <field name="name">is_mrp_bom_line_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_bom_line')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_routing_access"  model="ir.model.access" >
+        <field name="name">is_mrp_routing_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_routing')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_routing_workcenter_access"  model="ir.model.access" >
+        <field name="name">is_mrp_routing_workcenter_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_routing_workcenter')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_calcul_access"  model="ir.model.access" >
+        <field name="name">is_cout_calcul_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_calcul')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_calcul_actualise_access"  model="ir.model.access" >
+        <field name="name">is_cout_calcul_actualise_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_calcul_actualise')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_access"  model="ir.model.access" >
+        <field name="name">is_cout_access</field>
+        <field name="model_id"    eval="ref('model_is_cout')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_nomenclature_access"  model="ir.model.access" >
+        <field name="name">is_cout_nomenclature_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_nomenclature')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_gamme_ma_access"  model="ir.model.access" >
+        <field name="name">is_cout_gamme_ma_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_gamme_ma')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_gamme_mo_access"  model="ir.model.access" >
+        <field name="name">is_cout_gamme_mo_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_gamme_mo')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+    <record id="is_res_partner_access"  model="ir.model.access" >
+        <field name="name">is_res_partner_access</field>
+        <field name="model_id"    eval="ref('base.model_res_partner')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_ir_property_access"  model="ir.model.access" >
+        <field name="name">is_ir_property_access</field>
+        <field name="model_id"    eval="ref('base.model_ir_property')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_certifications_qualite_access"  model="ir.model.access" >
+        <field name="name">is_certifications_qualite_access</field>
+        <field name="model_id"    eval="ref('model_is_certifications_qualite')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_resource_calendar_leaves_access"  model="ir.model.access" >
+        <field name="name">is_resource_calendar_leaves_access</field>
+        <field name="model_id"    eval="ref('model_resource_calendar_leaves')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_pricelist_access"  model="ir.model.access" >
+        <field name="name">is_product_pricelist_access</field>
+        <field name="model_id"    eval="ref('model_product_pricelist')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_pricelist_version_access"  model="ir.model.access" >
+        <field name="name">is_product_pricelist_version_access</field>
+        <field name="model_id"    eval="ref('model_product_pricelist_version')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_pricelist_item_access"  model="ir.model.access" >
+        <field name="name">is_product_pricelist_item_access</field>
+        <field name="model_id"    eval="ref('model_product_pricelist_item')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_tarif_cial_access"  model="ir.model.access" >
+        <field name="name">is_tarif_cial_access</field>
+        <field name="model_id"    eval="ref('model_is_tarif_cial')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <!-- Gestionnaire des moules -->
+    <record id="is_mold_project_access"  model="ir.model.access" >
+        <field name="name">is_mold_project_access</field>
+        <field name="model_id"    eval="ref('is_mold.model_is_mold_project')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_moules_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mold_access"  model="ir.model.access" >
+        <field name="name">is_mold_access</field>
+        <field name="model_id"    eval="ref('is_mold.model_is_mold')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_moules_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_dossierf_access"  model="ir.model.access" >
+        <field name="name">is_dossierf_access</field>
+        <field name="model_id"    eval="ref('is_mold.model_is_dossierf')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_moules_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+    <!-- Accès Responsable de production -->
+    <record id="is_atelier_access"  model="ir.model.access" >
+        <field name="name">is_atelier_access</field>
+        <field name="model_id"    eval="ref('model_is_atelier')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_ilot_access"  model="ir.model.access" >
+        <field name="name">is_ilot_access</field>
+        <field name="model_id"    eval="ref('model_is_ilot')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_purchase_order_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_purchase_order_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_purchase_order')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_purchase_order_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_purchase_order_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_purchase_order_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_account_journal_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_account_journal_rsp_production_access</field>
+        <field name="model_id"    eval="ref('account.model_account_journal')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_picking_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_stock_picking_rsp_production_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_picking')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_move_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_stock_move_rsp_production_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_move')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_sale_order_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_sale_order')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_sale_order_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_sale_order_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_edi_cde_cli_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_edi_cde_cli_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_edi_cde_cli')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_edi_cde_cli_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_edi_cde_cli_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_edi_cde_cli_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+    <record id="is_liste_servir_client_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_client_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_client')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_uc_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_uc_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_uc')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_um_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_um_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_um')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_message_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_message_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+    <record id="is_liste_servir_message_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_message_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+    <record id="is_mrp_production_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_rsp_production_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_production_product_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_rsp_production_product_line_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production_product_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_production_workcenter_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_workcenter_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production_workcenter_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_routing_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_mrp_routing_rsp_production_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_routing')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_routing_workcenter_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_mrp_routing_workcenter_rsp_production_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_routing_workcenter')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_production_lot_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_stock_production_lot_rsp_production_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_production_lot')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_gestion_lot_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_gestion_lot_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_gestion_lot')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_mise_rebut_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_stock_mise_rebut_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_stock_mise_rebut')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+    <record id="is_inventaire_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_feuille_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_feuille_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_feuille')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_line_tmp_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_line_tmp_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_line_tmp')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+    <record id="is_inventaire_ecart_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_ecart_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_ecart')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_inventory_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_inventory_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_inventory')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_inventory_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_stock_inventory_rsp_production_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_inventory')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_inventory_line_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_stock_inventory_line_rsp_production_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_inventory_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_prevision_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_mrp_prevision_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_mrp_prevision')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <record id="is_pdc_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_pdc_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_pdc')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_pdc_mod_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_pdc_mod_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_pdc_mod')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_pdc_workcenter_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_pdc_workcenter_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_pdc_workcenter')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_pdc_mold_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_pdc_mold_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_pdc_mold')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+    <!-- Responsable des achats -->
+    <record id="is_purchase_order_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_purchase_order_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_purchase_order')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_purchase_order_line_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_purchase_order_line_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_purchase_order_line')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_account_journal_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_account_journal_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('account.model_account_journal')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_picking_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_stock_picking_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_picking')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_move_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_stock_move_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_move')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_pricelist_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_pricelist_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_product_pricelist')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_pricelist_rsp_achats_version_access"  model="ir.model.access" >
+        <field name="name">is_product_pricelist_rsp_achats_version_access</field>
+        <field name="model_id"    eval="ref('model_product_pricelist_version')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_pricelist_rsp_achats_item_access"  model="ir.model.access" >
+        <field name="name">is_product_pricelist_rsp_achats_item_access</field>
+        <field name="model_id"    eval="ref('model_product_pricelist_item')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_production_lot_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_stock_production_lot_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_production_lot')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+    <!-- Responsable des ventes -->
+    <record id="is_sale_order_rsp_ventes_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_rsp_ventes_access</field>
+        <field name="model_id"    eval="ref('model_sale_order')"/>
+        <field name="group_id"    eval="ref('is_commerciaux_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_sale_order_line_rsp_ventes_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_line_rsp_ventes_access</field>
+        <field name="model_id"    eval="ref('model_sale_order_line')"/>
+        <field name="group_id"    eval="ref('is_commerciaux_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+
+
+
+
+    <!-- Magasiners -->
+    <record id="is_stock_picking_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_stock_picking_magasiniers_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_picking')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_move_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_stock_move_magasiniers_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_move')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_sale_order_line_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_line_magasiniers_access</field>
+        <field name="model_id"    eval="ref('sale.model_sale_order_line')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_sale_order_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_magasiniers_access</field>
+        <field name="model_id"    eval="ref('sale.model_sale_order')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_stock_production_lot_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_stock_production_lot_magasiniers_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_production_lot')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <!-- Qualité -->
+    <record id="is_gestion_lot_qualite_access"  model="ir.model.access" >
+        <field name="name">is_gestion_lot_qualite_access</field>
+        <field name="model_id"    eval="ref('model_is_gestion_lot')"/>
+        <field name="group_id"    eval="ref('is_qualite_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_move_qualite_access"  model="ir.model.access" >
+        <field name="name">is_stock_move_qualite_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_move')"/>
+        <field name="group_id"    eval="ref('is_qualite_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_production_lot_qualite_access"  model="ir.model.access" >
+        <field name="name">is_stock_production_lot_qualite_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_production_lot')"/>
+        <field name="group_id"    eval="ref('is_qualite_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_mise_rebut_qualite_access"  model="ir.model.access" >
+        <field name="name">is_stock_mise_rebut_qualite_access</field>
+        <field name="model_id"    eval="ref('model_is_stock_mise_rebut')"/>
+        <field name="group_id"    eval="ref('is_qualite_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+
+
+</data>
+</openerp>

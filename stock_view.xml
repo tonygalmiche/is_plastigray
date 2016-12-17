@@ -3,6 +3,10 @@
     <data>
 
 
+
+
+
+
         <!-- Fiche Emplacement de stock -->
         <record id="is_stock_location_view_form" model="ir.ui.view">
             <field name="name">is.stock.location.form</field>
@@ -149,6 +153,8 @@
             </field>
         </record>
 
+
+
         <record id="view_picking_location_inherit_form" model="ir.ui.view">
             <field name="name">stock.picking.form</field>
             <field name="model">stock.picking</field>
@@ -162,6 +168,14 @@
                 </button>
                 <button name="open_barcode_interface" position="attributes">
                     <attribute name="invisible">1</attribute>>
+                </button>
+                <button name="do_enter_transfer_details" position="replace">
+                    <button 
+                        name="do_enter_transfer_details" 
+                        states="assigned,partially_available" 
+                        string="Transfer" 
+                        groups="is_plastigray.is_rsp_production_group,is_plastigray.is_rsp_achats_group,is_plastigray.is_magasiniers_group,is_plastigray.is_comptable_group" 
+                        type="object" class="oe_highlight"/>
                 </button>
                 <xpath expr="//notebook/page[@string='Additional Info']/group/group/field[@name='location_id']" position="attributes">
                     <attribute name="invisible">0</attribute>>
@@ -369,6 +383,19 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+
+
+
+        <record id="is_view_inventory_form" model="ir.ui.view">
+            <field name="name">is_view_inventory_form</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="arch" type="xml">
+                <button name="action_done" position="replace">
+                    <button name="action_done" states="confirm" string="Validate Inventory" type="object" class="oe_highlight" groups="is_plastigray.is_rsp_production_group"/>
+                </button>
+            </field>
+        </record>
 
 
         <!-- Action pour accèder aux lignes de l'inventaire pour l'importation -->

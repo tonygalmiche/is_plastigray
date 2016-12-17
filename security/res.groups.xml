@@ -3,10 +3,165 @@
 <data noupdate="0">
 
 
-    <record model="res.groups" id="group_chef_de_projet" >
-        <field name="name">Chef de projet</field>
-        <field name="comment"></field>
+    <record model="ir.module.category" id="is_groupe_odoo_base_module_category">
+        <field name="name">Groupes de base</field>
+        <field name="description">Groupes Odoo de base</field>
+        <field name="sequence">1</field>
     </record>
+
+    <record model="ir.module.category" id="is_groupe_plastigray_module_category">
+        <field name="name">Groupes Plastigray</field>
+        <field name="description">Groupes Plastigray</field>
+        <field name="sequence">10</field>
+    </record>
+    <record model="ir.module.category" id="is_groupe_odoo_administration_module_category">
+        <field name="name">Groupes Odoo d'administration</field>
+        <field name="description">Groupes Odoo d'administration</field>
+        <field name="sequence">990</field>
+    </record>
+
+    <record model="ir.module.category" id="is_groupe_odoo_principaux_module_category">
+        <field name="name">Groupes Odoo principaux</field>
+        <field name="description">Groupes Odoo principaux</field>
+        <field name="sequence">991</field>
+    </record>
+    <record model="ir.module.category" id="is_groupe_odoo_secondaires_module_category">
+        <field name="name">Groupes Odoo secondaires</field>
+        <field name="description">Groupes Odoo secondaires</field>
+        <field name="sequence">992</field>
+    </record>
+
+    <!-- Groupe Plastigray donnant le minimum de droits -->
+    <record model="res.groups" id="is_employes_hors_production_group" >
+        <field name="name">Employés hors production</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_odoo_base_module_category"/>
+    </record>
+
+    <record model="res.groups" id="is_centrale_matiere_group" >
+        <field name="name">Centrale matière</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_chef_equipe_group" >
+        <field name="name">Chef d'équipe et régleurs</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_chef_projet_group" >
+        <field name="name">Chef de projets, Méthode et Metro</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_commerciaux_group" >
+        <field name="name">Responsable des ventes - Commerciaux</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_comptable_group" >
+        <field name="name">Comptables</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_gestionnaire_donnees_techniques_group" >
+        <field name="name">Gestionnaire des données techniques</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_gestionnaire_moules_group" >
+        <field name="name">Gestionnaire des moules</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_gestionnaire_tables_group" >
+        <field name="name">Gestionnaire des tables, postes de charge et calcul des coûts</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_homme_flux_group" >
+        <field name="name">Homme Flux</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_magasiniers_group" >
+        <field name="name">Magasiners</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_maintenance_group" >
+        <field name="name">Maintenance</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_qualite_group" >
+        <field name="name">Qualité</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_rps_compta_group" >
+        <field name="name">Responsable Compta et Finance</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_rsp_achats_group" >
+        <field name="name">Responsable des achats</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_rsp_production_group" >
+        <field name="name">Responsable de production</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+
+
+
+
+
+<!--
+        <record model="res.groups" id="group_is_bloque_lot">
+            <field name="name">Bloquer lot</field>
+        </record>
+
+        <record model="res.groups" id="group_is_debloque_lot">
+            <field name="name">Débloquer lot</field>
+        </record>
+        
+        <record model="res.groups" id="group_is_change_locations">
+            <field name="name">Changement emplacements</field>
+        </record>
+        
+        <record model="res.groups" id="group_is_rebut_lot">
+            <field name="name">Mise au rebut</field>
+        </record>
+-->
+
+
+
+
+
+    <!-- Catégories de groupes -->
+    <record id="is_view_module_category_tree" model="ir.ui.view">
+        <field name="name">is_view_module_category_tree</field>
+        <field name="model">ir.module.category</field>
+        <field name="inherit_id" ref="base.view_module_category_tree" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="description" />
+                <field name="sequence" />
+                <field name="visible" />
+            </field>
+        </field>
+    </record>
+    <record id="is_ir_module_category_action" model="ir.actions.act_window">
+        <field name="name">Modules Catégories</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ir.module.category</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
 
 
 
