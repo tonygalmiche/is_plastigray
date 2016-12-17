@@ -904,6 +904,16 @@
         <field name="perm_create" eval="True"/>
     </record>
 
+
+    <record id="is_cde_ouverte_fournisseur_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_cde_ouverte_fournisseur_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_cde_ouverte_fournisseur')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
     <record id="is_cde_ouverte_product_rsp_production_access"  model="ir.model.access" >
         <field name="name">is_cde_ouverte_product_rsp_production_access</field>
         <field name="model_id"    eval="ref('model_is_cde_ouverte_fournisseur_product')"/>
