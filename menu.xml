@@ -527,6 +527,7 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
+            ref('is_centrale_matiere_group'),
         ])]"/>
     </record>
     <record id="menu_is_planning_production" model="ir.ui.menu" >
@@ -538,6 +539,7 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
+            ref('is_centrale_matiere_group'),
         ])]"/>
     </record>
 
@@ -593,6 +595,56 @@
             ref('is_qualite_group'),
         ])]"/>
     </record>
+
+
+
+
+    <!-- Production / Gestion des étuves -->
+    <record id="is_gestion_etuves_menu" model="ir.ui.menu" >
+        <field name="name">Gestion des étuves</field>
+        <field name="sequence">27</field>
+        <field name="parent_id" eval="ref('menu_is_production')"/>
+        <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+    <record id="is_etuve_menu" model="ir.ui.menu" >
+        <field name="name">Parc des étuves</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_gestion_etuves_menu')"/>
+        <field name="action"    ref="is_etuve_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+            ref('is_centrale_matiere_group'),
+        ])]"/>
+    </record>
+    <record id="is_etuve_saisie_menu" model="ir.ui.menu" >
+        <field name="name">Historique des saisies</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_gestion_etuves_menu')"/>
+        <field name="action"    ref="is_etuve_saisie_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+            ref('is_centrale_matiere_group'),
+        ])]"/>
+    </record>
+    <record id="is_etuve_commentaire_menu" model="ir.ui.menu" >
+        <field name="name">Commentaire saisie étuve</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_gestion_etuves_menu')"/>
+        <field name="action"    ref="is_etuve_commentaire_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('base.group_system'),
+        ])]"/>
+    </record>
+    <record id="is_etuve_rsp_menu" model="ir.ui.menu" >
+        <field name="name">Responsables des étuves</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_gestion_etuves_menu')"/>
+        <field name="action"    ref="is_etuve_rsp_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('base.group_system'),
+        ])]"/>
+    </record>
+
 
 
     <!-- Production / Inventaires -->

@@ -63,6 +63,7 @@
         "is_bon_transfert_view.xml",
         "purchase_view.xml",
         "res_users_view.xml",
+        "is_etuve_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <!-- Parc des étuves -->
+        <record id="is_etuve_form_view" model="ir.ui.view" >
+            <field name="name">is_etuve_form_view</field>
+            <field name="model">is.etuve</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="dessication"/>
+                                <field name="type_etuve"/>
+                                <field name="capacite"/>
+                            </group>
+                            <group>
+                                <field name="matiere_id"/>
+                                <field name="num_ordre_matiere"/>
+                                <field name="of"/>
+                                <field name="moule"/>
+                                <field name="taux_utilisation"/>
+                                <field name="test_taux" invisible="1"/>
+                                <field style="background:orange;font-size:13pt" name="message" attrs="{'invisible':[('test_taux','=',False)]}"/>
+                                <field name="rsp_etuve_id"/>
+                                <field name="commentaire"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_tree_view">
+            <field name="name">is_etuve_tree_view</field>
+            <field name="model">is.etuve</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:test_taux">
+                    <button 
+                        string="Nouvelle saisie"   
+                        name="action_saisie_etuve" 
+                        type="object" icon="gtk-add"
+                        groups="is_plastigray.is_centrale_matiere_group"
+                    />
+                    <field name="name"/>
+                    <field name="capacite"/>
+                    <field name="dessication"/>
+                    <field name="matiere_id"/>
+                    <field name="num_ordre_matiere"/>
+                    <field name="of"/>
+                    <field name="moule"/>
+                    <field name="taux_utilisation"/>
+                    <field name="progressbar" widget="progressbar"/>
+                    <field name="test_taux" invisible="1"/>
+                    <field name="rsp_etuve_id"/>
+                    <field name="commentaire"/>
+                    <field name="write_date"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_filter_view" >
+            <field name="name">is_etuve_filter_view</field>
+            <field name="model">is.etuve</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"/>
+                    <field name="dessication"/>
+                    <field name="matiere_id"/>
+                    <field name="num_ordre_matiere"/>
+                    <field name="of"/>
+                    <field name="moule"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_etuve_action" model="ir.actions.act_window" >
+            <field name="name">Étuves</field>
+            <field name="res_model">is.etuve</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- Responsable de l'étuve -->
+        <record id="is_etuve_rsp_form_view" model="ir.ui.view" >
+            <field name="name">is_etuve_rsp_form_view</field>
+            <field name="model">is.etuve.rsp</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="mot_de_passe"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_rsp_tree_view">
+            <field name="name">is_etuve_rsp_tree_view</field>
+            <field name="model">is.etuve.rsp</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_rsp_filter_view" >
+            <field name="name">is_etuve_rsp_filter_view</field>
+            <field name="model">is.etuve.rsp</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_etuve_rsp_action" model="ir.actions.act_window" >
+            <field name="name">Étuves</field>
+            <field name="res_model">is.etuve.rsp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+        <!-- Commentaire saisie étuve -->
+        <record id="is_etuve_commentaire_form_view" model="ir.ui.view" >
+            <field name="name">is_etuve_commentaire_form_view</field>
+            <field name="model">is.etuve.commentaire</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_commentaire_tree_view">
+            <field name="name">is_etuve_commentaire_tree_view</field>
+            <field name="model">is.etuve.commentaire</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom"  create="true">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_commentaire_filter_view" >
+            <field name="name">is_etuve_commentaire_filter_view</field>
+            <field name="model">is.etuve.commentaire</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_etuve_commentaire_action" model="ir.actions.act_window" >
+            <field name="name">Commenaire saisie étuve</field>
+            <field name="res_model">is.etuve.commentaire</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Séquence pour la saisie des étuves -->
+        <record id="is_etuve_saisie_type_seq" model="ir.sequence.type">
+            <field name="name">Saisie étuve</field>
+            <field name="code">is.etuve.saisie</field>
+        </record>
+        <record id="is_etuve_saisie_seq" model="ir.sequence">
+            <field name="name">Saisie étuve</field>
+            <field name="code">is.etuve.saisie</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- Saisies des étuves -->
+        <record id="is_etuve_saisie_form_view" model="ir.ui.view" >
+            <field name="name">is_etuve_saisie_form_view</field>
+            <field name="model">is.etuve.saisie</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form create="false">
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="etuve_id"        widget="selection"/>
+                                <field name="capacite"/>
+                                <field name="dessication"/>
+                                <field name="matiere_id" on_change=""/>
+                                <field name="tmp_etuvage" digits="(14,0)"/>
+                                <field name="tps_etuvage" digits="(14,0)"/>
+                                <field name="densite"/>
+                                <field name="dessication_matiere"/>
+                                <field name="capacite_maxi"    digits="(14,0)"/>
+                                <field name="conso_horaire"    digits="(14,0)"/>
+                                <field name="taux_utilisation" digits="(14,0)"/>
+                                <field name="test_taux" invisible="1"/>
+                                <field style="background:orange;font-size:13pt" name="message" readonly="1" attrs="{'invisible':[('test_taux','=',False)]}"/>
+                            </group>
+                            <group>
+                                <field name="num_ordre_matiere"/>
+                                <field name="rsp_etuve_id"    widget="selection"/>
+                                <field name="mot_de_passe"    password="True"/>
+                                <field name="commentaire_id"  widget="selection"/>
+                                <field name="commentaire_optionel"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="of_ids" nolabel="1">
+                                <tree editable="bottom"  create="true">
+                                    <field name="of_id"   on_change=""/>
+                                    <field name="matiere" readonly="1"/>
+                                    <field name="code_pg" />
+                                    <field name="qt_prevue" />
+                                    <field name="moule" />
+                                    <field name="presse" />
+                                    <field name="tps_arret_matiere" />
+                                    <field name="tps_cycle_matiere" />
+                                    <field name="besoin_total_of" />
+                                    <field name="poids_moulee" digits="(14,0)"/>
+                                    <field name="debit"        digits="(14,0)" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="is_etuve_saisie_tree_view">
+            <field name="name">is_etuve_saisie_tree_view</field>
+            <field name="model">is.etuve.saisie</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:test_taux" create="false" >
+                    <field name="name"/>
+                    <field name="etuve_id"/>
+                    <field name="capacite"/>
+                    <field name="dessication"/>
+                    <field name="matiere_id"/>
+                    <field name="num_ordre_matiere"/>
+                    <field name="taux_utilisation" widget="progressbar"/>
+                    <field name="rsp_etuve_id"/>
+                    <field name="commentaire_id"/>
+                    <field name="commentaire_optionel"/>
+                    <field name="write_date"/>
+                    <field name="test_taux" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_etuve_saisie_filter_view" >
+            <field name="name">is_etuve_saisie_filter_view</field>
+            <field name="model">is.etuve.saisie</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"/>
+                    <field name="etuve_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_etuve_saisie_action" model="ir.actions.act_window" >
+            <field name="name">Étuves</field>
+            <field name="res_model">is.etuve.saisie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    </data>
+</openerp>

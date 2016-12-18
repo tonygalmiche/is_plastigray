@@ -1142,6 +1142,26 @@
     </record>
 
 
+    <!-- Centrale matière -->
+    <record id="is_etuve_saisie_centrale_matiere_access"  model="ir.model.access" >
+        <field name="name">is_etuve_saisie_centrale_matiere_access</field>
+        <field name="model_id"    eval="ref('model_is_etuve_saisie')"/>
+        <field name="group_id"    eval="ref('is_centrale_matiere_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_etuve_of_centrale_matiere_access"  model="ir.model.access" >
+        <field name="name">is_etuve_of_centrale_matiere_access</field>
+        <field name="model_id"    eval="ref('model_is_etuve_of')"/>
+        <field name="group_id"    eval="ref('is_centrale_matiere_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
 
 
 
