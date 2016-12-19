@@ -79,6 +79,11 @@ class is_facturation_fournisseur(models.Model):
             sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
             cr.execute(sql)
             for row in cr.fetchall():
+
+                print row
+                print 'row[5]*row[7]',row[5],row[7],
+
+
                 vals = {
                     'num_reception'     : row[0],
                     'num_bl_fournisseur': row[1],
@@ -88,7 +93,7 @@ class is_facturation_fournisseur(models.Model):
                     'quantite'          : row[5],
                     'uom_id'            : row[6],
                     'prix'              : row[7],
-                    'total'             : row[5]*row[7],
+                    'total'             : row[5]*(row[7] or 0),
                     'taxe_id'           : row[8],
                     'taxe_taux'         : row[9],
                     'move_id'           : row[10],
