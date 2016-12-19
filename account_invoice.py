@@ -53,6 +53,7 @@ class account_invoice(models.Model):
     is_escompte       = fields.Float("Escompte", compute='_compute')
     is_tva            = fields.Float("TVA"     , compute='_compute', help="Taxes sans l'escompte")
     is_folio_id       = fields.Many2one('is.account.folio', 'Folio')
+    is_bon_a_payer    = fields.Boolean("Bon à payer")
 
     def _compute(self):
         for obj in self:

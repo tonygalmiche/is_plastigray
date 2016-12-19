@@ -26,16 +26,30 @@
                                     on_change="cherche_receptions(name, date_fin)"
                                     attrs="{'readonly':[('state','=','termine')]}"
                                 />
-                            </group>
-                            <group>
                                 <field name="date_facture"  />
                                 <field name="num_facture"  />
-                                <field name="total_ht"  attrs="{'readonly':[('state','=','termine')]}"/>
-                                <field name="total_tva" attrs="{'readonly':[('state','=','termine')]}"/>
+                                <field name="bon_a_payer"  />
+                                <field name="forcer_bon_a_payer" attrs="{'readonly':[('state','=','termine')]}"  />
+                            </group>
+                            <group>
+                                <field name="total_ht"  attrs="{'readonly':[('state','=','termine')]}" />
                                 <field name="total_ht_calcule" />
                                 <field name="ecart_ht"  />
-                                <field name="justification_id" attrs="{'required':[('ecart_ht', '!=', 0)], 'readonly':[('state','=','termine')]}" />
+                                <field name="ecart_ht_compte_id"  attrs="{'required':[('ecart_ht', '!=', 0)], 'readonly':[('state','=','termine')]}" />
+
+                                <field name="total_tva"         attrs="{'readonly':[('state','=','termine')]}"/>
+                                <field name="total_tva_calcule"/>
+                                <field name="ecart_tva"  />
+                                <field name="ecart_tva_compte_id"  attrs="{'required':[('ecart_tva', '!=', 0)], 'readonly':[('state','=','termine')]}" />
+
                                 <field name="total_ttc_calcule" />
+
+                                <field 
+                                    name="justification_id"   
+                                    widget="selection"  
+                                    attrs="{'required':['|',('ecart_ht', '!=', 0),('ecart_tva', '!=', 0)], 'readonly':[('state','=','termine')]}" 
+                                />
+
                             </group>
                         </group>
                         <group>
@@ -46,11 +60,12 @@
                                     <field name="date_reception" />
                                     <field name="product_id" />
                                     <field name="ref_fournisseur" />
+                                    <field name="account_id" />
                                     <field name="quantite" />
                                     <field name="uom_id" />
                                     <field name="prix" />
                                     <field name="total" />
-                                    <field name="taxe_id" />
+                                    <field name="taxe_ids" widget="many2many_tags" />
                                     <field name="taxe_taux" />
                                     <field name="selection" />
                                     <field name="move_id" />

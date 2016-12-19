@@ -9,18 +9,28 @@ class is_facturation_fournisseur(models.Model):
     _name = "is.facturation.fournisseur"
     _description = "Facturation fournisseur"
 
-    name              = fields.Many2one('res.partner', 'Fournisseur'   , required=True)
-    date_fin          = fields.Date('Date de fin'                      , required=True)
-    date_facture      = fields.Date('Date facture fournisseur'         , required=True)
-    num_facture       = fields.Char('N° facture fournisseur'           , required=True)
-    total_ht          = fields.Float("Total HT"         , digits=(14,4), required=True)
-    total_ht_calcule  = fields.Float("Total HT Calculé" , digits=(14,4), compute='_compute', readonly=True, store=False)
-    ecart_ht          = fields.Float("Ecart HT"         , digits=(14,4), compute='_compute', readonly=True, store=False)
-    total_ttc_calcule = fields.Float("Total TTC Calculé", digits=(14,4), compute='_compute', readonly=True, store=False)
-    justification_id  = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
-    total_tva         = fields.Float("Total TVA"         , digits=(14,4))
-    line_ids          = fields.One2many('is.facturation.fournisseur.line', 'facturation_id', u"Lignes")
-    state             = fields.Selection([('creation', u'Création'),('termine', u'Terminé')], u"État", readonly=True, select=True)
+    name                = fields.Many2one('res.partner', 'Fournisseur'   , required=True)
+    date_fin            = fields.Date('Date de fin'                      , required=True)
+    date_facture        = fields.Date('Date facture fournisseur'         , required=True)
+    num_facture         = fields.Char('N° facture fournisseur'           , required=True)
+    total_ht            = fields.Float("Total HT"         , digits=(14,4), required=True)
+    total_ht_calcule    = fields.Float("Total HT Calculé" , digits=(14,4), compute='_compute', readonly=True, store=False)
+    ecart_ht            = fields.Float("Ecart HT"         , digits=(14,4), compute='_compute', readonly=True, store=False)
+    ecart_ht_compte_id  = fields.Many2one('product.product', "Compte d'écart HT")
+
+    total_tva           = fields.Float("Total TVA"         , digits=(14,4))
+    total_tva_calcule   = fields.Float("Total TVA Calculé" , digits=(14,4), compute='_compute', readonly=True, store=False)
+    ecart_tva           = fields.Float("Ecart TVA"         , digits=(14,4), compute='_compute', readonly=True, store=False)
+    ecart_tva_compte_id = fields.Many2one('product.product', "Compte d'écart TVA")
+
+    total_ttc_calcule   = fields.Float("Total TTC Calculé", digits=(14,4), compute='_compute', readonly=True, store=False)
+    justification_id    = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
+
+    bon_a_payer         = fields.Boolean("Bon à payer", compute='_compute', readonly=True, store=False)
+    forcer_bon_a_payer  = fields.Boolean("Forcer bon à payer")
+
+    line_ids            = fields.One2many('is.facturation.fournisseur.line', 'facturation_id', u"Lignes")
+    state               = fields.Selection([('creation', u'Création'),('termine', u'Terminé')], u"État", readonly=True, select=True)
 
     def _date():
         now  = datetime.date.today()               # Date du jour
@@ -33,20 +43,28 @@ class is_facturation_fournisseur(models.Model):
     }
 
 
-    @api.depends('line_ids','total_ht')
+    @api.depends('line_ids','total_ht','total_tva')
     def _compute(self):
         for obj in self:
-            ht=0
-            ttc=0
+            ht=ttc=tva=0
             for line in obj.line_ids:
                 if line.selection:
                     total=line.prix*line.quantite
                     ht=ht+total
+                    tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
-            obj.total_ht_calcule  = ht
-            obj.ecart_ht          = obj.total_ht-ht
-            obj.total_ttc_calcule = ttc
 
+            ecart_ht  = obj.total_ht-ht
+            ecart_tva = obj.total_tva-tva
+            bon_a_payer=True
+            if ecart_ht or ecart_tva:
+                bon_a_payer=False
+            obj.total_ht_calcule  = ht
+            obj.ecart_ht          = ecart_ht
+            obj.total_tva_calcule = tva
+            obj.ecart_tva         = ecart_tva
+            obj.total_ttc_calcule = ttc
+            obj.bon_a_payer       = bon_a_payer
 
     @api.multi
     def cherche_receptions(self, partner_id, date_fin):
@@ -63,40 +81,57 @@ class is_facturation_fournisseur(models.Model):
                         sm.product_uom_qty,
                         sm.product_uom, 
                         pol.price_unit,
-                        pot.tax_id,
-                        at.amount,
-                        sm.id
+                        sm.id,
+                        pol.id
                 from stock_picking sp inner join stock_move                sm on sp.id=sm.picking_id
                                       inner join product_product           pp on sm.product_id=pp.id
                                       inner join product_template          pt on pp.product_tmpl_id=pt.id 
                                       left outer join purchase_order_line pol on sm.purchase_line_id=pol.id
-                                      left outer join purchase_order_taxe pot on pol.id=pot.ord_id
-                                      left outer join account_tax          at on pot.tax_id=at.id
                 where sm.state='done' 
                       and sm.invoice_state='2binvoiced' 
                       and sp.picking_type_id=1 """
             sql=sql+" and sp.partner_id="+str(partner_id)+" "
             sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
             cr.execute(sql)
-            for row in cr.fetchall():
+            result=cr.fetchall()
+            for row in result:
+                #** Recherche des taxes ****************************************
+                taxe_ids  = []
+                taxe_taux = 0
+                pol_id=row[9]
+                if pol_id:
+                    sql="""
+                        select pot.tax_id, at.amount
+                        from purchase_order_taxe pot left outer join account_tax at on pot.tax_id=at.id 
+                        where pot.ord_id="""+str(pol_id)
+                    cr.execute(sql)
+                    result2=cr.fetchall()
+                    for row2 in result2:
+                        taxe_ids.append(row2[0])
+                        taxe_taux=taxe_taux+row2[1]
+                #***************************************************************
 
-                print row
-                print 'row[5]*row[7]',row[5],row[7],
+                #** Recherche du compte d'achat associé au mouvement de stock **
+                move_id=row[8]
+                move=self.env['stock.move'].browse(move_id)
 
+                account_id = move.product_id.property_account_expense.id
+                #***************************************************************
 
                 vals = {
                     'num_reception'     : row[0],
                     'num_bl_fournisseur': row[1],
                     'date_reception'    : row[2],
                     'product_id'        : row[3],
+                    'account_id'        : account_id,
                     'ref_fournisseur'   : row[4],
                     'quantite'          : row[5],
                     'uom_id'            : row[6],
                     'prix'              : row[7],
                     'total'             : row[5]*(row[7] or 0),
-                    'taxe_id'           : row[8],
-                    'taxe_taux'         : row[9],
-                    'move_id'           : row[10],
+                    'taxe_ids'          : [(6,0,taxe_ids)],
+                    'taxe_taux'         : taxe_taux,
+                    'move_id'           : row[8],
                     'selection'         : False,
                 }
                 lines.append(vals)
@@ -104,10 +139,13 @@ class is_facturation_fournisseur(models.Model):
         return {'value': value}
 
 
-
     @api.multi
     def action_creer_facture(self):
         for obj in self:
+            bon_a_payer=obj.bon_a_payer
+            if obj.forcer_bon_a_payer:
+                bon_a_payer=True
+
             date_invoice=datetime.date.today().strftime('%Y-%m-%d')
             res=self.env['account.invoice'].onchange_partner_id('in_invoice', obj.name.id, date_invoice)
             vals=res['value']
@@ -118,8 +156,10 @@ class is_facturation_fournisseur(models.Model):
                 'type'        : 'in_invoice',
                 'date_invoice': obj.date_facture,
                 'supplier_invoice_number': obj.num_facture,
+                'is_bon_a_payer': bon_a_payer,
             })
             lines = []
+            invoice_line_tax_id=[]
             for line in obj.line_ids:
                 if line.selection:
                     product_id      = line.product_id.id
@@ -129,9 +169,11 @@ class is_facturation_fournisseur(models.Model):
                     invoice_type    = 'in_invoice'
                     partner_id      = obj.name.id
                     fiscal_position = vals['fiscal_position']
+
                     invoice_line_tax_id=[]
-                    if line.taxe_id:
-                        invoice_line_tax_id.append((6,False,[line.taxe_id.id]))
+                    for taxe_id in line.taxe_ids:
+                        invoice_line_tax_id.append(taxe_id.id)
+
                     if len(invoice_line_tax_id)==0:
                         invoice_line_tax_id=False
                     res=self.env['account.invoice.line'].product_id_change(product_id, uom_id, quantite, name, invoice_type, partner_id, fiscal_position)
@@ -140,10 +182,31 @@ class is_facturation_fournisseur(models.Model):
                         'product_id'          : product_id,
                         'quantity'            : quantite,
                         'price_unit'          : line.prix,
-                        'invoice_line_tax_id' : invoice_line_tax_id,
+                        'invoice_line_tax_id' : [(6,0,invoice_line_tax_id)],
                         'is_document'         : line.move_id.purchase_line_id.order_id.is_document
                     })
                     lines.append([0,False,v]) 
+
+
+            #** Ajout de la ligne pour l'écart de facturation ******************
+            if obj.ecart_ht_compte_id:
+                product_id      = obj.ecart_ht_compte_id.id
+                uom_id          = obj.ecart_ht_compte_id.uom_id.id
+                name            = obj.ecart_ht_compte_id.name
+                invoice_type    = 'in_invoice'
+                partner_id      = obj.name.id
+                fiscal_position = vals['fiscal_position']
+                res=self.env['account.invoice.line'].product_id_change(product_id, uom_id, quantite, name, invoice_type, partner_id, fiscal_position)
+                v=res['value']
+                v.update({
+                    'product_id'          : product_id,
+                    'quantity'            : 1,
+                    'price_unit'          : obj.ecart_ht,
+                    'invoice_line_tax_id' : [(6,0,invoice_line_tax_id)],
+                })
+                lines.append([0,False,v]) 
+            #*******************************************************************
+
             vals.update({
                 'invoice_line': lines,
             })
@@ -191,15 +254,18 @@ class is_facturation_fournisseur_line(models.Model):
     num_bl_fournisseur = fields.Char('N° BL fournisseur')
     date_reception     = fields.Date('Date réception')
     product_id         = fields.Many2one('product.product', 'Article')
+    account_id         = fields.Many2one('account.account', 'Compte')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     quantite           = fields.Float('Quantité', digits=(14,4))
     uom_id             = fields.Many2one('product.uom', 'Unité')
     prix               = fields.Float('Prix'    , digits=(14,4))
     total              = fields.Float('Total'   , digits=(14,4))
-    taxe_id            = fields.Many2one('account.tax', 'Taxe')
+    taxe_ids           = fields.Many2many('account.tax', 'is_facturation_fournisseur_line_taxe_ids', 'facturation_id', 'taxe_id', 'Taxes')
     taxe_taux          = fields.Float('Taux')
     selection          = fields.Boolean('Sélection', default=True)
     move_id            = fields.Many2one('stock.move', 'Mouvement de stock')
+
+
 
 
 
