@@ -163,6 +163,17 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
+
+                <button name="action_cancel" position="after" >
+                    <button 
+                        name="action_imprimer_etiquette_reception" 
+                        states="done" class="oe_highlight"
+                        string="Imprimer les étiquettes de réception" 
+                        groups="is_plastigray.is_rsp_production_group,is_plastigray.is_rsp_achats_group,is_plastigray.is_magasiniers_group" 
+                        attrs="{'invisible': [('is_purchase_order_id', '=', False)]}" 
+                        type="object"/>
+                </button>
+
                 <button name="do_partial_open_barcode" position="attributes">
                     <attribute name="invisible">1</attribute>>
                 </button>
@@ -177,6 +188,11 @@
                         groups="is_plastigray.is_rsp_production_group,is_plastigray.is_rsp_achats_group,is_plastigray.is_magasiniers_group,is_plastigray.is_comptable_group" 
                         type="object" class="oe_highlight"/>
                 </button>
+
+
+
+
+
                 <xpath expr="//notebook/page[@string='Additional Info']/group/group/field[@name='location_id']" position="attributes">
                     <attribute name="invisible">0</attribute>>
                 </xpath>

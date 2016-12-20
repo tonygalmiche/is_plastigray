@@ -39,6 +39,19 @@ class stock_picking(models.Model):
     is_date_reception    = fields.Date('Date de réception')
 
 
+    @api.multi
+    def action_imprimer_etiquette_reception(self):
+        for obj in self:
+            uid=self._uid
+            user=self.env['res.users'].browse(uid)
+            soc=user.company_id.partner_id.is_code
+            return {
+                'type' : 'ir.actions.act_url',
+                'url': 'http://odoo/odoo-erp/reception/Impression_Etiquette_Reception.php?Soc='+str(soc)+'&&zzCode='+str(obj.name),
+                'target': '_blank',
+            }
+
+
 
 
     #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
