@@ -167,10 +167,10 @@
                 <button name="action_cancel" position="after" >
                     <button 
                         name="action_imprimer_etiquette_reception" 
-                        states="done" class="oe_highlight"
+                        class="oe_highlight"
                         string="Imprimer les étiquettes de réception" 
                         groups="is_plastigray.is_rsp_production_group,is_plastigray.is_rsp_achats_group,is_plastigray.is_magasiniers_group" 
-                        attrs="{'invisible': [('is_purchase_order_id', '=', False)]}" 
+                        attrs="{'invisible': ['|',('is_purchase_order_id', '=', False),('state','!=','done')]}" 
                         type="object"/>
                 </button>
 

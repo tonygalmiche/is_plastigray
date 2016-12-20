@@ -285,6 +285,16 @@
             ref('is_comptable_group'),
         ])]"/>
     </record>
+    <record id="is_export_seriem_achats_menu" model="ir.ui.menu" >
+        <field name="name">Export Série-M</field>
+        <field name="sequence">50</field>
+        <field name="parent_id" eval="ref('menu_is_achats_fac')"/>
+        <field name="action"    ref="is_export_achats_seriem_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+        ])]"/>
+    </record>
+
 
     <!-- Achats / Tables -->
     <menuitem id="menu_is_achats_table"    sequence="90" name="Tables"                    parent="menu_is_achats" groups="is_gestionnaire_tables_group" />
@@ -468,7 +478,7 @@
     <menuitem id="menu_is_ventes_fac_20"   sequence="20" name="Factures à valider"    parent="menu_is_ventes_fac" action="is_factures_a_valider_action" />
     <menuitem id="menu_is_ventes_fac_30"   sequence="30" name="Toutes les factures"   parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
     <menuitem id="menu_is_ventes_fac_40"   sequence="40" name="Tous les avoirs"       parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
-    <menuitem id="menu_is_ventes_fac_50"   sequence="50" name="Export Série-M"        parent="menu_is_ventes_fac" action="is_export_seriem_action" />
+    <menuitem id="menu_is_ventes_fac_50"   sequence="50" name="Export Série-M"        parent="menu_is_ventes_fac" action="is_export_ventes_seriem_action" />
     <menuitem id="menu_is_ventes_fac_60"   sequence="60" name="Folios"                parent="menu_is_ventes_fac" action="is_account_folio_action" />
 
     <!-- Ventes / Tables -->

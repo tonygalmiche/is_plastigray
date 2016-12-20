@@ -8,6 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Exportation des factures vers Série-M">
                     <group>
+                        <field name="type_interface" />
                         <field name="date_debut" />
                         <field name="date_fin" />
                     </group>
@@ -19,14 +20,25 @@
                </form>
             </field>
         </record>
-        <record id="is_export_seriem_action" model="ir.actions.act_window">
-            <field name="name">Exportation Série-M</field>
+        <record id="is_export_ventes_seriem_action" model="ir.actions.act_window">
+            <field name="name">Exportation Série-M Ventes</field>
             <field name="res_model">is.export.seriem</field>
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
            <field name="view_id" ref="is_export_seriem_from_view"/>
+            <field name="context">{'default_type_interface': 'ventes'}</field>
            <field name="target">new</field>
         </record>
+        <record id="is_export_achats_seriem_action" model="ir.actions.act_window">
+            <field name="name">Exportation Série-M Achats</field>
+            <field name="res_model">is.export.seriem</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="is_export_seriem_from_view"/>
+            <field name="context">{'default_type_interface': 'achats'}</field>
+           <field name="target">new</field>
+        </record>
+
 
     </data>
 </openerp>

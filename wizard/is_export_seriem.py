@@ -13,8 +13,9 @@ class is_export_seriem(models.TransientModel):
     _name = "is.export.seriem"
     _description = "Exportation vers Serie-M"
 
-    date_debut   = fields.Date('Date de début', required=True)
-    date_fin     = fields.Date('Date de fin'  , required=True)
+    type_interface = fields.Selection([('ventes', u'Ventes'),('achats', u'Achats')], "Interface"  , required=True)
+    date_debut     = fields.Date('Date de début', required=True)
+    date_fin       = fields.Date('Date de fin'  , required=True)
 
     def _date():
         now  = datetime.date.today()               # Date du jour
@@ -31,13 +32,20 @@ class is_export_seriem(models.TransientModel):
     def export_seriem(self):
         cr=self._cr
         for obj in self:
+            if obj.type_interface=='ventes':
+                type_facture=['out_invoice', 'out_refund']
+                Journal='VE'
+            else:
+                type_facture=['in_invoice','in_refund' ]
+                Journal='AC'
             invoices = self.env['account.invoice'].search([
                 ('state'       , '=' , 'open'),
                 ('date_invoice', '>=', obj.date_debut),
                 ('date_invoice', '<=', obj.date_fin),
                 ('is_folio_id' , '=' , False),
-                ('type'        , '=' ,'out_invoice')
+                ('type'        , 'in' , type_facture)
             ])
+
             if len(invoices)==0:
                 raise Warning('Aucune facture à traiter')
 
@@ -49,10 +57,12 @@ class is_export_seriem(models.TransientModel):
             Soc             = u'PLI'
             Folio           = folio.name
             CodeDevice      = u''
-            DateJour        = time.strftime('%y%m%d') 
+            DateJour = datetime.datetime.strptime(obj.date_fin, '%Y-%m-%d')
+            DateJour = DateJour.strftime('%y%m%d') 
+
             #CompteCollectif = u'"411000"'
             res.append("FPGVMFCO")
-            res.append(u"E"+Soc+u'VE'+CodeDevice+(u"0000"+Folio)[-4:]+DateJour+u" 211")
+            res.append(u"E"+Soc+Journal+CodeDevice+(u"0000"+Folio)[-4:]+DateJour+u" 211")
 
 
             for invoice in invoices:
@@ -71,12 +81,13 @@ class is_export_seriem(models.TransientModel):
                             rp.name, 
                             aa.code, 
                             isa.name, 
-                            aa.type, 
+                            ai.type, 
                             ai.date_due,
                             aj.code,
                             sum(aml.debit), 
                             sum(aml.credit),
-                            rp.supplier
+                            rp.supplier,
+                            ai.is_bon_a_payer
                     FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
                                                inner join account_account aa             on aml.account_id=aa.id
                                                inner join res_partner rp                 on ai.partner_id=rp.id
@@ -84,25 +95,22 @@ class is_export_seriem(models.TransientModel):
                                                left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
                                                left outer join account_journal aj        on rp.is_type_reglement=aj.id
                     WHERE ai.id="""+str(id)+"""
-                    GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code, rp.supplier
-                    ORDER BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code, rp.supplier
+                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier
+                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier
                 """
 
                 cr.execute(sql)
                 for row in cr.fetchall():
-
-
                     #Test si client ou fournisseur
                     if row[11]:
                         CompteCollectif = u'401000'
                     else:
                         CompteCollectif = u'411000'
-
-                    #print row, CompteCollectif
-
                     NumCompte = row[4]
                     Debit     = row[9]
                     Credit    = row[10]
+                    BonAPayer = row[12]
+
                     Montant   = Credit - Debit
                     Sens=u"D"
                     if Montant>0:
@@ -123,20 +131,21 @@ class is_export_seriem(models.TransientModel):
 
                     Montant=abs(int(round(100*Montant)))
                     Montant=(u"00000000000"+str(Montant))[-11:]
-
                     TypeFacture=row[6]
-                    if TypeFacture=='out_refund':
+                    if TypeFacture=='out_refund' or TypeFacture=='in_refund':
                         TypeFacture=u'A'  # Avoir
                     else:
                         TypeFacture=u'F'  # Facture
-
+                    if obj.type_interface=='achats' and not BonAPayer:
+                        TypeFacture=u'L'  # Facture fournisseur en litige
                     Client=(row[3]+u"                                ")[:26]
-
                     NumFacture=(u"000000"+str(row[0]))[-6:]
                     DateEcheance=row[7]
                     DateEcheance=datetime.datetime.strptime(DateEcheance, '%Y-%m-%d')
                     DateEcheance=DateEcheance.strftime('%y%m%d')
-                    TypeReglement=(row[8]+"  ")[:2]
+                    TypeReglement='  '
+                    if row[8]:
+                        TypeReglement=(row[8]+"  ")[:2]
                     SectionAnalytique=str(row[5] or u'    ')
                     DateFacture=str(row[1])
                     JourFacture=(u"00"+DateFacture)[-2:]
@@ -150,13 +159,16 @@ class is_export_seriem(models.TransientModel):
                 res.append(Ligne)
                 #*******************************************************************
 
-
             #raise Warning('test')
 
 
             # Enregistrement du fichier ****************************************
             os.chdir('/tmp')
-            name = 'PGVMFCO'
+            if obj.type_interface=='ventes':
+                name='PGVMFCO'
+            else:
+                name='PGVMFCA'
+
             err=""
             try:
                 fichier = open(name, "w")
@@ -171,8 +183,6 @@ class is_export_seriem(models.TransientModel):
 
             # ******************************************************************
 
-
-            #raise Warning('test')
 
             # Envoi du fichier dans l'AS400 ************************************
             if err=="":
@@ -193,8 +203,6 @@ class is_export_seriem(models.TransientModel):
                     raise Warning(err)
             # ******************************************************************
 
-
-
             res= {
                 'name': 'Folio',
                 'view_mode': 'form, tree',
@@ -204,10 +212,6 @@ class is_export_seriem(models.TransientModel):
                 'res_id': folio.id,
             }
             return res
-
-
-
-
 
 
 
