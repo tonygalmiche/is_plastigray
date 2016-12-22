@@ -32,6 +32,9 @@
         border: 1px solid black;
         padding:5mm;
     }
+    .nowrap {
+        white-space: nowrap;
+    }
 </template>
 
 
@@ -119,9 +122,8 @@
             <table style="width:100%">
                 <tr>
                     <td class="text-left" style="width:90%">
-                        <b>Cette commande est soumise à l'acceptation de nos conditions générales d'achats. 
-                        En cas de désaccord ou de contradiction se référer au contrat cadre. </b><br />
-
+                        <b>En cas de désaccord ou de contradiction se référer à la commande ouverte, 
+                        contrat cadre, cahier des charges et / ou conditions Générales d'Achats.</b><br />
                         PLASTIGRAY - S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud CS 10133 70104 GRAY Cedex<br />
                         Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381<br />
                     </td>
@@ -159,29 +161,29 @@
             <table class="table table-condensed">
                 <thead>
                     <tr >
-                        <th class="text-left"  style="vertical-align:top">Article / Désignation</th>
-                        <th class="text-left"  style="vertical-align:top">Référence<br />fournisseur</th>
-                        <th class="text-left"  style="vertical-align:top">Plan</th>
-                        <th class="text-left"  style="vertical-align:top">TVA</th>
+                        <th class="text-left"   style="vertical-align:top">Article / Désignation</th>
+                        <th class="text-left"   style="vertical-align:top">Référence<br />fournisseur</th>
+                        <th class="text-left"   style="vertical-align:top">Plan</th>
+                        <th class="text-left"   style="vertical-align:top">TVA</th>
                         <th class="text-center" style="vertical-align:top">Date prévue</th>
-                        <th class="text-right" style="vertical-align:top">Quantité</th>
-                        <th class="text-left"  style="vertical-align:top">Unité</th>
-                        <th class="text-right" style="vertical-align:top">Prix d'achat<br />€ HT</th>
-                        <th class="text-right" style="vertical-align:top">Prix total<br />€ HT</th>
+                        <th class="text-right"  style="vertical-align:top">Quantité</th>
+                        <th class="text-left"   style="vertical-align:top">Unité</th>
+                        <th class="text-right"  style="vertical-align:top">Prix d'achat<br />€ HT</th>
+                        <th class="text-right"  style="vertical-align:top">Prix total<br />€ HT</th>
 
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="o.order_line" t-as="l">
-                        <td class="text-left">  <span t-field="l.name"/> </td>
-                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
-                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
-                        <td class="text-left">  <span t-esc="', '.join(map(lambda x: x.name, l.taxes_id))"/></td>
-                        <td class="text-center"><span t-field="l.date_planned"/>  </td>
-                        <td class="text-right"> <span t-field="l.product_qty"/>  </td>
-                        <td class="text-left">  <span t-field="l.product_uom.name"/>  </td>
-                        <td class="text-right"> <span t-field="l.price_unit"/> </td>
-                        <td class="text-right">
+                        <td class="text-left">         <span t-field="l.name"/> </td>
+                        <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
+                        <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
+                        <td class="text-left">         <span t-esc="', '.join(map(lambda x: x.name, l.taxes_id))"/></td>
+                        <td class="text-center">       <span t-field="l.date_planned"/>  </td>
+                        <td class="text-right nowrap"> <span t-field="l.product_qty"/>  </td>
+                        <td class="text-left">         <span t-field="l.product_uom.name"/>  </td>
+                        <td class="text-right nowrap"> <span t-field="l.price_unit"/> </td>
+                        <td class="text-right nowrap">
                             <span t-field="l.price_subtotal"
                                 t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
                         </td>
