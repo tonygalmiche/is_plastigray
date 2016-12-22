@@ -116,5 +116,8 @@ access_is_mrp_production_workcenter_line,access_is_mrp_production_workcenter_lin
 access_is_mrp_routing,access_is_mrp_routing,mrp.model_mrp_routing,base.group_user,1,0,0,0
 access_is_mrp_routing_workcenter,access_is_mrp_routing_workcenter,mrp.model_mrp_routing_workcenter,base.group_user,1,0,0,0
 
+access_is_stock_move,access_is_stock_move,model_is_stock_move,base.group_user,1,0,0,0
+
+
 
 

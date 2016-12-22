@@ -108,6 +108,7 @@
         "report/is_ligne_reception.xml",
         "report/is_users_groups.xml",
         "report/is_model_groups.xml",
+        "report/is_stock_move.xml",
         "menu.xml",
     ], 
     "installable": True,
