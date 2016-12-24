@@ -124,6 +124,7 @@ class mrp_prevision(models.Model):
                 try:
                     workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
                     mrp_id.force_production()
+                    mrp_id.action_in_production()
                     #break
                 except Exception as inst:
                     unlink=False

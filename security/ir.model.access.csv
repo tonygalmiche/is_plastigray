@@ -99,8 +99,8 @@ access_report_stock_lot_bloque,access_report_stock_lot_bloque,model_report_stock
 access_report_stock_lot_debloque,access_report_stock_lot_debloque,model_report_stock_lot_debloque,base.group_user,1,0,0,0
 access_report_stock_lot_change_location,access_report_stock_lot_change_location,model_report_stock_lot_change_location,base.group_user,1,0,0,0
 access_report_stock_lot_rebut,access_report_stock_lot_rebut,model_report_stock_lot_rebut,base.group_user,1,0,0,0
-access_is_gestion_lot,access_is_gestion_lot,model_is_gestion_lot,base.group_user,1,0,0,0
-access_is_stock_mise_rebut,access_is_stock_mise_rebut,model_is_stock_mise_rebut,base.group_user,1,0,0,0
+access_is_gestion_lot,access_is_gestion_lot,model_is_gestion_lot,base.group_user,1,1,1,1
+access_is_stock_mise_rebut,access_is_stock_mise_rebut,model_is_stock_mise_rebut,base.group_user,1,1,1,1
 access_is_stock_pack_operation,access_is_stock_pack_operation,model_stock_pack_operation,base.group_user,1,1,1,1
 access_is_stock_move_operation_link,access_is_stock_move_operation_link,stock.model_stock_move_operation_link,base.group_user,1,1,1,1
 access_is_mrp_production,access_is_mrp_production,model_mrp_production,base.group_user,1,0,0,0
@@ -118,6 +118,5 @@ access_is_mrp_routing_workcenter,access_is_mrp_routing_workcenter,mrp.model_mrp_
 
 access_is_stock_move,access_is_stock_move,model_is_stock_move,base.group_user,1,0,0,0
 
-
-
+access_is_resource_calendar,access_is_resource_calendar,resource.model_resource_calendar,base.group_user,1,0,0,0
 

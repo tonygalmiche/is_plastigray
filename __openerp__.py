@@ -32,7 +32,7 @@
         "security/res.groups.xml",
         "security/ir.model.access.csv", # Permet de définir rapidement les accès de base en CSV
         "security/ir.model.access.xml", # Permet de définit plus précisement les accès complèmenaires en XML pour mettre des commentaires
-        "security/res.groups.csv",
+        #"security/res.groups.csv",
 
         "res_partner_view.xml",  # Vue partenaire modifiée
         "assets.xml",            # Permet d'ajouter des css et des js

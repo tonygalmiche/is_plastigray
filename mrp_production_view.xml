@@ -14,25 +14,21 @@
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
 
-                <!--
-                <xpath expr="//form/header/button[@name='action_cancel']" position="after">
-                    <button name="action_done" class="oe_highlight" type="object"
-                         attrs="{'invisible':['|',('is_done','=',False),('state','!=','in_production')]}" string="Solder cet OF" />
-                </xpath>
-                -->
-
+                <button name="button_cancel" position="replace" />
                 <xpath expr="//form/header/button[@name='action_cancel']" position="replace">
-                    <button name="action_done" type="object"
-                         attrs="{'invisible':['|',('is_done','=',False),('state','!=','in_production')]}" string="Solder cet OF" />
+                    <button 
+                        name="action_done" type="object" string="Solder cet OF"
+                        states="draft,ready,in_production,confirmed" 
+                        groups="is_plastigray.is_rsp_production_group"
+                        confirm="Voulez-vous vraiment solder cet OF ?" />
                 </xpath>
-
+                <button icon="gtk-go-forward"        position="replace" />
+                <button icon="terp-gtk-jump-to-ltr"  position="replace" />
 
                 <button string="Update" position="replace">
                     <button type="action" name="%(mrp.action_change_production_qty)d"
                         string="Update" states="confirmed,ready,in_production" class="oe_edit_only oe_link"/>
                 </button>
-
-
 
                 <xpath expr="//form/header/button[@string='Produce']" position="replace">
                     <button 
@@ -66,7 +62,6 @@
                     <attribute name="invisible">1</attribute>
                 </button>
 
-
                 <xpath expr="//field[@name='move_lines']/tree/field[@name='product_uom_qty']" position="replace">
                     <field name="product_uom_qty"  string="Quantity" digits="(14, 4)" />
                 </xpath>
@@ -77,8 +72,41 @@
 
 
 
+
+
+
             </field>
         </record>
+
+
+        <!-- Bon de travaux sur l'OF -->
+        <record id="is_mrp_production_form_inherit_view" model="ir.ui.view">
+            <field name="name">is.mrp.production.form.inherit</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp_operations.mrp_production_form_inherit_view"/>
+            <field name="arch" type="xml">
+                <button name="button_draft"         position="replace" />
+                <button name="button_start_working" position="replace" />
+                <button name="button_resume"        position="replace" />
+                <button name="button_pause"         position="replace" />
+                <button name="button_done"          position="replace" />
+            </field>
+        </record>
+        <record id="is_mrp_production_form_inherit_view2" model="ir.ui.view">
+            <field name="name">is.mrp.production.form.inherit2</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp_operations.mrp_production_form_inherit_view2"/>
+            <field name="arch" type="xml">
+                <button name="button_draft"         position="replace" />
+                <button name="button_start_working" position="replace" />
+                <button name="button_resume"        position="replace" />
+                <button name="button_pause"         position="replace" />
+                <button name="button_done"          position="replace" />
+            </field>
+        </record>
+
+
+
 
 
 

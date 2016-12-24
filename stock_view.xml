@@ -163,6 +163,10 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
+                <button name="force_assign" position="replace" />
+                <button name="do_unreserve" position="attributes" >
+                    <attribute name="invisible">1</attribute>>
+                </button>
 
                 <button name="action_cancel" position="after" >
                     <button 
@@ -293,7 +297,7 @@
             <field name="name">stock.production.lot.tree</field>
             <field name="model">stock.production.lot</field>
             <field name="arch" type="xml">
-                <tree colors="red:is_date_peremption and (is_date_peremption&lt;current_date)" >
+                <tree colors="red:is_date_peremption and (is_date_peremption&lt;current_date)" create="0" >
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="is_lot_fournisseur"/>

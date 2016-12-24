@@ -101,7 +101,7 @@
     <menuitem id="menu_is_cout_40" sequence="40" name="Coût article"       parent="menu_is_cout"  action="is_cout_action" />
 
     <record id="menu_is_societes" model="ir.ui.menu">
-        <field name="name">Sociétés</field>
+        <field name="name">Société</field>
         <field name="sequence">40</field>
         <field name="parent_id" eval="ref('menu_is_donnees_techniques')"/>
         <field name="groups_id" eval="[(6,0,[
@@ -110,7 +110,7 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_societes_10"   sequence="10" name="Sociétés"               parent="menu_is_societes" action="is_action_partner_supplier_form" />
+    <menuitem id="menu_is_societes_10"   sequence="10" name="Société"               parent="menu_is_societes" action="is_action_partner_supplier_form" />
  
     <record id="menu_is_dt_tables" model="ir.ui.menu">
         <field name="name">Tables</field>
@@ -184,7 +184,6 @@
         <field name="sequence">30</field>
         <field name="parent_id" eval="ref('menu_is_achats')"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_chef_projet_group'),
             ref('is_comptable_group'),
             ref('is_rsp_achats_group'),
@@ -204,7 +203,6 @@
         <field name="sequence">35</field>
         <field name="parent_id" eval="ref('menu_is_achats')"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_rsp_achats_group'),
             ref('is_rsp_production_group'),
         ])]"/>
@@ -237,7 +235,6 @@
         <field name="parent_id" eval="ref('menu_is_achats')"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
-            ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_commerciaux_group'),
             ref('is_qualite_group'),
             ref('is_rsp_production_group'),
@@ -269,7 +266,6 @@
         <field name="action"    ref="account.action_invoice_tree2"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
-            ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_commerciaux_group'),
             ref('is_qualite_group'),
             ref('is_rsp_production_group'),
@@ -398,7 +394,6 @@
         <field name="parent_id" eval="ref('menu_is_ventes_cde')"/>
         <field name="action"    ref="is_edi_cde_cli_action"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_rsp_production_group')
         ])]"/>
     </record>
@@ -409,7 +404,10 @@
         <field name="parent_id" eval="ref('menu_is_ventes_cde')"/>
         <field name="action"    ref="is_url_pic_3_mois"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_employes_hors_production_group')
+            ref('is_rsp_production_group'),
+            ref('is_commerciaux_group'),
+            ref('is_homme_flux_group'),
+            ref('is_magasiniers_group'),
         ])]"/>
     </record>
 
@@ -461,7 +459,19 @@
             ref('is_magasiniers_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_ventes_liv_20"   sequence="20" name="Toutes les livraisons" parent="menu_is_ventes_liv" action="is_toutes_les_livraisons_action" />
+
+    <record id="is_toutes_les_livraisons_menu" model="ir.ui.menu" >
+        <field name="name">Toutes les livraisons</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_liv')"/>
+        <field name="action"    ref="is_toutes_les_livraisons_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+            ref('is_homme_flux_group'),
+            ref('is_magasiniers_group'),
+        ])]"/>
+    </record>
+
 
 
     <!-- Ventes / Facturation Client -->
@@ -471,7 +481,6 @@
         <field name="parent_id" eval="ref('menu_is_ventes')"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
-            ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
     <menuitem id="menu_is_ventes_fac_10"   sequence="10" name="Livraisons à facturer" parent="menu_is_ventes_fac" action="is_livraisons_a_facturer_action" />
@@ -538,7 +547,6 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
-            ref('is_centrale_matiere_group'),
         ])]"/>
     </record>
     <record id="menu_is_planning_production" model="ir.ui.menu" >
@@ -573,7 +581,6 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
-            ref('is_qualite_group'),
         ])]"/>
     </record>
     <record id="is_debloquer_lot_menu" model="ir.ui.menu" >
@@ -594,7 +601,6 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
-            ref('is_qualite_group'),
         ])]"/>
     </record>
     <record id="is_lot_rebut_menu" model="ir.ui.menu" >
@@ -623,7 +629,6 @@
         <field name="parent_id" eval="ref('is_gestion_etuves_menu')"/>
         <field name="action"    ref="is_etuve_action"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_rsp_production_group'),
             ref('is_centrale_matiere_group'),
         ])]"/>
     </record>
@@ -633,7 +638,6 @@
         <field name="parent_id" eval="ref('is_gestion_etuves_menu')"/>
         <field name="action"    ref="is_etuve_saisie_action"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_rsp_production_group'),
             ref('is_centrale_matiere_group'),
         ])]"/>
     </record>
