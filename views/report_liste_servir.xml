@@ -25,13 +25,20 @@
             .nowrap{
                 white-space: nowrap;
             }
-            .message {
+            .commentaire {
+                padding:1mm;
                 font-size:12pt;
                 font-weight: bold;
                 background:orange;
+                margin-right:1mm
             }
-
-
+            .message {
+                padding:1mm;
+                font-size:12pt;
+                font-weight: bold;
+                background:orange;
+                margin-left:1mm
+            }
         </template>
 
 
@@ -79,6 +86,12 @@
                             <span style="font-size:12pt;" t-field="o.name"/>
                              du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
                         </div><br />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-3">
+                    </div>
+                    <div class="col-xs-5">
                         <div class="client">
                             Client à livrer : <br />
                             <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)<br />
@@ -89,6 +102,13 @@
                             <span t-field="o.partner_id.zip" /> - 
                             <span t-field="o.partner_id.city" /><br />
                             <span t-field="o.partner_id.country_id.name" />
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="client">
+                            Transporteur : <br />
+                            <b><span t-field="o.transporteur_id.name"/></b> (<span t-field="o.transporteur_id.is_code"/>)<br />
+                            Téléphone : <span t-field="o.transporteur_id.phone" /><br />
                         </div>
                     </div>
                 </div><br />
@@ -149,7 +169,12 @@
     <t t-call="is_plastigray.report_liste_servir_external_layout">
         <div class="page">
             <div class="row">
-                <div class="col-xs-8">
+                <div class="col-xs-6">
+                    <t t-if="o.commentaire">
+                        <div class="commentaire"  t-field="o.commentaire"/>
+                    </t>
+                </div>
+                <div class="col-xs-6">
                     <t t-if="o.message">
                         <div class="message"  t-field="o.message"/>
                     </t>
@@ -160,17 +185,25 @@
                     <table class="table table-condensed">
                         <thead>
                             <tr >
-                                <th class="text-left"   style="vertical-align:top">Code PG / Moule / Gest / Ref Client<br />Désignation</th>
+                                <th class="text-left"   style="vertical-align:top">Code PG / Moule / Gest / Ref Client / Désignation</th>
                                 <th class="text-left"   style="vertical-align:top">N°Cde</th>
                                 <th class="text-center" style="vertical-align:top">Date<br />Exp/Liv</th>
-                                <th class="text-left"   style="vertical-align:top">UC</th>
-                                <th class="text-right"  style="vertical-align:top">Stock 01</th>
-                                <th class="text-right"  style="vertical-align:top">Stock A</th>
-                                <th class="text-right"  style="vertical-align:top">Stock Q</th>
-                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />UC</th>
+
+                                <th class="text-right"  style="vertical-align:top">Stock 01 US</th>
+                                <th class="text-right"  style="vertical-align:top">Stock A US</th>
+                                <th class="text-right"  style="vertical-align:top">Stock Q US</th>
                                 <th class="text-right"  style="vertical-align:top">Qt CDE<br />US</th>
-                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />UM</th>
+
+
+                                <th class="text-left"   style="vertical-align:top">UC</th>
+                                <th class="text-right"  style="vertical-align:top">Stock 01 UC</th>
+                                <th class="text-right"  style="vertical-align:top">Stock A UC</th>
+                                <th class="text-right"  style="vertical-align:top">Stock Q UC</th>
+                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />UC</th>
+
                                 <th class="text-left"   style="vertical-align:top">UM</th>
+                                <th class="text-right"  style="vertical-align:top">Qt CDE<br />UM</th>
+
                                 <th class="text-right"  style="vertical-align:top">Poids<br />(en kg)</th>
                                 <th class="text-center" style="vertical-align:top">Mixer</th>
                                 <th class="text-left"   style="vertical-align:top">Commentaire</th>
@@ -193,6 +226,20 @@
                                     <span t-field="l.date_expedition"/><br />
                                     <span t-field="l.date_livraison"/>
                                 </td>
+
+                                <td class="text-right nowrap">   
+                                    <t t-esc='"{:,.1f}".format(l.stock01).replace(","," ").replace(".",",")'/> 
+                                </td>
+                                <td class="text-right nowrap">   
+                                    <t t-esc='"{:,.1f}".format(l.stocka).replace(","," ").replace(".",",")'/> 
+                                </td>
+                                <td class="text-right nowrap">  
+                                    <t t-esc='"{:,.1f}".format(l.stockq).replace(","," ").replace(".",",")'/>
+                                </td>
+                                <td class="text-right nowrap">  
+                                    <t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'/> 
+                                </td>
+
                                 <td class="text-left">    <span t-field="l.uc_id"/> </td>
                                 <td class="text-right nowrap">   
                                     <t t-esc='"{:,.1f}".format(l.stock01_uc).replace(","," ").replace(".",",")'/> 
@@ -206,11 +253,8 @@
                                 <td class="text-right nowrap">  
                                     <t t-esc='"{:,.1f}".format(l.nb_uc).replace(","," ").replace(".",",")'/>  
                                 </td>
-                                <td class="text-right nowrap">  
-                                    <t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'/> 
-                                </td>
-                                <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(l.nb_um).replace(","," ").replace(".",",")'/>  </td>
                                 <td class="text-left">    <span t-field="l.um_id"/> </td>
+                                <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(l.nb_um).replace(","," ").replace(".",",")'/>  </td>
 
                                 <td class="text-right nowrap">  
                                     <t t-esc='"{:,.0f}".format(l.quantite*l.product_id.product_tmpl_id.weight).replace(","," ").replace(".",",")'/> 

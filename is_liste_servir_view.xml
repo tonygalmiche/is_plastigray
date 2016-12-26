@@ -54,9 +54,10 @@
                                         on_change="onchange_partner_id(partner_id)"
                                         attrs="{'readonly':[('state','!=','creation')]}" 
                                 /> 
-                                <field name="date_debut" attrs="{'readonly':[('state','!=','creation')]}" /> 
-                                <field name="date_fin"   attrs="{'readonly':[('state','!=','creation')]}"/> 
-                                <field name="livrable"   attrs="{'readonly':[('state','!=','creation')]}"/> 
+                                <field name="date_debut"  attrs="{'readonly':[('state','!=','creation')]}" /> 
+                                <field name="date_fin"    attrs="{'readonly':[('state','!=','creation')]}"/> 
+                                <field name="livrable"    attrs="{'readonly':[('state','!=','creation')]}"/> 
+                                <field name="commentaire" attrs="{'readonly':[('state','!=','creation')]}"/> 
                             </group>
                             <group>
                                 <field name="is_source_location_id"/> 
@@ -78,18 +79,25 @@
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="true" colors="red:livrable == False">
                                     <field name="product_id" widget="many2one_clickable"/>
-                                    <field name="mold_id"/>
+                                    <field name="mold_dossierf"/>
                                     <field name="livrable" invisible="1"/>
                                     <field name="date_livraison"/>
                                     <field name="date_expedition"/>
+
+                                    <field name="stock01"/>
+                                    <field name="stocka"/>
+                                    <field name="stockq"/>
+                                    <field name="quantite"/>
+
+                                    <field name="uc_id"/>
                                     <field name="stock01_uc"/>
                                     <field name="stocka_uc"/>
                                     <field name="stockq_uc"/>
-                                    <field name="quantite"/>
                                     <field name="nb_uc"/>
-                                    <field name="uc_id"/>
-                                    <field name="nb_um"/>
+
                                     <field name="um_id"/>
+                                    <field name="nb_um"/>
+
                                     <field name="mixer"/>
                                     <field name="client_order_ref" readonly="1" />
                                     <field name="certificat_matiere" invisible="1"/>

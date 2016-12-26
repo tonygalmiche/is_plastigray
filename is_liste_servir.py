@@ -115,6 +115,7 @@ class is_liste_servir(models.Model):
     livrable               = fields.Boolean("Livrable")
     transporteur_id        = fields.Many2one('res.partner', 'Transporteur')
     message                = fields.Text("Message")
+    commentaire            = fields.Text("Commentaire")
     state                  = fields.Selection([('creation', u'Création'),('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
     order_ids              = fields.One2many('sale.order', 'is_liste_servir_id', 'Commandes générées', readonly=False)
     line_ids               = fields.One2many('is.liste.servir.line', 'liste_servir_id', u"Lignes")
@@ -529,6 +530,13 @@ class is_liste_servir_line(models.Model):
         cr = self._cr
         for obj in self:
             if obj.product_id:
+                mold_dossierf=False
+                if obj.product_id.is_dossierf_id:
+                    mold_dossierf=obj.product_id.is_dossierf_id.name
+                if obj.product_id.is_mold_id:
+                    mold_dossierf=obj.product_id.is_mold_id.name
+                obj.mold_dossierf=mold_dossierf
+
                 SQL="""
                     select pa.ul,pa.qty,pa.ul_container,pa.rows*pa.ul_qty
                     from product_product pp left outer join product_packaging pa on pp.product_tmpl_id=pa.product_tmpl_id 
@@ -538,6 +546,8 @@ class is_liste_servir_line(models.Model):
                 cr.execute(SQL)
                 result = cr.fetchall()
                 for row in result:
+
+
                     if row[0]:
                         qt=obj.quantite
                         stock01_uc = obj.stock01
@@ -563,14 +573,19 @@ class is_liste_servir_line(models.Model):
 
     liste_servir_id    = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
     product_id         = fields.Many2one('product.product', 'Article', required=True, readonly=True)
+
     mold_id            = fields.Many2one('is.mold', 'Moule'          , related='product_id.is_mold_id', readonly=True)
     dossierf_id        = fields.Many2one('is.dossierf', 'Dossier F'  , related='product_id.is_dossierf_id', readonly=True)
+    mold_dossierf      = fields.Char('Moule / Dossier F', compute='_compute', readonly=True, store=True)
+
     stock01            = fields.Float('Stock 01 US' , help="Stock 01 en US")
     stocka             = fields.Float('Stock A US'  , help="Stock A en US")
     stockq             = fields.Float('Stock Q US'  , help="Stock Q en US")
-    stock01_uc         = fields.Float('Stock 01'    , help="Stock 01 en UC", compute='_compute', readonly=True, store=True)
-    stocka_uc          = fields.Float('Stock A'     , help="Stock A en UC" , compute='_compute', readonly=True, store=True)
-    stockq_uc          = fields.Float('Stock Q'     , help="Stock Q en UC" , compute='_compute', readonly=True, store=True)
+
+    stock01_uc         = fields.Float('Stock 01 UC' , help="Stock 01 en UC", compute='_compute', readonly=True, store=True)
+    stocka_uc          = fields.Float('Stock A UC'  , help="Stock A en UC" , compute='_compute', readonly=True, store=True)
+    stockq_uc          = fields.Float('Stock Q UC'  , help="Stock Q en UC" , compute='_compute', readonly=True, store=True)
+
     date_livraison     = fields.Date('Date de livraison', readonly=True)
     quantite           = fields.Float('Qt Cde US')
     livrable           = fields.Boolean("Livrable")
