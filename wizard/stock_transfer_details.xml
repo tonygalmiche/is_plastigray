@@ -59,7 +59,8 @@
                     <attribute name="invisible">1</attribute>
                 </field>
                 <field name="lot_id" position="after">
-                    <field name="is_lot_fournisseur" />
+                    <field name="is_lot_fournisseur" attrs="" />
+                    <field name="is_ctrl_rcp"        attrs="" />
                 </field>
             </field>
         </record>

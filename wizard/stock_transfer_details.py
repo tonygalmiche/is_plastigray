@@ -112,6 +112,7 @@ class stock_transfer_details_items(models.TransientModel):
 
     name               = fields.Char('Description')
     is_lot_fournisseur = fields.Char("Lot fournisseur")
+    is_ctrl_rcp        = fields.Selection([('bloque','Produit bloqué')], "Contrôle réception", related='product_id.is_ctrl_rcp', readonly=True)
 
 
 
