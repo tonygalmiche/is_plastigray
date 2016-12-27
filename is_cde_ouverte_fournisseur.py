@@ -289,7 +289,8 @@ class is_cde_ouverte_fournisseur(models.Model):
     def print_ferme_uniquement(self):
         for obj in self:
             self.set_histo(obj.id, u'Impression commandes fermes uniquement')
-            attachment_id=self.create_ferme_uniquement()
+            name='commandes-fermes.pdf'
+            attachment_id=self.create_ferme_uniquement(name)
             return {
                 'type' : 'ir.actions.act_url',
                 'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
@@ -416,7 +417,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                 email_vals.update({
                     'subject'       : subject,
                     'email_to'      : email, 
-                    'email_cc'      : 'tony.galmiche.div@free.fr',
+                    'email_cc'      : email,
                     'email_from'    : email, 
                     'body_html'     : body_html.encode('utf-8'), 
                     'attachment_ids': [(6, 0, [attachment_id.id])] 
