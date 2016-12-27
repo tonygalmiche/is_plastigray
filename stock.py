@@ -52,6 +52,69 @@ class stock_picking(models.Model):
             }
 
 
+    @api.multi
+    def action_annuler_reception(self):
+        cr = self._cr
+        for obj in self:
+
+
+
+
+
+
+
+            #** Recherche s'il existe une réception pour cette commande ********
+            order_id=obj.is_purchase_order_id.id
+            pickings = self.env['stock.picking'].search([('is_purchase_order_id','=',order_id),('state','=','assigned')])
+            picking=False
+            for p in pickings:
+                picking=p
+            #*******************************************************************
+
+            #** Copie de la réception pour pouvoir la réfaire ******************
+            if not picking:
+                picking=obj.copy()
+                picking.invoice_state=obj.invoice_state
+            else:
+                for move in obj.move_lines:
+                    copy=move.copy()
+                    copy.picking_id=picking.id
+            #*******************************************************************
+
+            #** Création des mouvements inverses pour annuler la réception *****
+            for move in obj.move_lines:
+                name=move.picking_id.name
+                lots = self.env['stock.production.lot'].search([('product_id','=',move.product_id.id),('name','=',name)])
+                lot_id=False
+                for lot in lots:
+                    lot_id=lot.id
+                copy=move.copy()
+                copy.location_id      = move.location_dest_id.id
+                copy.location_dest_id = move.location_id.id
+                copy.restrict_lot_id=lot_id
+                copy.action_done()
+            #*******************************************************************
+
+
+            #** Requete directe pour annuler la réception sinon impossible *****
+            obj.invoice_state='none'
+            SQL="update stock_picking set state='cancel' where id="+str(obj.id)
+            cr.execute(SQL)
+            #*******************************************************************
+
+
+            return {
+                'name': "Réception",
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'stock.picking',
+                'type': 'ir.actions.act_window',
+                'res_id': picking.id,
+                'domain': '[]',
+            }
+
+
+
 
 
     #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
@@ -576,11 +639,17 @@ class stock_move(models.Model):
 
 class stock_production_lot(models.Model):
     _inherit = "stock.production.lot"
+    _order="id desc"
 
     is_date_peremption = fields.Date("Date de péremption")
     is_lot_fournisseur = fields.Char("Lot fournisseur")
 
 
+
+
+class stock_inventory(models.Model):
+    _inherit = "stock.inventory"
+    _order="date desc"
 
 
 

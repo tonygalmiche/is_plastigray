@@ -51,6 +51,21 @@
 
 
 
+        <!-- stock.move.form --> 
+        <record id="is_view_move_form" model="ir.ui.view">
+            <field name="name">stock.move.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="group_id" position="after">
+                    <field name="restrict_lot_id" />
+                </field>
+            </field>
+        </record>
+
+
+
+
         <!-- stock.move --> 
         <record id="is_view_move_tree" model="ir.ui.view">
             <field name="name">is_view_move_tree</field>
@@ -167,8 +182,20 @@
                 <button name="do_unreserve" position="attributes" >
                     <attribute name="invisible">1</attribute>>
                 </button>
+                <button string="Reverse Transfer" position="attributes" >
+                    <attribute name="invisible">1</attribute>>
+                </button>
+                <button name="action_cancel" position="replace" >
+                    <button 
+                        name="action_annuler_reception" 
+                        string="Annuler cette réception" 
+                        groups="is_plastigray.is_rsp_production_group,is_plastigray.is_rsp_achats_group,is_plastigray.is_magasiniers_group" 
+                        attrs="{'invisible': ['|',('is_purchase_order_id', '=', False),('state','!=','done')]}" 
+                        confirm="Voulez-vous vraiment annuler cette réception ?"
+                        type="object"/>
+                </button>
 
-                <button name="action_cancel" position="after" >
+                <button name="do_print_picking" position="after" >
                     <button 
                         name="action_imprimer_etiquette_reception" 
                         class="oe_highlight"
@@ -403,16 +430,16 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-
-
-
         <record id="is_view_inventory_form" model="ir.ui.view">
             <field name="name">is_view_inventory_form</field>
             <field name="model">stock.inventory</field>
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field name="arch" type="xml">
+                <button name="prepare_inventory" position="replace">
+                    <button name="prepare_inventory" states="draft" string="Start Inventory" type="object" class="oe_highlight" groups="is_plastigray.is_rsp_production_group"/>
+                </button>
                 <button name="action_done" position="replace">
-                    <button name="action_done" states="confirm" string="Validate Inventory" type="object" class="oe_highlight" groups="is_plastigray.is_rsp_production_group"/>
+                    <button name="action_done" states="confirm" string="Validate Inventory" type="object" class="oe_highlight"  groups="is_plastigray.is_rsp_production_group"/>
                 </button>
             </field>
         </record>
