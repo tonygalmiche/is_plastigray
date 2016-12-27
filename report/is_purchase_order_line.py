@@ -12,9 +12,9 @@ class is_purchase_order_line(models.Model):
 
     order_id             = fields.Many2one('purchase.order', 'Commande')
     partner_id           = fields.Many2one('res.partner', 'Fournisseur')
-    date_order           = fields.Datetime('Date de commande')
+    date_order           = fields.Date('Date de commande')
     minimum_planned_date = fields.Date('Date prévue entête')
-    is_date_confirmation = fields.Datetime('Date de confirmation')
+    is_date_confirmation = fields.Date('Date de confirmation')
     product_id           = fields.Many2one('product.template', 'Article')
     is_ref_fournisseur   = fields.Char('Référence fournisseur')
     date_planned         = fields.Date('Date prévue ligne')
