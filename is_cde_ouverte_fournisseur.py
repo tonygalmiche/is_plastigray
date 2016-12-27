@@ -16,6 +16,126 @@ import datetime
 # - Pour les commandes fermes, tenir compte de la date de validation => Ne pas envoyer les commandes validées de plus de 7 jours
 
 
+modele_mail=u"""
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  </head>
+  <body>
+<font>Bonjour, </font>
+<br><br>
+<font> Veuillez trouver ci-joint notre document.</font>
+<br><br>
+<font> <u><b>RAPPEL : Exigences particulières / mode de fonctionnement</b></u></font>
+<br><br>
+<table border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td valign="top"><font><b><u>LOGISTIQUE : </u></b></font><br>
+        <br>
+        <div align="justify"><font
+           >Pour chaque commande, un Accusé
+            Réception doit être envoyé sous 72 heures. Au delà,
+            toute commande non discutée est considérée comme
+            acceptée dans l'état.</font><font><br>
+          </font> <font>Les
+            variations entre prévisionnel et ferme de l'ordre de
+            +/-30% seront considérées comme standards. </font><font
+           >Les demandes
+            de livraison supplémentaires ou diminution de
+            commande pourront être effectuées 72h avant la date
+            de livraison. </font><font><br>
+          </font> <font><br>
+          </font> <font><font
+             >PLASTIGRAY s'engage sur une
+              prise de stock que sur le ferme et non sur le
+              ferme + prévisionnel. </font></font><font
+           ><br>
+          </font> <font><font
+             >Durant les périodes de
+              congés, les commandes ne seront pas anticipées, le
+              fournisseur prendra les mesures nécessaires pour
+              livrer aux dates demandées.</font></font><font
+           ><br>
+          </font> <font><br>
+          </font> <font><font
+             >Les transports
+              exceptionnels, pour retard de livraisons ou
+              remplacement de pièces non conformes seront à la
+              charge du fournisseur. <br>
+            </font></font><font><b><small>L<font
+                 ><font>e(s) cout(s) et quantité(s) mis en
+                    cause, devront être communiqués au service
+                    Achats (Ces informations seront prises en
+                    compte dans la prestation commerciale
+                    annuelle, mais ne pourront, en aucun cas et
+                    à quelque titre que ce soit, être
+                    considérées comme constituant une
+                    justification de la prise en charge des
+                    coûts par PLASTIGRAY SAS.)</font></font></small></b><br>
+          </font> </div>
+      </td>
+      <td valign="top"><font><u><b>DOCUMENTAIRES</b></u></font><br>
+        <br>
+        <font><font><font>Le bordereau de livraison doit mentionner : </font></font></font><br>
+        <ul>
+          <li><font><font
+               ><font>le numéro de commande</font></font></font><font
+             > <font><font
+                 ><font>Plastigray</font></font></font></font></li>
+          <li><font><font
+               ><font>le code article Plastigray</font></font></font></li>
+          <li><font><font
+               ><font>la désignation </font></font></font><font
+             ><font
+               ><font>Plastigray</font></font></font></li>
+          <li><font><font
+               ><font>la quantité livrée </font></font></font><br>
+            <font><font
+               ><font> </font></font></font></li>
+        </ul>
+        <p><font>Pour <b>les
+            </b><b>matières</b><b> </b><b>premières</b><b>, le
+              certificat de conformité</b><b>/d'analyse</b> doit
+            obligatoirement être fourni au moment de la
+            livraison. </font><font><br>
+          </font> </p>
+        <br>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top"><font><u><b>QUALITE </b></u><u><b>/
+              TECHNIQUE</b></u></font><br>
+        <font><u><b> </b></u></font><br>
+        <font> Les produits livrés doivent être conformes aux EI validés et cahier des charges.</font><br>
+        <font> Les demandes de dérogation
+          doivent être envoyées et acceptées par votre contact
+          Qualité avant l'expédition des produits.</font><br>
+        <font> Toute modification envisagée du
+          produit ou du process doit être validée au préalable
+          par l'équipe projet PLASTIGRAY. La responsabilité du
+          fournisseur sera engagée, en cas de modification du
+          produit ou du process effectuée sans l'accord de
+          PLASTIGRAY.</font></td>
+      <td valign="top"><font><u><b>ACHATS </b></u></font><br>
+        <br>
+        <font> En cas de modification de prix ou
+          de délai de livraison habituel, le service achats doit
+          être prévenu dans un délai suffisant, pour permettre à
+          PLASTIGRAY de répercuter les changements à ses clients.</font></td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<br>
+Cordialement <br><br>
+[from]<br>
+<i>Responsable Appro</i> <br><br>
+</body></html>
+"""
+
+
+
 type_commande_list=[
     ('ouverte'         , 'Commande ouverte'),
     ('ferme'           , 'Commande ferme avec horizon'),
@@ -26,14 +146,17 @@ class is_cde_ouverte_fournisseur(models.Model):
     _name='is.cde.ouverte.fournisseur'
     _order='partner_id'
 
-    name          = fields.Char("N°", readonly=True)
-    partner_id    = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
-    pricelist_id  = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
-    type_commande = fields.Selection(type_commande_list, "Type de commande", required=True)
-    sans_commande = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
-    commentaire   = fields.Text("Commentaire")
-    product_ids   = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
-    tarif_ids     = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
+    name           = fields.Char("N°", readonly=True)
+    partner_id     = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
+    contact_id     = fields.Many2one('res.partner', 'Contact Logistique')
+    pricelist_id   = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
+    type_commande  = fields.Selection(type_commande_list, "Type de commande", required=True)
+    sans_commande  = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
+    commentaire    = fields.Text("Commentaire")
+    product_ids    = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
+    tarif_ids      = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
+    historique_ids = fields.One2many('is.cde.ouverte.fournisseur.histo'  , 'order_id', u"Historique")
+
 
     @api.model
     def create(self, vals):
@@ -76,14 +199,8 @@ class is_cde_ouverte_fournisseur(models.Model):
             raise Warning(u"Une commande ouverte existe déjà pour ce fournisseur !")
 
 
-    @api.multi
-    def print_commande_ouverte(self):
-        return self.env['report'].get_action(self, 'is_plastigray.report_cde_ouverte_fournisseur')
 
 
-    @api.multi
-    def print_appel_de_livraison(self):
-        return self.env['report'].get_action(self, 'is_plastigray.report_appel_de_livraison')
 
 
     @api.multi
@@ -112,8 +229,9 @@ class is_cde_ouverte_fournisseur(models.Model):
 
 
 
+
     @api.multi
-    def print_ferme_uniquement(self):
+    def create_ferme_uniquement(self,name):
         for obj in self:
             orders=[]
             for product in self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id)]):
@@ -141,7 +259,7 @@ class is_cde_ouverte_fournisseur(models.Model):
             # ** Recherche si une pièce jointe est déja associèe ***************
             attachment_obj = self.env['ir.attachment']
             model=self._name
-            name='commandes.pdf'
+            #name='commandes.pdf'
             attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
             # ******************************************************************
 
@@ -161,8 +279,17 @@ class is_cde_ouverte_fournisseur(models.Model):
             else:
                 attachment = attachment_obj.create(vals)
                 attachment_id=attachment.id
+
+            print 'attachment_id=',attachment_id
+
+            return attachment_id
             #*******************************************************************
 
+    @api.multi
+    def print_ferme_uniquement(self):
+        for obj in self:
+            self.set_histo(obj.id, u'Impression commandes fermes uniquement')
+            attachment_id=self.create_ferme_uniquement()
             return {
                 'type' : 'ir.actions.act_url',
                 'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
@@ -170,19 +297,166 @@ class is_cde_ouverte_fournisseur(models.Model):
             }
 
 
+    @api.multi
+    def mail_ferme_uniquement(self):
+        for obj in self:
+            self.set_histo(obj.id, u'Envoi commandes fermes par mail à '+str(obj.contact_id.email))
+            name='commandes-fermes.pdf'
+            attachment_id=self.create_ferme_uniquement(name)
+            subject=u"Commandes fermes Plastigray pour "+obj.partner_id.name;
+            self.envoi_mail(name,subject)
 
 
+
+
+    @api.multi
+    def print_commande_ouverte(self):
+        for obj in self:
+            self.set_histo(obj.id, u'Impression commande ouverte')
+        return self.env['report'].get_action(self, 'is_plastigray.report_cde_ouverte_fournisseur')
+
+
+
+    @api.multi
+    def mail_commande_ouverte(self):
+        for obj in self:
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            attachment_obj = self.env['ir.attachment']
+            model=self._name
+            name='commande-ouverte.pdf'
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_cde_ouverte_fournisseur')
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdf.encode('base64'),
+            }
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+            subject=u"Commande ouverte Plastigray pour "+obj.partner_id.name;
+            self.envoi_mail(name,subject)
+            self.set_histo(obj.id, u'Envoi commande ouverte par mail à '+str(obj.contact_id.email))
+            # ******************************************************************
+
+
+    @api.multi
+    def print_appel_de_livraison(self):
+        for obj in self:
+            self.set_histo(obj.id, u'Impression appel de livraison')
+        return self.env['report'].get_action(self, 'is_plastigray.report_appel_de_livraison')
+
+
+    @api.multi
+    def mail_appel_de_livraison(self):
+        for obj in self:
+            if obj.type_commande=='ferme':
+                self.set_histo(obj.id, u'Envoi horizon des besoins par mail à '+str(obj.contact_id.email))
+                subject=u"Horizon des besoins Plastigray pour "+obj.partner_id.name;
+                name='horizon-des-besoins.pdf'
+            else:
+                self.set_histo(obj.id, u'Envoi appel de livraison par mail à '+str(obj.contact_id.email))
+                subject=u"Appel de livraison Plastigray pour "+obj.partner_id.name;
+                name='appel-de-livraison.pdf'
+
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            attachment_obj = self.env['ir.attachment']
+            model=self._name
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_appel_de_livraison')
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdf.encode('base64'),
+            }
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+
+
+            self.envoi_mail(name,subject)
+            # ******************************************************************
+
+
+    @api.multi
+    def envoi_mail(self, name, subject):
+        for obj in self:
+            user  = self.env['res.users'].browse(self._uid)
+            email = user.email
+            nom   = user.name
+            if email:
+                attachment_id = self.env['ir.attachment'].search([
+                    ('res_model','=','is.cde.ouverte.fournisseur'),
+                    ('res_id'   ,'=',obj.id),
+                    ('name'     ,'=',name)
+                ])
+                email_vals = {}
+                #print type(body_html), body_html
+                body_html=modele_mail.replace('[from]', nom)
+                email_vals.update({
+                    'subject'       : subject,
+                    'email_to'      : email, 
+                    'email_cc'      : 'tony.galmiche.div@free.fr',
+                    'email_from'    : email, 
+                    'body_html'     : body_html.encode('utf-8'), 
+                    'attachment_ids': [(6, 0, [attachment_id.id])] 
+                })
+                email_id=self.env['mail.mail'].create(email_vals)
+                if email_id:
+                    self.env['mail.mail'].send(email_id)
+
+
+    @api.multi
+    def set_histo(self, order_id, description):
+        vals={
+            'order_id': order_id,
+            'description'  : description,
+        }
+        histo=self.env['is.cde.ouverte.fournisseur.histo'].create(vals)
 
 
     @api.multi
     def integrer_commandes(self):
         cr = self._cr
         for obj in self:
-
-
-
+            self.set_histo(obj.id, u'Intégration des commandes et SA')
             for product in obj.product_ids:
                 product.imprimer=False
+
+
+            #** Recherche du contact logistique ********************************
+            SQL="""
+                select rp.id, rp.is_type_contact, itc.name
+                from res_partner rp inner join is_type_contact itc on rp.is_type_contact=itc.id
+                where rp.parent_id="""+str(obj.partner_id.id)+""" and itc.name ilike '%logistique%' limit 1
+            """
+            print SQL
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row in result:
+                print row
+                obj.contact_id=row[0]
+            #*******************************************************************
 
             ##** Rechercher les tarifs *****************************************
             for tarif in obj.tarif_ids:
@@ -265,7 +539,6 @@ class is_cde_ouverte_fournisseur(models.Model):
                     ('product_id'  ,'=', product.product_id.id),
                     ('order_id.date_approve','>', date_approve)
                 ]
-                print where
                 for row in self.env['purchase.order.line'].search(where):
                     vals={
                         'product_id'        : product.id,
@@ -315,5 +588,18 @@ class is_cde_ouverte_fournisseur_line(models.Model):
     purchase_order_id = fields.Many2one('purchase.order', 'Commande')
 
 
+class is_cde_ouverte_fournisseur_histo(models.Model):
+    _name='is.cde.ouverte.fournisseur.histo'
+    _order='name desc'
+
+    order_id    = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
+    name        = fields.Datetime("Date")
+    user_id     = fields.Many2one('res.users', 'Utilisateur')
+    description = fields.Char("Opération éffectuée")
+
+    _defaults = {
+        'name'   : lambda *a: fields.datetime.now(),
+        'user_id': lambda obj, cr, uid, context: uid,
+    }
 
 

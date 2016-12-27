@@ -120,3 +120,7 @@ access_is_stock_move,access_is_stock_move,model_is_stock_move,base.group_user,1,
 
 access_is_resource_calendar,access_is_resource_calendar,resource.model_resource_calendar,base.group_user,1,0,0,0
 
+access_is_cde_ouverte_fournisseur_histo,access_is_cde_ouverte_fournisseur_histo,model_is_cde_ouverte_fournisseur_histo,base.group_user,1,1,1,1
+
+
+

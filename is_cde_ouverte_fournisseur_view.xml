@@ -28,46 +28,70 @@
                     <header>
                         <button name="integrer_commandes"       string="Intégrer les commandes"           attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" class="oe_highlight" type="object"  />
                         <button name="integrer_commandes"       string="Intégrer les commandes et les SA" attrs="{'invisible': [('type_commande', '=' , 'ferme_uniquement')]}" class="oe_highlight" type="object"  />
-                        <button name="print_commande_ouverte"   string="Imprimer la commande ouverte"     attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object"  />
-                        <button name="print_appel_de_livraison" string="Imprimer l'appel de livraison"    attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object" />
-                        <button name="print_appel_de_livraison" string="Imprimer l'horizon des besoins"   attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"            type="object" />
-                        <button name="print_ferme_uniquement"   string="Imprimer les commandes fermes"    attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" type="object" />
+
+                        <button name="print_commande_ouverte"   string="Imprimer la commande ouverte"         attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object"  />
+                        <button name="mail_commande_ouverte"    string="Envoyer par mail la commande ouverte" attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object"  />
+
+                        <button name="print_appel_de_livraison" string="Imprimer l'appel de livraison"         attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object" />
+                        <button name="mail_appel_de_livraison"  string="Envoyer par mail l'appel de livraison" attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object" />
+
+                        <button name="print_appel_de_livraison" string="Imprimer l'horizon des besoins"         attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"            type="object" />
+                        <button name="mail_appel_de_livraison"  string="Envoyer par mail l'horizon des besoins" attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"            type="object" />
+
+                        <button name="print_ferme_uniquement"   string="Imprimer les commandes fermes"         attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" type="object" />
+                        <button name="mail_ferme_uniquement"    string="Envoyer par mail les commandes fermes" attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" type="object" />
                     </header>
                     <sheet>
                         <group>
                             <group>
                                 <field name="name"  /> 
-                                <field name="partner_id" domain="[('supplier','=',True),('is_company','=',True)]"/> 
+                                <field name="partner_id" domain="[('supplier' ,'=',True),('is_company','=',True)]"/> 
+                                <field name="contact_id" domain="[('parent_id','=',partner_id)]" /> 
                                 <field name="pricelist_id"  /> 
                                 <field name="type_commande"  /> 
                                 <field name="sans_commande"  /> 
                             </group>
                         </group>
-                        <group string="Articles">
-                            <field name="product_ids" nolabel="1">
-                                <tree editable="bottom">
-                                    <field name="product_id" widget="many2one_clickable" /> 
-                                    <field name="num_bl"    /> 
-                                    <field name="date_bl"   /> 
-                                    <field name="qt_bl"     /> 
-                                    <field name="imprimer"  /> 
-                                </tree>
-                            </field>
-                        </group>
-                        <group>
-                            <field name="commentaire"  /> 
-                        </group>
-                       <group string="Tarifs"> 
-                            <field name="tarif_ids" nolabel="1" readonly="1">
-                                <tree>
-                                    <field name="product_id" /> 
-                                    <field name="sequence" /> 
-                                    <field name="minimum" /> 
-                                    <field name="prix_achat"/> 
-                                    <field name="uom_po_id" /> 
-                                </tree>
-                            </field>
-                        </group>
+                        <notebook>
+                            <page string="Articles et Tarifs">
+                                <group string="Articles">
+                                    <field name="product_ids" nolabel="1">
+                                        <tree editable="bottom">
+                                            <field name="product_id" widget="many2one_clickable" /> 
+                                            <field name="num_bl"    /> 
+                                            <field name="date_bl"   /> 
+                                            <field name="qt_bl"     /> 
+                                            <field name="imprimer"  /> 
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="commentaire"  /> 
+                                </group>
+                               <group string="Tarifs"> 
+                                    <field name="tarif_ids" nolabel="1" readonly="1">
+                                        <tree>
+                                            <field name="product_id" /> 
+                                            <field name="sequence" /> 
+                                            <field name="minimum" /> 
+                                            <field name="prix_achat"/> 
+                                            <field name="uom_po_id" /> 
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Historique">
+                               <group> 
+                                    <field name="historique_ids" nolabel="1" readonly="1">
+                                        <tree>
+                                            <field name="name" /> 
+                                            <field name="user_id" /> 
+                                            <field name="description" /> 
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
