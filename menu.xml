@@ -194,8 +194,8 @@
             ref('is_centrale_matiere_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_achats_cde_10"  sequence="10" name="Devis"            parent="menu_is_achats_cde" action="purchase.purchase_rfq" />
-    <menuitem id="menu_is_achats_cde_20"  sequence="20" name="Bons de commande" parent="menu_is_achats_cde" action="purchase.purchase_form_action" />
+    <menuitem id="menu_is_achats_cde_10" sequence="10" name="Devis"               parent="menu_is_achats_cde" action="purchase.purchase_rfq" />
+    <menuitem id="menu_is_achats_cde_20" sequence="20" name="Lignes de commandes" parent="menu_is_achats_cde" action="is_purchase_order_line_action" />
 
     <!-- Achats / Commandes prévisionnelles -->
     <record id="menu_is_achats_cde_ouverte" model="ir.ui.menu">
@@ -224,8 +224,9 @@
             ref('is_magasiniers_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions à traiter"   parent="menu_is_achats_rcp" action="is_ligne_reception_a_traiter_action" />
-    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Toutes les réceptions"  parent="menu_is_achats_rcp" action="is_ligne_reception_action" />
+    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions à traiter"    parent="menu_is_achats_rcp" action="is_ligne_reception_a_traiter_action" />
+    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Réceptions état terminé" parent="menu_is_achats_rcp" action="is_ligne_reception_terminee_action" />
+    <menuitem id="menu_is_achats_rcp_30"  sequence="30" name="Toutes les réceptions"   parent="menu_is_achats_rcp" action="is_ligne_reception_action" />
 
 
     <!-- Achats / Facturation -->
@@ -459,12 +460,22 @@
             ref('is_magasiniers_group'),
         ])]"/>
     </record>
-
     <record id="is_toutes_les_livraisons_menu" model="ir.ui.menu" >
         <field name="name">Toutes les livraisons</field>
         <field name="sequence">20</field>
         <field name="parent_id" eval="ref('menu_is_ventes_liv')"/>
         <field name="action"    ref="is_toutes_les_livraisons_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+            ref('is_homme_flux_group'),
+            ref('is_magasiniers_group'),
+        ])]"/>
+    </record>
+    <record id="is_ligne_livraison_menu" model="ir.ui.menu" >
+        <field name="name">Lignes de livraisons</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_liv')"/>
+        <field name="action"    ref="is_ligne_livraison_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
