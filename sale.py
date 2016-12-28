@@ -305,12 +305,12 @@ class sale_order_line(models.Model):
             v['is_date_expedition'] = date_expedition 
 
 
-            #Type de commande = previsionnel pour les commandes ouvertes
-            is_type_commande='ferme'
-            if 'is_type_commande' in context:
-                if context['is_type_commande']=='ouverte':
-                    is_type_commande='previsionnel'
-            v['is_type_commande']   = is_type_commande
+#            #Type de commande = previsionnel pour les commandes ouvertes
+#            is_type_commande='ferme'
+#            if 'is_type_commande' in context:
+#                if context['is_type_commande']=='ouverte':
+#                    is_type_commande='previsionnel'
+#            v['is_type_commande']   = is_type_commande
         
             check_date = self.check_date_livraison(date_livraison, partner_id, context=context)
             if not check_date:

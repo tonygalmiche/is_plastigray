@@ -63,6 +63,11 @@
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
+    <record model="res.groups" id="is_annulation_facture_group" >
+        <field name="name">Comptables - Annulation de facture</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
     <record model="res.groups" id="is_gestionnaire_donnees_techniques_group" >
         <field name="name">Gestionnaire des données techniques</field>
         <field name="comment"></field>

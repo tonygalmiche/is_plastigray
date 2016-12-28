@@ -45,7 +45,7 @@ class account_move_line(models.Model):
 
 class account_invoice(models.Model):
     _inherit = 'account.invoice'
-    _order   = 'date_invoice desc'
+    _order   = 'id desc'
 
     is_document       = fields.Char('Document'     , help="Ce champ est utilisé dans les factures diverses pour saisir le moule ou le n° d'investissement")
     is_num_cde_client = fields.Char('N° Cde Client', help="Ce champ est utilisé dans les factures diverses sans commande client dans Odoo")
@@ -54,6 +54,8 @@ class account_invoice(models.Model):
     is_tva            = fields.Float("TVA"     , compute='_compute', help="Taxes sans l'escompte")
     is_folio_id       = fields.Many2one('is.account.folio', 'Folio')
     is_bon_a_payer    = fields.Boolean("Bon à payer", default=True)
+    is_type_facture   = fields.Selection([('standard', u'Standard'),('diverse', u'Diverse')], u"Type de facture", default='standard', select=True)
+
 
     def _compute(self):
         for obj in self:

@@ -9,7 +9,8 @@ class is_facturation_fournisseur(models.Model):
     _name = "is.facturation.fournisseur"
     _description = "Facturation fournisseur"
 
-    name                = fields.Many2one('res.partner', 'Fournisseur'   , required=True)
+    name                = fields.Many2one('res.partner', 'Fournisseur à facturer', required=True)
+    partner_ids         = fields.Many2many('res.partner', id1='facturation_id', id2='partner_id', string='Autres fournisseurs')
     date_fin            = fields.Date('Date de fin'                      , required=True)
     date_facture        = fields.Date('Date facture fournisseur'         , required=True)
     num_facture         = fields.Char('N° facture fournisseur'           , required=True)
@@ -67,7 +68,14 @@ class is_facturation_fournisseur(models.Model):
             obj.bon_a_payer       = bon_a_payer
 
     @api.multi
-    def cherche_receptions(self, partner_id, date_fin):
+    def cherche_receptions(self, partner_id, partner_ids, date_fin):
+        ids=partner_ids[0][2]
+        ids.append(partner_id)
+        partners=[]
+        for id in ids:
+            partners.append(str(id))
+
+        print ids, ','.join(partners)
         cr=self._cr
         value = {}
         lines = []
@@ -82,7 +90,8 @@ class is_facturation_fournisseur(models.Model):
                         sm.product_uom, 
                         pol.price_unit,
                         sm.id,
-                        pol.id
+                        pol.id,
+                        sm.name as description
                 from stock_picking sp inner join stock_move                sm on sp.id=sm.picking_id
                                       inner join product_product           pp on sm.product_id=pp.id
                                       inner join product_template          pt on pp.product_tmpl_id=pt.id 
@@ -90,8 +99,11 @@ class is_facturation_fournisseur(models.Model):
                 where sm.state='done' 
                       and sm.invoice_state='2binvoiced' 
                       and sp.picking_type_id=1 """
-            sql=sql+" and sp.partner_id="+str(partner_id)+" "
+            sql=sql+" and sp.partner_id in("+','.join(partners)+") "
             sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
+
+            sql=sql+' order by sp.name, pol.id '
+
             cr.execute(sql)
             result=cr.fetchall()
             for row in result:
@@ -123,6 +135,7 @@ class is_facturation_fournisseur(models.Model):
                     'num_bl_fournisseur': row[1],
                     'date_reception'    : row[2],
                     'product_id'        : row[3],
+                    'description'       : row[10],
                     'account_id'        : account_id,
                     'ref_fournisseur'   : row[4],
                     'quantite'          : row[5],
@@ -163,6 +176,7 @@ class is_facturation_fournisseur(models.Model):
             for line in obj.line_ids:
                 if line.selection:
                     product_id      = line.product_id.id
+                    description     = line.description
                     uom_id          = line.uom_id.id 
                     quantite        = line.quantite
                     name            = line.product_id.name
@@ -180,6 +194,7 @@ class is_facturation_fournisseur(models.Model):
                     v=res['value']
                     v.update({
                         'product_id'          : product_id,
+                        'name'                : description,
                         'quantity'            : quantite,
                         'price_unit'          : line.prix,
                         'invoice_line_tax_id' : [(6,0,invoice_line_tax_id)],
@@ -218,13 +233,14 @@ class is_facturation_fournisseur(models.Model):
 
             #** Changement d'état des réceptions et des lignes *****************
             for line in obj.line_ids:
-                line.move_id.invoice_state='invoiced'
-                test=True
-                for l in line.move_id.picking_id.move_lines:
-                    if l.invoice_state=='2binvoiced':
-                        test=False
-                if test:
-                    line.move_id.picking_id.invoice_state='invoiced'
+                if line.selection:
+                    line.move_id.invoice_state='invoiced'
+                    test=True
+                    for l in line.move_id.picking_id.move_lines:
+                        if l.invoice_state=='2binvoiced':
+                            test=False
+                    if test:
+                        line.move_id.picking_id.invoice_state='invoiced'
             #*******************************************************************
 
             return {
@@ -254,6 +270,7 @@ class is_facturation_fournisseur_line(models.Model):
     num_bl_fournisseur = fields.Char('N° BL fournisseur')
     date_reception     = fields.Date('Date réception')
     product_id         = fields.Many2one('product.product', 'Article')
+    description        = fields.Char('Description')
     account_id         = fields.Many2one('account.account', 'Compte')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     quantite           = fields.Float('Quantité', digits=(14,4))

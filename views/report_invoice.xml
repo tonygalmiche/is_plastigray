@@ -206,7 +206,8 @@
                     <span t-field="picking.partner_id.street2" /> - 
                     <span t-field="picking.partner_id.zip" />
                     <span t-field="picking.partner_id.city" /> - 
-                    <span t-field="picking.partner_id.country_id.name" />
+                    <span t-field="picking.partner_id.country_id.name" /> 
+                    (<span t-field="picking.partner_id.is_code" />/<span t-field="picking.partner_id.is_adr_code" />)
                 </i>
             </div>
 
