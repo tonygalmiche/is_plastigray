@@ -14,6 +14,7 @@ class is_gestion_lot(osv.osv):
     
     _columns = {
         'product_id': fields.many2one('product.product', 'Article', readonly=True),
+        'is_uc_qt': fields.integer('Qt/UC', related='product_id.is_uc_qt', readonly=True),
         'prod_lot_id': fields.many2one('stock.production.lot', 'Lot', readonly=True),
         'planned_date': fields.datetime(u'Date prévue'),
         'location_src_id': fields.many2one('stock.location', 'Emplacement source',readonly=True),

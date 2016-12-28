@@ -190,7 +190,6 @@
                     <field name="client_order_ref"/>
                     <field name="is_ref_client"/>
                     <field name="is_article_commande_id"/>
-                    <!--<button string="Client" name="action_acceder_client" type="object" icon="gtk-home" />-->
                     <field name="partner_id" widget="many2one_clickable"/>
                     <field name="date_order"/>
                     <field name="user_id" invisible="1"/>
@@ -243,12 +242,12 @@
 
                     <!--<button string="Article" name="action_acceder_article"   type="object" icon="gtk-zoom-in" />-->
                     <field name="product_id"          readonly="1" widget="many2one_clickable"/>
+                    <field name="is_ref_client"       readonly="1"/>
                     <field name="product_uom_qty"     readonly="1" />
                     <field name="is_date_livraison"   readonly="1" />
                     <field name="is_date_expedition"  readonly="1"/>
                     <field name="is_type_commande"    readonly="1" />
                     <button string="Client"    name="action_acceder_client"   type="object" icon="gtk-home" />
-                    <!--<button string="Commande"  name="action_acceder_commande" type="object" icon="gtk-index" />-->
                     <field name="order_id"            readonly="1" widget="many2one_clickable"/>
                     <field name="is_client_order_ref" readonly="1"/>
                     <field name="price_unit"          readonly="1"/>
@@ -257,6 +256,20 @@
                 </tree>
             </field>
         </record>
+
+
+        <record id="is_view_sales_order_line_filter" model="ir.ui.view">
+            <field name="name">is_view_sales_order_line_filter</field>
+            <field name="model">sale.order.line</field>
+            <field name="inherit_id" ref="sale.view_sales_order_line_filter"/>
+            <field name="arch" type="xml">
+                <field name="product_id" position="after">
+                    <field name="is_ref_client" />
+                </field>
+            </field>
+        </record>
+
+
         <record model="ir.actions.act_window" id="is_order_line_tree_action">
             <field name="name">Lignes de commandes</field>
             <field name="res_model">sale.order.line</field>
@@ -264,7 +277,6 @@
             <field name="view_id" ref="is_order_line_tree_view"/>
             <field name="view_mode">tree</field>
         </record>
-
 
 
         <record id="is_sale_order_action" model="ir.actions.act_window">

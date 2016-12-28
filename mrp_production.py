@@ -36,24 +36,32 @@ class MrpProduction(models.Model):
             package_qty=1
         self.product_package     = product_package
         self.package_qty         = package_qty
-        self.is_qt_prevue        = is_qt_prevue / package_qty
+
         self.is_qt_fabriquee_uom = is_qt_fabriquee 
+        self.is_qt_rebut_uom     = is_qt_rebut
+        self.is_qt_reste_uom     = self.product_qty - self.is_qt_fabriquee_uom
+
+        self.is_qt_prevue        = is_qt_prevue / package_qty
         self.is_qt_fabriquee     = is_qt_fabriquee / package_qty
         self.is_qt_rebut         = is_qt_rebut / package_qty
         self.is_qt_reste         = self.is_qt_prevue - self.is_qt_fabriquee
 
+    is_qt_fabriquee_uom       = fields.Float(string="Qt fabriquée"     , compute="_compute")
+    is_qt_rebut_uom           = fields.Float(string="Qt rebut"         , compute="_compute")
+    is_qt_reste_uom           = fields.Float(string="Qt reste"         , compute="_compute")
 
     product_package           = fields.Many2one('product.ul'           , compute="_compute", string="Unité de conditionnement")
     package_qty               = fields.Float(string='Qt par UC'        , compute="_compute")
+
     is_qt_prevue              = fields.Float(string="Qt prévue (UC)"   , compute="_compute")
     is_qt_fabriquee           = fields.Float(string="Qt fabriquée (UC)", compute="_compute")
-    is_qt_fabriquee_uom       = fields.Float(string="Qt fabriquée"     , compute="_compute")
     is_qt_rebut               = fields.Float(string="Qt rebut (UC)"    , compute="_compute")
     is_qt_reste               = fields.Float(string="Qt reste (UC)"    , compute="_compute")
+
     date_planned              = fields.Datetime(string='Date plannifiée', required=True, readonly=False)
     is_done                   = fields.Boolean(string="Is done ?", default=False)
     mrp_product_suggestion_id = fields.Many2one('mrp.prevision','MRP Product Suggestion')
-
+    is_mold_id                = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
 
 
     @api.multi

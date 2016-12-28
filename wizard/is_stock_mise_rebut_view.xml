@@ -11,6 +11,7 @@
                 <form string="Gestion de rebut">
                     <group>
                         <field name="product_id" />
+                        <field name="is_uc_qt"  />
                         <field name="product_qty"/>
                         <field name="restrict_lot_id"  />
                         <field name="location_src_id" invisible="1" />

@@ -28,7 +28,11 @@
                 <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="is_justification" />
                 </xpath>
+                <field name="partner_ref" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
                 <field name="partner_ref" position="after">
+                    <field name="is_num_da" />
                     <field name="is_document" />
                     <field name="is_demandeur_id" />
                 </field>
@@ -45,6 +49,7 @@
             <field name="inherit_id" ref="purchase.purchase_order_tree" />
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
+                    <field name="is_num_da" />
                     <field name="is_document" />
                     <field name="is_demandeur_id" />
                 </field>
@@ -52,6 +57,7 @@
                     <field name="is_date_confirmation" />
                     <field name="is_commentaire" />
                 </field>
+                <field name="origin" position="replace" />
             </field>
         </record>
 

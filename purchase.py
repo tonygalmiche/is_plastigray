@@ -44,6 +44,7 @@ class purchase_order_line(models.Model):
 class purchase_order(models.Model):
     _inherit = "purchase.order"
 
+    is_num_da            = fields.Char("N°Demande d'achat")
     is_document          = fields.Char("Document (N° de dossier)")
     is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
     is_date_confirmation = fields.Date("Date de confirmation du fournisseur")

@@ -8,21 +8,22 @@
             <field name="arch" type="xml">
                 <form string="Bloquer un lot">
                   <group>
-                	<group>
-                		<field name="operation" invisible="1" />
-                    	<field name="product_id"  />
-						<field name="prod_lot_id" />
-						<field name="product_qty" />
+                    <group>
+                        <field name="operation" invisible="1" />
+                        <field name="product_id"  />
+                        <field name="is_uc_qt"  />
+                        <field name="prod_lot_id" />
+                        <field name="product_qty" />
                     </group>
                     <group>
-                    	<field name="location_src_id" widget="selection" />
-						<field name="location_dest_bloq_id" widget="selection" domain="[('control_quality','=',True), ('usage','=','internal')]" attrs="{'invisible':[('operation','!=','bloque')], 'required':[('operation','=','bloque')]}" />
-						<field name="location_dest_debloq_id" widget="selection" domain="[('control_quality','=',False), ('usage','=','internal')]" attrs="{'invisible':[('operation','!=','debloque')], 'required':[('operation','=','debloque')]}" />
-						<field name="location_dest_change_id" widget="selection" domain="[('usage','=','internal')]" attrs="{'invisible':[('operation','!=','change_location')], 'required':[('operation','=','change_location')]}" />
+                        <field name="location_src_id" widget="selection" />
+                        <field name="location_dest_bloq_id" widget="selection" domain="[('control_quality','=',True), ('usage','=','internal')]" attrs="{'invisible':[('operation','!=','bloque')], 'required':[('operation','=','bloque')]}" />
+                        <field name="location_dest_debloq_id" widget="selection" domain="[('control_quality','=',False), ('usage','=','internal')]" attrs="{'invisible':[('operation','!=','debloque')], 'required':[('operation','=','debloque')]}" />
+                        <field name="location_dest_change_id" widget="selection" domain="[('usage','=','internal')]" attrs="{'invisible':[('operation','!=','change_location')], 'required':[('operation','=','change_location')]}" />
                     </group>
                   </group>
                   <group>
-                	<field name="description" placeholder="Description ..."/>
+                    <field name="description" placeholder="Description ..."/>
                   </group>
                   <footer>
                         <button string='Valider' name="validate_lot" type="object" class="oe_highlight"/>
@@ -41,7 +42,7 @@
            <field name="view_id" ref="view_is_gestion_lot_form"/>
            <field name="target">new</field>
         </record>
-				
+                
 
     </data>
 </openerp>

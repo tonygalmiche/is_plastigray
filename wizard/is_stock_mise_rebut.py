@@ -15,6 +15,7 @@ class is_stock_mise_rebut(osv.osv):
     
     _columns = {
         'product_id': fields.many2one('product.product', 'Product', readonly=True),
+        'is_uc_qt': fields.integer('Qt/UC', related='product_id.is_uc_qt', readonly=True),
         'product_qty': fields.float('Quantity', required=True),
         'location_rebut_id': fields.many2one('stock.location', 'Location'),
         'location_revert_id': fields.many2one('stock.location', 'Location'),
