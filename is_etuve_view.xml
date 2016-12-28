@@ -207,7 +207,7 @@
                                 <field name="dessication_matiere"/>
                                 <field name="capacite_maxi"    digits="(14,0)"/>
                                 <field name="conso_horaire"    digits="(14,0)"/>
-                                <field name="taux_utilisation" digits="(14,0)"/>
+                                <field name="taux_utilisation" digits="(14,1)"/>
                                 <field name="test_taux" invisible="1"/>
                                 <field style="background:orange;font-size:13pt" name="message" readonly="1" attrs="{'invisible':[('test_taux','=',False)]}"/>
                             </group>

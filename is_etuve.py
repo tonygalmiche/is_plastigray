@@ -234,7 +234,7 @@ class is_etuve_of(models.Model):
     def _compute(self):
         cr, uid, context = self.env.args
         for obj in self:
-            if not obj.of_id:
+            if not obj.of_id or not obj.etuve_id.matiere_id:
                 return
             of=obj.of_id
             obj.code_pg   = of.product_id.is_code
@@ -251,11 +251,14 @@ class is_etuve_of(models.Model):
 
             #** Recherche du temps de cycle de la gamme ****************************
             tps_cycle_matiere=False
-            nb_empreintes=of.routing_id.is_nb_empreintes
+            nb_empreintes = of.routing_id.is_nb_empreintes
+            theia         = of.routing_id.is_coef_theia
+
+
             for line in of.routing_id.workcenter_lines:
                 if line.workcenter_id.resource_type=='material':
                     nb_secondes=line.is_nb_secondes
-                    tps_cycle_matiere=nb_secondes*nb_empreintes
+                    tps_cycle_matiere=nb_secondes*nb_empreintes*theia
                     obj.tps_cycle_matiere=tps_cycle_matiere
             if nb_empreintes==0:
                 nb_empreintes=1
