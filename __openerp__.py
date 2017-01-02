@@ -4,13 +4,13 @@
     "version" : "0.2",
     "author" : "InfoSaône",
     "category" : "InfoSaône\Plastigray",
-    'description': """
-    InfoSaône - Module Odoo pour Plastigray 
-    ===================================================
-    Ce module sert uniquement à installer les dépendances du projet Plastigray et à configurer les menus
+    "description": """
+InfoSaône - Module Odoo pour Plastigray
+===================================================
+Module principal du projet Plastigray
     """,
-    'maintainer': 'InfoSaône',
-    'website': 'http://www.infosaone.com',
+    "maintainer": 'InfoSaône',
+    "website": 'http://www.infosaone.com',
     "depends" : [
         "base",
         "mail",

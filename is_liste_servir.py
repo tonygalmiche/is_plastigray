@@ -285,8 +285,14 @@ class is_liste_servir(models.Model):
     @api.multi
     def _get_sql(self,obj):
         SQL="""
-            select sol.order_id, sol.product_id, sol.is_client_order_ref,
-            max(sol.is_date_livraison), max(sol.is_date_expedition), sum(sol.product_uom_qty), max(sol.price_unit)
+            select  sol.order_id, 
+                    sol.product_id, 
+                    sol.is_client_order_ref,
+                    sol.is_date_livraison, 
+                    sol.is_date_expedition, 
+                    sol.product_uom_qty, 
+                    sol.price_unit, 
+                    sol.is_justification
             from sale_order so inner join sale_order_line sol on so.id=sol.order_id 
             where so.partner_id="""+str(obj.partner_id.id)+""" 
                   and so.state='draft' 
@@ -299,7 +305,10 @@ class is_liste_servir(models.Model):
         #    SQL=SQL+" and so.id!="+str(obj.order_id.id)+" "
         if obj.date_debut:
             SQL=SQL+" and sol.is_date_expedition>='"+str(obj.date_debut)+"' "
-        SQL=SQL+"group by sol.order_id,sol.product_id, sol.is_client_order_ref "
+
+        #SQL=SQL+"group by sol.order_id,sol.product_id, sol.is_client_order_ref "
+
+
         if obj.partner_id.is_caracteristique_bl=='cde_client':
             OrderBy="sol.is_client_order_ref"
         else:
@@ -375,6 +384,7 @@ class is_liste_servir(models.Model):
                         'date_livraison'    : row[3],
                         'date_expedition'   : row[4],
                         'prix'              : row[6],
+                        'justification'     : row[7],
                         'quantite'          : qt,
                         'livrable'          : livrable,
                         'stock01'           : stock01,
@@ -474,6 +484,7 @@ class is_liste_servir(models.Model):
                 'is_type_commande'    : 'ferme',
                 'is_client_order_ref' : line.client_order_ref,
                 'price_unit'          : line.prix,
+                'is_justification'    : line.justification,
             })
             lines.append([0,False,quotation_line]) 
 
@@ -591,6 +602,7 @@ class is_liste_servir_line(models.Model):
     livrable           = fields.Boolean("Livrable")
     date_expedition    = fields.Date("Date d'expédition"   , readonly=True)
     prix               = fields.Float("Prix", digits=(14,4), readonly=True)
+    justification      = fields.Char('Justification')
     uc_id              = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
     nb_uc              = fields.Float('Qt Cde UC'                    , compute='_compute', readonly=True, store=True)
     um_id              = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)

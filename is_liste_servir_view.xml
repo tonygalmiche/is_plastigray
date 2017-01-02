@@ -88,6 +88,8 @@
                                     <field name="stocka"/>
                                     <field name="stockq"/>
                                     <field name="quantite"/>
+                                    <field name="prix"/>
+                                    <field name="justification"/>
 
                                     <field name="uc_id"/>
                                     <field name="stock01_uc"/>
