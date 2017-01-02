@@ -174,7 +174,7 @@ class sale_order(models.Model):
 
 class sale_order_line(models.Model):
     _inherit = "sale.order.line"
-    _order = 'order_id desc, is_date_livraison, sequence, id'
+    _order = 'order_id desc, sequence, is_date_livraison, id'
 
     is_justification      = fields.Char("Justification", help="Ce champ est obligatoire si l'article n'est pas renseigné ou le prix à 0")
     is_date_livraison     = fields.Date("Date de livraison")

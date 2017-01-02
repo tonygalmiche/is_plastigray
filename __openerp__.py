@@ -85,6 +85,7 @@ Module principal du projet Plastigray
         "views/report_plan_de_charge.xml",
         "views/report_bon_transfert.xml",
         "views/report_purchaseorder.xml",
+        "views/report_ar_commande.xml",
         "views/report.xml",
         "report/stock_bloquer_lot.xml",
         "report/stock_debloquer_lot.xml",

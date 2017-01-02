@@ -136,6 +136,18 @@
         </record>
 
 
+        <report 
+            id="report_ar_commandes" 
+            string="AR de commande" 
+            model="sale.order" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_ar_commande" 
+            file="is_plastigray.report_ar_commande" 
+        />
+        <record id="report_ar_commandes" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.ar_commandes_paperformat"/>
+        </record>
+
 
 
     </data>

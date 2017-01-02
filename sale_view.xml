@@ -76,6 +76,7 @@
                             parent.partner_id, False, True, is_date_livraison, False, parent.fiscal_position, False, context
                         )"
                     />
+                    <field name="is_ref_client" readonly="1"/>
                 </xpath>
 
 
@@ -194,6 +195,7 @@
                     <field name="date_order"/>
                     <field name="user_id" invisible="1"/>
                     <field name="amount_total" sum="Total Tax Included"/>
+                    <field name="write_date"/>
                     <field name="state"/>
                 </tree>
             </field>
