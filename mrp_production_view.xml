@@ -34,6 +34,7 @@
                     />
                 </xpath>
                 <field name="date_planned" position="after">
+                    <field name="is_num_essai" />
                     <field name="is_qt_fabriquee_uom" />
                     <field name="is_qt_reste_uom" />
                     <field name="is_qt_rebut_uom" />

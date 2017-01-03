@@ -22,10 +22,6 @@ class MrpProduction(models.Model):
             if line.location_id.usage=='internal':
                 is_qt_fabriquee=is_qt_fabriquee-line.product_uom_qty
 
-
-
-
-
         product_package = False
         if self.product_id and self.product_id.packaging_ids:
             pack_brw        = self.product_id.packaging_ids[0]
@@ -62,6 +58,8 @@ class MrpProduction(models.Model):
     is_done                   = fields.Boolean(string="Is done ?", default=False)
     mrp_product_suggestion_id = fields.Many2one('mrp.prevision','MRP Product Suggestion')
     is_mold_id                = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
+
+    is_num_essai              = fields.Char("N°Essai")
 
 
     @api.multi

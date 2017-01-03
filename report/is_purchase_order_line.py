@@ -15,6 +15,7 @@ class is_purchase_order_line(models.Model):
     date_order           = fields.Date('Date de commande')
     minimum_planned_date = fields.Date('Date prévue entête')
     is_date_confirmation = fields.Date('Date de confirmation')
+    is_commentaire       = fields.Text('Commentaire')
     product_id           = fields.Many2one('product.template', 'Article')
     is_ref_fournisseur   = fields.Char('Référence fournisseur')
     date_planned         = fields.Date('Date prévue ligne')
@@ -34,6 +35,7 @@ class is_purchase_order_line(models.Model):
                         po.date_order,
                         po.minimum_planned_date,
                         po.is_date_confirmation,
+                        po.is_commentaire,
                         pt.id                   as product_id, 
                         pt.is_ref_fournisseur   as is_ref_fournisseur,
                         pol.date_planned,
