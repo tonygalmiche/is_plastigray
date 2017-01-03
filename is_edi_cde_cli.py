@@ -192,10 +192,14 @@ class is_edi_cde_cli(models.Model):
             #** Suppression des anciennes commandes ****************************
             date_jour=time.strftime('%Y-%m-%d')
             for order_id in order_ids:
-                order_line=line_obj.search([
+                filtre=[
                     ('order_id', '=', order_id),
-                    ('is_date_livraison', '>=', date_jour)]
-                )
+                    ('is_date_livraison', '>=', date_jour),
+                ]
+                #Ne pas supprimer les commandes fermes
+                if obj.import_function=="eCar":
+                    filtre.append(('is_type_commande', '!=', 'ferme'))
+                order_line=line_obj.search(filtre)
                 for row in order_line:
                     row.unlink()
             #*******************************************************************
