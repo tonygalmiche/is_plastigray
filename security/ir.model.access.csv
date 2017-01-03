@@ -75,7 +75,7 @@ access_is_service,access_is_service,model_is_service,,1,0,0,0
 access_is_users_groups,access_is_users_groups,model_is_users_groups,,1,0,0,0
 access_is_model_groups,access_is_model_groups,model_is_model_groups,,1,0,0,0
 
-access_is_stock_move,access_is_stock_move,model_stock_move,base.group_user,1,0,0,0
+access_stock_move,access_stock_move,model_stock_move,base.group_user,1,0,0,0
 access_is_crm_lead,access_is_crm_lead,crm.model_crm_lead,base.group_user,1,0,0,0
 
 access_is_mrp_bom,access_is_mrp_bom,mrp.model_mrp_bom,base.group_user,1,0,0,0
@@ -125,6 +125,7 @@ access_is_ligne_livraison,access_is_ligne_livraison,model_is_ligne_livraison,bas
 access_is_purchase_order_line,access_is_purchase_order_line,model_is_purchase_order_line,base.group_user,1,0,0,0
 access_purchase_order_line,access_purchase_order_line,model_purchase_order_line,base.group_user,1,0,0,0
 
+access_is_stock_quant,access_is_stock_quant,model_is_stock_quant,base.group_user,1,0,0,0
 
 
 

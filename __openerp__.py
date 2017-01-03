@@ -111,6 +111,7 @@ Module principal du projet Plastigray
         "report/is_users_groups.xml",
         "report/is_model_groups.xml",
         "report/is_stock_move.xml",
+        "report/is_stock_quant.xml",
         "report/is_purchase_order_line.xml",
         "menu.xml",
     ], 
