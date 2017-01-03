@@ -185,7 +185,7 @@
                 <button string="Reverse Transfer" position="attributes" >
                     <attribute name="invisible">1</attribute>>
                 </button>
-                <button name="action_cancel" position="replace" >
+                <button name="action_cancel" position="after" >
                     <button 
                         name="action_annuler_reception" 
                         string="Annuler cette réception" 

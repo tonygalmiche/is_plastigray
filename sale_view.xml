@@ -2,6 +2,17 @@
 <openerp>
     <data>
 
+<!--
+                <form string="Sales Order">
+                    <header>
+                        <button name="invoice_recreate" states="invoice_except" string="Recreate Invoice" groups="base.group_user"/>
+                        <button name="invoice_corrected" states="invoice_except" string="Ignore Exception" groups="base.group_user"/>
+                        <button name="action_quotation_send" string="Send by Email" type="object" states="draft" class="oe_highlight" groups="base.group_user"/>
+                        <button name="action_quotation_send" string="Send by Email" type="object" states="sent,progress,manual" groups="base.group_user"/>
+                        <button name="print_quotation" string="Print" type="object" states="draft" class="oe_highlight" groups="base.group_user"/>
+                        <button name="print_quotation" string="Print" type="object" states="sent,progress,manual" groups="base.group_user"/>
+-->
+
         <record id="is_view_order_form" model="ir.ui.view">
             <field name="name">is_view_order_form</field>
             <field name="model">sale.order</field>
@@ -11,6 +22,14 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
+
+                <button name="print_quotation" states="draft"                      position="replace" />
+                <button name="print_quotation" states="sent,progress,manual"       position="replace" />
+                <button name="action_quotation_send" states="draft"                position="replace" />
+                <button name="action_quotation_send" states="sent,progress,manual" position="replace" />
+
+                <button name="cancel"                position="replace" />
+
                 <button name="action_button_confirm" position="replace" >
                     <button 
                         name="action_button_confirm" 
