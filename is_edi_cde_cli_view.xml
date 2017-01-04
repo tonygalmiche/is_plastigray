@@ -2,17 +2,78 @@
 <openerp>
     <data>
 
-        <record id="is_edi_cde_cli_tree_view" model="ir.ui.view">
-            <field name="name">is_edi_cde_cli_form_view</field>
-            <field name="model">is.edi.cde.cli</field>
+        <!-- Lignes d'EDI -->
+        <record id="is_edi_cde_cli_line_form_view" model="ir.ui.view">
+            <field name="name">is_edi_cde_cli_line_form_view</field>
+            <field name="model">is.edi.cde.cli.line</field>
             <field name="arch" type="xml">
-                <tree>
-                    <field name="name"  />
-                    <field name="partner_id"  />
-                    <field name="import_function"/>
-               </tree>
+                <form>
+                    <sheet>
+                        <field name="ref_article_client"  readonly="1"/>
+                        <field name="num_commande_client" readonly="1"/>
+                        <field name="product_id"/>
+                        <field name="quantite"/>
+                        <field name="date_livraison"/>
+                        <field name="type_commande"/>
+                        <field name="prix"/>
+                        <field name="order_id"            readonly="1"/>
+                        <field name="anomalie"            readonly="1"/>
+                        <field name="file_id"             readonly="1"/>
+                    </sheet>
+                </form>
             </field>
         </record>
+        <record id="is_edi_cde_cli_line_tree_view" model="ir.ui.view">
+            <field name="name">is_edi_cde_cli_line_tree_view</field>
+            <field name="model">is.edi.cde.cli.line</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="ref_article_client"  readonly="1"/>
+                    <field name="num_commande_client" readonly="1"/>
+                    <field name="product_id"          readonly="0" widget="many2one_clickable"/>
+                    <field name="quantite"            />
+                    <field name="date_livraison"      />
+                    <field name="type_commande"       />
+                    <field name="prix"                />
+                    <field name="order_id"            readonly="1" widget="many2one_clickable"/>
+                    <field name="anomalie"/>
+                    <field name="file_id"             readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_edi_cde_cli_line_search_view" model="ir.ui.view">
+            <field name="name">is_edi_cde_cli_line_search_view</field>
+            <field name="model">is.edi.cde.cli.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Anomalies" name="anomalies" domain="[('anomalie','!=','')]"/>
+                    <field name="ref_article_client"/>
+                    <field name="num_commande_client"/>
+                    <field name="product_id"/>
+                    <field name="type_commande"       />
+                    <field name="order_id"/>
+                    <field name="anomalie"/>
+                    <field name="file_id"/>
+                    <group string="Regrouper par">
+                        <filter string="Article"  context="{'group_by': 'product_id'}"/>
+                        <filter string="Anomalie" context="{'group_by': 'anomalie'}"/>
+                        <filter string="Fichier"  context="{'group_by': 'file_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="is_edi_cde_cli_line_action" model="ir.actions.act_window" >
+            <field name="name">Lignes d'EDI</field>
+            <field name="res_model">is.edi.cde.cli.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('edi_cde_cli_id','=',active_id)]</field>
+            <field name="context">{"search_default_anomalies":1}</field>
+            <field name="limit">100</field>
+        </record>
+
+
+        <!-- is.edi.cde.cli -->
         <record id="is_edi_cde_cli_form_view" model="ir.ui.view">
             <field name="name">is_edi_cde_cli_form_view</field>
             <field name="model">is.edi.cde.cli</field>
@@ -20,16 +81,23 @@
                 <form>
                     <header>
                         <button string='Analyser les fichiers'  name="action_analyser_fichiers"  type="object" states="analyse" class="oe_highlight"  />
-                        <button string='Importer les commandes' name="action_importer_commandes" type="object" states="analyse" />
+                        <button name="%(is_edi_cde_cli_line_action)d" type="action" string="Détail des lignes" />
+                        <button 
+                            string='Importer les commandes' 
+                            name="action_importer_commandes" type="object" states="analyse" 
+                            confirm="Voulez-vous vraiment importer les commandes ?" />
                         <field name="state" widget="statusbar"  clickable="True" />
                     </header>
-                    <sheet class="oe_form_sheet_width_wider">
+                    <sheet>
                         <group>
                             <field name="name"/>
                             <field name="partner_id" domain="[('is_import_function','!=','')]"  />
                             <field name="import_function"/>
                             <field name="file_ids" widget="many2many_binary" />
+                            <field name="nb_lignes"/>
+                            <field style="background:orange" name="nb_anomalies" readonly="1" attrs="{'invisible':[('nb_anomalies','=',0)]}"/>
                         </group>
+                        <!--
                         <group>
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="false">
@@ -46,8 +114,22 @@
                                 </tree>
                             </field>
                         </group>
+                        -->
                     </sheet>
                </form>
+            </field>
+        </record>
+        <record id="is_edi_cde_cli_tree_view" model="ir.ui.view">
+            <field name="name">is_edi_cde_cli_form_view</field>
+            <field name="model">is.edi.cde.cli</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"  />
+                    <field name="partner_id"  />
+                    <field name="import_function"/>
+                    <field name="nb_lignes"/>
+                    <field name="nb_anomalies"/>
+               </tree>
             </field>
         </record>
         <record id="is_edi_cde_cli_action" model="ir.actions.act_window">
@@ -57,29 +139,6 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-<!--
-        <record id="is_edi_cde_cli_notfound_view" model="ir.ui.view">
-             <field name="name">is_edi_cde_cli_notfound_view</field>
-             <field name="model">is.edi.cde.cli</field>
-             <field name="arch" type="xml">
-                <form string="Importation des commandes ouvertes" version="7.0">
-                    <field name="partner_id" />
-                    <separator string="Contrats non trouvés"/>
-                    <label string="Les contrats suivants n'existent pas sur votre systeme, Essayer de les creer pour achever l'import."/>
-                         <field name="line_ids" nolabel="1" readonly="1">
-                            <tree>
-                                <field name="import_id" />
-                                <field name="is_ref_client" />
-                                <field name="client_order_ref" />
-                            </tree>
-                        </field>
-                    <footer>
-                        <button string="Close" class="oe_highlight" special="cancel"/>
-                    </footer>
-                </form>
-             </field>
-         </record>
--->
         
     </data>
 </openerp>

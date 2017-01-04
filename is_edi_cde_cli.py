@@ -28,7 +28,7 @@ class is_edi_cde_cli_line(models.Model):
     type_commande       = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
     prix                = fields.Float('Prix', digits=(14,4),)
     order_id            = fields.Many2one('sale.order', 'Cde Odoo')
-    anomalie            = fields.Char('Anomalie')
+    anomalie            = fields.Text('Anomalie')
     file_id             = fields.Many2one('ir.attachment', 'Fichier')
 
     @api.multi
@@ -54,6 +54,22 @@ class is_edi_cde_cli(models.Model):
     _description = "EDI commandes clients"
     _order = "name desc,partner_id"
 
+
+    @api.depends('line_ids')
+    def _compute(self):
+        for obj in self:
+            r=self.env['is.edi.cde.cli.line'].search([
+                ('edi_cde_cli_id','=',obj.id),
+            ])
+            obj.nb_lignes=len(r)
+            r=self.env['is.edi.cde.cli.line'].search([
+                ('edi_cde_cli_id','=',obj.id),
+                ('anomalie','!=','')
+            ])
+            obj.nb_anomalies=len(r)
+
+
+
     name            = fields.Date('Date de création', readonly='1')
     partner_id      = fields.Many2one('res.partner', 'Client', required=False)
     import_function = fields.Char("Fonction d'importation", compute='_import_function', readonly=True)
@@ -62,6 +78,8 @@ class is_edi_cde_cli(models.Model):
     create_date     = fields.Datetime("Date d'importation")
     state           = fields.Selection([('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
     line_ids        = fields.One2many('is.edi.cde.cli.line', 'edi_cde_cli_id', u"Commandes a importer")
+    nb_lignes       = fields.Integer("Nombre de lignes"  , compute='_compute', readonly=True, store=False)
+    nb_anomalies    = fields.Integer("Nombre d'anomalies", compute='_compute', readonly=True, store=False)
 
     _defaults = {
         'name' : fields.Datetime.now,
