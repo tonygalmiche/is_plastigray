@@ -135,6 +135,7 @@
                     <field name="import_function"/>
                     <field name="nb_lignes"/>
                     <field name="nb_anomalies"/>
+                    <field name="state"/>
                </tree>
             </field>
         </record>
