@@ -5,6 +5,7 @@ import stock_debloquer_lot
 import stock_change_location_lot
 import stock_rebut_lot
 
+import is_comparatif_tarif_facture
 import is_pic_3mois
 import is_comparatif_gamme_standard_generique
 import is_comparatif_tps_article_gamme

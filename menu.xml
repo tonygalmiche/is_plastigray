@@ -506,6 +506,17 @@
         ])]"/>
     </record>
     <menuitem id="menu_is_ventes_fac_10"   sequence="10" name="Livraisons à facturer" parent="menu_is_ventes_fac" action="is_livraisons_a_facturer_action" />
+
+    <record id="is_comparatif_tarif_facture_menu" model="ir.ui.menu" >
+        <field name="name">Comparatif Tarif / Facture</field>
+        <field name="sequence">15</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_comparatif_tarif_facture_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+
     <menuitem id="menu_is_ventes_fac_20"   sequence="20" name="Factures à valider"    parent="menu_is_ventes_fac" action="is_factures_a_valider_action" />
     <menuitem id="menu_is_ventes_fac_25"   sequence="25" name="Factures diverses"     parent="menu_is_ventes_fac" action="is_factures_diverses_action" />
     <menuitem id="menu_is_ventes_fac_30"   sequence="30" name="Toutes les factures"   parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
@@ -795,30 +806,149 @@
         <field name="sequence">6</field>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_comptable_group')
         ])]"/>
     </record>
-    <menuitem id="menu_is_analyse_article"    sequence="10" name="Analyses Articles"           parent="menu_is_analyse"/>
-    <menuitem id="menu_is_analyse_article_10" sequence="10" name="Articles sans nomenclatures" parent="menu_is_analyse_article"  action="is_article_sans_nomenclature_action"  groups="" />
-    <menuitem id="menu_is_analyse_article_20" sequence="20" name="Articles sans fournisseurs"  parent="menu_is_analyse_article"  action="is_article_sans_fournisseur_action"   groups="" />
-    <menuitem id="menu_is_analyse_article_30" sequence="30" name="Comparatif UC / Lot liv"     parent="menu_is_analyse_article"  action="is_comparatif_uc_lot_action"          groups="" />
-    <menuitem id="menu_is_analyse_article_35" sequence="35" name="Comparatif UC / Lot appro"   parent="menu_is_analyse_article"  action="is_comparatif_uc_lot_mini_action"     groups="" />
-    <menuitem id="menu_is_analyse_article_40" sequence="40" name="Comparatif Lot liv / Prix"   parent="menu_is_analyse_article"  action="is_comparatif_lot_prix_action"        groups="" />
 
-    <menuitem id="menu_is_analyse_gamme"      sequence="15" name="Analyses Gammes"             parent="menu_is_analyse"/>
-    <menuitem id="menu_is_analyse_gamme_10"   sequence="10" name="Gamme standard / générique"  parent="menu_is_analyse_gamme"    action="is_comparatif_gamme_standard_generique_action"   groups="" />
-    <menuitem id="menu_is_analyse_gamme_20"   sequence="20" name="Tps article/gamme"           parent="menu_is_analyse_gamme"    action="is_comparatif_tps_article_gamme_action"          groups="" />
-    <menuitem id="menu_is_analyse_gamme_30"   sequence="30" name="OF sans gamme"               parent="menu_is_analyse_gamme"    action="is_liste_of_sans_gamme_action"                   groups="" />
-    <menuitem id="menu_is_analyse_gamme_40"   sequence="40" name="Nomenclatures sans gamme"    parent="menu_is_analyse_gamme"    action="is_nomenclature_sans_gamme_action"               groups="" />
 
-    <menuitem id="menu_is_analyse_tarif"      sequence="20" name="Analyses Tarifs"             parent="menu_is_analyse"/>
-    <menuitem id="menu_is_analyse_tarif_10"   sequence="10" name="Tarif Cial / Vente"          parent="menu_is_analyse_tarif"    action="is_comparatif_tarif_cial_vente_action"   groups="" />
-    <menuitem id="menu_is_analyse_tarif_20"   sequence="20" name="Prix Tarif / Commande"       parent="menu_is_analyse_tarif"    action="is_comparatif_tarif_commande_action"   groups="" />
+    <menuitem id="is_analyse_article_menu"    sequence="10" name="Analyses Articles"           parent="menu_is_analyse"/>
+    <record id="is_article_sans_nomenclature_menu" model="ir.ui.menu" >
+        <field name="name">Articles sans nomenclatures</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_article_sans_nomenclature_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_article_sans_fournisseur_menu" model="ir.ui.menu" >
+        <field name="name">Articles sans fournisseurs</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_article_sans_fournisseur_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_comparatif_uc_lot_menu" model="ir.ui.menu" >
+        <field name="name">Comparatif UC / Lot liv</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_comparatif_uc_lot_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_comparatif_uc_lot_mini_menu" model="ir.ui.menu" >
+        <field name="name">Comparatif UC / Lot appro</field>
+        <field name="sequence">35</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_comparatif_uc_lot_mini_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_comparatif_lot_prix_menu" model="ir.ui.menu" >
+        <field name="name">Comparatif Lot liv / Prix</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_comparatif_lot_prix_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
 
-    <menuitem id="menu_is_analyse_stock"      sequence="30" name="Analyses Stocks"             parent="menu_is_analyse"/>
-    <menuitem id="menu_is_analyse_stock_10"   sequence="10" name="Liste des manquants"         parent="menu_is_analyse_stock"    action="is_liste_des_manquants_action"   groups="" />
-    <menuitem id="menu_is_analyse_stock_20"   sequence="20" name="Liste stocks négatifs"       parent="menu_is_analyse_stock"    action="is_liste_stock_negatif_action"   groups="" />
-    <menuitem id="menu_is_analyse_stock_30"   sequence="30" name="Liste stocks sans lot"       parent="menu_is_analyse_stock"    action="is_liste_stock_sans_lot_action"  groups="" />
-    <menuitem id="menu_is_analyse_stock_40"   sequence="40" name="Stocks valorisés"            parent="menu_is_analyse_stock"    action="is_stock_valorise_action"        groups="" />
+
+    <menuitem id="is_analyse_gamme_menu" sequence="15" name="Analyses Gammes" parent="menu_is_analyse"/>
+    <record id="is_comparatif_gamme_standard_generique_menu" model="ir.ui.menu" >
+        <field name="name">Gamme standard / générique</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_analyse_gamme_menu')"/>
+        <field name="action"    ref="is_comparatif_gamme_standard_generique_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_comparatif_tps_article_gamme_menu" model="ir.ui.menu" >
+        <field name="name">Tps article/gamme</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_analyse_gamme_menu')"/>
+        <field name="action"    ref="is_comparatif_tps_article_gamme_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_liste_of_sans_gamme_menu" model="ir.ui.menu" >
+        <field name="name">OF sans gamme</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_analyse_gamme_menu')"/>
+        <field name="action"    ref="is_liste_of_sans_gamme_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_nomenclature_sans_gamme_menu" model="ir.ui.menu" >
+        <field name="name">Nomenclatures sans gamme</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_analyse_gamme_menu')"/>
+        <field name="action"    ref="is_nomenclature_sans_gamme_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+
+    <menuitem id="is_analyse_tarif_menu" sequence="20" name="Analyses Tarifs" parent="menu_is_analyse"/>
+
+    <record id="is_comparatif_tarif_cial_vente_menu" model="ir.ui.menu" >
+        <field name="name">Tarif Cial / Vente</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_analyse_tarif_menu')"/>
+        <field name="action"    ref="is_comparatif_tarif_cial_vente_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+    <record id="is_comparatif_tarif_commande_menu" model="ir.ui.menu" >
+        <field name="name">Prix Tarif / Commande</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_analyse_tarif_menu')"/>
+        <field name="action"    ref="is_comparatif_tarif_commande_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+
+    <menuitem id="is_analyse_stock_menu" sequence="30" name="Analyses Stocks" parent="menu_is_analyse"/>
+    <record id="is_liste_stock_negatif_menu" model="ir.ui.menu" >
+        <field name="name">Liste stocks négatifs</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_liste_stock_negatif_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_liste_stock_sans_lot_menu" model="ir.ui.menu" >
+        <field name="name">Liste stocks sans lot</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_liste_stock_sans_lot_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_stock_valorise_menu" model="ir.ui.menu" >
+        <field name="name">Stocks valorisés</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_stock_valorise_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
 
 
     <!-- Suivi d'activité -->

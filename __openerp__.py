@@ -95,6 +95,7 @@ Module principal du projet Plastigray
         "report/is_comparatif_gamme_standard_generique.xml",
         "report/is_comparatif_tps_article_gamme.xml",
         "report/is_comparatif_tarif_cial_vente.xml",
+        "report/is_comparatif_tarif_facture.xml",
         "report/is_comparatif_tarif_commande.xml",
         "report/is_comparatif_uc_lot.xml",
         "report/is_comparatif_uc_lot_mini.xml",

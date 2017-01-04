@@ -94,7 +94,10 @@
                     <field name="is_client_order_ref" readonly="1" />
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
-                    <field name="is_justification" attrs="{'required':['|',('price_unit', '=', 0),('product_id', '=', False)]}"/>
+                    <field 
+                        name="is_justification" 
+                        attrs="{'required':[('price_unit', '=', 0),('product_id', '!=', False),('is_type_commande', '=', 'ferme')]}"
+                    />
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']" position="attributes">
                     <attribute name="context">   {'default_product_id' : is_article_commande_id, 'is_type_commande' : is_type_commande }</attribute>
