@@ -9,16 +9,21 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
-                        <field name="ref_article_client"  readonly="1"/>
-                        <field name="num_commande_client" readonly="1"/>
-                        <field name="product_id"/>
-                        <field name="quantite"/>
-                        <field name="date_livraison"/>
-                        <field name="type_commande"/>
-                        <field name="prix"/>
-                        <field name="order_id"            readonly="1"/>
-                        <field name="anomalie"            readonly="1"/>
-                        <field name="file_id"             readonly="1"/>
+                        <group>
+                            <group>
+                                <field name="ref_article_client"  readonly="1"/>
+                                <field name="num_commande_client" readonly="1"/>
+                                <field name="product_id"/>
+                                <field name="quantite"/>
+                                <field name="date_livraison"/>
+                                <field name="type_commande"/>
+                                <field name="prix"/>
+                                <field name="order_id"            readonly="1"/>
+                                <field name="anomalie"            readonly="1"/>
+                                <field name="file_id"             readonly="1"/>
+                                <field name="write_date"          readonly="1" string="Date de modification"/>
+                            </group>
+                        </group>
                     </sheet>
                 </form>
             </field>
@@ -38,6 +43,7 @@
                     <field name="order_id"            readonly="1" widget="many2one_clickable"/>
                     <field name="anomalie"/>
                     <field name="file_id"             readonly="1"/>
+                    <field name="write_date"          readonly="1" string="Date de modification"/>
                 </tree>
             </field>
         </record>
