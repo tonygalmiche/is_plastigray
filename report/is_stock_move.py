@@ -14,7 +14,7 @@ class is_stock_move(models.Model):
     date               = fields.Datetime('Date')
     product_id         = fields.Many2one('product.product', 'Article')
     category           = fields.Char('Cat')
-    mold               = fields.Char('Moule')
+    mold               = fields.Char('Moule / DossierF')
     type_mv            = fields.Char('Type')
     name               = fields.Char('Description')
     picking_id         = fields.Many2one('stock.picking', 'Rcp/Liv')
@@ -37,7 +37,7 @@ class is_stock_move(models.Model):
                         sm.write_date                      as date,
                         sm.product_id                      as product_id, 
                         ic.name                            as category,
-                        im.name                            as mold,
+                        COALESCE(im.name,id.name)          as mold,
                         COALESCE(spt.name,sm.src)          as type_mv,
                         COALESCE(spt.name,sp.name,sm.name) as name,
                         sm.picking_id                      as picking_id,
@@ -125,6 +125,7 @@ class is_stock_move(models.Model):
                         left outer join stock_picking         sp on sm.picking_id=sp.id
                         left outer join is_category           ic on pt.is_category_id=ic.id
                         left outer join is_mold               im on pt.is_mold_id=im.id
+                        left outer join is_dossierf           id on pt.is_dossierf_id=id.id
                         left outer join stock_production_lot spl on sm.lot_id=spl.id
                 order by sm.date desc, sm.id
             )

@@ -172,6 +172,7 @@
                 <search>
                     <field name="name"/>
                     <field name="partner_id"/>
+                    <filter string="En cours" name="en_cours" domain="[('state','!=','traite')]"/>
                 </search>
             </field>
         </record>
@@ -181,6 +182,7 @@
             <field name="res_model">is.liste.servir</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_en_cours":1}</field>
         </record>
 
 

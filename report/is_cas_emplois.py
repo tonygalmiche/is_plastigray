@@ -11,7 +11,8 @@ class is_cas_emplois(models.Model):
     _auto = False
 
     bom_id             = fields.Many2one('mrp.bom', 'Nomenclature mère')
-    is_mold_id         = fields.Many2one('is.mold', 'Moule', related='bom_id.product_tmpl_id.is_mold_id', readonly=True)
+    is_mold_id         = fields.Many2one('is.mold'    , 'Moule'    , related='bom_id.product_tmpl_id.is_mold_id'    , readonly=True)
+    is_dossierf_id     = fields.Many2one('is.dossierf', 'Dossier F', related='bom_id.product_tmpl_id.is_dossierf_id', readonly=True)
     is_sous_traitance  = fields.Boolean('Nomenclature de sous-traitance')
     is_negoce          = fields.Boolean('Nomenclature de négoce')
     is_inactive        = fields.Boolean('Nomenclature inactive')

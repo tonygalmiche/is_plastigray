@@ -121,7 +121,7 @@ class is_liste_servir(models.Model):
     line_ids               = fields.One2many('is.liste.servir.line', 'liste_servir_id', u"Lignes")
     uc_ids                 = fields.One2many('is.liste.servir.uc', 'liste_servir_id', u"UCs")
     um_ids                 = fields.One2many('is.liste.servir.um', 'liste_servir_id', u"UMs")
-    is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
+    is_source_location_id  = fields.Many2one('stock.location', 'Emplacement Source', default=_get_default_location) 
     poids_brut             = fields.Float('Poids brut', compute='_compute', readonly=True, store=False)
     poids_net              = fields.Float('Poids net' , compute='_compute', readonly=True, store=False)
     info_client            = fields.Text("Information client complèmentaire")

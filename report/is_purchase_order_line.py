@@ -23,7 +23,9 @@ class is_purchase_order_line(models.Model):
     product_uom          = fields.Many2one('product.uom', 'Unité')
     price_unit           = fields.Float('Prix unitaire')
     is_justification     = fields.Char('Justifcation')
-
+    is_num_da            = fields.Char("N°Demande d'achat")
+    is_document          = fields.Char("Document (N° de dossier)")
+    is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_purchase_order_line')
@@ -36,6 +38,9 @@ class is_purchase_order_line(models.Model):
                         po.minimum_planned_date,
                         po.is_date_confirmation,
                         po.is_commentaire,
+                        po.is_num_da            as is_num_da,
+                        po.is_document          as is_document,
+                        po.is_demandeur_id      as is_demandeur_id,
                         pt.id                   as product_id, 
                         pt.is_ref_fournisseur   as is_ref_fournisseur,
                         pol.date_planned,

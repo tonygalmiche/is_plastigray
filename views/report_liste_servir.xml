@@ -106,6 +106,8 @@
                     </div>
                     <div class="col-xs-4">
                         <div class="client">
+                            Emplacement source : <b><span t-field="o.is_source_location_id.name"/></b><br />
+                            Poids brut : <b><span t-field="o.poids_brut"/> Kg</b><br />
                             Transporteur : <br />
                             <b><span t-field="o.transporteur_id.name"/></b> (<span t-field="o.transporteur_id.is_code"/>)<br />
                             Téléphone : <span t-field="o.transporteur_id.phone" /><br />
@@ -212,7 +214,7 @@
                         <tbody>
                             <tr t-foreach="o.line_ids" t-as="l">
                                 <td class="text-left">    
-                                    <span t-field="l.product_id.is_code"/> / 
+                                    <b><span t-field="l.product_id.is_code"/></b> / 
                                     <span t-field="l.product_id.is_mold_id"/>
                                     <span t-field="l.product_id.is_dossierf_id"/> / 
                                     <span t-field="l.product_id.is_gestionnaire_id.name"/> / 
@@ -237,7 +239,7 @@
                                     <t t-esc='"{:,.1f}".format(l.stockq).replace(","," ").replace(".",",")'/>
                                 </td>
                                 <td class="text-right nowrap">  
-                                    <t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'/> 
+                                    <b><t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'/></b>
                                 </td>
 
                                 <td class="text-left">    <span t-field="l.uc_id"/> </td>
@@ -251,7 +253,7 @@
                                     <t t-esc='"{:,.1f}".format(l.stockq_uc).replace(","," ").replace(".",",")'/>
                                 </td>
                                 <td class="text-right nowrap">  
-                                    <t t-esc='"{:,.1f}".format(l.nb_uc).replace(","," ").replace(".",",")'/>  
+                                    <b><t t-esc='"{:,.1f}".format(l.nb_uc).replace(","," ").replace(".",",")'/></b>
                                 </td>
                                 <td class="text-left">    <span t-field="l.um_id"/> </td>
                                 <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(l.nb_um).replace(","," ").replace(".",",")'/>  </td>
