@@ -20,6 +20,12 @@ class sale_order(models.Model):
         return location and location or False
 
 
+    @api.depends('order_line')
+    def _compute(self):
+        for obj in self:
+            obj.is_nb_lignes=len(obj.order_line)
+
+
     is_type_commande       = fields.Selection([('standard', 'Ferme'),('ouverte', 'Ouverte'),('cadence', 'Cadencé'),('ls', 'Liste à servir')], "Type de commande")
     is_article_commande_id = fields.Many2one('product.product', 'Article de la commande', help="Article pour les commandes ouvertes")
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
@@ -27,6 +33,7 @@ class sale_order(models.Model):
     is_transporteur_id     = fields.Many2one('res.partner', 'Transporteur')
     is_liste_servir_id     = fields.Many2one('is.liste.servir', 'Liste à servir')
     is_info_client         = fields.Text("Information client complèmentaire")
+    is_nb_lignes           = fields.Integer("Nb lignes", store=True, compute='_compute')
 
     _defaults = {
         'is_type_commande': 'standard',

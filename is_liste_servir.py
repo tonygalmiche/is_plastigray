@@ -525,7 +525,13 @@ class is_liste_servir(models.Model):
                     order_line=self.env['sale.order.line'].search([('id', '=', order[3])])
                     qty=order_line.product_uom_qty
                     if quantite>=qty:
+                        order=order_line.order_id
                         order_line.unlink()
+                        #** Supprimer la commande si celle-ci est vide *********
+                        print "Nb lignes=",len(order.order_line)
+                        if len(order.order_line)==0 and order.is_type_commande=='standard':
+                            order.unlink()
+                        #*******************************************************
                     else:
                         order_line.product_uom_qty=qty-quantite
                     quantite=quantite-qty
@@ -609,7 +615,7 @@ class is_liste_servir_line(models.Model):
     um_id              = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
     nb_um              = fields.Float('Qt Cde UM'                    , compute='_compute', readonly=True, store=True)
     mixer              = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
-    order_id           = fields.Many2one('sale.order', 'Commande', required=True     , readonly=True)
+    order_id           = fields.Many2one('sale.order', 'Commande', required=False, readonly=True)
     client_order_ref   = fields.Char('Cde Client', readonly=True)
     certificat_matiere = fields.Char('Certificat matiere', readonly=True)
     anomalie           = fields.Char('Commentaire')

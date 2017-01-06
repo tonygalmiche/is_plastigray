@@ -7,6 +7,10 @@ import openerp.addons.decimal_precision as dp
 import datetime
 
 
+def _date_reception():
+    return datetime.date.today().strftime('%Y-%m-%d')
+
+
 class stock_transfer_details(models.TransientModel):
     _inherit = 'stock.transfer_details'
     _description = 'Picking wizard'
@@ -16,11 +20,9 @@ class stock_transfer_details(models.TransientModel):
     is_num_bl            = fields.Char("N° BL fournisseur")
     is_date_reception    = fields.Date('Date de réception')
 
-    def _date():
-        return datetime.date.today().strftime('%Y-%m-%d')
 
     _defaults = {
-        'is_date_reception':  _date(),
+        'is_date_reception': lambda *a: _date_reception(),
     }
 
 
