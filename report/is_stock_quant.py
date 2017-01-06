@@ -30,29 +30,64 @@ class is_stock_quant(models.Model):
         tools.drop_view_if_exists(cr, 'is_stock_quant')
         cr.execute("""
             CREATE OR REPLACE view is_stock_quant AS (
-                select 
-                    sq.id                  id,
-                    pt.id                  product_id, 
-                    pt.is_gestionnaire_id  gestionnaire_id,
-                    pt.is_category_id      category_id,
-                    im.name                moule,
-                    id.name                dossierf,
-                    pt.is_ref_client       ref_client,
-                    pt.is_ref_fournisseur  ref_fournisseur,
-                    sq.location_id         location_id,
-                    spl.name               lot,
-                    spl.is_lot_fournisseur lot_fournisseur,
-                    sq.qty                quantite, 
-                    pt.uom_id             uom_id,
-                    in_date               date_entree,
-                    (   select client_id 
-                        from is_product_client ipc
-                        where ipc.product_id=pt.id and ipc.client_defaut='t' limit 1) client_id
-                from stock_quant sq inner join product_product            pp on sq.product_id=pp.id
-                                    inner join product_template           pt on pp.product_tmpl_id=pt.id
-                                    left outer join stock_production_lot spl on sq.lot_id=spl.id
-                                    left outer join is_mold               im on pt.is_mold_id=im.id
-                                    left outer join is_dossierf           id on pt.is_dossierf_id=id.id
+
+                select
+                    max(isq.id) as id,
+                    isq.product_id, 
+                    isq.gestionnaire_id,
+                    isq.category_id,
+                    isq.moule,
+                    isq.dossierf,
+                    isq.ref_client,
+                    isq.ref_fournisseur,
+                    isq.location_id,
+                    isq.lot,
+                    isq.lot_fournisseur,
+                    sum(isq.quantite) as quantite, 
+                    isq.uom_id,
+                    isq.date_entree,
+                    isq.client_id
+                from (
+
+                    select 
+                        sq.id                  id,
+                        pt.id                  product_id, 
+                        pt.is_gestionnaire_id  gestionnaire_id,
+                        pt.is_category_id      category_id,
+                        im.name                moule,
+                        id.name                dossierf,
+                        pt.is_ref_client       ref_client,
+                        pt.is_ref_fournisseur  ref_fournisseur,
+                        sq.location_id         location_id,
+                        spl.name               lot,
+                        spl.is_lot_fournisseur lot_fournisseur,
+                        sq.qty                quantite, 
+                        pt.uom_id             uom_id,
+                        in_date               date_entree,
+                        (   select client_id 
+                            from is_product_client ipc
+                            where ipc.product_id=pt.id and ipc.client_defaut='t' limit 1) client_id
+                    from stock_quant sq inner join product_product            pp on sq.product_id=pp.id
+                                        inner join product_template           pt on pp.product_tmpl_id=pt.id
+                                        left outer join stock_production_lot spl on sq.lot_id=spl.id
+                                        left outer join is_mold               im on pt.is_mold_id=im.id
+                                        left outer join is_dossierf           id on pt.is_dossierf_id=id.id
+                ) isq
+
+                group by
+                    isq.product_id, 
+                    isq.gestionnaire_id,
+                    isq.category_id,
+                    isq.moule,
+                    isq.dossierf,
+                    isq.ref_client,
+                    isq.ref_fournisseur,
+                    isq.location_id,
+                    isq.lot,
+                    isq.lot_fournisseur,
+                    isq.uom_id,
+                    isq.date_entree,
+                    isq.client_id
             )
         """)
 

@@ -20,7 +20,33 @@
                         groups="is_plastigray.is_rsp_production_group"
                         confirm="Voulez-vous vraiment solder cet OF ?" />
                 </xpath>
-                <button icon="gtk-go-forward"        position="replace" />
+
+
+                <!--
+                TODO : Il n'est plus possible de modifier la nomenclature d'un OF => A revoir
+                <xpath expr="//field[@name='move_lines']/tree/field[@name='product_id']" position="before">
+                    <button 
+                        string="Modifier ce composant" 
+                        name= "action_acceder_mouvement_stock" 
+                        type="object" icon="gtk-zoom-in"
+                    />
+                </xpath>
+                <field name="product_lines" position="replace">
+                    <field name="product_lines">
+                        <tree>
+                            <button 
+                                string="Modifier ce composant" 
+                                name= "action_acceder_ligne" 
+                                type="object" icon="gtk-zoom-in"
+                            />
+                           <field name="product_id"/>
+                           <field name="product_qty" />
+                       </tree>
+                    </field>
+                </field>
+                -->
+
+                <button icon="gtk-go-forward" position="replace" />
                 <button icon="terp-gtk-jump-to-ltr"  position="replace" />
                 <button string="Update" position="replace">
                     <button type="action" name="%(mrp.action_change_production_qty)d"
@@ -174,6 +200,26 @@
             <field name="view_id" ref="is_liste_of_sans_gamme_tree_view"/>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- mrp.production.product.line -->
+        <record id="is_mrp_production_product_line_form_view" model="ir.ui.view">
+            <field name="name">is_mrp_production_product_line_form_view</field>
+            <field name="model">mrp.production.product.line</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="product_qty"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
         </record>
 
 

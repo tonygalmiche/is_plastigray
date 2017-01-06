@@ -176,3 +176,27 @@ class MrpProduction(models.Model):
         return super(MrpProduction, self).write(vals, update=update)
 
 
+
+
+class mrp_production_product_line(models.Model):
+    _inherit = 'mrp.production.product.line'
+
+
+    @api.multi
+    def action_acceder_ligne(self):
+        for obj in self:
+            return {
+                'name': "Mouvement de stock",
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'mrp.production.product.line',
+                'type': 'ir.actions.act_window',
+                'res_id': obj.id,
+                'domain': '[]',
+            }
+
+
+
+
+
+
