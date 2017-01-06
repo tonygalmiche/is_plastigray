@@ -25,9 +25,8 @@ class sale_order(models.Model):
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
     is_transporteur_id     = fields.Many2one('res.partner', 'Transporteur')
-
     is_liste_servir_id     = fields.Many2one('is.liste.servir', 'Liste à servir')
-
+    is_info_client         = fields.Text("Information client complèmentaire")
 
     _defaults = {
         'is_type_commande': 'standard',
@@ -60,7 +59,7 @@ class sale_order(models.Model):
             value.update({'is_type_commande_ro': True})
         else:
             value.update({'is_type_commande_ro': False})
-        value.update({'note': str(len(order_line))})
+        #value.update({'note': str(len(order_line))})
         return {'value': value}
 
 

@@ -110,6 +110,19 @@
                 <xpath expr="//notebook/page[@string='Other Information']/group/group" position="inside">
                     <field name="is_source_location_id" required="1"/>
                 </xpath>
+
+                <field name="note" position="replace">
+                    <group>
+                        <group>
+                            <field name="note"/>
+                        </group>
+                        <group>
+                            <field name="is_info_client"/>
+                        </group>
+                    </group>
+                </field>
+
+
             </field>
         </record>
 

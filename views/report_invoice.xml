@@ -339,7 +339,10 @@
                 </tbody>
             </table>
 
-
+            <t t-if="picking.is_sale_order_id.is_info_client">
+                <b>Information client complèmentaire : </b><br />
+                <span t-field="picking.is_sale_order_id.is_info_client" />
+            </t>
 
         </div>
     </t>

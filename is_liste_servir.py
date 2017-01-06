@@ -122,9 +122,9 @@ class is_liste_servir(models.Model):
     uc_ids                 = fields.One2many('is.liste.servir.uc', 'liste_servir_id', u"UCs")
     um_ids                 = fields.One2many('is.liste.servir.um', 'liste_servir_id', u"UMs")
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
-
     poids_brut             = fields.Float('Poids brut', compute='_compute', readonly=True, store=False)
     poids_net              = fields.Float('Poids net' , compute='_compute', readonly=True, store=False)
+    info_client            = fields.Text("Information client complèmentaire")
 
 
     def _date_fin():
@@ -499,6 +499,7 @@ class is_liste_servir(models.Model):
                 'order_policy'         : 'picking',
                 'is_transporteur_id'   : obj.transporteur_id.id,
                 'is_type_commande'     : 'ls',
+                'is_info_client'       : obj.info_client,
             }
             vals.update(values)
         if vals:
