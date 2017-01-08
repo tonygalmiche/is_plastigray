@@ -35,7 +35,7 @@
                         confirm="Voulez-vous vraiment solder cet OF ?" />
                 </xpath>
                 <xpath expr="//group/group[@string='Consumed Products']" position="replace">
-                    <group string="Consumed Products toto">
+                    <group string="Consumed Products">
                         <field name="move_lines2" nolabel="1" options="{'reload_on_button': true}" domain="[('state','=','done')]">
                            <tree string="Consumed Products">
                                <field name="date" readonly="1"/>
