@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="report_liste_article_layout" inherit_id="web.layout" primary="True">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    .header {
+                        font-size:10pt;
+                    }
+                    .footer {
+                        font-size:10pt;
+                    }
+                    .page {
+                        font-size:10pt;
+                    }
+                    .titre {
+                        font-size:13pt;
+                        font-weight: bold;
+                    }
+                    .nowrap{
+                        white-space: nowrap;
+                    }
+                </style>
+            </xpath>
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+        <template id="report_liste_article_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_liste_article_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+
+        <template id="report_liste_article">
+            <t t-call="is_plastigray.report_liste_article_html_container">
+
+                <t t-if="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id"/>
+                </t>
+                <t t-if="not o or not 'company_id' in o">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+                <div class="header">
+                    <div class="row">
+                        <div class="col-xs-12  text-center">
+                            <h1>Liste des articles du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr >
+                                <th class="text-left"   style="vertical-align:top">Code PG</th>
+                                <th class="text-left"   style="vertical-align:top">Désignation</th>
+                                <th class="text-left"   style="vertical-align:top">Moule</th>
+                                <th class="text-center" style="vertical-align:top">Gestionnaire</th>
+                                <th class="text-center" style="vertical-align:top">Catégorie</th>
+                                <th class="text-right"  style="vertical-align:top">Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="o">
+                                <tr>
+                                    <td class="text-left"><span t-field="o.is_code" /></td>
+                                    <td class="text-left"><span t-field="o.name" /></td>
+                                    <td class="text-left"><span t-field="o.is_mold_id"/><span t-field="o.is_dossierf_id"/></td>
+                                    <td class="text-center"><span t-field="o.is_gestionnaire_id" /></td>
+                                    <td class="text-center"><span t-field="o.is_category_id" /></td>
+                                    <td class="text-right"><span t-field="o.qty_available" /></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="footer">
+                    <div class="row">
+                        <div class="col-xs-12  text-left">
+                        Liste des articles
+                        </div>
+                        <div class="col-xs-12  text-right">
+                            Page <span class="page"/> / <span class="topage"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+
+    </data>
+</openerp>

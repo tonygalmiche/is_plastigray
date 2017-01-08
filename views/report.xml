@@ -148,6 +148,18 @@
             <field name="paperformat_id" ref="is_plastigray.ar_commandes_paperformat"/>
         </record>
 
+        <report 
+            id="report_liste_articles" 
+            string="Liste des articles" 
+            model="product.template" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_liste_article" 
+            file="is_plastigray.report_liste_article" 
+        />
+        <record id="report_liste_articles" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.liste_article_paperformat"/>
+        </record>
+
 
 
     </data>
