@@ -25,13 +25,23 @@ class is_ligne_reception(models.Model):
     lot_fournisseur    = fields.Char('Lot fournisseur')
     user_id            = fields.Many2one('res.users', 'Utilisateur')
     move_id            = fields.Many2one('stock.move', 'Mouvement de stock')
+    picking_state      = fields.Selection([
+        ('draft'               , u'Brouillon'),
+        ('cancel'              , u'Annulé'),
+        ('waiting'             , u'En attente'),
+        ('confirmed'           , u'En attente'),
+        ('assigned'            , u'Prêt à transférer'),
+        ('partially_availlable', u'Partiellement disponible'),
+        ('done'                , u'Transféré'),
+    ], u"État réception", readonly=True, select=True)
     state              = fields.Selection([
         ('draft'    , u'Nouveau'),
         ('cancel'   , u'Annulé'),
         ('waiting'  , u'En attente'),
         ('confirmed', u'Confirmé'),
         ('assigned' , u'Disponible'),
-        ('done'     , u'Terminé')], u"État", readonly=True, select=True)
+        ('done'     , u'Terminé')
+    ], u"État Mouvement", readonly=True, select=True)
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_ligne_reception')
@@ -47,21 +57,19 @@ class is_ligne_reception(models.Model):
                         sp.partner_id         as partner_id, 
                         pt.id                 as product_id, 
                         pt.is_ref_fournisseur as ref_fournisseur,
-                        sm.product_uom_qty,
-                        sm.product_uom,
-                        sm.state,
+                        sm.product_uom_qty    as product_uom_qty,
+                        sm.product_uom        as product_uom,
+                        sm.state              as state,
+                        sp.state              as picking_state,
                         sm.write_uid          as user_id,
                         sm.id                 as move_id,
                         (select icof.name from is_cde_ouverte_fournisseur icof where sp.partner_id=icof.partner_id limit 1) as commande_ouverte,
                         (select is_lot_fournisseur from stock_production_lot spl where spl.name=sp.name and spl.product_id=pp.id limit 1) as lot_fournisseur
-
-
                 from stock_picking sp inner join stock_move                sm on sm.picking_id=sp.id 
                                       inner join product_product           pp on sm.product_id=pp.id
                                       inner join product_template          pt on pp.product_tmpl_id=pt.id
                                       left outer join purchase_order       po on sp.is_purchase_order_id=po.id
                                       left outer join purchase_order_line pol on sm.purchase_line_id=pol.id
-
                 where sp.picking_type_id=1
             )
         """)
