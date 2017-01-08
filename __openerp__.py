@@ -114,6 +114,7 @@ Module principal du projet Plastigray
         "report/is_stock_move.xml",
         "report/is_stock_quant.xml",
         "report/is_purchase_order_line.xml",
+        "report/is_comparatif_tarif_reception.xml",
         "menu.xml",
     ], 
     "installable": True,

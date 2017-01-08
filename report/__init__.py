@@ -28,4 +28,5 @@ import is_model_groups
 import is_stock_move
 import is_purchase_order_line
 import is_stock_quant
+import is_comparatif_tarif_reception
 

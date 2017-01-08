@@ -54,6 +54,25 @@ class purchase_order(models.Model):
         'is_demandeur_id': lambda obj, cr, uid, ctx=None: uid,
     }
 
+
+    @api.multi
+    def actualiser_prix_commande(self):
+        for obj in self:
+            for line in obj.order_line:
+                res = line.onchange_product_id(
+                    obj.pricelist_id.id, 
+                    line.product_id.id, 
+                    line.product_qty, 
+                    line.product_uom.id,
+                    obj.partner_id.id, 
+                    date_planned=line.date_planned,
+                )
+                price=res['value']['price_unit']
+                if not price:
+                    raise Warning(u"Modification non éffectuée, car prix non trouvé")
+                line.price_unit=price
+
+
     @api.multi
     def test_prix0(self,obj):
         for line in obj.order_line:
