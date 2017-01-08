@@ -45,7 +45,7 @@ class is_stock_quant(models.Model):
                     isq.lot_fournisseur,
                     sum(isq.quantite) as quantite, 
                     isq.uom_id,
-                    isq.date_entree,
+                    max(isq.date_entree) as date_entree,
                     isq.client_id
                 from (
 
@@ -86,7 +86,6 @@ class is_stock_quant(models.Model):
                     isq.lot,
                     isq.lot_fournisseur,
                     isq.uom_id,
-                    isq.date_entree,
                     isq.client_id
             )
         """)

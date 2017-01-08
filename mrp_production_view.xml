@@ -3,6 +3,20 @@
     <data>
 
 
+    <!-- Importer nomenclature dans OF -->
+    <record id="importer_nomenclature_action_server" model="ir.actions.server">
+         <field name="name">Importer nomenclature</field>
+        <field name="model_id" ref="model_mrp_production"/>
+        <field name="code">action = self.importer_nomenclature(cr, uid, context.get('active_ids', []), context=context)</field>
+    </record>
+    <record id="importer_nomenclature_ir_value" model="ir.values">
+        <field eval="'client_action_multi'" name="key2"/>
+        <field eval="'mrp.production'" name="model"/>
+        <field name="name">Importer nomenclature</field>
+        <field eval="'ir.actions.server,%d'%importer_nomenclature_action_server" name="value"/>
+    </record>
+
+
     <!-- Ordre de fabrication -->
         <record model="ir.ui.view" id="view_mrp_production_form_view_extended_form">
             <field name="name">mrp.production.form</field>
@@ -20,32 +34,47 @@
                         groups="is_plastigray.is_rsp_production_group"
                         confirm="Voulez-vous vraiment solder cet OF ?" />
                 </xpath>
-
-
-                <!--
-                TODO : Il n'est plus possible de modifier la nomenclature d'un OF => A revoir
-                <xpath expr="//field[@name='move_lines']/tree/field[@name='product_id']" position="before">
-                    <button 
-                        string="Modifier ce composant" 
-                        name= "action_acceder_mouvement_stock" 
-                        type="object" icon="gtk-zoom-in"
-                    />
+                <xpath expr="//group/group[@string='Consumed Products']" position="replace">
+                    <group string="Consumed Products toto">
+                        <field name="move_lines2" nolabel="1" options="{'reload_on_button': true}" domain="[('state','=','done')]">
+                           <tree string="Consumed Products">
+                               <field name="date" readonly="1"/>
+                               <field name="product_id" readonly="1"/>
+                               <field name="restrict_lot_id" context="{'product_id': product_id}" groups="stock.group_production_lot"/>
+                               <field name="product_uom_qty" readonly="1"/>
+                               <field name="product_uom" readonly="1" string="Unit of Measure" groups="product.group_uom"/>
+                               <field name="state" invisible="1"/>
+                               <field name="scrapped" invisible="1"/>
+                               <field name="location_id" readonly="1"/>
+                           </tree>
+                        </field>
+                    </group>
                 </xpath>
                 <field name="product_lines" position="replace">
                     <field name="product_lines">
-                        <tree>
-                            <button 
-                                string="Modifier ce composant" 
-                                name= "action_acceder_ligne" 
-                                type="object" icon="gtk-zoom-in"
+                        <tree editable="bottom">
+                            <field 
+                                name="product_id"  
+                                context="{'product_qty':parent.product_qty}"
+                                on_change="on_change_product_id(product_id,is_bom_qty)"
                             />
-                           <field name="product_id"/>
-                           <field name="product_qty" />
+                            <field name="name"/>
+                            <field name="product_uom"/>
+                            <field 
+                                name="is_bom_qty"  
+                                context="{'product_qty':parent.product_qty}"
+                                on_change="on_change_product_id(product_id,is_bom_qty)"
+                            />
+                            <field name="product_qty" string="Quantité totale"/>
                        </tree>
                     </field>
                 </field>
-                -->
-
+                <xpath expr="//tree[@string='Production Work Centers']/field[@name='hour']" position="after">
+                    <field name="is_date_tri"/>
+                    <field name="is_ordre"/>
+                    <field name="is_qt_restante"/>
+                    <field name="is_tps_restant"/>
+                </xpath>
                 <button icon="gtk-go-forward" position="replace" />
                 <button icon="terp-gtk-jump-to-ltr"  position="replace" />
                 <button string="Update" position="replace">
@@ -77,7 +106,6 @@
                 <button icon="terp-gtk-jump-to-ltr" position="before" > 
                     <button string="Ligne" name="action_acceder_mouvement_stock" type="object" icon="gtk-zoom-in" />
                 </button>
-
                 <button icon="terp-gtk-jump-to-ltr" position="attributes" > 
                     <attribute name="invisible">1</attribute>
                 </button>
@@ -87,6 +115,17 @@
                 <xpath expr="//field[@name='move_lines2']/tree/field[@name='product_uom_qty']" position="replace">
                     <field name="product_uom_qty"  string="Quantity" digits="(14, 4)" />
                 </xpath>
+                <xpath expr="//page[@string='Work Orders']/button[@name='action_compute']" position="replace" />
+                <xpath expr="//page[@string='Scheduled Products']/button[@name='action_compute']" position="replace" />
+                <xpath expr="//div/button[@string='Update']" position="replace" />
+                <xpath expr="//sheet/div[@class='oe_title']" position="replace" />
+                <field name="bom_id" position="before" >
+                     <field name="name" />
+                </field>
+                <xpath expr="//div/field[@name='product_uom']" position="replace" />
+                <field name="is_qt_rebut_uom" position="after" >
+                     <field name="product_uom" />
+                </field>
             </field>
         </record>
 
@@ -116,7 +155,6 @@
                 <button name="button_done"          position="replace" />
             </field>
         </record>
-
 
         <record model="ir.ui.view" id="is_mrp_production_tree_view">
             <field name="name">is_mrp_production_tree_view</field>
@@ -214,7 +252,8 @@
                         <group>
                             <group>
                                 <field name="product_id"/>
-                                <field name="product_qty"/>
+                                <field name="is_bom_qty"/>
+                                <field name="product_qty" string="Quantité totale" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
