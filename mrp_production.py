@@ -214,7 +214,11 @@ class MrpProduction(models.Model):
             stock_moves = []
             for line in obj.product_lines:
                 if line.product_id.type != 'service':
-                    line.product_qty=qt_reste*line.is_bom_qty
+                    qty=qt_reste*line.is_bom_qty
+                    #Si la quantité restante est à 0 , mettre 0.00001 pour ne pas solder le mouvement
+                    if float_compare(qty, 0, precision_rounding=line.product_uom.rounding) == 0:
+                        qty=line.product_uom.rounding
+                    line.product_qty=qty
                     stock_move_id = obj._make_production_consume_line(line)
                     stock_moves.append(stock_move_id)
                 line.product_qty=obj.product_qty*line.is_bom_qty
