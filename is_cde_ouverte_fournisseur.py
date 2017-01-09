@@ -279,9 +279,6 @@ class is_cde_ouverte_fournisseur(models.Model):
             else:
                 attachment = attachment_obj.create(vals)
                 attachment_id=attachment.id
-
-            print 'attachment_id=',attachment_id
-
             return attachment_id
             #*******************************************************************
 
@@ -351,33 +348,50 @@ class is_cde_ouverte_fournisseur(models.Model):
             # ******************************************************************
 
 
-    @api.multi
-    def print_appel_de_livraison(self):
-        for obj in self:
-            self.set_histo(obj.id, u'Impression appel de livraison')
-        return self.env['report'].get_action(self, 'is_plastigray.report_appel_de_livraison')
-
 
     @api.multi
-    def mail_appel_de_livraison(self):
+    def create_appel_de_livraison(self):
         for obj in self:
+            #** Nom du document ************************************************
             if obj.type_commande=='ferme':
-                self.set_histo(obj.id, u'Envoi horizon des besoins par mail à '+str(obj.contact_id.email))
-                subject=u"Horizon des besoins Plastigray pour "+obj.partner_id.name;
                 name='horizon-des-besoins.pdf'
             else:
-                self.set_histo(obj.id, u'Envoi appel de livraison par mail à '+str(obj.contact_id.email))
-                subject=u"Appel de livraison Plastigray pour "+obj.partner_id.name;
                 name='appel-de-livraison.pdf'
+            #*******************************************************************
+
+            #** Génération du PDF de l'Horizon des besoins *********************
+            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_appel_de_livraison')
+            #*******************************************************************
+
+            #** Ajout des commandes fermes à l'horizon *************************
+            attachment_obj = self.env['ir.attachment']
+            if obj.type_commande=='ferme':
+                paths=[]
+                attachment_id=self.create_ferme_uniquement(name)
+                attachment = attachment_obj.browse(attachment_id)
+                pdfreport_id, pdfreport_path = tempfile.mkstemp(suffix='.pdf', prefix='order.tmp1.')
+                f = open(pdfreport_path,'wb')
+                f.write(attachment.datas.decode('base64'))
+                f.close()
+                paths.append(pdfreport_path)
+                pdfreport_id, pdfreport_path = tempfile.mkstemp(suffix='.pdf', prefix='order.tmp2.')
+                f = open(pdfreport_path,'wb')
+                f.write(pdf)
+                f.close()
+                paths.append(pdfreport_path)
+                path=self._merge_pdf(paths)
+                pdf = open(path,'rb').read()
+                os.unlink(path)
+                for path in paths:
+                    os.unlink(path)
+            #*******************************************************************
 
             # ** Recherche si une pièce jointe est déja associèe ***************
-            attachment_obj = self.env['ir.attachment']
             model=self._name
             attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
             # ******************************************************************
 
             # ** Creation ou modification de la pièce jointe *******************
-            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_appel_de_livraison')
             vals = {
                 'name':        name,
                 'datas_fname': name,
@@ -386,6 +400,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                 'res_id':      obj.id,
                 'datas':       pdf.encode('base64'),
             }
+            attachment_id=False
             if attachments:
                 for attachment in attachments:
                     attachment.write(vals)
@@ -393,10 +408,79 @@ class is_cde_ouverte_fournisseur(models.Model):
             else:
                 attachment = attachment_obj.create(vals)
                 attachment_id=attachment.id
+            return attachment_id
+            #*******************************************************************
 
 
+    @api.multi
+    def print_appel_de_livraison(self):
+        for obj in self:
+            if obj.type_commande=='ferme':
+                self.set_histo(obj.id, u'Impression horizon des besoins')
+            else:
+                self.set_histo(obj.id, u'Impression appel de livraison')
+                name='appel-de-livraison.pdf'
+            attachment_id=self.create_appel_de_livraison()
+            return {
+                'type' : 'ir.actions.act_url',
+                'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
+                'target': 'self',
+            }
+
+
+    @api.multi
+    def mail_appel_de_livraison(self):
+        for obj in self:
+
+            #** Nom du document et historique **********************************
+            if obj.type_commande=='ferme':
+                self.set_histo(obj.id, u'Envoi horizon des besoins par mail à '+str(obj.contact_id.email))
+                subject=u"Horizon des besoins Plastigray pour "+obj.partner_id.name;
+                name='horizon-des-besoins.pdf'
+            else:
+                self.set_histo(obj.id, u'Envoi appel de livraison par mail à '+str(obj.contact_id.email))
+                subject=u"Appel de livraison Plastigray pour "+obj.partner_id.name;
+                name='appel-de-livraison.pdf'
+            #*******************************************************************
+
+            attachment_id=self.create_appel_de_livraison()
             self.envoi_mail(name,subject)
-            # ******************************************************************
+
+#            #** PDF de l'Horizon des besoins ***********************************
+#            attachment_obj = self.env['ir.attachment']
+#            model=self._name
+#            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_appel_de_livraison')
+#            #*******************************************************************
+
+#            #** Ajout des commandes fermes à l'horizon *************************
+#            if obj.type_commande=='ferme':
+#                attachment_id=self.create_ferme_uniquement(name)
+#                attachment = attachment_obj.browse(attachment_id)
+#                print 'attachment=',attachment
+#            #*******************************************************************
+
+#            # ** Recherche si une pièce jointe est déja associèe ***************
+#            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+#            # ******************************************************************
+
+#            # ** Creation ou modification de la pièce jointe *******************
+#            vals = {
+#                'name':        name,
+#                'datas_fname': name,
+#                'type':        'binary',
+#                'res_model':   model,
+#                'res_id':      obj.id,
+#                'datas':       pdf.encode('base64'),
+#            }
+#            if attachments:
+#                for attachment in attachments:
+#                    attachment.write(vals)
+#                    attachment_id=attachment.id
+#            else:
+#                attachment = attachment_obj.create(vals)
+#                attachment_id=attachment.id
+#            self.envoi_mail(name,subject)
+#            # ******************************************************************
 
 
     @api.multi
