@@ -14,17 +14,17 @@ class is_facturation_fournisseur(models.Model):
     date_fin            = fields.Date('Date de fin'                      , required=True)
     date_facture        = fields.Date('Date facture fournisseur'         , required=True)
     num_facture         = fields.Char('N° facture fournisseur'           , required=True)
-    total_ht            = fields.Float("Total HT"         , digits=(14,4), required=True)
-    total_ht_calcule    = fields.Float("Total HT Calculé" , digits=(14,4), compute='_compute', readonly=True, store=False)
-    ecart_ht            = fields.Float("Ecart HT"         , digits=(14,4), compute='_compute', readonly=True, store=False)
+    total_ht            = fields.Float("Total HT"         , digits=(14,2), required=True)
+    total_ht_calcule    = fields.Float("Total HT Calculé" , digits=(14,2), compute='_compute', readonly=True, store=False)
+    ecart_ht            = fields.Float("Ecart HT"         , digits=(14,2), compute='_compute', readonly=True, store=False)
     ecart_ht_compte_id  = fields.Many2one('product.product', "Compte d'écart HT")
 
-    total_tva           = fields.Float("Total TVA"         , digits=(14,4))
-    total_tva_calcule   = fields.Float("Total TVA Calculé" , digits=(14,4), compute='_compute', readonly=True, store=False)
-    ecart_tva           = fields.Float("Ecart TVA"         , digits=(14,4), compute='_compute', readonly=True, store=False)
+    total_tva           = fields.Float("Total TVA"         , digits=(14,2))
+    total_tva_calcule   = fields.Float("Total TVA Calculé" , digits=(14,2), compute='_compute', readonly=True, store=False)
+    ecart_tva           = fields.Float("Ecart TVA"         , digits=(14,2), compute='_compute', readonly=True, store=False)
     ecart_tva_compte_id = fields.Many2one('product.product', "Compte d'écart TVA")
 
-    total_ttc_calcule   = fields.Float("Total TTC Calculé", digits=(14,4), compute='_compute', readonly=True, store=False)
+    total_ttc_calcule   = fields.Float("Total TTC Calculé", digits=(14,2), compute='_compute', readonly=True, store=False)
     justification_id    = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
 
     bon_a_payer         = fields.Boolean("Bon à payer", compute='_compute', readonly=True, store=False)
@@ -54,6 +54,10 @@ class is_facturation_fournisseur(models.Model):
                     ht=ht+total
                     tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
+
+            ht  = round(ht,2)
+            tva = round(tva,2)
+            ttc = round(ttc,2)
 
             ecart_ht  = obj.total_ht-ht
             ecart_tva = obj.total_tva-tva
