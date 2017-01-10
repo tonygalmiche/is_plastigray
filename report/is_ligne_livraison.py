@@ -19,7 +19,8 @@ class is_ligne_livraison(models.Model):
     mold_id            = fields.Many2one('is.mold', 'Moule')
     product_uom_qty    = fields.Float('Quantité livrée', digits=(14,2))
     product_uom        = fields.Many2one('product.uom', 'Unité')
-    date_livraison     = fields.Date('Date livraison')
+    date_expedition    = fields.Date("Date d'expédition")
+    date_livraison     = fields.Date("Date d'arrivée chez le client")
     date_mouvement     = fields.Datetime('Date mouvement')
     user_id            = fields.Many2one('res.users', 'Utilisateur')
     move_id            = fields.Many2one('stock.move', 'Mouvement de stock')
@@ -37,6 +38,7 @@ class is_ligne_livraison(models.Model):
             CREATE OR REPLACE view is_ligne_livraison AS (
                 select  sm.id,
                         sp.id                   as picking_id, 
+                        sp.is_date_expedition   as date_expedition,
                         sp.is_date_livraison    as date_livraison,
                         sm.date                 as date_mouvement,
                         sol.is_client_order_ref as client_order_ref,

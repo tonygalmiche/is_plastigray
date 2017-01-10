@@ -5,6 +5,8 @@ from openerp.tools.translate import _
 
 from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
+import time
+import datetime
 
 
 class stock_pack_operation(models.Model):
@@ -34,7 +36,8 @@ class stock_picking(models.Model):
     is_sale_order_id     = fields.Many2one('sale.order', 'Commande Client')
     is_purchase_order_id = fields.Many2one('purchase.order', 'Commande Fournisseur')
     is_transporteur_id   = fields.Many2one('res.partner', 'Transporteur')
-    is_date_livraison    = fields.Date('Date de livraison')
+    is_date_expedition   = fields.Date("Date d'expédition")
+    is_date_livraison    = fields.Date("Date d'arrivée chez le client")
     is_num_bl            = fields.Char("N° BL fournisseur")
     is_date_reception    = fields.Date('Date de réception')
 
@@ -420,7 +423,7 @@ class stock_picking(models.Model):
         for moves in todo.values():
             date_inv=False
             for move in moves:
-                date_inv=move.picking_id.date
+                date_inv=move.picking_id.is_date_expedition
             context['date_inv']=date_inv
             invoices += self._invoice_create_line(cr, uid, moves, journal_id, type, context=context)
         return invoices
@@ -479,6 +482,39 @@ class stock_move(models.Model):
 
 
     @api.multi
+    def get_working_day(self, date, num_day, jours_fermes, leave_dates):
+        """ Déterminer la date de livraison en fonction des jours de fermeture ou des jours de congés
+        """
+        if int(num_day) not in jours_fermes and date not in leave_dates:
+            return date
+        else:
+            date = datetime.datetime.strptime(date, '%Y-%m-%d') + datetime.timedelta(days=1)
+            date = date.strftime('%Y-%m-%d')
+            num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
+            return self.get_working_day(date, num_day, jours_fermes, leave_dates)
+
+
+    def _get_date_livraison(self,date_expedition):
+        cr, uid, context = self.env.args
+        date_livraison=date_expedition
+        for obj in self:
+            if obj.partner_id:
+                res_partner = self.env['res.partner']
+                # jours de fermeture de la société
+                jours_fermes = res_partner.num_closing_days(obj.partner_id)
+                # Jours de congé de la société
+                leave_dates = res_partner.get_leave_dates(obj.partner_id)
+                # Délai de transport
+                delai_transport = obj.partner_id.is_delai_transport
+                date_livraison = datetime.datetime.strptime(date_livraison, '%Y-%m-%d') + datetime.timedelta(days=delai_transport)
+                # Reporter au premier jour ouvré disponible
+                date = date_livraison.strftime('%Y-%m-%d')
+                num_day = date_livraison.strftime('%w')
+                date_livraison = self.get_working_day(date, num_day, jours_fermes, leave_dates)
+        return date_livraison
+
+
+    @api.multi
     def _picking_assign(self, procurement_group, location_from, location_to):
         """Assign a picking on the given move_ids, which is a list of move supposed to share the same procurement_group, location_from and location_to
         (and company). Those attributes are also given as parameters.
@@ -512,20 +548,18 @@ class stock_move(models.Model):
                 sale_obj = self.env['sale.order']
                 sales = sale_obj.search([('name','=',move.origin)])
                 for sale_data in sales:
-
-                    date_livraison=False
-                    for line in sale_data.order_line:
-                        if line.is_date_livraison>date_livraison:
-                            date_livraison=line.is_date_livraison
+                    date_expedition = time.strftime('%Y-%m-%d')
+                    date_livraison  = self._get_date_livraison(date_expedition)
                     values = {
-                        'origin'            : move.origin,
-                        'company_id'        : move.company_id and move.company_id.id or False,
-                        'move_type'         : move.group_id and move.group_id.move_type or 'direct',
-                        'partner_id'        : move.partner_id.id or False,
-                        'picking_type_id'   : move.picking_type_id and move.picking_type_id.id or False,
-                        'is_sale_order_id'  : sale_data and sale_data.id or False,
-                        'is_transporteur_id': sale_data and sale_data.is_transporteur_id.id or False,
-                        'is_date_livraison' : date_livraison,
+                        'origin'             : move.origin,
+                        'company_id'         : move.company_id and move.company_id.id or False,
+                        'move_type'          : move.group_id and move.group_id.move_type or 'direct',
+                        'partner_id'         : move.partner_id.id or False,
+                        'picking_type_id'    : move.picking_type_id and move.picking_type_id.id or False,
+                        'is_sale_order_id'   : sale_data and sale_data.id or False,
+                        'is_transporteur_id' : sale_data and sale_data.is_transporteur_id.id or False,
+                        'is_date_expedition' : date_expedition,
+                        'is_date_livraison'  : date_livraison,
                     }
                     pick = pick_obj.create(values)
         if pick:

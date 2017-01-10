@@ -243,8 +243,9 @@
                     <attribute name="invisible">1</attribute>>
                 </field>
                 <field name="origin" position="after">
-                    <field name="is_sale_order_id"  attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" /> 
-                    <field name="is_date_livraison" attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" /> 
+                    <field name="is_sale_order_id"   attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" /> 
+                    <field name="is_date_expedition" attrs="{'invisible': [('is_sale_order_id', '=', False)]}" /> 
+                    <field name="is_date_livraison"  attrs="{'invisible': [('is_sale_order_id', '=', False)]}" /> 
                     <field 
                         name="is_transporteur_id" 
                         domain="[('supplier','=',True),('is_company','=',True)]" 
@@ -272,6 +273,7 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                 <field name="date" position="after" >
+                    <field name="is_date_expedition" />
                     <field name="is_date_livraison" />
                     <field name="is_num_bl" />
                 </field>
