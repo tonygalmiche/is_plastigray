@@ -525,12 +525,20 @@
         ])]"/>
     </record>
     <menuitem id="menu_is_ventes_fac_10"   sequence="10" name="Livraisons à facturer" parent="menu_is_ventes_fac" action="is_livraisons_a_facturer_action" />
-
     <record id="is_comparatif_tarif_facture_menu" model="ir.ui.menu" >
         <field name="name">Comparatif Tarif / Facture</field>
         <field name="sequence">15</field>
         <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
         <field name="action"    ref="is_comparatif_tarif_facture_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_comparatif_livraison_facture_menu" model="ir.ui.menu" >
+        <field name="name">Comparatif Liv. / Facture</field>
+        <field name="sequence">15</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_comparatif_livraison_facture_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group')
         ])]"/>

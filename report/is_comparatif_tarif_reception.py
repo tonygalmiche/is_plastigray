@@ -15,7 +15,7 @@ class is_comparatif_tarif_reception(models.Model):
     product_id      = fields.Many2one('product.product', 'Article')
     qty             = fields.Float('Quantité')
     date_planned    = fields.Date('Date prévue')
-    justification   = fields.Date('Justification')
+    justification   = fields.Char('Justification')
     pol_price       = fields.Float('Prix commande')
     pricelist_price = fields.Float('Prix liste de prix')
     price_delta     = fields.Float('Ecart de prix')
