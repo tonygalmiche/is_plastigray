@@ -99,7 +99,7 @@ TODO :
                             <span t-if="o.partner_id.lang == 'fr_FR'">BORDEREAU DE LIVRAISON N°</span>
                             <span t-if="o.partner_id.lang != 'fr_FR'">DELIVERY NOTE N°</span>
                             <span t-field="o.name"/>
-                             du <span t-field="o.date"  t-field-options='{"format": "dd/MM/yyyy"}' /><br />
+                             du <span t-field="o.is_date_expedition"  t-field-options='{"format": "dd/MM/yyyy"}' /><br />
                         </div>
                         <div t-if="o.partner_id.lang == 'fr_FR'">Destinataire : </div>
                         <div t-if="o.partner_id.lang != 'fr_FR'">Addressee : </div>

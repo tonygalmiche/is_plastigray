@@ -142,8 +142,8 @@ class is_export_seriem(models.TransientModel):
                         TypeFacture=u'L'  # Facture fournisseur en litige
                     Client=(row[3]+u"                                ")[:26]
                     if Journal=="AC":
-                        NumFacFournisseur=(NumFacFournisseur+u'    ')[:4]
-                        Client=(NumFacFournisseur+Client)[:26]
+                        NumFacFournisseur=(NumFacFournisseur+u'    ')[:5]
+                        Client=(NumFacFournisseur+u' '+Client)[:26]
                     NumFacture=(u"000000"+str(row[0]))[-6:]
                     DateEcheance=row[7]
                     DateEcheance=datetime.datetime.strptime(DateEcheance, '%Y-%m-%d')

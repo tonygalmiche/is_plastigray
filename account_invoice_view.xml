@@ -176,7 +176,7 @@
             <field name="name">Factures à valider</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.invoice</field>
-            <field name="domain">[('state','=', 'draft')]</field>
+            <field name="domain">[('state','=', 'draft'),('type','=', 'out_invoice')]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
