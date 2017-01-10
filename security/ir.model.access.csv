@@ -115,4 +115,10 @@ access_purchase_order_line,access_purchase_order_line,model_purchase_order_line,
 access_is_stock_quant,access_is_stock_quant,model_is_stock_quant,base.group_user,1,0,0,0
 access_is_comparatif_tarif_facture,access_is_comparatif_tarif_facture,model_is_comparatif_tarif_facture,base.group_user,1,0,0,0
 access_is_comparatif_tarif_reception,access_is_comparatif_tarif_reception,model_is_comparatif_tarif_reception,base.group_user,1,0,0,0
+access_is_comparatif_livraison_facture,access_is_comparatif_livraison_facture,model_is_comparatif_livraison_facture,base.group_user,1,0,0,0
+
+
+
+
+
 
