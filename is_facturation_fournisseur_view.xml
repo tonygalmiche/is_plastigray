@@ -76,9 +76,9 @@
                                     <field name="prix"                             readonly="1" />
                                     <field name="total"                            readonly="1"/>
                                     <field name="taxe_ids" widget="many2many_tags" readonly="1"/>
-                                    <!--<field name="taxe_taux"                        readonly="1"/>-->
+                                    <field name="taxe_taux"                        invisible="1"/>
                                     <field name="selection"/>
-                                    <!--<field name="move_id"                          readonly="1"/>-->
+                                    <field name="move_id"                          invisible="1"/>
                                 </tree>
                             </field>
                         </group>
