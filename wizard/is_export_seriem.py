@@ -87,7 +87,8 @@ class is_export_seriem(models.TransientModel):
                             sum(aml.debit), 
                             sum(aml.credit),
                             rp.supplier,
-                            ai.is_bon_a_payer
+                            ai.is_bon_a_payer,
+                            ai.supplier_invoice_number
                     FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
                                                inner join account_account aa             on aml.account_id=aa.id
                                                inner join res_partner rp                 on ai.partner_id=rp.id
@@ -95,8 +96,8 @@ class is_export_seriem(models.TransientModel):
                                                left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
                                                left outer join account_journal aj        on rp.is_type_reglement=aj.id
                     WHERE ai.id="""+str(id)+"""
-                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier
-                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier
+                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number
+                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number
                 """
 
                 cr.execute(sql)
@@ -106,10 +107,11 @@ class is_export_seriem(models.TransientModel):
                         CompteCollectif = u'401000'
                     else:
                         CompteCollectif = u'411000'
-                    NumCompte = row[4]
-                    Debit     = row[9]
-                    Credit    = row[10]
-                    BonAPayer = row[12]
+                    NumCompte         = row[4]
+                    Debit             = row[9]
+                    Credit            = row[10]
+                    BonAPayer         = row[12]
+                    NumFacFournisseur = row[13]
 
                     Montant   = Credit - Debit
                     Sens=u"D"
@@ -139,6 +141,9 @@ class is_export_seriem(models.TransientModel):
                     if obj.type_interface=='achats' and not BonAPayer:
                         TypeFacture=u'L'  # Facture fournisseur en litige
                     Client=(row[3]+u"                                ")[:26]
+                    if Journal=="AC":
+                        NumFacFournisseur=(NumFacFournisseur+u'    ')[:4]
+                        Client=(NumFacFournisseur+Client)[:26]
                     NumFacture=(u"000000"+str(row[0]))[-6:]
                     DateEcheance=row[7]
                     DateEcheance=datetime.datetime.strptime(DateEcheance, '%Y-%m-%d')
@@ -158,9 +163,6 @@ class is_export_seriem(models.TransientModel):
                 Ligne=u'H'+Soc+CompteCollectif+CodeAuxiliaire+NumFacture+u'01'+TotalTTC+u' '+DateEcheance+TypeReglement+'  0000000 1'
                 res.append(Ligne)
                 #*******************************************************************
-
-            #raise Warning('test')
-
 
             # Enregistrement du fichier ****************************************
             os.chdir('/tmp')
@@ -183,6 +185,7 @@ class is_export_seriem(models.TransientModel):
 
             # ******************************************************************
 
+            #raise Warning('test')
 
             # Envoi du fichier dans l'AS400 ************************************
             if err=="":
