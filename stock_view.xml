@@ -295,7 +295,7 @@
 
         <!-- Toutes les réceptions -->
         <record id="is_reception_toutes_action" model="ir.actions.act_window">
-            <field name="name">Réceptions à traiter</field>
+            <field name="name">Toutes les réceptions</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
             <field name="domain">[('picking_type_id','=', 1)]</field>
@@ -398,7 +398,7 @@
             </field>
         </record>
         <record id="is_liste_stock_sans_lot_action" model="ir.actions.act_window">
-            <field name="name">Liste des stocks négatifs</field>
+            <field name="name">Liste des stocks sans lot</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.quant</field>
             <field name="domain">[('lot_id','=', False),('location_id.usage','=', 'internal')]</field>
@@ -422,7 +422,7 @@
 
         <!-- Toutes les livraisons -->
         <record id="is_toutes_les_livraisons_action" model="ir.actions.act_window">
-            <field name="name">Livraisons à traiter</field>
+            <field name="name">Toutes les livraisons</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
             <field name="domain">[('picking_type_id','=', 2)]</field>

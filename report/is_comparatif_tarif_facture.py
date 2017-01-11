@@ -12,6 +12,7 @@ class is_comparatif_tarif_facture(models.Model):
 
     invoice_id         = fields.Many2one('account.invoice', 'Facture')
     invoice_date       = fields.Date('Date Facture')
+    order_id           = fields.Many2one('sale.order', 'Commande')
     partner_id         = fields.Many2one('res.partner', 'Client')
     pricelist_id       = fields.Many2one('product.pricelist', 'Liste de prix')
     product_id         = fields.Many2one('product.template', 'Article')
@@ -45,40 +46,40 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE view is_comparatif_tarif_facture AS (
     select 
         ail.id            id,
         ai.id             invoice_id,
         ai.date_invoice   invoice_date,
-        ai.partner_id     partner_id,
-        (select pricelist_id from sale_order so where so.partner_invoice_id=ai.partner_id order by so.id desc limit 1) pricelist_id,
+        so.id             order_id,
+        so.partner_id     partner_id,
+        so.pricelist_id   pricelist_id,
         pt.id             product_id,
         ail.quantity      quantity,
         ail.uos_id        uos_id,
         ail.price_unit    invoice_price, 
         coalesce(
             is_prix_vente(
-                (select pricelist_id from sale_order so where so.partner_invoice_id=ai.partner_id order by so.id desc limit 1),
+                so.pricelist_id,
                 ail.product_id,
                 ail.quantity,
                 ai.date_invoice
             ),
             0
         ) as pricelist_price,
-
         coalesce(
             is_prix_vente(
-                (select pricelist_id from sale_order so where so.partner_invoice_id=ai.partner_id order by so.id desc limit 1),
+                so.pricelist_id,
                 ail.product_id,
                 ail.quantity,
                 ai.date_invoice
             ),
             0
         )-ail.price_unit as price_delta
-
     from account_invoice_line ail inner join account_invoice  ai on ail.invoice_id=ai.id
-                                  inner join res_partner      rp on ai.partner_id=rp.id
+                                  inner join stock_move       sm on ail.is_move_id=sm.id
+                                  inner join sale_order_line sol on sm.is_sale_line_id=sol.id
+                                  inner join sale_order       so on sol.order_id=so.id
                                   inner join product_product  pp on ail.product_id=pp.id
                                   inner join product_template pt on pp.product_tmpl_id=pt.id
     where ai.state='draft' and ai.type in ('out_invoice', 'out_refund')

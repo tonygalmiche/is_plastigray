@@ -68,8 +68,13 @@ CREATE OR REPLACE view is_comparatif_tarif_reception AS (
             COALESCE(is_prix_achat(po.pricelist_id,sm.product_id,pol.product_qty,pol.date_planned), 0) as pricelist_price
         from stock_move sm inner join purchase_order_line pol on sm.purchase_line_id=pol.id
                            inner join purchase_order       po on pol.order_id=po.id 
-
-        where sm.state not in ('done','cancel') and sm.purchase_line_id is not null
+                           inner join product_product      pp on pol.product_id=pp.id
+                           inner join product_template     pt on pp.product_tmpl_id=pt.id
+                           inner join is_category          ic on pt.is_category_id=ic.id
+        where 
+            sm.state not in ('done','cancel') and 
+            sm.purchase_line_id is not null and
+            to_number(ic.name, '9999999')<70
     ) ipol
     where abs(pol_price-pricelist_price)>0.0001
     order by ipol.id desc
