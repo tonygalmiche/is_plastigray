@@ -167,7 +167,7 @@ class is_pdc(models.Model):
         for obj in self:
             obj.mod_ids.unlink()
             obj.workcenter_ids.unlink()
-            cr.execute("""select sum(temps_h) from is_pdc_mold where pdc_id="""+str(obj.id))
+            cr.execute("""select sum(temps_h) from is_pdc_mold where resource_type='user' and pdc_id="""+str(obj.id))
             nb_heures_total = cr.fetchone()[0]
             if not nb_heures_total:
                 return
