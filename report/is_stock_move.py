@@ -25,6 +25,11 @@ class is_stock_move(models.Model):
     location_dest      = fields.Char("Lieu")
     login              = fields.Char('Login')
 
+    purchase_line_id           = fields.Many2one('purchase.order.line', 'Ligne commande achat')
+    raw_material_production_id = fields.Many2one('mrp.production'     , 'Composant ordre de fabrication')
+    production_id              = fields.Many2one('mrp.production'     , 'Ordre de fabrication')
+    is_sale_line_id            = fields.Many2one('sale.order.line'    , 'Ligne commande vente')
+
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_stock_move')
@@ -41,12 +46,16 @@ class is_stock_move(models.Model):
                         COALESCE(spt.name,sm.src)          as type_mv,
                         COALESCE(spt.name,sp.name,sm.name) as name,
                         sm.picking_id                      as picking_id,
+                        sm.purchase_line_id,
+                        sm.raw_material_production_id,
+                        sm.production_id,
+                        sm.is_sale_line_id,
                         sm.lot_id                          as lot_id,
                         spl.is_lot_fournisseur             as lot_fournisseur,
                         sm.qty                             as qty,
                         pt.uom_id                          as product_uom,
                         sm.dest                            as location_dest,
-                        ru.login                           as login 
+                        ru.login                           as login
                 from (
 
                     select 
@@ -55,6 +64,10 @@ class is_stock_move(models.Model):
                         sm.product_id, 
                         sm.picking_type_id,
                         sm.picking_id,
+                        sm.purchase_line_id,
+                        sm.raw_material_production_id,
+                        sm.production_id,
+                        sm.is_sale_line_id,
                         sm.name,
                         sm.origin,
                         sq.lot_id           as lot_id,
@@ -62,7 +75,7 @@ class is_stock_move(models.Model):
                         sl1.name            as src,
                         sl2.name            as dest,
                         sm.write_date,
-                        sm.write_uid 
+                        sm.write_uid
                     from stock_move sm inner join stock_location        sl1 on sm.location_id=sl1.id
                                        inner join stock_location        sl2 on sm.location_dest_id=sl2.id
                                        left outer join stock_quant_move_rel sqmr on sm.id=sqmr.move_id
@@ -74,6 +87,10 @@ class is_stock_move(models.Model):
                         sm.product_id, 
                         sm.picking_type_id,
                         sm.picking_id,
+                        sm.purchase_line_id,
+                        sm.raw_material_production_id,
+                        sm.production_id,
+                        sm.is_sale_line_id,
                         sm.name,
                         sm.origin,
                         sq.lot_id,
@@ -90,6 +107,10 @@ class is_stock_move(models.Model):
                         sm.product_id, 
                         sm.picking_type_id,
                         sm.picking_id,
+                        sm.purchase_line_id,
+                        sm.raw_material_production_id,
+                        sm.production_id,
+                        sm.is_sale_line_id,
                         sm.name,
                         sm.origin,
                         sq.lot_id           as lot_id,
@@ -97,7 +118,7 @@ class is_stock_move(models.Model):
                         sl1.name            as dest,
                         sl2.name            as src,
                         sm.write_date,
-                        sm.write_uid 
+                        sm.write_uid
                     from stock_move sm inner join stock_location        sl1 on sm.location_dest_id=sl1.id
                                        inner join stock_location        sl2 on sm.location_id=sl2.id
                                        left outer join stock_quant_move_rel sqmr on sm.id=sqmr.move_id
@@ -109,6 +130,10 @@ class is_stock_move(models.Model):
                         sm.product_id, 
                         sm.picking_type_id,
                         sm.picking_id,
+                        sm.purchase_line_id,
+                        sm.raw_material_production_id,
+                        sm.production_id,
+                        sm.is_sale_line_id,
                         sm.name,
                         sm.origin,
                         sq.lot_id,
