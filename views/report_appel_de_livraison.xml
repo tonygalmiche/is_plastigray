@@ -221,7 +221,7 @@
                                     <td class="text-center"><span t-field="l.date"/></td>
                                     <td class="text-center"><span t-field="l.type_cde"/></td>
                                     <td class="text-right"><span t-field="l.quantite"/></td>
-                                    <td class="text-right"><span t-field="p.product_id.uom_po_id"/></td>
+                                    <td class="text-right"><span t-field="l.uom_id"/></td>
                                     <t t-if="o.type_commande!='ouverte'">
                                         <td class="text-center"><b><span t-field="l.purchase_order_id.name"/></b></td>
                                     </t>

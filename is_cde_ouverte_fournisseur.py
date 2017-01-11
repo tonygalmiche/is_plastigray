@@ -130,7 +130,6 @@ modele_mail=u"""
 <br>
 Cordialement <br><br>
 [from]<br>
-<i>Responsable Appro</i> <br><br>
 </body></html>
 """
 
@@ -235,7 +234,15 @@ class is_cde_ouverte_fournisseur(models.Model):
         for obj in self:
             orders=[]
             for product in self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id)]):
-                for line in self.env['is.cde.ouverte.fournisseur.line'].search([('product_id','=',product.id)]):
+                now  = datetime.date.today()                     # Date du jour
+                date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                date_approve = date_approve.strftime('%Y-%m-%d') # Formatage
+                where=[
+                    ('product_id'  ,'=', product.id),
+                    ('date_approve','>', date_approve),
+                ]
+                lines=self.env['is.cde.ouverte.fournisseur.line'].search(where)
+                for line in lines:
                     order=line.purchase_order_id
                     if not order in orders:
                         orders.append(order)
@@ -527,19 +534,15 @@ class is_cde_ouverte_fournisseur(models.Model):
             self.set_histo(obj.id, u'Intégration des commandes et SA')
             for product in obj.product_ids:
                 product.imprimer=False
-
-
             #** Recherche du contact logistique ********************************
             SQL="""
                 select rp.id, rp.is_type_contact, itc.name
                 from res_partner rp inner join is_type_contact itc on rp.is_type_contact=itc.id
                 where rp.parent_id="""+str(obj.partner_id.id)+""" and itc.name ilike '%logistique%' limit 1
             """
-            print SQL
             cr.execute(SQL)
             result = cr.fetchall()
             for row in result:
-                print row
                 obj.contact_id=row[0]
             #*******************************************************************
 
@@ -609,30 +612,40 @@ class is_cde_ouverte_fournisseur(models.Model):
                             'date'             : row.end_date,
                             'type_cde'         : 'prev',
                             'quantite'         : row.quantity,
+                            'uom_id'           : product.product_id.uom_id.id,
                             'mrp_prevision_id' : row.id,
                         }
                         line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
 
 
-                now  = datetime.date.today()                     # Date du jour
-                date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
-                date_approve = date_approve.strftime('%Y-%m-%d')   # Formatage
-
+                #now  = datetime.date.today()                     # Date du jour
+                #date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                #date_approve = date_approve.strftime('%Y-%m-%d')   # Formatage
+                #   ('order_id.date_approve','>', date_approve)
 
                 where=[
                     ('state'       ,'=', 'confirmed'),
                     ('product_id'  ,'=', product.product_id.id),
-                    ('order_id.date_approve','>', date_approve)
                 ]
                 for row in self.env['purchase.order.line'].search(where):
-                    vals={
-                        'product_id'        : product.id,
-                        'date'              : row.date_planned,
-                        'type_cde'          : 'ferme',
-                        'quantite'          : row.product_qty,
-                        'purchase_order_id' : row.order_id.id,
-                    }
-                    line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
+                    #** Test si réceptions en cours sur la ligne de cde ********
+                    where=[
+                        ('purchase_line_id','=', row.id),
+                        ('state'           ,'not in', ('done','cancel')),
+                    ]
+                    moves=self.env['stock.move'].search(where)
+                    #***********************************************************
+                    if len(moves)>0:
+                        vals={
+                            'product_id'        : product.id,
+                            'date'              : row.date_planned,
+                            'date_approve'      : row.order_id.date_approve,
+                            'type_cde'          : 'ferme',
+                            'quantite'          : row.product_qty,
+                            'uom_id'            : row.product_uom.id,
+                            'purchase_order_id' : row.order_id.id,
+                        }
+                        line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
 
 
 
@@ -647,6 +660,23 @@ class is_cde_ouverte_fournisseur_product(models.Model):
     qt_bl         = fields.Float("Qt reçue" , readonly=True)
     imprimer      = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
+
+
+    @api.multi
+    def action_acces_commandes(self):
+        for obj in self:
+            return {
+                'name': u'Commandes',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'is.cde.ouverte.fournisseur.product',
+                'res_id'   : obj.id,
+                'type'     : 'ir.actions.act_window',
+            }
+
+
+
+
 
 
 class is_cde_ouverte_fournisseur_tarif(models.Model):
@@ -667,8 +697,10 @@ class is_cde_ouverte_fournisseur_line(models.Model):
 
     product_id        = fields.Many2one('is.cde.ouverte.fournisseur.product', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
     date              = fields.Date("Date Commande")
+    date_approve      = fields.Date("Date de confirmation")
     type_cde          = fields.Selection([('ferme', u'Ferme'),('prev', u'Prévisionnel')], u"Type de commande", select=True)
     quantite          = fields.Float("Quantité")
+    uom_id            = fields.Many2one('product.uom', 'Unité')
     mrp_prevision_id  = fields.Many2one('mrp.prevision' , 'SA')
     purchase_order_id = fields.Many2one('purchase.order', 'Commande')
 

@@ -57,6 +57,10 @@
                                 <group string="Articles">
                                     <field name="product_ids" nolabel="1">
                                         <tree editable="bottom">
+                                            <button 
+                                                string="Commandes" 
+                                                name= "action_acces_commandes" type="object" icon="gtk-justify-fill"
+                                            />
                                             <field name="product_id" widget="many2one_clickable" /> 
                                             <field name="num_bl"    /> 
                                             <field name="date_bl"   /> 
@@ -166,7 +170,9 @@
                                 <tree colors="gray:type_cde == 'prev'">
                                     <field name="date"  /> 
                                     <field name="type_cde"  /> 
+                                    <field name="date_approve"  /> 
                                     <field name="quantite"  /> 
+                                    <field name="uom_id"  /> 
                                     <field name="mrp_prevision_id"  /> 
                                     <field name="purchase_order_id"  /> 
                                 </tree>
