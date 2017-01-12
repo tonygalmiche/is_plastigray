@@ -656,8 +656,11 @@ class stock_move(models.Model):
 
         if res:
             self.action_assign(cr, uid, res, context=context)
-        if prod_orders:
-            production_obj.signal_workflow(cr, uid, list(prod_orders), 'button_produce')
+
+
+        #TODO : J'ai désactivé ce code car cela bloquait les homes flux
+        #if prod_orders:
+        #    production_obj.signal_workflow(cr, uid, list(prod_orders), 'button_produce')
         return res
 
 

@@ -122,7 +122,8 @@ class mrp_prevision(models.Model):
                 name=obj.name
                 unlink=True
                 try:
-                    workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
+                    #workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
+                    mrp_id.action_confirm()
                     mrp_id.force_production()
                     mrp_id.action_in_production()
                     #break

@@ -70,6 +70,19 @@ class MrpProduction(models.Model):
 
 
 
+
+#    @api.multi
+#    def action_confirm_a_nouveau(self):
+#        cr, uid, context = self.env.args
+#        for obj in self:
+#            #obj.action_confirm()
+#            obj.force_production()
+#            obj.action_in_production()
+
+
+
+
+
     @api.multi
     def action_confirm(self):
         res=super(MrpProduction, self).action_confirm()
