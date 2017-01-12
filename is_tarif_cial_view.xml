@@ -83,6 +83,7 @@
             <field name="res_model">is.tarif.cial</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="is_tarif_cial_tree_view"/>
         </record>
 
 
@@ -128,6 +129,7 @@
             <field name="res_model">is.tarif.cial</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
+            <field name="view_id" ref="is_tarif_cial_employes_tree_view"/>
         </record>
 
 

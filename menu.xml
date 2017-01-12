@@ -224,9 +224,43 @@
             ref('is_magasiniers_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_achats_rcp_10"  sequence="10" name="Réceptions à traiter"    parent="menu_is_achats_rcp" action="is_ligne_reception_a_traiter_action" />
-    <menuitem id="menu_is_achats_rcp_20"  sequence="20" name="Réceptions état terminé" parent="menu_is_achats_rcp" action="is_ligne_reception_terminee_action" />
-    <menuitem id="menu_is_achats_rcp_30"  sequence="30" name="Toutes les réceptions"   parent="menu_is_achats_rcp" action="is_ligne_reception_action" />
+    <record id="is_ligne_reception_a_traiter_menu" model="ir.ui.menu">
+        <field name="name">Réceptions à traiter</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('menu_is_achats_rcp')"/>
+        <field name="action"    ref="is_ligne_reception_a_traiter_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+            ref('is_rsp_achats_group'),
+            ref('is_rsp_production_group'),
+            ref('is_magasiniers_group'),
+        ])]"/>
+    </record>
+    <record id="is_ligne_reception_terminee_menu" model="ir.ui.menu">
+        <field name="name">Réceptions état terminé</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('menu_is_achats_rcp')"/>
+        <field name="action"    ref="is_ligne_reception_terminee_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+            ref('is_chef_projet_group'),
+            ref('is_rsp_achats_group'),
+            ref('is_rsp_production_group'),
+            ref('is_magasiniers_group'),
+        ])]"/>
+    </record>
+    <record id="is_ligne_reception_menu" model="ir.ui.menu">
+        <field name="name">Toutes les réceptions</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('menu_is_achats_rcp')"/>
+        <field name="action"    ref="is_ligne_reception_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+            ref('is_rsp_achats_group'),
+            ref('is_rsp_production_group'),
+            ref('is_magasiniers_group'),
+        ])]"/>
+    </record>
 
 
     <!-- Achats / Facturation -->
@@ -267,7 +301,6 @@
         <field name="action"    ref="account.action_invoice_tree2"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
-            ref('is_commerciaux_group'),
             ref('is_qualite_group'),
             ref('is_rsp_production_group'),
             ref('is_rsp_achats_group'),
@@ -510,6 +543,7 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
+            ref('is_commerciaux_group'),
         ])]"/>
     </record>
 
@@ -522,6 +556,7 @@
         <field name="parent_id" eval="ref('menu_is_ventes')"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
+            ref('is_commerciaux_group'),
         ])]"/>
     </record>
     <menuitem id="menu_is_ventes_fac_10"   sequence="10" name="Livraisons à facturer" parent="menu_is_ventes_fac" action="is_livraisons_a_facturer_action" />
@@ -548,8 +583,33 @@
     <menuitem id="menu_is_ventes_fac_25"   sequence="25" name="Factures diverses"     parent="menu_is_ventes_fac" action="is_factures_diverses_action" />
     <menuitem id="menu_is_ventes_fac_30"   sequence="30" name="Toutes les factures"   parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
     <menuitem id="menu_is_ventes_fac_40"   sequence="40" name="Tous les avoirs"       parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
-    <menuitem id="menu_is_ventes_fac_50"   sequence="50" name="Export Série-M"        parent="menu_is_ventes_fac" action="is_export_ventes_seriem_action" />
-    <menuitem id="menu_is_ventes_fac_60"   sequence="60" name="Folios"                parent="menu_is_ventes_fac" action="is_account_folio_action" />
+
+
+
+    <record id="is_export_ventes_seriem_menu" model="ir.ui.menu" >
+        <field name="name">Export Série-M</field>
+        <field name="sequence">50</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_export_ventes_seriem_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_account_folio_menu" model="ir.ui.menu" >
+        <field name="name">Folios</field>
+        <field name="sequence">60</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_account_folio_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+
+
+
+
+
+
 
     <!-- Ventes / Tables -->
     <menuitem id="menu_is_ventes_table"    sequence="90" name="Tables"                parent="menu_is_ventes" groups="is_gestionnaire_tables_group" />
