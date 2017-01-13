@@ -117,6 +117,7 @@ Module principal du projet Plastigray
         "report/is_purchase_order_line.xml",
         "report/is_comparatif_tarif_reception.xml",
         "report/is_comparatif_livraison_facture.xml",
+        "report/is_comparatif_cde_draft_done.xml",
         "menu.xml",
     ], 
     "installable": True,

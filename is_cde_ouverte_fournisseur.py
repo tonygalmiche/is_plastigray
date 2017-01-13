@@ -10,11 +10,6 @@ from pyPdf import PdfFileWriter, PdfFileReader
 from contextlib import closing
 import datetime
 
-#TODO : 
-# - Ajouter le bouton pour envouer par mail
-# - Ajouter un tableau pour avoir l'historique des actions
-# - Pour les commandes fermes, tenir compte de la date de validation => Ne pas envoyer les commandes validées de plus de 7 jours
-
 
 modele_mail=u"""
 <html>
@@ -453,42 +448,6 @@ class is_cde_ouverte_fournisseur(models.Model):
             attachment_id=self.create_appel_de_livraison()
             self.envoi_mail(name,subject)
 
-#            #** PDF de l'Horizon des besoins ***********************************
-#            attachment_obj = self.env['ir.attachment']
-#            model=self._name
-#            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_appel_de_livraison')
-#            #*******************************************************************
-
-#            #** Ajout des commandes fermes à l'horizon *************************
-#            if obj.type_commande=='ferme':
-#                attachment_id=self.create_ferme_uniquement(name)
-#                attachment = attachment_obj.browse(attachment_id)
-#                print 'attachment=',attachment
-#            #*******************************************************************
-
-#            # ** Recherche si une pièce jointe est déja associèe ***************
-#            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
-#            # ******************************************************************
-
-#            # ** Creation ou modification de la pièce jointe *******************
-#            vals = {
-#                'name':        name,
-#                'datas_fname': name,
-#                'type':        'binary',
-#                'res_model':   model,
-#                'res_id':      obj.id,
-#                'datas':       pdf.encode('base64'),
-#            }
-#            if attachments:
-#                for attachment in attachments:
-#                    attachment.write(vals)
-#                    attachment_id=attachment.id
-#            else:
-#                attachment = attachment_obj.create(vals)
-#                attachment_id=attachment.id
-#            self.envoi_mail(name,subject)
-#            # ******************************************************************
-
 
     @api.multi
     def envoi_mail(self, name, subject):
@@ -503,11 +462,10 @@ class is_cde_ouverte_fournisseur(models.Model):
                     ('name'     ,'=',name)
                 ])
                 email_vals = {}
-                #print type(body_html), body_html
                 body_html=modele_mail.replace('[from]', nom)
                 email_vals.update({
                     'subject'       : subject,
-                    'email_to'      : email, 
+                    'email_to'      : obj.contact_id.email, 
                     'email_cc'      : email,
                     'email_from'    : email, 
                     'body_html'     : body_html.encode('utf-8'), 
@@ -603,8 +561,6 @@ class is_cde_ouverte_fournisseur(models.Model):
             for product in obj.product_ids:
                 product.line_ids.unlink()
             for product in obj.product_ids:
-
-
                 if obj.type_commande!='ferme_uniquement':
                     for row in self.env['mrp.prevision'].search([('type','=','sa'),('product_id','=',product.product_id.id)]):
                         vals={
@@ -616,13 +572,6 @@ class is_cde_ouverte_fournisseur(models.Model):
                             'mrp_prevision_id' : row.id,
                         }
                         line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
-
-
-                #now  = datetime.date.today()                     # Date du jour
-                #date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
-                #date_approve = date_approve.strftime('%Y-%m-%d')   # Formatage
-                #   ('order_id.date_approve','>', date_approve)
-
                 where=[
                     ('state'       ,'=', 'confirmed'),
                     ('product_id'  ,'=', product.product_id.id),
@@ -646,7 +595,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                             'purchase_order_id' : row.order_id.id,
                         }
                         line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
-
+                product.nb_commandes=len(product.line_ids)
 
 
 class is_cde_ouverte_fournisseur_product(models.Model):
@@ -655,9 +604,10 @@ class is_cde_ouverte_fournisseur_product(models.Model):
 
     order_id      = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
     product_id    = fields.Many2one('product.product', 'Article'  , required=True)
-    num_bl        = fields.Char("Dernier BL", readonly=True)
-    date_bl       = fields.Date("Date BL"   , readonly=True)
-    qt_bl         = fields.Float("Qt reçue" , readonly=True)
+    num_bl        = fields.Char("Dernier BL"     , readonly=True)
+    date_bl       = fields.Date("Date BL"        , readonly=True)
+    qt_bl         = fields.Float("Qt reçue"      , readonly=True)
+    nb_commandes  = fields.Integer("Nb commandes", readonly=True)
     imprimer      = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 

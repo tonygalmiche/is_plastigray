@@ -119,7 +119,7 @@ access_is_comparatif_livraison_facture,access_is_comparatif_livraison_facture,mo
 
 access_is_account_invoice_tax,access_is_account_invoice_tax,account.model_account_invoice_tax,base.group_user,1,0,0,0
 
-
+access_is_comparatif_cde_draft_done,access_is_comparatif_cde_draft_done,model_is_comparatif_cde_draft_done,base.group_user,1,0,0,0
 
 
 
