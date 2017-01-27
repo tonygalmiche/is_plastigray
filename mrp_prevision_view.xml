@@ -11,8 +11,13 @@
                     <field name="name"/>
                     <field name="parent_id" />
                     <field name="product_id" />
+                    <field name="is_category_id"/>
+                    <field name="is_gestionnaire_id"/>
                     <field name="partner_id" />
-                    <field name="quantity" sum="Total" />
+                    <field name="quantity"    sum="Total" />
+                    <field name="uom_id"/>
+                    <field name="quantity_ha" sum="Total" />
+                    <field name="uom_po_id"/>
                     <field name="start_date" />
                     <field name="end_date" />
                     <field name="type" />
@@ -28,22 +33,25 @@
             <field name="model">mrp.prevision</field>
             <field name="arch" type="xml">
                 <form>
-
-
                     <sheet>
                         <group>
                             <group>
+                                <field name="type"/> 
                                 <field name="product_id"/>
                                 <field name="partner_id"       attrs="{'invisible': [('type','!=', 'sa')]}"/>
                                 <field name="end_date" />
                                 <field name="quantity" />
-                                <field name="type"/> 
+                                <field name="uom_id" />
+                                <field name="quantity_ha"      attrs="{'invisible': [('type','!=', 'sa')]}"/>
+                                <field name="uom_po_id"        attrs="{'invisible': [('type','!=', 'sa')]}" />
                                 <field name="parent_id"        attrs="{'invisible': [('type','!=', 'ft')]}" />
                             </group>
                             <group>
                                 <field name="name"             readonly="1"/>
                                 <field name="start_date"       readonly="1" />
                                 <field name="quantity_origine" readonly="1"/>
+                                <field name="is_category_id"/>
+                                <field name="is_gestionnaire_id"/>
                             </group>
                         </group>
                         <group string="Composants" attrs="{'invisible': [('type','!=', 'fs')]}" >

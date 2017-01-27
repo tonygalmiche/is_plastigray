@@ -15,25 +15,43 @@ class mrp_prevision(models.Model):
     _name = 'mrp.prevision'
     _description = 'Prevision des fabrication dans le secteur automobile'
 
-    num_od = fields.Integer("Numéro", readonly=True)
-    name=  fields.Char('OD', size=128, required=True)
-    parent_id = fields.Many2one('mrp.prevision', "FS d'origine", ondelete='cascade')
-    type = fields.Selection([('fs', u"FS"),
-                              ('ft', u"FT"),
-                              ('sa', "SA")], "Type", required=True)
-    product_id = fields.Many2one('product.product', 'Article', required=True)
-    partner_id = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
-    start_date = fields.Date('Date de début')
-    end_date   = fields.Date('Date de fin', required=True)
-    quantity   = fields.Float('Quantité')
-    quantity_origine = fields.Float("Quantité d'origine")
-    note = fields.Text('Information')
-    niveau = fields.Integer('Niveau', readonly=True, required=True)
-    stock_th = fields.Float('Stock Théorique', readonly=True)
-    company_id = fields.Many2one('res.company', 'Société', required=True, change_default=True, readonly=True)
-    active = fields.Boolean('Active')
-    ft_ids = fields.One2many('mrp.prevision', 'parent_id', u'Composants')
-    state = fields.Selection([('creation', u'Création'),('valide', u'Validé')], u"État", readonly=True, select=True)
+
+    @api.one
+    def _compute(self):
+        uom_obj = self.env["product.uom"]
+        quantity_ha = uom_obj._compute_qty(self.uom_id.id, self.quantity, self.uom_po_id.id)
+        self.quantity_ha = quantity_ha
+
+    num_od           = fields.Integer("Numéro", readonly=True)
+    name             =  fields.Char('OD', size=128, required=True)
+    parent_id        = fields.Many2one('mrp.prevision', "FS d'origine", ondelete='cascade')
+    type             = fields.Selection([
+        ('fs', u"FS"),
+        ('ft', u"FT"),
+        ('sa', "SA")
+    ], "Type", required=True)
+    product_id         = fields.Many2one('product.product', 'Article', required=True)
+    is_category_id     = fields.Many2one('is.category', 'Catégorie'       , related='product_id.is_category_id'    , readonly=True)
+    is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire', related='product_id.is_gestionnaire_id', readonly=True)
+    partner_id         = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
+    start_date         = fields.Date('Date de début')
+    end_date           = fields.Date('Date de fin', required=True)
+    quantity           = fields.Float('Quantité')
+    quantity_ha        = fields.Float("Quantité (UA)", compute="_compute", digits=(12, 4))
+    quantity_origine   = fields.Float("Quantité d'origine")
+    uom_id             = fields.Many2one('product.uom', 'Unité'        , related='product_id.uom_id'   , readonly=True)
+    uom_po_id          = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
+    note               = fields.Text('Information')
+    niveau             = fields.Integer('Niveau', readonly=True, required=True)
+    stock_th           = fields.Float('Stock Théorique', readonly=True)
+    company_id         = fields.Many2one('res.company', 'Société', required=True, change_default=True, readonly=True)
+    active             = fields.Boolean('Active')
+    ft_ids             = fields.One2many('mrp.prevision', 'parent_id', u'Composants')
+    state              = fields.Selection([('creation', u'Création'),('valide', u'Validé')], u"État", readonly=True, select=True)
+
+
+
+
 
 
     _defaults = {
@@ -70,7 +88,7 @@ class mrp_prevision(models.Model):
                     unlink=True
                     try:
                         res=order_line_obj.onchange_product_id(order.pricelist_id.id, \
-                            obj.product_id.id, obj.quantity, obj.product_id.uom_id.id, \
+                            obj.product_id.id, obj.quantity_ha, obj.uom_po_id.id, \
                             partner.id, False, False, obj.end_date, False, False, 'draft')
                         vals=res['value']
                         vals['order_id']=order.id
@@ -207,24 +225,43 @@ class mrp_prevision(models.Model):
             id=obj.id
             for row in self.browse([id]):
                 if row.type=='fs':
+                    #** Recherche en tenant compte des articles fantomes *******
                     bom_obj = self.env['mrp.bom']
-                    template_id = row.product_id.product_tmpl_id.id
-                    if template_id:
-                        bom_ids = bom_obj.search([('product_tmpl_id','=',template_id),])
-                        if len(bom_ids)>0:
-                            bom=bom_ids[0]
-                            for line in bom.bom_line_ids:
-                                vals={
-                                    'parent_id': row.id,
-                                    'type': 'ft',
-                                    'product_id': line.product_id.id,
-                                    'start_date': row.start_date,
-                                    'end_date': row.start_date,
-                                    'quantity': row.quantity*line.product_qty,
-                                    'quantity_origine': row.quantity*line.product_qty,
-                                    'state': 'valide',
-                                }
-                                self.create(vals)
+                    bom_id = bom_obj._bom_find(row.product_id.product_tmpl_id.id, properties=None)
+                    bom = bom_obj.browse(bom_id)
+                    res= bom_obj._bom_explode(bom, row.product_id, row.quantity)
+                    for line in res[0]:
+                        vals={
+                            'parent_id'       : row.id,
+                            'type'            : 'ft',
+                            'product_id'      : line['product_id'],
+                            'start_date'      : row.start_date,
+                            'end_date'        : row.start_date,
+                            'quantity'        : line['product_qty'],
+                            'quantity_origine': line['product_qty'],
+                            'state'           : 'valide',
+                        }
+                        self.create(vals)
+                    #***********************************************************
+
+#                    bom_obj = self.env['mrp.bom']
+#                    template_id = row.product_id.product_tmpl_id.id
+#                    if template_id:
+#                        bom_ids = bom_obj.search([('product_tmpl_id','=',template_id),])
+#                        if len(bom_ids)>0:
+#                            bom=bom_ids[0]
+#                            for line in bom.bom_line_ids:
+#                                vals={
+#                                    'parent_id': row.id,
+#                                    'type': 'ft',
+#                                    'product_id': line.product_id.id,
+#                                    'start_date': row.start_date,
+#                                    'end_date': row.start_date,
+#                                    'quantity': row.quantity*line.product_qty,
+#                                    'quantity_origine': row.quantity*line.product_qty,
+#                                    'state': 'valide',
+#                                }
+#                                self.create(vals)
         #***********************************************************************
         return obj
 
