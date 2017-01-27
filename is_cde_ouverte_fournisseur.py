@@ -567,8 +567,8 @@ class is_cde_ouverte_fournisseur(models.Model):
                             'product_id'       : product.id,
                             'date'             : row.end_date,
                             'type_cde'         : 'prev',
-                            'quantite'         : row.quantity,
-                            'uom_id'           : product.product_id.uom_id.id,
+                            'quantite'         : row.quantity_ha,
+                            'uom_id'           : row.uom_po_id.id,
                             'mrp_prevision_id' : row.id,
                         }
                         line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
