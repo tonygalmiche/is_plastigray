@@ -250,15 +250,15 @@ class is_cout_calcul(models.Model):
             products=self.env['product.product'].search([('id', '=', obj.product_id.id), ('is_category_id', 'in', cats)])
         else:
             if obj.segment_id:
-                products=self.env['product.product'].search([('segment_id', '=', obj.segment_id.id)], limit=10000)
+                products=self.env['product.product'].search([('segment_id', '=', obj.segment_id.id), ('is_category_id', 'in', cats)], limit=10000)
             else:
                 if obj.is_category_id:
                     products=self.env['product.product'].search([('is_category_id', '=', obj.is_category_id.id)], limit=10000)
                 else:
                     if obj.is_gestionnaire_id:
-                        products=self.env['product.product'].search([('is_gestionnaire_id', '=', obj.is_gestionnaire_id.id)], limit=10000)
+                        products=self.env['product.product'].search([('is_gestionnaire_id', '=', obj.is_gestionnaire_id.id), ('is_category_id', 'in', cats)], limit=10000)
                     else:
-                        products=self.env['product.product'].search([])
+                        products=self.env['product.product'].search([('is_category_id', 'in', cats)])
         return products
 
 

@@ -233,6 +233,7 @@
                     <field name="prix_commande"/> 
                     <field name="prix_facture"/> 
                     <field name="prix_force"/> 
+                    <field name="prix_force_commentaire"/> 
                     <field name="prix_calcule"/> 
                     <field name="ecart_calcule_matiere"/> 
                 </tree>
