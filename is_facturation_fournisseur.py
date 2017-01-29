@@ -54,11 +54,9 @@ class is_facturation_fournisseur(models.Model):
                     ht=ht+total
                     tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
-
             ht  = round(ht,2)
             tva = round(tva,2)
             ttc = round(ttc,2)
-
             ecart_ht  = obj.total_ht-ht
             ecart_tva = obj.total_tva-tva
             bon_a_payer=True
@@ -238,13 +236,14 @@ class is_facturation_fournisseur(models.Model):
             #** Changement d'état des réceptions et des lignes *****************
             for line in obj.line_ids:
                 if line.selection:
-                    line.move_id.invoice_state='invoiced'
-                    test=True
-                    for l in line.move_id.picking_id.move_lines:
-                        if l.invoice_state=='2binvoiced':
-                            test=False
-                    if test:
-                        line.move_id.picking_id.invoice_state='invoiced'
+                    if line.move_id:
+                        line.move_id.invoice_state='invoiced'
+                        test=True
+                        for l in line.move_id.picking_id.move_lines:
+                            if l.invoice_state=='2binvoiced':
+                                test=False
+                        if test:
+                            line.move_id.picking_id.invoice_state='invoiced'
             #*******************************************************************
 
             return {
@@ -269,6 +268,17 @@ class is_facturation_fournisseur_line(models.Model):
     _name='is.facturation.fournisseur.line'
     _order='id'
 
+
+    @api.depends('quantite','prix','taxe_ids')
+    def _compute(self):
+        for obj in self:
+            obj.total=obj.quantite*obj.prix
+            taxe_taux=0
+            for taxe in obj.taxe_ids:
+                taxe_taux=taxe_taux+taxe.amount
+            obj.taxe_taux=taxe_taux
+
+
     facturation_id     = fields.Many2one('is.facturation.fournisseur', 'Facturation fournisseur', required=True, ondelete='cascade')
     num_reception      = fields.Char('N° de réception')
     num_bl_fournisseur = fields.Char('N° BL fournisseur')
@@ -280,9 +290,9 @@ class is_facturation_fournisseur_line(models.Model):
     quantite           = fields.Float('Quantité', digits=(14,4))
     uom_id             = fields.Many2one('product.uom', 'Unité')
     prix               = fields.Float('Prix'    , digits=(14,4))
-    total              = fields.Float('Total'   , digits=(14,4))
+    total              = fields.Float("Total" , digits=(14,4), compute='_compute', readonly=True, store=False)
     taxe_ids           = fields.Many2many('account.tax', 'is_facturation_fournisseur_line_taxe_ids', 'facturation_id', 'taxe_id', 'Taxes')
-    taxe_taux          = fields.Float('Taux')
+    taxe_taux          = fields.Float('Taux', compute='_compute', readonly=True, store=False)
     selection          = fields.Boolean('Sélection', default=True)
     move_id            = fields.Many2one('stock.move', 'Mouvement de stock')
 
