@@ -14,6 +14,8 @@
                     <header>
                         <button name="action_calcul_prix_achat"    type="object" string="Calcul des prix d'achat"    class="oe_highlight" states="creation"   confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
                         <button name="action_calcul_prix_revient"  type="object" string="Calcul des prix de revient" class="oe_highlight" states="prix_achat" confirm2="Voulez-vous vraiment lancer le calcul des prix de revient ?"/>
+                        <!-- TODO : Je désactive ce bouton, car plantage si plus de 1000 couts => A revoir plus tard autrement
+                        <button name="action_imprimer_couts"       type="object" string="Imprimer les coûts"   /> -->
                         <field name="state" widget="statusbar"  clickable="True" />
                     </header>
 
@@ -262,6 +264,21 @@
             <field name="view_type">form</field>
             <field name="domain">[('prix_force','>',0)]</field>
             <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+        <!-- Copier coût actualisé dans coût standard -->
+        <record id="copie_cout_actualise_dans_cout_standard_action_server" model="ir.actions.server">
+             <field name="name">Copier coût actualisé dans coût standard</field>
+            <field name="model_id" ref="model_is_cout"/>
+            <field name="code">action = self.copie_cout_actualise_dans_cout_standard(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="copie_cout_actualise_dans_cout_standard_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.cout'" name="model"/>
+            <field name="name">Copier coût actualisé dans coût standard</field>
+            <field eval="'ir.actions.server,%d'%copie_cout_actualise_dans_cout_standard_action_server" name="value"/>
         </record>
 
 

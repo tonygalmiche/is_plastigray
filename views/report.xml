@@ -161,6 +161,20 @@
         </record>
 
 
+        <report 
+            id="report_is_couts" 
+            string="Coût article" 
+            model="is.cout" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_is_cout" 
+            file="is_plastigray.report_is_cout" 
+        />
+        <record id="report_is_couts" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.is_cout_paperformat"/>
+        </record>
+
+
+
 
     </data>
 </openerp>

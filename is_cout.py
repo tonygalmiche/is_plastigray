@@ -6,6 +6,14 @@ from openerp.exceptions import Warning
 import datetime
 import time
 
+import base64
+import tempfile
+import os
+from pyPdf import PdfFileWriter, PdfFileReader
+from contextlib import closing
+
+
+
 # TODO
 # Ajouter la catégorie, le gestionnaire, le moule, l'unité et le lot d'appro
 # Calculer les gammes MO et Mach en même temps que les nomenclatures
@@ -95,6 +103,89 @@ class is_cout_calcul(models.Model):
         cout.cout_calcul_id=cout_calcul_obj.id
         cout.type_article=type_article
         return cout
+
+
+
+#    @api.multi
+#    def _merge_pdf(self, documents):
+#        """Merge PDF files into one.
+#        :param documents: list of path of pdf files
+#        :returns: path of the merged pdf
+#        """
+#        writer = PdfFileWriter()
+#        streams = []  # We have to close the streams *after* PdfFilWriter's call to write()
+#        ct=1
+#        nb=len(documents)
+#        for document in documents:
+#            print ct, nb, document
+#            ct=ct+1
+#            pdfreport = file(document, 'rb')
+#            streams.append(pdfreport)
+#            reader = PdfFileReader(pdfreport)
+#            for page in range(0, reader.getNumPages()):
+#                writer.addPage(reader.getPage(page))
+#        merged_file_fd, merged_file_path = tempfile.mkstemp(suffix='.pdf', prefix='report.merged.tmp.')
+#        with closing(os.fdopen(merged_file_fd, 'w')) as merged_file:
+#            writer.write(merged_file)
+
+#        for stream in streams:
+#            stream.close()
+#        return merged_file_path
+
+
+    @api.multi
+    def action_imprimer_couts(self):
+        for obj in self:
+            tmp=tempfile.mkdtemp()
+            os.system('mkdir '+tmp)
+            ct=1
+            nb=len(obj.cout_actualise_ids)
+            for line in obj.cout_actualise_ids:
+                couts=self.env['is.cout'].search([('name', '=', line.product_id.id)])
+                for cout in couts:
+                    print ct, nb, line.product_id
+                    path=tmp+"/"+str(ct)+".pdf"
+                    ct=ct+1
+                    pdf = self.env['report'].get_pdf(cout, 'is_plastigray.report_is_cout')
+                    f = open(path,'wb')
+                    f.write(pdf)
+                    f.close()
+
+            os.system('pdfjoin -o '+tmp+'/merged.pdf '+tmp+'/*.pdf')
+            pdf = open(tmp+'/merged.pdf','rb').read()
+            os.system('rm '+tmp+'/*.pdf')
+            os.system('rmdir '+tmp)
+
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            model=self._name
+            name='Couts.pdf'
+            attachment_obj = self.env['ir.attachment']
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdf.encode('base64'),
+            }
+            attachment_id=False
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+            return {
+                'type' : 'ir.actions.act_url',
+                'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
+                'target': 'self',
+            }
+            #*******************************************************************
 
 
 
@@ -557,6 +648,15 @@ class is_cout(models.Model):
             }
 
 
+    @api.multi
+    def copie_cout_actualise_dans_cout_standard(self):
+        for obj in self:
+            obj.cout_std_matiere   = obj.cout_act_matiere
+            obj.cout_std_condition = obj.cout_act_condition
+            obj.cout_std_machine   = obj.cout_act_machine
+            obj.cout_std_mo        = obj.cout_act_mo
+            obj.cout_std_st        = obj.cout_act_st
+            obj.cout_std_total     = obj.cout_act_total
 
 
 class is_cout_nomenclature(models.Model):
