@@ -232,14 +232,11 @@ class is_cout_calcul(models.Model):
 
                     date=time.strftime('%Y-%m-%d') # Date du jour
 
-
                     if pricelist:
                         #Convertion du lot_mini de US vers UA
                         min_quantity = product_uom_obj._compute_qty(cout.name.uom_id.id, cout.name.lot_mini, cout.name.uom_po_id.id)
-
-                        
-
-
+                        #TODO : Pour contourner un bug d'arrondi (le 31/01/2017)
+                        min_quantity=min_quantity+0.00000000001
                         SQL="""
                             select ppi.price_surcharge
                             from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
