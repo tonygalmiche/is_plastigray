@@ -82,7 +82,9 @@ class is_stock_quant(models.Model):
                                         left outer join stock_production_lot spl on sq.lot_id=spl.id
                                         left outer join is_mold               im on pt.is_mold_id=im.id
                                         left outer join is_dossierf           id on pt.is_dossierf_id=id.id
+                    where sl.usage='internal'
                 ) isq
+
 
                 group by
                     isq.product_id, 
