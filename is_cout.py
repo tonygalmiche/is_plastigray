@@ -651,13 +651,13 @@ class is_cout(models.Model):
     @api.multi
     def copie_cout_actualise_dans_cout_standard(self):
         for obj in self:
-            obj.cout_std_matiere   = obj.cout_act_matiere
-            obj.cout_std_condition = obj.cout_act_condition
-            obj.cout_std_machine   = obj.cout_act_machine
-            obj.cout_std_mo        = obj.cout_act_mo
-            obj.cout_std_st        = obj.cout_act_st
-            obj.cout_std_total     = obj.cout_act_total
-
+            obj.cout_std_matiere    = obj.cout_act_matiere
+            obj.cout_std_condition  = obj.cout_act_condition
+            obj.cout_std_machine    = obj.cout_act_machine
+            obj.cout_std_mo         = obj.cout_act_mo
+            obj.cout_std_st         = obj.cout_act_st
+            obj.cout_std_total      = obj.cout_act_total
+            obj.cout_std_prix_vente = obj.prix_vente
 
 class is_cout_nomenclature(models.Model):
     _name='is.cout.nomenclature'
