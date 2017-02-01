@@ -665,7 +665,7 @@ class is_cout(models.Model):
             obj.cout_std_mo         = obj.cout_act_mo
             obj.cout_std_st         = obj.cout_act_st
             obj.cout_std_total      = obj.cout_act_total
-            obj.cout_std_prix_vente = obj.prix_vente
+            obj.cout_std_prix_vente = obj.cout_act_prix_vente
 
 
     @api.multi
