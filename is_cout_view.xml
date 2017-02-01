@@ -125,9 +125,9 @@
                                 <field name="cout_std_st"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_total"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_prix_vente"    attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <field name="cout_std_preserie"      attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <!--<field name="cout_std_preserie"      attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_amtmoule"      attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <field name="cout_prix_vente"        attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_prix_vente"        attrs="{'invisible': [('type_article', '=', 'A')] }"/>-->
                             </group>
 
                             <group string="Coût actualisé">
@@ -137,6 +137,7 @@
                                 <field name="cout_act_mo"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_act_st"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_act_total"      attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_act_prix_vente" attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                             </group>
                         </group>
 
@@ -238,6 +239,8 @@
                     <field name="prix_force_commentaire"/> 
                     <field name="prix_calcule"/> 
                     <field name="ecart_calcule_matiere"/> 
+                    <field name="cout_act_prix_vente" /> 
+                    <field name="cout_std_prix_vente" /> 
                 </tree>
             </field>
         </record>
@@ -280,6 +283,23 @@
             <field name="name">Copier coût actualisé dans coût standard</field>
             <field eval="'ir.actions.server,%d'%copie_cout_actualise_dans_cout_standard_action_server" name="value"/>
         </record>
+
+
+
+        <!-- Initialisation du prix de vente standard -->
+        <record id="initialisation_prix_vente_standard_action_server" model="ir.actions.server">
+             <field name="name">Initialisation du prix de vente standard</field>
+            <field name="model_id" ref="model_is_cout"/>
+            <field name="code">action = self.initialisation_prix_vente_standard(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="initialisation_prix_vente_standard_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.cout'" name="model"/>
+            <field name="name">Initialisation du prix de vente standard</field>
+            <field eval="'ir.actions.server,%d'%initialisation_prix_vente_standard_action_server" name="value"/>
+        </record>
+
+
 
 
 

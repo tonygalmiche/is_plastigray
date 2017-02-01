@@ -506,9 +506,6 @@ class is_cout_calcul(models.Model):
 
                         cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
 
-
-
-
                         cout.cout_act_matiere   = cout_act_matiere
                         cout.cout_act_condition = cout_act_condition
                         cout.cout_act_machine   = cout_act_machine
@@ -520,6 +517,8 @@ class is_cout_calcul(models.Model):
                         cout.is_mold_id         = row.product_id.is_mold_id
                         cout.uom_id             = row.product_id.uom_id
                         cout.lot_mini           = row.product_id.lot_mini
+
+                        cout.cout_act_prix_vente = cout.prix_vente-cout.amortissement_moule-cout.surcout_pre_serie
 
                         row.cout_act_matiere    = cout_act_matiere
                         row.cout_act_machine    = cout_act_machine
@@ -593,9 +592,9 @@ class is_cout(models.Model):
     cout_std_st            = fields.Float("Coût std sous-traitance"  , digits=(12, 4))
     cout_std_total         = fields.Float("Coût std Total"           , digits=(12, 4))
     cout_std_prix_vente    = fields.Float("Prix de vente standard"   , digits=(12, 4))
-    cout_std_preserie      = fields.Float("Surcout Présérie"         , digits=(12, 4))
-    cout_std_amtmoule      = fields.Float("Amortissement moule"      , digits=(12, 4))
-    cout_prix_vente        = fields.Float("Prix de vente tarif commercial", digits=(12, 4))
+    #cout_std_preserie      = fields.Float("Surcout Présérie"         , digits=(12, 4))
+    #cout_std_amtmoule      = fields.Float("Amortissement moule"      , digits=(12, 4))
+    #cout_prix_vente        = fields.Float("Prix de vente tarif commercial", digits=(12, 4))
 
     cout_act_matiere       = fields.Float("Coût act matière"        , digits=(12, 4))
     cout_act_condition     = fields.Float("Coût act conditionnement", digits=(12, 4))
@@ -603,6 +602,7 @@ class is_cout(models.Model):
     cout_act_mo            = fields.Float("Coût act main d'oeuvre"  , digits=(12, 4))
     cout_act_st            = fields.Float("Coût act sous-traitance" , digits=(12, 4))
     cout_act_total         = fields.Float("Coût act Total"          , digits=(12, 4))
+    cout_act_prix_vente    = fields.Float("Prix de vente actualisé" , digits=(12, 4))
 
     amortissement_moule    = fields.Float("Amortissement Moule"     , digits=(12, 4), compute='_compute')
     surcout_pre_serie      = fields.Float("Surcôut pré-série"       , digits=(12, 4), compute='_compute')
@@ -616,7 +616,19 @@ class is_cout(models.Model):
     @api.depends('name')
     def _compute(self):
         for obj in self:
-            tarifs=self.env['is.tarif.cial'].search([('product_id', '=', obj.name.product_tmpl_id.id),('indice_prix', '=', 999)])
+            #** Recherche du tarif commercial pour le client par défaut ********
+            code_client=mem_code_client=False
+            for client in obj.name.product_tmpl_id.is_client_ids:
+                mem_code_client=client.client_id.is_code
+                if client.client_defaut:
+                    code_client=mem_code_client
+            if code_client==False:
+                code_client=mem_code_client
+            tarifs=self.env['is.tarif.cial'].search([
+                ('product_id', '=', obj.name.product_tmpl_id.id),
+                ('indice_prix', '=', 999),
+                ('partner_id.is_code', '=', code_client)
+            ])
             for tarif in tarifs:
                 obj.amortissement_moule = tarif.amortissement_moule
                 obj.surcout_pre_serie   = tarif.surcout_pre_serie
@@ -626,7 +638,6 @@ class is_cout(models.Model):
     @api.multi
     def action_calcul_cout(self):
         for obj in self:
-
             vals={
                 'product_id'   : obj.name.id,
                 'multiniveaux' : False,
@@ -655,6 +666,13 @@ class is_cout(models.Model):
             obj.cout_std_st         = obj.cout_act_st
             obj.cout_std_total      = obj.cout_act_total
             obj.cout_std_prix_vente = obj.prix_vente
+
+
+    @api.multi
+    def initialisation_prix_vente_standard(self):
+        for obj in self:
+            obj.cout_std_prix_vente = obj.prix_vente-obj.amortissement_moule-obj.surcout_pre_serie
+
 
 class is_cout_nomenclature(models.Model):
     _name='is.cout.nomenclature'
