@@ -228,7 +228,15 @@ class is_cde_ouverte_fournisseur(models.Model):
     def create_ferme_uniquement(self,name):
         for obj in self:
             orders=[]
-            for product in self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id)]):
+            nb_imprimer=0
+            for line in obj.product_ids:
+                if line.imprimer:
+                    nb_imprimer=nb_imprimer+1
+            if nb_imprimer==0:
+                products=self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id)])
+            else:
+                products=self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id),('imprimer','=',True)])
+            for product in products:
                 now  = datetime.date.today()                     # Date du jour
                 date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
                 date_approve = date_approve.strftime('%Y-%m-%d') # Formatage
