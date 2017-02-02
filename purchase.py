@@ -20,6 +20,9 @@ class purchase_order_line(models.Model):
             partner_id, date_order=date_order, fiscal_position_id=fiscal_position_id, date_planned=date_planned,
             name=name, price_unit=price_unit, state=state)
 
+
+        print pricelist_id, product_id, qty, uom_id, res
+
         if product_id:
             product = self.env['product.product'].browse(product_id)
             product_uom_obj = self.env['product.uom']

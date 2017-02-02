@@ -31,4 +31,5 @@ import is_stock_quant
 import is_comparatif_tarif_reception
 import is_comparatif_livraison_facture
 import is_comparatif_cde_draft_done
+import is_account_invoice_line
 

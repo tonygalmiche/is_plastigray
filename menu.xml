@@ -306,6 +306,18 @@
             ref('is_rsp_achats_group'),
         ])]"/>
     </record>
+    <record id="is_ligne_facture_fournisseur_menu" model="ir.ui.menu" >
+        <field name="name">Lignes de factures</field>
+        <field name="sequence">35</field>
+        <field name="parent_id" eval="ref('menu_is_achats_fac')"/>
+        <field name="action"    ref="is_ligne_facture_fournisseur_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+            ref('is_qualite_group'),
+            ref('is_rsp_production_group'),
+            ref('is_rsp_achats_group'),
+        ])]"/>
+    </record>
     <record id="menu_is_avoir_fournisseur" model="ir.ui.menu" >
         <field name="name">Avoirs fournisseur</field>
         <field name="sequence">40</field>
@@ -583,6 +595,17 @@
     <menuitem id="menu_is_ventes_fac_25"   sequence="25" name="Factures diverses"     parent="menu_is_ventes_fac" action="is_factures_diverses_action" />
     <menuitem id="menu_is_ventes_fac_30"   sequence="30" name="Toutes les factures"   parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
     <menuitem id="menu_is_ventes_fac_40"   sequence="40" name="Tous les avoirs"       parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
+
+    <record id="is_ligne_facture_client_menu" model="ir.ui.menu" >
+        <field name="name">Lignes de factures</field>
+        <field name="sequence">45</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_ligne_facture_client_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+            ref('is_commerciaux_group'),
+        ])]"/>
+    </record>
 
 
 
