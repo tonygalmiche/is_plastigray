@@ -70,7 +70,7 @@
             <field name="inherit_id" ref="account.invoice_tree" />
             <field name="arch" type="xml">
 
-                <xpath expr="//field[@name='number']" position="after" >
+                <xpath expr="//field[@name='number']" position="replace" >
                     <field name="internal_number"/> 
                 </xpath>
 
