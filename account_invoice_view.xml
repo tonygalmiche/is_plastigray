@@ -256,6 +256,7 @@
 
 
         <!-- Rapprochement ligne facture fournisseur et mouvement de stock -->
+        <!--
         <record id="initialisation_mouvement_stock_action_server" model="ir.actions.server">
              <field name="name">Initialisation mouvements de stocks</field>
             <field name="model_id" ref="model_account_invoice"/>
@@ -267,7 +268,7 @@
             <field name="name">Initialisation mouvements de stocks</field>
             <field eval="'ir.actions.server,%d'%initialisation_mouvement_stock_action_server" name="value"/>
         </record>
-
+        -->
 
 
 

@@ -151,173 +151,24 @@ class account_invoice(models.Model):
         return res
 
 
-
-    @api.multi
-    def initialisation_mouvement_stock(self):
-        for obj in self:
-            factures = self.env['is.facturation.fournisseur'].search([
-                ('name'        , '=', obj.partner_id.id),
-                ('date_facture', '=', obj.date_invoice),
-                ('num_facture' , '=', obj.supplier_invoice_number),
-            ])
-            for facture in factures:
-                for line in obj.invoice_line:
-                    lignes = self.env['is.facturation.fournisseur.line'].search([
-                        ('facturation_id', '=', facture.id),
-                        ('selection'     , '=', True),
-                        ('product_id'    , '=', line.product_id.id),
-                        ('quantite'      , '=', line.quantity),
-                    ])
-                    for ligne in lignes:
-                        line.is_move_id=ligne.move_id
-
-
-#--        where ai.partner_id=iff.name and ai.date_invoice=iff.date_facture and ai.supplier_invoice_number=iff.num_facture
-
-#    #TODO : Finaliser ce module un mardi pour pouvoir tester
 #    @api.multi
-#    def export_ventes_seriem(self):
-#        '''
-#        Exportation des ventes dans Série-M
-#        '''
+#    def initialisation_mouvement_stock(self):
 #        for obj in self:
-#            cr=self._cr
-#            sql="""
-#                SELECT  ai.number, 
-#                        ai.date_invoice, 
-#                        rp.is_code, 
-#                        rp.name, 
-#                        aa.code, 
-#                        isa.name, 
-#                        aa.type, 
-#                        ai.date_due,
-#                        aj.code,
-#                        sum(aml.debit), 
-#                        sum(aml.credit)
-#                FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
-#                                           inner join account_account aa             on aml.account_id=aa.id
-#                                           inner join res_partner rp                 on ai.partner_id=rp.id
-#                                           left outer join account_invoice_line ail  on aml.is_account_invoice_line_id=ail.id
-#                                           left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
-#                                           left outer join account_journal aj        on rp.is_type_reglement=aj.id
-#                WHERE ai.id="""+str(obj.id)+"""
-#                GROUP BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code
-#                ORDER BY ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, aa.type, ai.date_due, aj.code
-#            """
-#            res={}
-#            cr.execute(sql)
-#            res=[]
-#            Soc             = u'PLI'
-#            Folio           = u'12'
-#            CodeDevice      = u''
-#            DateJour        = time.strftime('%y%m%d') 
-#            CompteCollectif = u'"411000"'
-#            res.append("FPGVMFCO")
-#            res.append(u"E"+Soc+u'VE'+CodeDevice+(u"0000"+Folio)[-4:]+DateJour+u" 211")
-#            TotalTTC  = 0  # Total TTC du compte 411000
-#            TotalTTC2 = 0  # Montant de la somme des autres lignes (l'écart sera ajouté sur la dernière ligne)
-#            for row in cr.fetchall():
-#                NumCompte       = row[4]
-
-
-#                Debit   = row[9]
-#                Credit  = row[10]
-#                Montant = Credit - Debit
-
-#                Sens=u"D"
-#                if Montant>0:
-#                    Sens    = u"C"
-#                else:
-#                    Sens    = u"D"
-
-
-#                CodeAuxiliaire=row[2]
-#                if NumCompte=="411000" or NumCompte=="401000":
-#                    CompteCollectif = NumCompte
-#                    CodeFournisseur = CodeAuxiliaire
-#                    TotalTTC=Montant
-#                else:
-#                    CodeFournisseur = "      "
-#                    TotalTTC2 = TotalTTC2 + Montant
-
-#                Montant=abs(int(round(100*Montant)))
-#                Montant=(u"00000000000"+str(Montant))[-11:]
-
-#                TypeFacture=row[6]
-#                if TypeFacture=='out_refund':
-#                    TypeFacture=u'A'  # Avoir
-#                else:
-#                    TypeFacture=u'F'  # Facture
-
-#                Client=(row[3]+u"                                ")[:26]
-
-#                NumFacture=(u"000000"+str(row[0]))[-6:]
-
-#                DateEcheance=row[7]
-#                DateEcheance=datetime.strptime(DateEcheance, '%Y-%m-%d')
-#                DateEcheance=DateEcheance.strftime('%y%m%d')
-
-#                TypeReglement=(row[8]+"  ")[:2]
-
-
-#                #TODO : La section analytique ne passe pas de la fiche article à la facture automatiquement
-#                SectionAnalytique=str(row[5] or u'    ')
-
-#                DateFacture=str(row[1])
-#                JourFacture=(u"00"+DateFacture)[-2:]
-#                Ligne=u"L"+NumCompte+CodeFournisseur+Montant+Sens+TypeFacture+Client+NumFacture+SectionAnalytique+JourFacture+u"   00000000000   00000000000"
-#                res.append(Ligne)
-
-
-#            # ** Ligne de fin type H *******************************************
-
-#            TotalTTC=int(round(100*TotalTTC))
-#            TotalTTC=(u"000000000"+str(TotalTTC))[-9:]
-
-#            Ligne=u'H'+Soc+CompteCollectif+CodeAuxiliaire+NumFacture+u'01'+TotalTTC+u' '+DateEcheance+TypeReglement+'  0000000 1'
-#            res.append(Ligne)
-#            #*******************************************************************
-
-#            # Enregistrement du fichier ****************************************
-#            os.chdir('/tmp')
-#            name = 'PGVMFCO'
-#            #path    = '/tmp/'+fichier
-#            err=""
-#            try:
-#                fichier = open(name, "w")
-#            except IOError, e:
-#                err="Problème d'accès au fichier '"+name+"' => "+ str(e)
-#            if err=="":
-#                for row in res:
-#                    fichier.write(row+u'\n')
-#                fichier.close()
-#            else:
-#                raise Warning(err)
-
-#            # ******************************************************************
-
-#            # Envoi du fichier dans l'AS400 ************************************
-#            if err=="":
-#                uid=self._uid
-#                user=self.env['res.users'].browse(uid)
-#                pwd=user.company_id.is_cpta_pwd
-#                try:
-#                    ftp = FTP('192.0.0.99', 'qsecofr', pwd)  
-#                except Exception, e:
-#                    err=u"Problème d'accès à l'AS400 CPTA => "+ str(e)
-#                if err=="":
-#                    f = open(name, 'rb')
-#                    ftp.sendcmd('CWD FMPRO')
-#                    ftp.storlines('STOR ' + name, f)
-#                    f.close() 
-#                    ftp.quit() 
-#                else:
-#                    raise Warning(err)
-#            # ******************************************************************
-
-
-
-
+#            factures = self.env['is.facturation.fournisseur'].search([
+#                ('name'        , '=', obj.partner_id.id),
+#                ('date_facture', '=', obj.date_invoice),
+#                ('num_facture' , '=', obj.supplier_invoice_number),
+#            ])
+#            for facture in factures:
+#                for line in obj.invoice_line:
+#                    lignes = self.env['is.facturation.fournisseur.line'].search([
+#                        ('facturation_id', '=', facture.id),
+#                        ('selection'     , '=', True),
+#                        ('product_id'    , '=', line.product_id.id),
+#                        ('quantite'      , '=', line.quantity),
+#                    ])
+#                    for ligne in lignes:
+#                        line.is_move_id=ligne.move_id
 
 
 class account_invoice_line(models.Model):
@@ -359,11 +210,5 @@ class account_invoice_line(models.Model):
         #***********************************************************************
 
         return res
-
-
-
-
-
-
 
 
