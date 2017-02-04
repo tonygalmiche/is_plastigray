@@ -1095,10 +1095,24 @@
         <field name="perm_create" eval="True"/>
     </record>
 
-
-
-
-
+    <record id="is_cde_ferme_cadencee_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cde_ferme_cadencee_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cde_ferme_cadencee')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cde_ferme_cadencee_order_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cde_ferme_cadencee_order_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cde_ferme_cadencee_order')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
 
 
 
