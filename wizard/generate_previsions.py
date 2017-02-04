@@ -110,10 +110,10 @@ class mrp_generate_previsions(models.TransientModel):
         cr=self._cr
         res={}
         sql="""
-            select product_id, sum(qty) 
-            from stock_quant  
-            where location_id=12 
-            group by product_id"""
+            select sq.product_id, sum(sq.qty) 
+            from stock_quant sq inner join stock_location sl on sq.location_id=sl.id
+            where sl.name in ('01','05','MA') 
+            group by sq.product_id"""
         cr.execute(sql)
         for row in cr.fetchall():
             res[row[0]]=row[1]
@@ -171,7 +171,6 @@ class mrp_generate_previsions(models.TransientModel):
         now=datetime.datetime.now().strftime('%Y-%m-%d')
         if date_debut<=now:
             date_debut="2000-01-01"
-
         date_debut = date_debut + ' 23:59:59'
         date_fin   = date_fin   + ' 23:59:59'
         sql="""
@@ -186,10 +185,6 @@ class mrp_generate_previsions(models.TransientModel):
         cr.execute(sql)
         for row in cr.fetchall():
             res[row[0]]=row[1]
-
-            if row[0]==product_id_test:
-                print sql
-
         return res
 
 
@@ -260,6 +255,13 @@ class mrp_generate_previsions(models.TransientModel):
                 if product.id==product_id_test:
                     print "creer_mrp_prevision : write : ", row.quantity, row.start_date, row.end_date
                 return quantity
+
+        #** Tenir compte du délai CQ *******************************************
+        date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        date = date - datetime.timedelta(days=product.delai_cq)
+        date = date.strftime('%Y-%m-%d')
+        #***********************************************************************
+
         vals = {
             'type': type,
             'product_id': product.id,
