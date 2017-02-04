@@ -54,6 +54,19 @@
         </record>
 
         <report 
+            id="report_cde_ferme_cadencees"
+            model="is.cde.ferme.cadencee"
+            string="Commande ferme cadencée"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_cde_ferme_cadencee"
+            file="is_plastigray.report_cde_ferme_cadencee"
+            multi="False"
+        />
+        <record id="report_cde_ferme_cadencees" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.cde_ferme_cadencee_paperformat"/>
+        </record>
+
+        <report 
             id="report_appel_de_livraisons"
             model="is.cde.ouverte.fournisseur"
             string="Appel de livraison / Horizon des besoins"

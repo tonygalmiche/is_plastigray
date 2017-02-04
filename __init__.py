@@ -28,6 +28,7 @@ import is_bon_transfert
 import purchase
 import res_users
 import is_etuve
+import is_cde_ferme_cadencee
 
 import report
 import wizard
