@@ -28,7 +28,12 @@ class is_facturation_fournisseur(models.Model):
     justification_id    = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
 
     bon_a_payer         = fields.Boolean("Bon à payer", compute='_compute', readonly=True, store=False)
-    forcer_bon_a_payer  = fields.Boolean("Forcer bon à payer")
+
+
+    #forcer_bon_a_payer  = fields.Boolean("Forcer bon à payer")
+
+    forcer_bon_a_payer = fields.Selection([('oui', u'Bon à payer = Oui'),('non', u'Bon à payer = Non')], "Forcer bon à payer")
+
 
     line_ids            = fields.One2many('is.facturation.fournisseur.line', 'facturation_id', u"Lignes")
     state               = fields.Selection([('creation', u'Création'),('termine', u'Terminé')], u"État", readonly=True, select=True)
@@ -76,8 +81,6 @@ class is_facturation_fournisseur(models.Model):
         partners=[]
         for id in ids:
             partners.append(str(id))
-
-        print ids, ','.join(partners)
         cr=self._cr
         value = {}
         lines = []
@@ -158,8 +161,14 @@ class is_facturation_fournisseur(models.Model):
     def action_creer_facture(self):
         for obj in self:
             bon_a_payer=obj.bon_a_payer
-            if obj.forcer_bon_a_payer:
+
+            #if obj.forcer_bon_a_payer:
+            #    bon_a_payer=True
+
+            if obj.forcer_bon_a_payer=='oui':
                 bon_a_payer=True
+            if obj.forcer_bon_a_payer=='non':
+                bon_a_payer=False
 
             date_invoice=datetime.date.today().strftime('%Y-%m-%d')
             res=self.env['account.invoice'].onchange_partner_id('in_invoice', obj.name.id, date_invoice)
@@ -200,7 +209,8 @@ class is_facturation_fournisseur(models.Model):
                         'quantity'            : quantite,
                         'price_unit'          : line.prix,
                         'invoice_line_tax_id' : [(6,0,invoice_line_tax_id)],
-                        'is_document'         : line.move_id.purchase_line_id.order_id.is_document
+                        'is_document'         : line.move_id.purchase_line_id.order_id.is_document,
+                        'is_move_id'          : line.move_id.id,
                     })
                     lines.append([0,False,v]) 
 

@@ -25,6 +25,9 @@ class is_account_invoice_line(models.Model):
     uos_id                  = fields.Many2one('product.uom', 'Unité')
     price_unit              = fields.Float('Prix unitaire', digits=(14,4))
     total                   = fields.Float('Montant Total', digits=(14,2))
+    move_id                 = fields.Many2one('stock.move', 'Mouvement de stock')
+    picking_id              = fields.Many2one('stock.picking', 'Picking')
+    purchase_order_id       = fields.Many2one('purchase.order', 'Commande fournisseur')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_account_invoice_line')
@@ -42,12 +45,17 @@ class is_account_invoice_line(models.Model):
                     ai.state,
                     ai.type,
                     ail.product_id,
-                    ail.name description,
+                    ail.name                  description,
                     ail.quantity,
                     ail.uos_id,
-                    price_unit,
-                    (ail.quantity*price_unit) total
+                    ail.price_unit,
+                    (ail.quantity*ail.price_unit) total,
+                    ail.is_move_id            move_id,
+                    sm.picking_id             picking_id,
+                    sp.is_purchase_order_id   purchase_order_id
                 from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
+                                        left outer join stock_move       sm on ail.is_move_id=sm.id
+                                        left outer join stock_picking    sp on sm.picking_id=sp.id
                 where ai.id>0
                 order by ail.id desc
             )

@@ -255,6 +255,19 @@
 
 
 
+        <!-- Rapprochement ligne facture fournisseur et mouvement de stock -->
+        <record id="initialisation_mouvement_stock_action_server" model="ir.actions.server">
+             <field name="name">Initialisation mouvements de stocks</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="code">action = self.initialisation_mouvement_stock(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="initialisation_mouvement_stock_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'account.invoice'" name="model"/>
+            <field name="name">Initialisation mouvements de stocks</field>
+            <field eval="'ir.actions.server,%d'%initialisation_mouvement_stock_action_server" name="value"/>
+        </record>
+
 
 
 

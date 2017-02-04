@@ -151,6 +151,29 @@ class account_invoice(models.Model):
         return res
 
 
+
+    @api.multi
+    def initialisation_mouvement_stock(self):
+        for obj in self:
+            factures = self.env['is.facturation.fournisseur'].search([
+                ('name'        , '=', obj.partner_id.id),
+                ('date_facture', '=', obj.date_invoice),
+                ('num_facture' , '=', obj.supplier_invoice_number),
+            ])
+            for facture in factures:
+                for line in obj.invoice_line:
+                    lignes = self.env['is.facturation.fournisseur.line'].search([
+                        ('facturation_id', '=', facture.id),
+                        ('selection'     , '=', True),
+                        ('product_id'    , '=', line.product_id.id),
+                        ('quantite'      , '=', line.quantity),
+                    ])
+                    for ligne in lignes:
+                        line.is_move_id=ligne.move_id
+
+
+#--        where ai.partner_id=iff.name and ai.date_invoice=iff.date_facture and ai.supplier_invoice_number=iff.num_facture
+
 #    #TODO : Finaliser ce module un mardi pour pouvoir tester
 #    @api.multi
 #    def export_ventes_seriem(self):
