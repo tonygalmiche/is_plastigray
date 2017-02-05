@@ -55,14 +55,14 @@ CREATE OR REPLACE view is_comparatif_tarif_cial_vente AS (
         pt.is_category_id    as is_category_id,
         pt.name              as designation,
         itc.prix_vente       as tarif_cial,
-        is_prix_vente(pp.id) as tarif_vente,
-        round(cast(abs(is_prix_vente(pp.id)-itc.prix_vente) as numeric),4) as delta
-
-
-    FROM is_tarif_cial itc   inner join product_template pt on itc.product_id=pt.id
-                             inner join is_category ic      on pt.is_category_id=ic.id
-                             inner join product_product pp  on pp.product_tmpl_id=pt.id 
-    WHERE pt.active='t' and itc.indice_prix=999 and (is_prix_vente(pp.id)-itc.prix_vente)<>0 
+        coalesce(is_prix_vente(pp.id),0) as tarif_vente,
+        round(cast(abs(coalesce(is_prix_vente(pp.id),0)-itc.prix_vente) as numeric),4) as delta
+    FROM is_tarif_cial itc   inner join product_template   pt on itc.product_id=pt.id
+                             inner join is_category        ic on pt.is_category_id=ic.id
+                             inner join product_product    pp on pp.product_tmpl_id=pt.id 
+                             inner join is_product_client ipc on pt.id=ipc.product_id and itc.partner_id=ipc.client_id
+    WHERE pt.active='t' and itc.indice_prix=999 and
+          cast(abs(coalesce(is_prix_vente(pp.id),0)-itc.prix_vente) as numeric)>0
 )
 
         """)

@@ -11,6 +11,8 @@ class is_comparatif_tarif_reception(models.Model):
     _auto = False
 
     order_id         = fields.Many2one('purchase.order', 'Commande')
+    date_approve     = fields.Date("Date d'approbation")
+    partner_id       = fields.Many2one('res.partner', 'Fournisseur')
     pricelist_id     = fields.Many2one('product.pricelist', 'Liste de prix')
     product_id       = fields.Many2one('product.product', 'Article')
     qty              = fields.Float('Quantité')
@@ -75,6 +77,8 @@ CREATE OR REPLACE view is_comparatif_tarif_reception AS (
     select 
         id,
         order_id,
+        date_approve,
+        partner_id,
         pricelist_id,
         product_id,
         qty,
@@ -90,6 +94,8 @@ CREATE OR REPLACE view is_comparatif_tarif_reception AS (
         select 
             sm.id                 id, 
             po.id                 order_id,
+            po.date_approve       date_approve,
+            po.partner_id         partner_id,
             po.pricelist_id       pricelist_id,
             sm.product_id         product_id, 
             pol.product_qty       qty, 

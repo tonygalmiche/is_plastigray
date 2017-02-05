@@ -1116,6 +1116,123 @@
 
 
 
+    <record id="is_cout_calcul_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cout_calcul_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_calcul')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_calcul_actualise_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cout_calcul_actualise_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_calcul_actualise')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_access_rsp_achats"  model="ir.model.access" >
+        <field name="name">is_cout_access_rsp_achats</field>
+        <field name="model_id"    eval="ref('model_is_cout')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_nomenclature_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cout_nomenclature_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_nomenclature')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_gamme_ma_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cout_gamme_ma_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_gamme_ma')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cout_gamme_mo_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_cout_gamme_mo_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('model_is_cout_gamme_mo')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <record id="is_product_product_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_product_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('product.model_product_product')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_product_template_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_template_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('product.model_product_template')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_product_price_history_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_price_history_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('product.model_product_price_history')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_supplierinfo_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_supplierinfo_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('product.model_product_supplierinfo')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_client_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_client_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_product_client')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_packaging_rsp_achats_access"  model="ir.model.access" >
+        <field name="name">is_product_packaging_rsp_achats_access</field>
+        <field name="model_id"    eval="ref('product.model_product_packaging')"/>
+        <field name="group_id"    eval="ref('is_rsp_achats_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+
+
+
     <!-- Responsable des ventes -->
     <record id="is_sale_order_rsp_ventes_access"  model="ir.model.access" >
         <field name="name">is_sale_order_rsp_ventes_access</field>

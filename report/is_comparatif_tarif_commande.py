@@ -14,10 +14,10 @@ class is_comparatif_tarif_commande(models.Model):
     partner_id      = fields.Many2one('res.partner', 'Client')
     product_id      = fields.Many2one('product.template', 'Article')
     is_category_id  = fields.Many2one('is.category', 'Catégorie')
-    prix_commande   = fields.Float('Prix Commande')
+    prix_commande   = fields.Float('Prix Commande'             , digits=(12, 4))
     justification   = fields.Char('Justification')
-    prix_liste_prix = fields.Float('Prix Liste de prix')
-    delta           = fields.Float('Delta')
+    prix_liste_prix = fields.Float('Prix Liste de prix'        , digits=(12, 4))
+    delta           = fields.Float('Delta'                     , digits=(12, 4))
 
 
     def init(self, cr):
