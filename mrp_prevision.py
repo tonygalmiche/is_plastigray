@@ -162,8 +162,9 @@ class mrp_prevision(models.Model):
         product_obj = self.pool.get('product.product')
         for product in product_obj.browse(self._cr, self._uid, [product_id], context=self._context):
             end_date = datetime.strptime(end_date, '%Y-%m-%d')
-            days=int(quantity*product.temps_realisation/(3600*24))
+            #days=int(quantity*product.temps_realisation/(3600*24))
             #days=product.produce_delay+int(quantity*product.temps_realisation/(3600*24))
+            days=int(round(quantity*product.temps_realisation/(3600*24)))
             start_date= end_date - timedelta(days=days)
             start_date = start_date.strftime('%Y-%m-%d')
         return start_date

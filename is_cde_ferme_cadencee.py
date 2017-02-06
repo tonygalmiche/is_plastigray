@@ -59,7 +59,7 @@ class is_cde_ferme_cadencee(models.Model):
 
 class is_cde_ferme_cadencee_order(models.Model):
     _name='is.cde.ferme.cadencee.order'
-    _order='order_id'
+    _order='date_planned'
 
     @api.depends('order_id')
     def _compute(self):
@@ -72,9 +72,9 @@ class is_cde_ferme_cadencee_order(models.Model):
 
     cfc_id       = fields.Many2one('is.cde.ferme.cadencee', 'Commande ferme cadencée', required=True, ondelete='cascade', readonly=True)
     order_id     = fields.Many2one('purchase.order', 'Commande Fournisseur', required=True)
-    date_planned = fields.Date("Date prévue"              , compute='_compute', readonly=True, store=False)
-    product_qty  = fields.Float("Quantité"                , compute='_compute', readonly=True, store=False)
-    product_uom  = fields.Many2one('product.uom', 'Unité' , compute='_compute', readonly=True, store=False)
+    date_planned = fields.Date("Date prévue"              , compute='_compute', readonly=True, store=True)
+    product_qty  = fields.Float("Quantité"                , compute='_compute', readonly=True, store=True)
+    product_uom  = fields.Many2one('product.uom', 'Unité' , compute='_compute', readonly=True, store=True)
 
 
 
