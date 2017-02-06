@@ -307,6 +307,7 @@
 
 
         <!-- Réceptions à facturer -->
+        <!--
         <record id="is_reception_a_facturer_action" model="ir.actions.act_window">
             <field name="name">Réceptions à facturer</field>
             <field name="type">ir.actions.act_window</field>
@@ -316,6 +317,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+        -->
 
         <record id="is_view_production_lot_form" model="ir.ui.view">
             <field name="name">is_view_production_lot_form</field>

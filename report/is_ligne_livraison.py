@@ -18,6 +18,8 @@ class is_ligne_livraison(models.Model):
     ref_client         = fields.Char('Référence client')
     mold_id            = fields.Many2one('is.mold', 'Moule')
     product_uom_qty    = fields.Float('Quantité livrée', digits=(14,2))
+    qt_par_uc          = fields.Float('UC', digits=(14,0))
+    nb_uc              = fields.Float('Quantité livrée (UC)', digits=(14,1))
     product_uom        = fields.Many2one('product.uom', 'Unité')
     date_expedition    = fields.Date("Date d'expédition")
     date_livraison     = fields.Date("Date d'arrivée chez le client")
@@ -48,6 +50,8 @@ class is_ligne_livraison(models.Model):
                         pt.is_mold_id           as mold_id,
                         pt.is_ref_client        as ref_client,
                         sm.product_uom_qty,
+                        COALESCE(is_qt_par_uc(pt.id),1) as qt_par_uc,
+                        sm.product_uom_qty/COALESCE(is_qt_par_uc(pt.id),1) as nb_uc,
                         sm.product_uom,
                         sm.state,
                         sm.write_uid          as user_id,

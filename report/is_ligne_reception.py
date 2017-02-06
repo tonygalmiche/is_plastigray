@@ -43,6 +43,13 @@ class is_ligne_reception(models.Model):
         ('done'     , u'Terminé')
     ], u"État Mouvement", readonly=True, select=True)
 
+    invoice_state = fields.Selection([
+        ('2binvoiced', u'à Facturer'),
+        ('none'      , u'Annulé'),
+        ('invoiced'  , u'Facturé'),
+    ], u"État facturation", readonly=True, select=True)
+
+
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_ligne_reception')
         cr.execute("""
@@ -61,6 +68,7 @@ class is_ligne_reception(models.Model):
                         sm.product_uom        as product_uom,
                         sm.state              as state,
                         sp.state              as picking_state,
+                        sp.invoice_state      as invoice_state,
                         sm.write_uid          as user_id,
                         sm.id                 as move_id,
                         (select icof.name from is_cde_ouverte_fournisseur icof where sp.partner_id=icof.partner_id limit 1) as commande_ouverte,
@@ -73,4 +81,6 @@ class is_ligne_reception(models.Model):
                 where sp.picking_type_id=1
             )
         """)
+
+
 
