@@ -641,6 +641,15 @@
         ])]"/>
     </record>
 
+    <record id="is_marge_contributive_menu" model="ir.ui.menu" >
+        <field name="name">Marge contributive</field>
+        <field name="sequence">70</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_marge_contributive_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
 
 
 
