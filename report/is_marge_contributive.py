@@ -21,6 +21,7 @@ class is_marge_contributive(models.Model):
     moule                   = fields.Char('Moule')
     partner_id              = fields.Many2one('res.partner', 'Partenaire')
     client_fac              = fields.Char('Client facturé')
+    raison_sociale          = fields.Char('Raison sociale')
     designation             = fields.Char('Désignation')
     amortissement_moule     = fields.Float('Amt Moule', digits=(14,4))
     cout_std_matiere        = fields.Float('Coût Std Matière', digits=(14,4))
@@ -67,6 +68,7 @@ class is_marge_contributive(models.Model):
                     coalesce(im.name,id.name) moule,
                     ai.partner_id,
                     rp.is_code      client_fac,
+                    rp.name         raison_sociale,
                     pt.name         designation,
                     (   select amortissement_moule 
                         from is_tarif_cial itc 
