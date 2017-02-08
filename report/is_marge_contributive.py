@@ -39,6 +39,20 @@ class is_marge_contributive(models.Model):
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_marge_contributive')
         cr.execute("""
+
+            CREATE OR REPLACE FUNCTION fsens(t text) RETURNS integer AS $$
+            BEGIN
+                RETURN (
+                    SELECT
+                    CASE
+                    WHEN t::text = ANY (ARRAY['out_refund'::character varying::text, 'in_invoice'::character varying::text])
+                        THEN -1::int
+                        ELSE 1::int
+                    END
+                );
+            END;
+            $$ LANGUAGE plpgsql;
+
             CREATE OR REPLACE view is_marge_contributive AS (
                 select 
                     ail.id          id,
@@ -68,9 +82,9 @@ class is_marge_contributive(models.Model):
                     (select cout_act_mo      from is_cout cout where pp.id=cout.name limit 1) cout_act_mo,
                     (select cout_act_st      from is_cout cout where pp.id=cout.name limit 1) cout_act_st,
                     ail.product_id,
-                    ail.quantity,
+                    fsens(ai.type)*ail.quantity quantity,
                     ail.price_unit,
-                    (ail.quantity*ail.price_unit) montant
+                    fsens(ai.type)*(ail.quantity*ail.price_unit) montant
                 from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
                                         inner join res_partner              rp on ai.partner_id=rp.id
                                         inner join product_product          pp on ail.product_id=pp.id
@@ -81,7 +95,7 @@ class is_marge_contributive(models.Model):
                                         left outer join is_product_segment ips on pt.segment_id=ips.id
                                         left outer join is_mold             im on pt.is_mold_id=im.id
                                         left outer join is_dossierf         id on pt.is_dossierf_id=id.id
-                where ai.type='out_invoice'
+                where ai.type in ('out_invoice','out_refund')
             )
         """)
 
