@@ -122,6 +122,7 @@ access_is_account_invoice_line,access_is_account_invoice_line,model_is_account_i
 access_is_cde_ferme_cadencee,access_is_cde_ferme_cadencee,model_is_cde_ferme_cadencee,base.group_user,1,0,0,0
 access_is_cde_ferme_cadencee_order,access_is_cde_ferme_cadencee_order,model_is_cde_ferme_cadencee_order,base.group_user,1,0,0,0
 access_is_marge_contributive,access_is_marge_contributive,model_is_marge_contributive,base.group_user,1,0,0,0
+access_is_suivi_budget_analytique,access_is_suivi_budget_analytique,model_is_suivi_budget_analytique,base.group_user,1,0,0,0
 
 
 

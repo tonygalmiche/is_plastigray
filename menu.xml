@@ -349,6 +349,16 @@
             ref('is_comptable_group'),
         ])]"/>
     </record>
+    <record id="is_suivi_budget_analytique_menu" model="ir.ui.menu" >
+        <field name="name">Suivi budget analytique</field>
+        <field name="sequence">60</field>
+        <field name="parent_id" eval="ref('menu_is_achats_fac')"/>
+        <field name="action"    ref="is_suivi_budget_analytique_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+        ])]"/>
+    </record>
+
 
 
     <!-- Achats / Tables -->

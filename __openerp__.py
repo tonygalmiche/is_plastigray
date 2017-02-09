@@ -123,6 +123,7 @@ Module principal du projet Plastigray
         "report/is_comparatif_cde_draft_done.xml",
         "report/is_account_invoice_line.xml",
         "report/is_marge_contributive.xml",
+        "report/is_suivi_budget_analytique.xml",
         "menu.xml",
     ], 
     "installable": True,
