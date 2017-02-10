@@ -511,6 +511,7 @@ class stock_move(models.Model):
                 date = date_livraison.strftime('%Y-%m-%d')
                 num_day = date_livraison.strftime('%w')
                 date_livraison = self.get_working_day(date, num_day, jours_fermes, leave_dates)
+            return date_livraison
         return date_livraison
 
 
