@@ -13,8 +13,8 @@ from openerp import netsvc
 
 
 #TODO : Permet d'indiquer l'id du produit à analyser
-product_id_test=374
-
+#product_id_test=374
+product_id_test=False
 
 #TODO : 
 # Tester les résultats avec des commandes partielles, des réceptions partielles ou des OF partiels
@@ -257,9 +257,10 @@ class mrp_generate_previsions(models.TransientModel):
                 return quantity
 
         #** Tenir compte du délai CQ *******************************************
-        date = datetime.datetime.strptime(date, '%Y-%m-%d')
-        date = date - datetime.timedelta(days=product.delai_cq)
-        date = date.strftime('%Y-%m-%d')
+        # TODO : Cela a été intégré dans la FS/SA le 10/02/2017
+        #date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        #date = date - datetime.timedelta(days=product.delai_cq)
+        #date = date.strftime('%Y-%m-%d')
         #***********************************************************************
 
         vals = {

@@ -460,9 +460,14 @@ class is_cde_ouverte_fournisseur(models.Model):
     @api.multi
     def envoi_mail(self, name, subject):
         for obj in self:
+            email_to=obj.contact_id.email
+            if email_to==False:
+                raise Warning(u"Mail non renseigné pour ce contact !")
             user  = self.env['res.users'].browse(self._uid)
             email = user.email
             nom   = user.name
+            if email==False:
+                raise Warning(u"Votre mail n'est pas renseigné !")
             if email:
                 attachment_id = self.env['ir.attachment'].search([
                     ('res_model','=','is.cde.ouverte.fournisseur'),
@@ -473,7 +478,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                 body_html=modele_mail.replace('[from]', nom)
                 email_vals.update({
                     'subject'       : subject,
-                    'email_to'      : obj.contact_id.email, 
+                    'email_to'      : email_to, 
                     'email_cc'      : email,
                     'email_from'    : email, 
                     'body_html'     : body_html.encode('utf-8'), 
@@ -548,6 +553,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                     where sm.product_id="""+str(product.product_id.id)+""" 
                           and sp.is_date_reception is not null
                           and sm.state='done' 
+                          and sp.picking_type_id=1
                     order by sp.is_date_reception desc, sm.date desc
                     limit 1
                 """
@@ -573,7 +579,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                     for row in self.env['mrp.prevision'].search([('type','=','sa'),('product_id','=',product.product_id.id)]):
                         vals={
                             'product_id'       : product.id,
-                            'date'             : row.end_date,
+                            'date'             : row.start_date_cq or row.end_date,
                             'type_cde'         : 'prev',
                             'quantite'         : row.quantity_ha,
                             'uom_id'           : row.uom_po_id.id,

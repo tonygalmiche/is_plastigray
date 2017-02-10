@@ -18,7 +18,11 @@
                     <field name="uom_id"/>
                     <field name="quantity_ha" sum="Total" />
                     <field name="uom_po_id"/>
+                    <field name="tps_fab" />
+                    <field name="delai_livraison"/>
+                    <field name="delai_cq" />
                     <field name="start_date" />
+                    <field name="start_date_cq" />
                     <field name="end_date" />
                     <field name="type" />
                     <field name="note" />
@@ -48,7 +52,11 @@
                             </group>
                             <group>
                                 <field name="name"             readonly="1"/>
+                                <field name="delai_cq"         readonly="1"/>
+                                <field name="delai_livraison"  attrs="{'invisible': [('type','!=', 'sa')]}"/>
+                                <field name="tps_fab"          attrs="{'invisible': [('type','!=', 'fs')]}"/>
                                 <field name="start_date"       readonly="1" />
+                                <field name="start_date_cq"/>
                                 <field name="quantity_origine" readonly="1"/>
                                 <field name="is_category_id"/>
                                 <field name="is_gestionnaire_id"/>
@@ -68,6 +76,16 @@
                         <group>
                             <field name="note" />
                         </group>
+                        <group>
+                            <div style="background-color:#EEEEEE">
+                                Précisions sur les calculs : <br />
+                                - Pour une FS, le champ 'Date de fin' issu du calcul des besoins correspond à la date d'expédition de la commande ramené au lundi précédent
+                                - Le champ 'Date début contrôle qualité', tient compte du champ 'Délai contrôle qualité' et des jours d'ouverture de la société<br /> 
+                                - 'Temps de fabrication (H)' =  'Temps de fabrication' de la fiche article x Quantité / (3600 x 24)
+                                - Le champ 'Date de début' tient compte du champ 'Temps de fabrication (H)' arrondi à l'entier supérieur et des jours d'ouverture de la société
+                            </div>
+                        </group>
+
                     </sheet>
                 </form>
            </field>
