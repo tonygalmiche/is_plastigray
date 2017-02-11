@@ -112,7 +112,7 @@
                     <group expand="1" string="Regrouper par">
                         <filter string="Type"        context="{'group_by':'type'}"/>
                         <filter string="Article"     context="{'group_by':'product_id'}"/>
-                        <filter string="Fournisseur" context="{'group_by':'partner_id_id'}"/>
+                        <filter string="Fournisseur" context="{'group_by':'partner_id'}"/>
                         <filter string="Semaine"     context="{'group_by':'start_date:week'}"/>
                     </group>
 

@@ -13,19 +13,6 @@ from pyPdf import PdfFileWriter, PdfFileReader
 from contextlib import closing
 
 
-
-# TODO
-# Ajouter la catégorie, le gestionnaire, le moule, l'unité et le lot d'appro
-# Calculer les gammes MO et Mach en même temps que les nomenclatures
-# Voir pour optiiser le temps de traitement et afficher des informations de temps (en console)
-# Voir pour mettre des liens vers les artciles dans la liste des composants (et vers les nomenclatures)
-# Voir pour mettre la liste des articles dans l'ordre des codes et non pas des intitulés
-# Pour le prix d'achat, il faudrait récupérer le prix correspond au lot et non pas le premier trouvé
-# Ajouter un champ pour mettre le temps de calcul
-# Voir pour lancer le calcul en tache de fond et envoyer un mail quand c'est terminé
-# Il manque le total du conditionnement dans la nomenclature valorisée
-
-
 class is_cout_calcul(models.Model):
     _name='is.cout.calcul'
     _order='name desc'
@@ -541,8 +528,6 @@ class is_cout_calcul_actualise(models.Model):
     cout_act_st      = fields.Float("Coût act sous-traitance", digits=(12, 4))
     cout_act_total   = fields.Float("Coût act Total"         , digits=(12, 4))
 
-
-
     @api.multi
     def action_acces_cout(self):
         for obj in self:
@@ -560,13 +545,13 @@ class is_cout_calcul_actualise(models.Model):
                 }
 
 
-
-
 class is_cout(models.Model):
     _name='is.cout'
     _order='name'
 
     name                   = fields.Many2one('product.product', 'Article', required=True, readonly=False, select=True)
+    code_pg                = fields.Char('Code PG'    , related='name.product_tmpl_id.is_code', readonly=True)
+    designation            = fields.Char('Désignation', related='name.product_tmpl_id.name'   , readonly=True)
     cout_calcul_id         = fields.Many2one('is.cout.calcul', 'Calcul des coût')
     is_category_id         = fields.Many2one('is.category', 'Catégorie')
     is_gestionnaire_id     = fields.Many2one('is.gestionnaire', 'Gestionnaire')
@@ -574,7 +559,6 @@ class is_cout(models.Model):
     type_article           = fields.Selection([('A', u'Acheté'),('F', u'Fabriqué'),('ST', u'Sous-traité')], "Type d'article")
     uom_id                 = fields.Many2one('product.uom', 'Unité')
     lot_mini               = fields.Float("Lot d'appro.")
-
     prix_tarif             = fields.Float("Prix tarif"                  , digits=(12, 4))
     prix_commande          = fields.Float("Prix dernière commande"      , digits=(12, 4))
     prix_facture           = fields.Float("Prix dernière facture"       , digits=(12, 4))
@@ -582,9 +566,7 @@ class is_cout(models.Model):
     prix_force_commentaire = fields.Char("Commentaire")
     prix_calcule           = fields.Float("Prix calculé"                , digits=(12, 4))
     prix_sous_traitance    = fields.Float("Prix sous-traitance"         , digits=(12, 4))
-
     ecart_calcule_matiere  = fields.Float("Ecart Calculé/Matière"       , digits=(12, 4))
-
     cout_std_matiere       = fields.Float("Coût std matière"         , digits=(12, 4))
     cout_std_condition     = fields.Float("Coût std conditionnement" , digits=(12, 4))
     cout_std_machine       = fields.Float("Coût std machine"         , digits=(12, 4))
@@ -592,10 +574,6 @@ class is_cout(models.Model):
     cout_std_st            = fields.Float("Coût std sous-traitance"  , digits=(12, 4))
     cout_std_total         = fields.Float("Coût std Total"           , digits=(12, 4))
     cout_std_prix_vente    = fields.Float("Prix de vente standard"   , digits=(12, 4))
-    #cout_std_preserie      = fields.Float("Surcout Présérie"         , digits=(12, 4))
-    #cout_std_amtmoule      = fields.Float("Amortissement moule"      , digits=(12, 4))
-    #cout_prix_vente        = fields.Float("Prix de vente tarif commercial", digits=(12, 4))
-
     cout_act_matiere       = fields.Float("Coût act matière"        , digits=(12, 4))
     cout_act_condition     = fields.Float("Coût act conditionnement", digits=(12, 4))
     cout_act_machine       = fields.Float("Coût act machine"        , digits=(12, 4))
@@ -603,15 +581,12 @@ class is_cout(models.Model):
     cout_act_st            = fields.Float("Coût act sous-traitance" , digits=(12, 4))
     cout_act_total         = fields.Float("Coût act Total"          , digits=(12, 4))
     cout_act_prix_vente    = fields.Float("Prix de vente actualisé" , digits=(12, 4))
-
     amortissement_moule    = fields.Float("Amortissement Moule"     , digits=(12, 4), compute='_compute')
     surcout_pre_serie      = fields.Float("Surcôut pré-série"       , digits=(12, 4), compute='_compute')
     prix_vente             = fields.Float("Prix de Vente"           , digits=(12, 4), compute='_compute')
-
     nomenclature_ids       = fields.One2many('is.cout.nomenclature', 'cout_id', u"Lignes de la nomenclature")
     gamme_ma_ids           = fields.One2many('is.cout.gamme.ma'    , 'cout_id', u"Lignes gamme machine")
     gamme_mo_ids           = fields.One2many('is.cout.gamme.mo'    , 'cout_id', u"Lignes gamme MO")
-
 
     @api.depends('name')
     def _compute(self):

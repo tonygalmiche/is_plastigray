@@ -223,7 +223,8 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="name" widget="many2one_clickable"/> 
+                    <field name="code_pg"/> 
+                    <field name="designation"/> 
                     <field name="is_mold_id"/> 
                     <field name="is_category_id"/> 
                     <field name="is_gestionnaire_id"/> 
@@ -268,6 +269,42 @@
             <field name="domain">[('prix_force','>',0)]</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+
+
+        <!-- Exportation des couts -->
+        <record model="ir.ui.view" id="is_cout_export_tree_view">
+            <field name="name">is_cout_export_tree_view</field>
+            <field name="model">is.cout</field>
+            <field name="priority" eval="90" />
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code_pg"/> 
+                    <field name="designation"/> 
+                    <field name="cout_std_matiere"/> 
+                    <field name="cout_std_machine"/> 
+                    <field name="cout_std_mo"/> 
+                    <field name="cout_std_st"/> 
+                    <field name="cout_std_total"/> 
+                    <field name="cout_std_prix_vente"/> 
+                    <field name="cout_act_matiere"/> 
+                    <field name="cout_act_machine"/> 
+                    <field name="cout_act_mo"/> 
+                    <field name="cout_act_st"/> 
+                    <field name="cout_act_total"/> 
+                    <field name="cout_act_prix_vente"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_cout_export_action">
+            <field name="name">Exportation des coûts</field>
+            <field name="res_model">is.cout</field>
+            <field name="view_id" ref="is_cout_export_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
 
 

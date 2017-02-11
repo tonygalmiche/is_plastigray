@@ -98,7 +98,8 @@
             ref('is_rsp_achats_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_cout_40" sequence="40" name="Coût article"       parent="menu_is_cout"  action="is_cout_action" />
+    <menuitem id="menu_is_cout_40"     sequence="40" name="Coût article"   parent="menu_is_cout"  action="is_cout_action" />
+    <menuitem id="is_cout_export_menu" sequence="50" name="Coût Std / Act" parent="menu_is_cout"  action="is_cout_export_action" />
 
     <record id="menu_is_societes" model="ir.ui.menu">
         <field name="name">Société</field>

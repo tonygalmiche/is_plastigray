@@ -13,9 +13,10 @@ class is_stock_valorise(models.Model):
     product_id         = fields.Many2one('product.template', 'Article')
     is_code            = fields.Char('Code Article')
     designation        = fields.Char('Désignation')
-    is_category_id     = fields.Many2one('is.category', 'Catégorie')
-    is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire')
-    uom_id             = fields.Many2one('product.uom', 'Unité')
+    is_category_id     = fields.Many2one('is.category'       , 'Catégorie')
+    is_gestionnaire_id = fields.Many2one('is.gestionnaire'   , 'Gestionnaire')
+    segment_id         = fields.Many2one('is.product.segment', 'Segment')
+    uom_id             = fields.Many2one('product.uom'       , 'Unité')
     stock_a            = fields.Float('Stock A')
     stock_q            = fields.Float('Stock Q')
     stock              = fields.Float('Stock Total')
@@ -65,8 +66,6 @@ class is_stock_valorise(models.Model):
             END;
             $$ LANGUAGE plpgsql;
 
-
-
             CREATE OR REPLACE view is_stock_valorise AS (
                 SELECT 
                     pt.id                 as id,
@@ -75,6 +74,7 @@ class is_stock_valorise(models.Model):
                     pt.name               as designation,
                     pt.is_category_id     as is_category_id,
                     pt.is_gestionnaire_id as is_gestionnaire_id,
+                    pt.segment_id         as segment_id,
                     pt.uom_id             as uom_id,
                     is_stocka(pp.id)      as stock_a,
                     is_stockq(pp.id)      as stock_q,
@@ -85,14 +85,13 @@ class is_stock_valorise(models.Model):
                     cout_act_st,
                     cout_act_total,
                     is_stock(pp.id) * cout_act_total as stock_valorise
-
-                FROM product_template pt inner join product_product     pp   on pp.product_tmpl_id=pt.id
-                                         inner join is_category         ic   on pt.is_category_id=ic.id
-                                         inner join is_gestionnaire     ig   on pt.is_gestionnaire_id=ig.id
-                                         left outer join is_cout        cout on cout.name=pp.id
+                FROM product_template pt inner join product_product          pp on pp.product_tmpl_id=pt.id
+                                         left outer join is_category         ic on pt.is_category_id=ic.id
+                                         left outer join is_gestionnaire     ig on pt.is_gestionnaire_id=ig.id
+                                         left outer join is_product_segment ips on pt.segment_id=ips.id
+                                         left outer join is_cout           cout on cout.name=pp.id
                 WHERE pt.active='t'
-                      and pt.is_category_id is not null 
-                      and ic.name<'80'
+                      and ic.name::int<70
             )
         """)
 
