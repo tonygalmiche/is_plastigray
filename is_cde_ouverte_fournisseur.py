@@ -602,7 +602,6 @@ class is_cde_ouverte_fournisseur(models.Model):
                     moves=self.env['stock.move'].search(where)
                     #***********************************************************
                     if len(moves)>0:
-                        print type(row.order_id.date_approve), type(date_approve)
                         if row.order_id.date_approve>date_approve:
                             vals={
                                 'product_id'        : product.id,
