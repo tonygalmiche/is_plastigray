@@ -590,6 +590,9 @@ class is_cde_ouverte_fournisseur(models.Model):
                     ('state'       ,'=', 'confirmed'),
                     ('product_id'  ,'=', product.product_id.id),
                 ]
+                now  = datetime.date.today()                     # Date du jour
+                date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                date_approve = date_approve.strftime('%Y-%m-%d')
                 for row in self.env['purchase.order.line'].search(where):
                     #** Test si réceptions en cours sur la ligne de cde ********
                     where=[
@@ -599,16 +602,18 @@ class is_cde_ouverte_fournisseur(models.Model):
                     moves=self.env['stock.move'].search(where)
                     #***********************************************************
                     if len(moves)>0:
-                        vals={
-                            'product_id'        : product.id,
-                            'date'              : row.date_planned,
-                            'date_approve'      : row.order_id.date_approve,
-                            'type_cde'          : 'ferme',
-                            'quantite'          : row.product_qty,
-                            'uom_id'            : row.product_uom.id,
-                            'purchase_order_id' : row.order_id.id,
-                        }
-                        line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
+                        print type(row.order_id.date_approve), type(date_approve)
+                        if row.order_id.date_approve>date_approve:
+                            vals={
+                                'product_id'        : product.id,
+                                'date'              : row.date_planned,
+                                'date_approve'      : row.order_id.date_approve,
+                                'type_cde'          : 'ferme',
+                                'quantite'          : row.product_qty,
+                                'uom_id'            : row.product_uom.id,
+                                'purchase_order_id' : row.order_id.id,
+                            }
+                            line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
                 product.nb_commandes=len(product.line_ids)
 
 

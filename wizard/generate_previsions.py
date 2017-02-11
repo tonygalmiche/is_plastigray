@@ -236,11 +236,22 @@ class mrp_generate_previsions(models.TransientModel):
     def _creer_suggestion(self, product, quantity, date):
         type="fs"
         if product.route_ids:
-            route=product.route_ids[0].name
-            if route=="Manufacture":
+#            route=product.route_ids[0].name
+#            if route=="Manufacture":
+#                type="fs"
+#            if route=="Buy":
+#                type="sa"
+            Buy=Manufacture=False
+            for route in product.route_ids:
+                if route.name=="Manufacture":
+                    Manufacture=True
+                if route.name=="Buy":
+                    Buy=True
+            if Manufacture:
                 type="fs"
-            if route=="Buy":
+            if Buy:
                 type="sa"
+
         if type=='fs':
             obj = self.env['mrp.prevision']
             end_date   = date
