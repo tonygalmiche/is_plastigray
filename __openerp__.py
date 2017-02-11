@@ -124,6 +124,7 @@ Module principal du projet Plastigray
         "report/is_account_invoice_line.xml",
         "report/is_marge_contributive.xml",
         "report/is_suivi_budget_analytique.xml",
+        "report/is_comparatif_lot_appro_prix.xml",
         "menu.xml",
     ], 
     "installable": True,

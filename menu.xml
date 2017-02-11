@@ -1074,7 +1074,16 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
-
+    <record id="is_comparatif_lot_appro_prix_menu" model="ir.ui.menu" >
+        <field name="name">Lot appro / mini liste prix</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_analyse_tarif_achat_menu')"/>
+        <field name="action"    ref="is_comparatif_lot_appro_prix_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
 
     <menuitem id="is_analyse_stock_menu" sequence="30" name="Analyses Stocks" parent="menu_is_analyse"/>
     <record id="is_liste_stock_negatif_menu" model="ir.ui.menu" >

@@ -123,6 +123,6 @@ access_is_cde_ferme_cadencee,access_is_cde_ferme_cadencee,model_is_cde_ferme_cad
 access_is_cde_ferme_cadencee_order,access_is_cde_ferme_cadencee_order,model_is_cde_ferme_cadencee_order,base.group_user,1,0,0,0
 access_is_marge_contributive,access_is_marge_contributive,model_is_marge_contributive,base.group_user,1,0,0,0
 access_is_suivi_budget_analytique,access_is_suivi_budget_analytique,model_is_suivi_budget_analytique,base.group_user,1,0,0,0
-
+access_is_comparatif_lot_appro_prix,access_is_comparatif_lot_appro_prix,model_is_comparatif_lot_appro_prix,base.group_user,1,0,0,0
 
 
