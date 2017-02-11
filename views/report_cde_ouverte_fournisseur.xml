@@ -169,6 +169,15 @@
     <t t-call="is_plastigray.report_cde_ouverte_fournisseur_external_layout">
         <div class="page">
 
+            <t t-set="nb_imprimer" t-value="0"/>
+            <t t-foreach="o.product_ids" t-as="p">
+                <t t-if="p.imprimer==True">
+                    <t t-set="nb_imprimer" t-value="nb_imprimer+1"/>
+                </t>
+            </t>
+
+
+
             <table class="table table-condensed">
                 <thead>
                     <tr >
@@ -182,15 +191,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr t-foreach="o.tarif_ids" t-as="l">
-                        <td class="text-left">  <span t-field="l.product_id.is_code"/> </td>
-                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.name"/> </td>
-                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
-                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
-                        <td class="text-right"> <span t-field="l.minimum"/>  </td>
-                        <td class="text-right"> <span t-field="l.prix_achat"/> </td>
-                        <td class="text-left">  <span t-field="l.uom_po_id"/>  </td>
-                    </tr>
+                    <t t-foreach="o.product_ids" t-as="p">
+                        <t t-foreach="o.tarif_ids" t-as="l">
+                            <t t-if="p.product_id==l.product_id">
+                                <t t-set="test_imprimer" t-value="0"/>
+                                <t t-if="nb_imprimer==0">
+                                    <t t-set="test_imprimer" t-value="1"/>
+                                </t>
+                                <t t-if="nb_imprimer>=0">
+                                    <t t-if="p.imprimer==True">
+                                        <t t-set="test_imprimer" t-value="1"/>
+                                    </t>
+                                </t>
+                                <t t-if="test_imprimer==1">
+                                    <tr>
+                                        <td class="text-left">  <span t-field="l.product_id.is_code"/> </td>
+                                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.name"/> </td>
+                                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
+                                        <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
+                                        <td class="text-right"> <span t-field="l.minimum"/>  </td>
+                                        <td class="text-right"> <span t-field="l.prix_achat"/> </td>
+                                        <td class="text-left">  <span t-field="l.uom_po_id"/>  </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </t>
+                    </t>
                 </tbody>
             </table>
         </div>
