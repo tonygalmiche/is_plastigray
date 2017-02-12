@@ -91,16 +91,6 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
-
-                <!--
-                <button name="invoice_cancel" position="after">
-                    <button name="invoice_cancel" states="draft,proforma2" string="Cancel Invoice 2" groups="is_plastigray.is_annulation_facture_group"/>
-                </button>
-                <button name="action_cancel_draft" position="after">
-                    <button name="action_cancel_draft" states="cancel" string="Set to Draft 2" type="object" groups="is_plastigray.is_annulation_facture_group"/>
-                </button>
-                -->
-
                 <field name="date_invoice" position="after">
                     <field name="is_type_facture" />
                 </field>
@@ -142,7 +132,6 @@
                 </xpath>
             </field>
         </record>
-
 
 
         <record id="is_invoice_form_cancel_inherit" model="ir.ui.view">
