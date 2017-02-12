@@ -35,4 +35,5 @@ import is_account_invoice_line
 import is_marge_contributive
 import is_suivi_budget_analytique
 import is_comparatif_lot_appro_prix
+import is_comparatif_article_tarif_cial
 
