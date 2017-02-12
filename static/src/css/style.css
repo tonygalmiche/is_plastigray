@@ -16,6 +16,12 @@
     white-space: nowrap !important;
 }
 
+.openerp .oe_list_content td.oe_number{
+    white-space: nowrap !important;
+}
+
+
+
 /*
 .oe_number{
     color: red;
