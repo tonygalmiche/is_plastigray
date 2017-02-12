@@ -125,6 +125,8 @@ access_is_marge_contributive,access_is_marge_contributive,model_is_marge_contrib
 access_is_suivi_budget_analytique,access_is_suivi_budget_analytique,model_is_suivi_budget_analytique,base.group_user,1,0,0,0
 access_is_comparatif_lot_appro_prix,access_is_comparatif_lot_appro_prix,model_is_comparatif_lot_appro_prix,base.group_user,1,0,0,0
 access_is_comparatif_article_tarif_cial,access_is_comparatif_article_tarif_cial,model_is_comparatif_article_tarif_cial,base.group_user,1,0,0,0
+access_is_res_partner,access_is_res_partner,model_is_res_partner,base.group_user,1,0,0,0
+
 
 
 

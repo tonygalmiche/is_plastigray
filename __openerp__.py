@@ -126,6 +126,7 @@ Module principal du projet Plastigray
         "report/is_suivi_budget_analytique.xml",
         "report/is_comparatif_lot_appro_prix.xml",
         "report/is_comparatif_article_tarif_cial.xml",
+        "report/is_res_partner.xml",
         "menu.xml",
     ], 
     "installable": True,
