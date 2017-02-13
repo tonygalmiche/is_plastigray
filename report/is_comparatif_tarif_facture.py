@@ -21,7 +21,8 @@ class is_comparatif_tarif_facture(models.Model):
     invoice_price      = fields.Float('Prix facture')
     pricelist_price    = fields.Float('Prix liste de prix')
     price_delta        = fields.Float('Ecart de prix')
-
+    lot_livraison      = fields.Float('Lot de livraison')
+    prix_lot_livraison = fields.Float('Prix au lot de livraison')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_comparatif_tarif_facture')
@@ -45,6 +46,22 @@ BEGIN
     );
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_lot_livraison(product_tmpl_id integer, partner_id integer) RETURNS float AS $$
+BEGIN
+    RETURN (
+            coalesce((
+                select lot_livraison 
+                from is_product_client ipc 
+                where ipc.client_id=partner_id and ipc.product_id=product_tmpl_id limit 1
+                ),0
+            )
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
 
 CREATE OR REPLACE view is_comparatif_tarif_facture AS (
     select 
@@ -75,7 +92,17 @@ CREATE OR REPLACE view is_comparatif_tarif_facture AS (
                 ai.date_invoice
             ),
             0
-        )-ail.price_unit as price_delta
+        )-ail.price_unit as price_delta,
+        get_lot_livraison(pt.id, so.partner_id) lot_livraison,
+        coalesce(
+            is_prix_vente(
+                so.pricelist_id,
+                ail.product_id,
+                get_lot_livraison(pt.id, so.partner_id),
+                ai.date_invoice
+            ),
+            0
+        ) as prix_lot_livraison
     from account_invoice_line ail inner join account_invoice  ai on ail.invoice_id=ai.id
                                   inner join stock_move       sm on ail.is_move_id=sm.id
                                   inner join sale_order_line sol on sm.is_sale_line_id=sol.id
