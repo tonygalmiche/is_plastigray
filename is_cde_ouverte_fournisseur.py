@@ -602,7 +602,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                     moves=self.env['stock.move'].search(where)
                     #***********************************************************
                     if len(moves)>0:
-                        if row.order_id.date_approve>date_approve:
+                        if row.order_id.date_approve>date_approve or obj.type_commande=='ouverte':
                             vals={
                                 'product_id'        : product.id,
                                 'date'              : row.date_planned,

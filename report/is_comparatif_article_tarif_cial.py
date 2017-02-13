@@ -30,12 +30,12 @@ class is_comparatif_article_tarif_cial(models.Model):
                     ipc.client_id,
                     (
                         select itc.id
-                        from is_tarif_cial itc
-                        where itc.partner_id=ipc.client_id and itc.product_id=pt.id and indice_prix=999
+                        from is_tarif_cial itc inner join res_partner rp2 on itc.partner_id=rp2.id
+                        where rp2.is_code=rp1.is_code and itc.product_id=pt.id and indice_prix=999
                         limit 1
                     ) tarif_cial_id
-
-                from product_template pt  inner join  is_product_client ipc on pt.id=ipc.product_id
+                from product_template pt  inner join is_product_client ipc on pt.id=ipc.product_id
+                                          inner join res_partner       rp1 on ipc.client_id=rp1.id
                 where pt.sale_ok='t' and pt.active='t'
             )
         """)
