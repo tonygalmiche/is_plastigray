@@ -237,18 +237,23 @@ class is_cde_ouverte_fournisseur(models.Model):
             else:
                 products=self.env['is.cde.ouverte.fournisseur.product'].search([('order_id','=',obj.id),('imprimer','=',True)])
             for product in products:
-                now  = datetime.date.today()                     # Date du jour
-                date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
-                date_approve = date_approve.strftime('%Y-%m-%d') # Formatage
+                #now  = datetime.date.today()                     # Date du jour
+                #date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                #date_approve = date_approve.strftime('%Y-%m-%d') # Formatage
                 where=[
                     ('product_id'  ,'=', product.id),
-                    ('date_approve','>', date_approve),
+                    #('date_approve','>', date_approve),
                 ]
                 lines=self.env['is.cde.ouverte.fournisseur.line'].search(where)
                 for line in lines:
-                    order=line.purchase_order_id
-                    if not order in orders:
-                        orders.append(order)
+                    if line.imprimer_commande:
+                        order=line.purchase_order_id
+                        if not order in orders:
+                            orders.append(order)
+
+            #if len(orders)==0:
+            #    raise Warning(u"Aucune commande à imprimer")
+
             paths=[]
             for order in orders:
                 pdfreport_id, pdfreport_path = tempfile.mkstemp(suffix='.pdf', prefix='order.tmp.')
@@ -593,6 +598,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                 now  = datetime.date.today()                     # Date du jour
                 date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
                 date_approve = date_approve.strftime('%Y-%m-%d')
+                nb_ferme_imprime=0
                 for row in self.env['purchase.order.line'].search(where):
                     #** Test si réceptions en cours sur la ligne de cde ********
                     where=[
@@ -602,17 +608,36 @@ class is_cde_ouverte_fournisseur(models.Model):
                     moves=self.env['stock.move'].search(where)
                     #***********************************************************
                     if len(moves)>0:
-                        if row.order_id.date_approve>date_approve or obj.type_commande=='ouverte':
-                            vals={
-                                'product_id'        : product.id,
-                                'date'              : row.date_planned,
-                                'date_approve'      : row.order_id.date_approve,
-                                'type_cde'          : 'ferme',
-                                'quantite'          : row.product_qty,
-                                'uom_id'            : row.product_uom.id,
-                                'purchase_order_id' : row.order_id.id,
-                            }
-                            line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
+                        #if row.order_id.date_approve>date_approve or obj.type_commande=='ouverte':
+                        imprimer_commande=False
+                        if row.order_id.date_approve>date_approve:
+                            imprimer_commande=True
+                            nb_ferme_imprime=nb_ferme_imprime+1
+
+                        #** Recherche Qt réceptionnée sur cette commande *******
+                        where=[
+                            ('purchase_line_id','=', row.id),
+                            ('state'           ,'=', 'done'),
+                        ]
+                        moves=self.env['stock.move'].search(where)
+                        quantite_rcp=0
+                        for move in moves:
+                            quantite_rcp=quantite_rcp+move.product_uom_qty
+                        #*******************************************************
+
+                        vals={
+                            'product_id'        : product.id,
+                            'date'              : row.date_planned,
+                            'date_approve'      : row.order_id.date_approve,
+                            'type_cde'          : 'ferme',
+                            'quantite'          : row.product_qty,
+                            'quantite_rcp'      : quantite_rcp,
+                            'uom_id'            : row.product_uom.id,
+                            'purchase_order_id' : row.order_id.id,
+                            'imprimer_commande' : imprimer_commande,
+                        }
+                        line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
+                product.nb_ferme_imprime=nb_ferme_imprime
                 product.nb_commandes=len(product.line_ids)
 
 
@@ -620,13 +645,14 @@ class is_cde_ouverte_fournisseur_product(models.Model):
     _name='is.cde.ouverte.fournisseur.product'
     _order='product_id'
 
-    order_id      = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
-    product_id    = fields.Many2one('product.product', 'Article'  , required=True)
-    num_bl        = fields.Char("Dernier BL"     , readonly=True)
-    date_bl       = fields.Date("Date BL"        , readonly=True)
-    qt_bl         = fields.Float("Qt reçue"      , readonly=True)
-    nb_commandes  = fields.Integer("Nb commandes", readonly=True)
-    imprimer      = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
+    order_id         = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
+    product_id       = fields.Many2one('product.product', 'Article'  , required=True)
+    num_bl           = fields.Char("Dernier BL"     , readonly=True)
+    date_bl          = fields.Date("Date BL"        , readonly=True)
+    qt_bl            = fields.Float("Qt reçue"      , readonly=True)
+    nb_ferme_imprime = fields.Integer("Nb fermes à imprimer", readonly=True)
+    nb_commandes     = fields.Integer("Nb commandes"        , readonly=True)
+    imprimer         = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
     line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 
 
@@ -667,10 +693,15 @@ class is_cde_ouverte_fournisseur_line(models.Model):
     date              = fields.Date("Date Commande")
     date_approve      = fields.Date("Date de confirmation")
     type_cde          = fields.Selection([('ferme', u'Ferme'),('prev', u'Prévisionnel')], u"Type de commande", select=True)
-    quantite          = fields.Float("Quantité")
+    quantite          = fields.Float("Quantité commande")
+    quantite_rcp      = fields.Float("Quantité reçue")
     uom_id            = fields.Many2one('product.uom', 'Unité')
     mrp_prevision_id  = fields.Many2one('mrp.prevision' , 'SA')
     purchase_order_id = fields.Many2one('purchase.order', 'Commande')
+    imprimer_commande = fields.Boolean("Imprimer la commande", default=False)
+
+
+
 
 
 class is_cde_ouverte_fournisseur_histo(models.Model):

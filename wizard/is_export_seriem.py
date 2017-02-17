@@ -88,7 +88,8 @@ class is_export_seriem(models.TransientModel):
                             sum(aml.credit),
                             rp.supplier,
                             ai.is_bon_a_payer,
-                            ai.supplier_invoice_number
+                            ai.supplier_invoice_number,
+                            rp.is_adr_groupe
                     FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
                                                inner join account_account aa             on aml.account_id=aa.id
                                                inner join res_partner rp                 on ai.partner_id=rp.id
@@ -96,17 +97,33 @@ class is_export_seriem(models.TransientModel):
                                                left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
                                                left outer join account_journal aj        on rp.is_type_reglement=aj.id
                     WHERE ai.id="""+str(id)+"""
-                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number
-                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number
+                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number,rp.is_adr_groupe
+                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number,rp.is_adr_groupe
                 """
 
                 cr.execute(sql)
                 for row in cr.fetchall():
+
+                    CodeAuxiliaire = (u"000000"+str(row[2]))[-6:]
+                    ClientGroupe   = str(row[14])
+
+                    #print "TEST 1", CodeAuxiliaire, ClientGroupe
+
                     #Test si client ou fournisseur
                     if row[11]:
                         CompteCollectif = u'401000'
                     else:
                         CompteCollectif = u'411000'
+                        if ClientGroupe!='None':
+                            CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
+
+
+                    #print "TEST 2", CodeAuxiliaire, ClientGroupe
+
+                    #raise Warning('test tony')
+
+
+
                     NumCompte         = row[4]
                     Debit             = row[9]
                     Credit            = row[10]
@@ -120,7 +137,10 @@ class is_export_seriem(models.TransientModel):
                     else:
                         Sens    = u"D"
 
-                    CodeAuxiliaire=(u"000000"+str(row[2]))[-6:]
+                    #CodeAuxiliaire =(u"000000"+str(row[2]))[-6:]
+                    #ClientGroupe=row[14]
+                    #if ClientGroupe!=False:
+                    #    CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
 
                     if NumCompte==u'411000' or NumCompte==u'401000':
                         #CompteCollectif = NumCompte

@@ -10,6 +10,7 @@ class is_purchase_order_line(models.Model):
     _order='id desc'
     _auto = False
 
+    order_line_id        = fields.Many2one('purchase.order.line', 'Ligne de commande')
     order_id             = fields.Many2one('purchase.order', 'Commande')
     partner_id           = fields.Many2one('res.partner', 'Fournisseur')
     date_order           = fields.Date('Date de commande')
@@ -38,6 +39,7 @@ class is_purchase_order_line(models.Model):
         cr.execute("""
             CREATE OR REPLACE view is_purchase_order_line AS (
                 select  pol.id,
+                        pol.id                  as order_line_id,
                         po.id                   as order_id,
                         po.partner_id           as partner_id, 
                         po.date_order,

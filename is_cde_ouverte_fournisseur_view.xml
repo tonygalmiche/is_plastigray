@@ -65,7 +65,8 @@
                                             <field name="num_bl"    /> 
                                             <field name="date_bl"   /> 
                                             <field name="qt_bl"     /> 
-                                            <field name="nb_commandes"  /> 
+                                            <field name="nb_commandes"  />
+                                            <field name="nb_ferme_imprime"  /> 
                                             <field name="imprimer"  /> 
                                         </tree>
                                     </field>
@@ -164,18 +165,23 @@
                             <group>
                                 <field name="order_id"/> 
                                 <field name="product_id"/> 
+                                <field name="num_bl"/> 
+                                <field name="date_bl"/> 
+                                <field name="qt_bl"/> 
                             </group>
                         </group>
                         <group string="Commandes">
-                            <field name="line_ids" nolabel="1" readonly="1">
-                                <tree colors="gray:type_cde == 'prev'">
-                                    <field name="date"  /> 
-                                    <field name="type_cde"  /> 
-                                    <field name="date_approve"  /> 
-                                    <field name="quantite"  /> 
-                                    <field name="uom_id"  /> 
-                                    <field name="mrp_prevision_id"  /> 
-                                    <field name="purchase_order_id"  /> 
+                            <field name="line_ids" nolabel="1" readonly="0">
+                                <tree colors="gray:type_cde == 'prev'" editable="bottom" create="0">
+                                    <field name="date"/> 
+                                    <field name="type_cde"/> 
+                                    <field name="date_approve"/> 
+                                    <field name="quantite"/> 
+                                    <field name="quantite_rcp"/> 
+                                    <field name="uom_id"/> 
+                                    <field name="mrp_prevision_id"/> 
+                                    <field name="purchase_order_id"/> 
+                                    <field name="imprimer_commande"/> 
                                 </tree>
                             </field>
                         </group>
