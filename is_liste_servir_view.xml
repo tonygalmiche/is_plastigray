@@ -66,6 +66,7 @@
                                 <field style="background:orange" name="message" readonly="1" attrs="{'invisible':[('message','=',False)]}"/>
                                 <field name="order_ids" >
                                     <tree editable="bottom">
+                                        <button string="Accèder à la commande" name="action_acceder_commande" type="object" icon="gtk-zoom-in" />
                                         <field name="name"  />
                                         <field name="state" invisible="1" />
                                     </tree>
@@ -78,6 +79,7 @@
 
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="true" colors="red:livrable == False">
+                                    <field name="sequence"       invisible="1"/>
                                     <field name="product_id" widget="many2one_clickable"/>
                                     <field name="mold_dossierf"/>
                                     <field name="livrable"       invisible="1"/>

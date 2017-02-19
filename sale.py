@@ -87,6 +87,22 @@ class sale_order(models.Model):
 
 
     @api.multi
+    def action_acceder_commande(self):
+        for obj in self:
+            print obj
+            return {
+                'name': "Commande",
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'sale.order',
+                'type': 'ir.actions.act_window',
+                'res_id': obj.id,
+                'domain': '[]',
+            }
+
+
+
+    @api.multi
     def _verif_tarif(self,vals):
         if 'is_type_commande' in vals and 'is_article_commande_id' in vals and 'pricelist_id' in vals :
             if vals['is_type_commande']=='ouverte':

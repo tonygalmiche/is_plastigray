@@ -343,7 +343,9 @@ class is_liste_servir(models.Model):
             cr.execute(SQL)
             result = cr.fetchall()
             line_obj = self.env['is.liste.servir.line']
+            sequence=0
             for row in result:
+                sequence=sequence+1
                 product_id=row[1]
 
                 #** Recherche du certificat matière ****************************
@@ -378,6 +380,7 @@ class is_liste_servir(models.Model):
                 if test:
                     vals={
                         'liste_servir_id'   : obj.id,
+                        'sequence'          : sequence,
                         'order_id'          : row[0],
                         'product_id'        : row[1],
                         'client_order_ref'  : row[2],
@@ -528,7 +531,6 @@ class is_liste_servir(models.Model):
                         order=order_line.order_id
                         order_line.unlink()
                         #** Supprimer la commande si celle-ci est vide *********
-                        print "Nb lignes=",len(order.order_line)
                         if len(order.order_line)==0 and order.is_type_commande=='standard':
                             order.unlink()
                         #*******************************************************
@@ -540,7 +542,7 @@ class is_liste_servir(models.Model):
 
 class is_liste_servir_line(models.Model):
     _name='is.liste.servir.line'
-    _order='product_id'
+    _order='sequence,id'
 
 
     @api.depends('product_id','quantite')
@@ -590,6 +592,7 @@ class is_liste_servir_line(models.Model):
 
 
     liste_servir_id    = fields.Many2one('is.liste.servir', 'Liste à servir', required=True, ondelete='cascade')
+    sequence           = fields.Integer('Sequence')
     product_id         = fields.Many2one('product.product', 'Article', required=True, readonly=True)
 
     mold_id            = fields.Many2one('is.mold', 'Moule'          , related='product_id.is_mold_id', readonly=True)
