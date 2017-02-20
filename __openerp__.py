@@ -127,6 +127,7 @@ Module principal du projet Plastigray
         "report/is_comparatif_lot_appro_prix.xml",
         "report/is_comparatif_article_tarif_cial.xml",
         "report/is_res_partner.xml",
+        "report/is_article_sans_cde_ouverte_fou.xml",
         "menu.xml",
     ], 
     "installable": True,

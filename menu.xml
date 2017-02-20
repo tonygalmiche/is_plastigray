@@ -967,13 +967,25 @@
     </record>
     <record id="is_article_sans_fournisseur_menu" model="ir.ui.menu" >
         <field name="name">Articles sans fournisseurs</field>
-        <field name="sequence">20</field>
+        <field name="sequence">15</field>
         <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
         <field name="action"    ref="is_article_sans_fournisseur_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
+
+    <record id="is_article_sans_cde_ouverte_fou_menu" model="ir.ui.menu" >
+        <field name="name">Articles sans cde ouverte</field>
+        <field name="sequence">22</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_article_sans_cde_ouverte_fou_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+
     <record id="is_comparatif_article_tarif_cial_menu" model="ir.ui.menu" >
         <field name="name">Comparatif Article / Tarif Cial</field>
         <field name="sequence">25</field>
