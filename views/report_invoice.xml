@@ -199,16 +199,18 @@
             </div>
             <div t-if="picking">
                 <b>Livraison N° </b><span t-field="picking.name" /> du <span t-field="picking.date" t-field-options='{"format": "dd/MM/yyyy"}' /><br />
-                <i>
-                    <b>Adresse de livraison : </b>
-                    <span t-field="picking.partner_id.name" />
-                    <span t-field="picking.partner_id.street" />
-                    <span t-field="picking.partner_id.street2" /> - 
-                    <span t-field="picking.partner_id.zip" />
-                    <span t-field="picking.partner_id.city" /> - 
-                    <span t-field="picking.partner_id.country_id.name" /> 
-                    (<span t-field="picking.partner_id.is_code" />/<span t-field="picking.partner_id.is_adr_code" />)
-                </i>
+                <t t-if="o.partner_id.is_adr_liv_sur_facture">
+                    <i>
+                        <b>Adresse de livraison : </b>
+                        <span t-field="picking.partner_id.name" />
+                        <span t-field="picking.partner_id.street" />
+                        <span t-field="picking.partner_id.street2" /> - 
+                        <span t-field="picking.partner_id.zip" />
+                        <span t-field="picking.partner_id.city" /> - 
+                        <span t-field="picking.partner_id.country_id.name" /> 
+                        (<span t-field="picking.partner_id.is_code" />/<span t-field="picking.partner_id.is_adr_code" />)
+                    </i>
+                </t>
             </div>
 
             <p />

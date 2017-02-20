@@ -147,6 +147,7 @@ class res_partner(models.Model):
     is_type_contact         = fields.Many2one('is.type.contact', "Type de contact")
     is_source_location_id   = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 
     is_rib_id               = fields.Many2one('res.partner.bank', 'RIB') 
+    is_adr_liv_sur_facture  = fields.Boolean(u"Afficher l'adresse de livraison sur la facture", default=True)
     is_num_autorisation_tva = fields.Char("N° d'autorisation", help="N° d'autorisation de franchise de taxe")
     is_caracteristique_bl   = fields.Selection([
         ('cde_odoo'   , '1 commande Odoo = 1 BL'),

@@ -870,6 +870,7 @@
         <field name="parent_id" eval="ref('menu_is_production')"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
+            ref('is_rsp_achats_group'),
         ])]"/>
     </record>
     <record id="menu_is_production_cbn_calcul" model="ir.ui.menu" >
@@ -897,6 +898,7 @@
         <field name="action"    ref="is_url_analyse_cbn_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
+            ref('is_rsp_achats_group'),
         ])]"/>
     </record>
 
@@ -1136,6 +1138,7 @@
         ])]"/>
     </record>
 
+    <!--
     <menuitem id="is_analyse_cde_client_menu" sequence="40" name="Analyses Cde Client" parent="menu_is_analyse"/>
     <record id="is_comparatif_cde_draft_done_menu" model="ir.ui.menu" >
         <field name="name">En cours / Terminée</field>
@@ -1147,6 +1150,7 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
+    -->
 
     <menuitem id="is_analyse_fournisseur_menu" sequence="50" name="Analyses Fournisseurs" parent="menu_is_analyse"/>
     <record id="is_res_partner_menu" model="ir.ui.menu" >

@@ -62,7 +62,8 @@ class MrpProduction(models.Model):
     date_planned              = fields.Datetime(string='Date plannifiée', required=True, readonly=False)
     is_done                   = fields.Boolean(string="Is done ?", default=False)
     mrp_product_suggestion_id = fields.Many2one('mrp.prevision','MRP Product Suggestion')
-    is_mold_id                = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
+    is_mold_id                = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id'      , readonly=True)
+    is_mold_dossierf          = fields.Char('Moule ou Dossier F'  , related='product_id.is_mold_dossierf', readonly=True)
     is_num_essai              = fields.Char("N°Essai")
 
     move_lines2 = fields.One2many('stock.move', 'raw_material_production_id', 'Consumed Products',domain=[('state', '=', 'done')], readonly=True)

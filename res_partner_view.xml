@@ -210,11 +210,12 @@
                     /> 
                 </xpath>
                 <xpath expr="//field[@name='credit_limit']" position="after">
-                    <field name="is_caracteristique_bl" attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
-                    <field name="is_type_reglement"     attrs="{'invisible': [('is_company', '=', False)]}" />
-                    <field name="is_num_siret"          attrs="{'invisible': ['|',('is_company', '=', False),('supplier','!=', True)]}" />
-                    <field name="is_code_client"        attrs="{'invisible': ['|',('is_company', '=', False),('supplier','!=', True)]}" />
-                    <field name="is_rib_id"             attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
+                    <field name="is_caracteristique_bl"  attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
+                    <field name="is_type_reglement"      attrs="{'invisible': [('is_company', '=', False)]}" />
+                    <field name="is_num_siret"           attrs="{'invisible': ['|',('is_company', '=', False),('supplier','!=', True)]}" />
+                    <field name="is_code_client"         attrs="{'invisible': ['|',('is_company', '=', False),('supplier','!=', True)]}" />
+                    <field name="is_rib_id"              attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
+                    <field name="is_adr_liv_sur_facture" attrs="{'invisible': ['|',('is_company', '=', False),('customer','!=', True)]}" />
                 </xpath>
             </field>
         </record>
