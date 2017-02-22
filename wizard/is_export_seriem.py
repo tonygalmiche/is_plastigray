@@ -89,7 +89,8 @@ class is_export_seriem(models.TransientModel):
                             rp.supplier,
                             ai.is_bon_a_payer,
                             ai.supplier_invoice_number,
-                            rp.is_adr_groupe
+                            rp.is_adr_groupe,
+                            ail.is_document
                     FROM account_move_line aml inner join account_invoice ai             on aml.move_id=ai.move_id
                                                inner join account_account aa             on aml.account_id=aa.id
                                                inner join res_partner rp                 on ai.partner_id=rp.id
@@ -97,15 +98,20 @@ class is_export_seriem(models.TransientModel):
                                                left outer join is_section_analytique isa on ail.is_section_analytique_id=isa.id
                                                left outer join account_journal aj        on rp.is_type_reglement=aj.id
                     WHERE ai.id="""+str(id)+"""
-                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number,rp.is_adr_groupe
-                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number,rp.is_adr_groupe
+                    GROUP BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number,rp.is_adr_groupe,ail.is_document
+                    ORDER BY ai.is_bon_a_payer, ai.number, ai.date_invoice, rp.is_code, rp.name, aa.code, isa.name, ai.type, ai.date_due, aj.code, rp.supplier,ai.supplier_invoice_number,rp.is_adr_groupe,ail.is_document
                 """
+
+
+                #TODO is_document
 
                 cr.execute(sql)
                 for row in cr.fetchall():
+                    #print row
 
                     CodeAuxiliaire = (u"000000"+str(row[2]))[-6:]
                     ClientGroupe   = str(row[14])
+                    Document       = str(row[15])
 
                     #print "TEST 1", CodeAuxiliaire, ClientGroupe
 
@@ -128,7 +134,10 @@ class is_export_seriem(models.TransientModel):
                     Debit             = row[9]
                     Credit            = row[10]
                     BonAPayer         = row[12]
-                    NumFacFournisseur = row[13]
+                    NumFacFournisseur = str(row[13])
+
+                    if NumFacFournisseur=="None":
+                        NumFacFournisseur="         "
 
                     Montant   = Credit - Debit
                     Sens=u"D"
@@ -161,9 +170,18 @@ class is_export_seriem(models.TransientModel):
                     if obj.type_interface=='achats' and not BonAPayer:
                         TypeFacture=u'L'  # Facture fournisseur en litige
                     Client=(row[3]+u"                                ")[:26]
+
                     if Journal=="AC":
-                        NumFacFournisseur=(NumFacFournisseur+u'    ')[:5]
+
+                        #print "NumFacFournisseur=",NumFacFournisseur
+
+                        #** Pour les investissements, remplacer la numéro de facture fournisseur par le numéro de document
+                        if Document!='None' and NumCompte[:1]=='2':
+                            NumFacFournisseur=(Document[-5:]+u'    ')[:5]
+                        else:
+                            NumFacFournisseur=(NumFacFournisseur+u'    ')[:5]
                         Client=(NumFacFournisseur+u' '+Client)[:26]
+
                     NumFacture=(u"000000"+str(row[0]))[-6:]
                     DateEcheance=row[7]
                     DateEcheance=datetime.datetime.strptime(DateEcheance, '%Y-%m-%d')
@@ -176,6 +194,7 @@ class is_export_seriem(models.TransientModel):
                     JourFacture=(u"00"+DateFacture)[-2:]
                     Ligne=u"L"+NumCompte+CodeFournisseur+Montant+Sens+TypeFacture+Client+NumFacture+SectionAnalytique+JourFacture+u"   00000000000   00000000000"
                     res.append(Ligne)
+                    #print Ligne
 
                 # ** Ligne de fin type H *******************************************
                 TotalTTC=int(round(100*TotalTTC))

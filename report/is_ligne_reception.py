@@ -17,8 +17,10 @@ class is_ligne_reception(models.Model):
     product_id         = fields.Many2one('product.template', 'Article')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     commande_ouverte   = fields.Char('Commande ouverte')
-    product_uom_qty    = fields.Float('Quantité', digits=(14,4))
     product_uom        = fields.Many2one('product.uom', 'Unité')
+    qt_receptionnee    = fields.Float('Quantité réceptionnée', digits=(14,4))
+    qt_facturee        = fields.Float('Quantité facturée'    , digits=(14,4))
+    reste_a_facturer   = fields.Float('Reste à facturer'     , digits=(14,4))
     date_planned       = fields.Date('Date prévue')
     date_reception     = fields.Date('Date réception')
     date_mouvement     = fields.Datetime('Date mouvement')
@@ -64,8 +66,10 @@ class is_ligne_reception(models.Model):
                         sp.partner_id         as partner_id, 
                         pt.id                 as product_id, 
                         pt.is_ref_fournisseur as ref_fournisseur,
-                        sm.product_uom_qty    as product_uom_qty,
                         sm.product_uom        as product_uom,
+                        sm.product_uom_qty    as qt_receptionnee,
+                        coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0) as qt_facturee,
+                        round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4) as reste_a_facturer,
                         sm.state              as state,
                         sp.state              as picking_state,
                         sp.invoice_state      as invoice_state,

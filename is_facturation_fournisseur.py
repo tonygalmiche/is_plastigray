@@ -91,7 +91,8 @@ class is_facturation_fournisseur(models.Model):
                         sp.is_date_reception, 
                         sm.product_id,
                         pt.is_ref_fournisseur,
-                        sm.product_uom_qty,
+
+                        round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4),
                         sm.product_uom, 
                         pol.price_unit,
                         sm.id,
@@ -101,9 +102,13 @@ class is_facturation_fournisseur(models.Model):
                                       inner join product_product           pp on sm.product_id=pp.id
                                       inner join product_template          pt on pp.product_tmpl_id=pt.id 
                                       left outer join purchase_order_line pol on sm.purchase_line_id=pol.id
-                where sm.state='done' 
-                      and sm.invoice_state='2binvoiced' 
+                where sm.state='done'
+                      and round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4)>0 
                       and sp.picking_type_id=1 """
+
+                      #and sm.invoice_state='2binvoiced' 
+                      #sm.product_uom_qty,
+
             sql=sql+" and sp.partner_id in("+','.join(partners)+") "
             sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
 
@@ -297,7 +302,7 @@ class is_facturation_fournisseur_line(models.Model):
     description        = fields.Char('Description')
     account_id         = fields.Many2one('account.account', 'Compte')
     ref_fournisseur    = fields.Char('Référence fournisseur')
-    quantite           = fields.Float('Quantité', digits=(14,4))
+    quantite           = fields.Float('Reste à facturer', digits=(14,4))
     uom_id             = fields.Many2one('product.uom', 'Unité')
     prix               = fields.Float('Prix'    , digits=(14,4))
     total              = fields.Float("Total" , digits=(14,4), compute='_compute', readonly=True, store=False)
