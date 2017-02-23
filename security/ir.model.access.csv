@@ -127,6 +127,8 @@ access_is_comparatif_lot_appro_prix,access_is_comparatif_lot_appro_prix,model_is
 access_is_comparatif_article_tarif_cial,access_is_comparatif_article_tarif_cial,model_is_comparatif_article_tarif_cial,base.group_user,1,0,0,0
 access_is_res_partner,access_is_res_partner,model_is_res_partner,base.group_user,1,0,0,0
 access_is_article_sans_cde_ouverte_fou,access_is_article_sans_cde_ouverte_fou,model_is_article_sans_cde_ouverte_fou,base.group_user,1,0,0,0
+access_is_pic_3ans_saisie,access_is_pic_3ans_saisie,model_is_pic_3ans_saisie,base.group_user,1,0,0,0
+access_is_pic_3ans,access_is_pic_3ans,model_is_pic_3ans,base.group_user,1,0,0,0
 
 
 

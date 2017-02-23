@@ -65,6 +65,7 @@ Module principal du projet Plastigray
         "res_users_view.xml",
         "is_etuve_view.xml",
         "is_cde_ferme_cadencee_view.xml",
+        "is_pic_3ans.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

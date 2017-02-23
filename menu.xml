@@ -501,6 +501,7 @@
     </record>
 
 
+
     <!-- Ventes / Liste à servir -->
     <record id="menu_is_ventes_liste_servir" model="ir.ui.menu">
         <field name="name">Liste à servir</field>
@@ -663,8 +664,33 @@
     </record>
 
 
-
-
+    <!-- PIC à 3 ans -->
+    <record id="is_pic_3ans_main_menu" model="ir.ui.menu" >
+        <field name="name">PIC à 3 ans</field>
+        <field name="sequence">60</field>
+        <field name="parent_id" eval="ref('menu_is_ventes')"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_pic_3ans_saisie_menu" model="ir.ui.menu" >
+        <field name="name">Saisie PIC à 3 ans</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_pic_3ans_main_menu')"/>
+        <field name="action"    ref="is_pic_3ans_saisie_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_pic_3ans_menu" model="ir.ui.menu" >
+        <field name="name">PIC à 3 ans</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_pic_3ans_main_menu')"/>
+        <field name="action"    ref="is_pic_3ans_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
 
 
     <!-- Ventes / Tables -->

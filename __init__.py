@@ -29,6 +29,7 @@ import purchase
 import res_users
 import is_etuve
 import is_cde_ferme_cadencee
+import is_pic_3ans
 
 import report
 import wizard
