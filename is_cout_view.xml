@@ -207,11 +207,40 @@
             <field name="model">is.cout</field>
             <field name="arch" type="xml">
                 <search>
+                    <filter string="Produits vendus"         domain="['|',('is_category_id.name', '=', '0'),('is_category_id.name', '=', '2')]" name="vendus"/>
+                    <filter 
+                        string="Prix vente standard à 0" 
+                        domain="[('cout_std_prix_vente', '=', '0'),'|',('is_category_id.name', '=', '0'),('is_category_id.name', '=', '2')]" 
+                        name="prix_vente_standard_0"
+                    />
+                    <filter 
+                        string="Coût standard à 0" 
+                        domain="[('cout_std_total', '=', '0')]" 
+                        name="cout_standard_0"
+                    />
+                    <filter 
+                        string="Coût matière à 0" 
+                        domain="[('cout_std_matiere', '=', '0')]" 
+                        name="cout_matiere_0"
+                    />
+                    <filter 
+                        string="Coût ST à 0" 
+                        domain="[('type_article', '=', 'ST'),('cout_std_st', '=', '0')]" 
+                        name="cout_st_0"
+                    />
                     <field name="name"/>
                     <field name="type_article"/>
                     <field name="is_category_id"/> 
                     <field name="is_gestionnaire_id"/> 
                     <field name="is_mold_id"/> 
+
+                    <group expand="0" string="Regrouper par...">
+                        <filter string="Type d'article"   context="{'group_by':'type_article'}"/>
+                        <filter string="Catégorie"        context="{'group_by':'is_category_id'}"/>
+                        <filter string="Gestionnaire"     context="{'group_by':'is_gestionnaire_id'}"/>
+                        <filter string="Moule"            context="{'group_by':'is_mold_id'}"/>
+                    </group>
+
                 </search>
             </field>
         </record>
@@ -272,6 +301,7 @@
 
 
 
+
         <!-- Exportation des couts -->
         <record model="ir.ui.view" id="is_cout_export_tree_view">
             <field name="name">is_cout_export_tree_view</field>
@@ -302,6 +332,30 @@
             <field name="res_model">is.cout</field>
             <field name="view_id" ref="is_cout_export_tree_view"/>
             <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Prix de vente standard à 0 -->
+        <record id="is_prix_vente_standard_0_action" model="ir.actions.act_window" >
+            <field name="name">Prix vente standard à 0</field>
+            <field name="res_model">is.cout</field>
+            <field name="view_id" ref="is_cout_export_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="limit">200</field>
+            <field name="domain">[]</field>
+            <field name="context">{"search_default_prix_vente_standard_0":1}</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!-- Coût standard à 0 -->
+        <record id="is_cout_standard_0_action" model="ir.actions.act_window" >
+            <field name="name">Coût standard à 0</field>
+            <field name="res_model">is.cout</field>
+            <field name="view_id" ref="is_cout_export_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="limit">200</field>
+            <field name="domain">[]</field>
+            <field name="context">{"search_default_cout_standard_0":1}</field>
             <field name="view_mode">tree,form</field>
         </record>
 

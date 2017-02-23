@@ -1190,6 +1190,26 @@
         ])]"/>
     </record>
 
+    <!-- Analyse des couts -->
+    <menuitem id="is_analyse_cout_menu" sequence="60" name="Analyses Coûts" parent="menu_is_analyse"/>
+    <record id="is_prix_vente_standard_0_menu" model="ir.ui.menu" >
+        <field name="name">Prix vente standard à 0</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_analyse_cout_menu')"/>
+        <field name="action"    ref="is_prix_vente_standard_0_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_cout_standard_0_menu" model="ir.ui.menu" >
+        <field name="name">Coût standard à 0</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_analyse_cout_menu')"/>
+        <field name="action"    ref="is_cout_standard_0_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
 
 
 
