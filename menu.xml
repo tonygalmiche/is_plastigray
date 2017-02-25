@@ -298,7 +298,15 @@
             ref('is_comptable_group'),
         ])]"/>
     </record>
-
+    <record id="is_anomalie_position_fiscale_menu" model="ir.ui.menu" >
+        <field name="name">Anomalies position fiscale</field>
+        <field name="sequence">15</field>
+        <field name="parent_id" eval="ref('menu_is_achats_fac')"/>
+        <field name="action"    ref="is_anomalie_position_fiscale_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group'),
+        ])]"/>
+    </record>
     <record id="menu_is_creation_facture_achat" model="ir.ui.menu" >
         <field name="name">Création facture</field>
         <field name="sequence">20</field>

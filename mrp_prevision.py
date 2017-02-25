@@ -83,17 +83,29 @@ class mrp_prevision(models.Model):
             partner=obj.product_id.seller_ids[0].name
             if partner.property_product_pricelist_purchase:
                 vals={
-                    'partner_id'   : partner.id,
-                    'location_id'  : partner.is_source_location_id.id,
-                    'pricelist_id' : partner.property_product_pricelist_purchase.id,
+                    'partner_id'      : partner.id,
+                    'location_id'     : partner.is_source_location_id.id,
+                    'fiscal_position' : partner.property_account_position.id,
+                    'payment_term_id' : partner.property_supplier_payment_term.id,
+                    'pricelist_id'    : partner.property_product_pricelist_purchase.id,
                 }
                 order=order_obj.create(vals)
                 if order:
                     unlink=True
                     try:
-                        res=order_line_obj.onchange_product_id(order.pricelist_id.id, \
-                            obj.product_id.id, obj.quantity_ha, obj.uom_po_id.id, \
-                            partner.id, False, False, obj.start_date_cq, False, False, 'draft')
+                        res=order_line_obj.onchange_product_id(
+                            order.pricelist_id.id, 
+                            obj.product_id.id, 
+                            obj.quantity_ha, 
+                            obj.uom_po_id.id, 
+                            partner.id, 
+                            date_order         = False, 
+                            fiscal_position_id = partner.property_account_position.id, 
+                            date_planned       = obj.start_date_cq, 
+                            name               = False, 
+                            price_unit         = False, 
+                            state              = 'draft'
+                        )
                         vals=res['value']
                         vals['order_id']=order.id
                         vals['product_id']=obj.product_id.id

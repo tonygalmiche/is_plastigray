@@ -73,6 +73,32 @@ class purchase_order(models.Model):
 
 
     @api.multi
+    def actualiser_taxes_commande(self):
+        for obj in self:
+            order_line_obj = self.env['purchase.order.line']
+            obj.fiscal_position = obj.partner_id.property_account_position.id
+            obj.payment_term_id = obj.partner_id.property_supplier_payment_term.id
+
+            for line in obj.order_line:
+                res=order_line_obj.onchange_product_id(
+                    obj.pricelist_id.id, 
+                    line.product_id.id, 
+                    line.product_qty, 
+                    line.product_uom.id, 
+                    obj.partner_id.id, 
+                    date_order         = line.date_order, 
+                    fiscal_position_id = obj.partner_id.property_account_position.id, 
+                    date_planned       = line.date_planned, 
+                    name               = line.name, 
+                    price_unit         = line.price_unit, 
+                )
+                taxes_id=[]
+                for taxe_id in res['value']['taxes_id']:
+                    taxes_id.append(taxe_id)
+                line.taxes_id=[(6,0,taxes_id)]
+
+
+    @api.multi
     def test_prix0(self,obj):
         for line in obj.order_line:
             if not line.is_justification and not line.price_unit:

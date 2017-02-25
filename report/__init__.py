@@ -38,4 +38,5 @@ import is_comparatif_lot_appro_prix
 import is_comparatif_article_tarif_cial
 import is_res_partner
 import is_article_sans_cde_ouverte_fou
+import is_anomalie_position_fiscale
 
