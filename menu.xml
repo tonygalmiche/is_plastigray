@@ -979,10 +979,45 @@
         ])]"/>
     </record>
 
+
+
+    <!-- Indicateurs -->
+    <record id="is_indicateurs_menu" model="ir.ui.menu" >
+        <field name="name">Indicateurs</field>
+        <field name="sequence">6</field>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_comptable_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+    <menuitem id="is_indicateur_ca_menu" sequence="10" name="Chiffre d'affaire" parent="is_indicateurs_menu"/>
+    <record id="is_indicateur_ca_livraison_menu" model="ir.ui.menu" >
+        <field name="name">CA livraisons</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_indicateur_ca_menu')"/>
+        <field name="action"    ref="is_indicateur_ca_livraison_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_sale_order_line_menu" model="ir.ui.menu" >
+        <field name="name">CA commandes client</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_indicateur_ca_menu')"/>
+        <field name="action"    ref="is_sale_order_line_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+
+
+
     <!-- Analyses -->
     <record id="menu_is_analyse" model="ir.ui.menu" >
         <field name="name">Analyses</field>
-        <field name="sequence">6</field>
+        <field name="sequence">7</field>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_comptable_group'),
@@ -1224,7 +1259,7 @@
     <!-- Suivi d'activité -->
     <record id="base.menu_reporting" model="ir.ui.menu" >
         <field name="name">Suivi d'activité</field>
-        <field name="sequence">7</field>
+        <field name="sequence">8</field>
         <field name="parent_id" eval=""/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_commerciaux_group'),
@@ -1240,7 +1275,7 @@
 
 
     <!-- Déplacement des menus standards sous le menu 'Autre' -->
-    <menuitem id="menu_is_autre"                 sequence="6"  name="Autre" groups="base.group_system" />
+    <menuitem id="menu_is_autre"                 sequence="9"  name="Autre" groups="base.group_system" />
     <menuitem id="base.menu_purchase_root"    sequence="20" name="Achats"               parent="menu_is_autre"/>
     <menuitem id="base.menu_base_partner"     sequence="30" name="Ventes"               parent="menu_is_autre"/>
     <menuitem id="stock.menu_stock_root"      sequence="40" name="Entrepôt"             parent="menu_is_autre"/>
