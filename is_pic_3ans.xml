@@ -25,12 +25,10 @@
                     <sheet>
                         <group>
                             <group>
+                                <field name="annee"/>
+                                <field name="product_id"/>
                                 <field 
-                                    name="annee"
-                                    on_change="on_change_action(annee,product_id)"
-                                />
-                                <field 
-                                    name="product_id"
+                                    name="recharger"
                                     on_change="on_change_action(annee,product_id)"
                                     domain="[('sale_ok','=',True)]"
                                 />

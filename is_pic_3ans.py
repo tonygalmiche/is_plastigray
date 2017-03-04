@@ -26,6 +26,7 @@ class is_pic_3ans_saisie(models.Model):
 
     annee      = fields.Char('Année PIC',                         required=True)
     product_id = fields.Many2one('product.product', 'Article',    required=True)
+    recharger  = fields.Boolean('Recharger les données')
 
     liv_01     = fields.Integer('Livré 01', compute='_compute', readonly=True, store=False)
     liv_02     = fields.Integer('Livré 02', compute='_compute', readonly=True, store=False)
@@ -190,14 +191,16 @@ class is_pic_3ans_saisie(models.Model):
         for i in range(1,13):
             champ = "pic_"+("00"+str(i))[-2:]
             mois  = str(annee)+'-'+("00"+str(i))[-2:]
-            vals={
-                'type_donnee': 'pic',
-                'annee'      : obj.annee,
-                'mois'       : mois,
-                'product_id' : obj.product_id.id,
-                'quantite'   : getattr(obj, champ),
-            }
-            pic=pic_obj.create(vals)
+            quantite = getattr(obj, champ)
+            if quantite>0:
+                vals={
+                    'type_donnee': 'pic',
+                    'annee'      : obj.annee,
+                    'mois'       : mois,
+                    'product_id' : obj.product_id.id,
+                    'quantite'   : quantite,
+                }
+                pic=pic_obj.create(vals)
 
 
     def run_cbb_scheduler_action(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
