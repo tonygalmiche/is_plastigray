@@ -1056,6 +1056,17 @@
         ])]"/>
     </record>
 
+    <record id="is_poids_brut_0_menu" model="ir.ui.menu" >
+        <field name="name">Poids brut à 0</field>
+        <field name="sequence">23</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_poids_brut_0_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+
 
     <record id="is_comparatif_article_tarif_cial_menu" model="ir.ui.menu" >
         <field name="name">Comparatif Article / Tarif Cial</field>

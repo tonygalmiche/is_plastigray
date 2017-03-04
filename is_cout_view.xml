@@ -219,28 +219,46 @@
                         name="cout_standard_0"
                     />
                     <filter 
-                        string="Coût matière à 0" 
+                        string="Coût matière standard à 0" 
                         domain="[('cout_std_matiere', '=', '0')]" 
-                        name="cout_matiere_0"
+                        name="cout_std_matiere_0"
                     />
                     <filter 
-                        string="Coût ST à 0" 
+                        string="Coût ST standard à 0" 
                         domain="[('type_article', '=', 'ST'),('cout_std_st', '=', '0')]" 
-                        name="cout_st_0"
+                        name="cout_std_st_0"
+                    />
+                    <filter 
+                        string="Prix vente actualisé à 0" 
+                        domain="[('cout_act_prix_vente', '=', '0'),'|',('is_category_id.name', '=', '0'),('is_category_id.name', '=', '2')]" 
+                        name="prix_vente_actualise_0"
+                    />
+                    <filter 
+                        string="Coût actualisé à 0" 
+                        domain="[('cout_act_total', '=', '0')]" 
+                        name="cout_act_0"
+                    />
+                    <filter 
+                        string="Coût matière actualisé à 0" 
+                        domain="[('cout_act_matiere', '=', '0')]" 
+                        name="cout_act_matiere_0"
+                    />
+                    <filter 
+                        string="Coût ST actualisé à 0" 
+                        domain="[('type_article', '=', 'ST'),('cout_act_st', '=', '0')]" 
+                        name="cout_act_st_0"
                     />
                     <field name="name"/>
                     <field name="type_article"/>
                     <field name="is_category_id"/> 
                     <field name="is_gestionnaire_id"/> 
                     <field name="is_mold_id"/> 
-
                     <group expand="0" string="Regrouper par...">
                         <filter string="Type d'article"   context="{'group_by':'type_article'}"/>
                         <filter string="Catégorie"        context="{'group_by':'is_category_id'}"/>
                         <filter string="Gestionnaire"     context="{'group_by':'is_gestionnaire_id'}"/>
                         <filter string="Moule"            context="{'group_by':'is_mold_id'}"/>
                     </group>
-
                 </search>
             </field>
         </record>

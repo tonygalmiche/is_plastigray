@@ -90,6 +90,7 @@
                 <tree colors="red:qty_available &lt; 0 ">
                     <field name="is_code"/>
                     <field name="name"/>
+                    <field name="segment_id"/>
                     <field name="is_category_id"/>
                     <field name="is_gestionnaire_id"/>
                     <field name="is_mold_id"/>
@@ -110,8 +111,42 @@
         </record>
 
 
+        <!-- Poids brut à 0 pour les segment 'Produit fini et semi-fini -->
+        <record id="is_poids_brut_0_tree_view" model="ir.ui.view">
+            <field name="name">is_liste_stock_negatif_tree_view</field>
+            <field name="model">product.template</field>
+            <field name="priority" eval="90" />
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="is_code"/>
+                    <field name="name"/>
+                    <field name="segment_id"/>
+                    <field name="is_category_id"/>
+                    <field name="is_gestionnaire_id"/>
+                    <field name="is_mold_id"/>
+                    <field name="weight"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_poids_brut_0_action" model="ir.actions.act_window">
+            <field name="name">Liste des stocks négatifs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="domain">[
+                '|',
+                '&amp;',('weight','=', 0),('segment_id.name','=','PRODUIT FINI'),
+                '&amp;',('weight','=', 0),('segment_id.name','=','SEMI-FINI')
+            ]</field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_poids_brut_0_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
+<!--is_plastigray/mrp_view.xml:        <field name="domain">['&amp;','&amp;',('is_negoce','=', False),('is_sous_traitance','=', False), '|', ('routing_id','=', False),('is_gamme_generique_id','=', False)]</field>
+is_plastigray/is_cout_view.xml:                        domain="[('cout_act_prix_vente', '=', '0'),'|',('is_category_id.name', '=', '0'),('is_category_id.name', '=', '2')]" 
 
+-->
 
 
 
