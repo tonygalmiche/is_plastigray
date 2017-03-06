@@ -9,6 +9,23 @@ from ftplib import FTP
 import os
 
 
+modele_mail=u"""
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    </head>
+    <body>
+        <font>Bonjour, </font>
+        <br><br>
+        <font> Veuillez trouver ci-joint notre facture.</font>
+        <br><br>
+        Cordialement <br><br>
+        [from]<br>
+    </body>
+</html>
+"""
+
+
 class is_account_folio(models.Model):
     _name  = 'is.account.folio'
     _order = 'name desc'
@@ -55,7 +72,11 @@ class account_invoice(models.Model):
     is_folio_id       = fields.Many2one('is.account.folio', 'Folio')
     is_bon_a_payer    = fields.Boolean("Bon à payer", default=True)
     is_type_facture   = fields.Selection([('standard', u'Standard'),('diverse', u'Diverse')], u"Type de facture", default='standard', select=True)
-
+    is_mode_envoi_facture = fields.Selection([
+        ('courrier', 'Envoi par courrier'),
+        ('mail'    , 'Envoi par mail'),
+    ], "Mode d'envoi de la facture")
+    is_date_envoi_mail = fields.Datetime("Mail envoyé le", readonly=True)
 
     def _compute(self):
         for obj in self:
@@ -69,7 +90,6 @@ class account_invoice(models.Model):
             obj.is_tva      = tva
 
 
-
     @api.multi
     def invoice_print(self):
         assert len(self) == 1, 'This option should only be used for a single id at a time.'
@@ -77,17 +97,76 @@ class account_invoice(models.Model):
         return self.env['report'].get_action(self, 'is_plastigray.is_report_invoice')
 
 
+    @api.multi
+    def action_invoice_sent(self):
+        """Envoi du mail directement sans passer par le wizard"""
+        cr = self._cr
+        for obj in self:
+            attachment_id = self.env['ir.attachment'].search([
+                ('res_model','=','account.invoice'),
+                ('res_id'   ,'=',obj.id),
+            ])
+            if len(attachment_id)==0:
+                raise Warning(u"Facture non générée (non imprimée) !")
+
+            user       = self.env['res.users'].browse(self._uid)
+            if user.email==False:
+                raise Warning(u"Votre mail n'est pas renseigné !")
+
+            #** Recherche du contact Facturation *******************************
+            SQL="""
+                select rp.name, rp.email
+                from res_partner rp inner join is_type_contact itc on rp.is_type_contact=itc.id
+                where rp.parent_id="""+str(obj.partner_id.id)+""" and itc.name='Facturation' limit 1
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            email_to=False
+            for row in result:
+                email_to = str(row[1])
+                if email_to=='None':
+                    raise Warning(u"Mail du contact de facturation non renseigné !")
+                email_to=row[0]+u'<'+email_to+u'>'
+            if email_to==False:
+                raise Warning(u"Aucun contact de type 'Facturation' trouvé !")
+            #*******************************************************************
+
+            email_cc   = user.name+u'<'+user.email+u'>'
+            email_from = email_cc
+            subject  = u'Facture Plastigray N°'+obj.number+u' pour '+obj.partner_id.name+u' ('+email_to+u')'
+            email_vals = {}
+            body_html=modele_mail.replace('[from]', user.name)
+            email_vals.update({
+                'subject'       : subject,
+                'email_to'      : email_cc,
+                'email_cc'      : email_cc,
+                'email_from'    : email_from, 
+                'body_html'     : body_html.encode('utf-8'), 
+                'attachment_ids': [(6, 0, [attachment_id.id])] 
+            })
+            obj.message_post(body=subject+u' envoyée par mail à '+email_to)
+            email_id=self.env['mail.mail'].create(email_vals)
+            if email_id:
+                self.env['mail.mail'].send(email_id)
+                obj.is_date_envoi_mail=datetime.now()
+
 
     @api.multi
     def action_move_create(self):
+        for obj in self:
+            print "####",obj
+            if obj.is_mode_envoi_facture==False:
+                obj.is_mode_envoi_facture=obj.partner_id.is_mode_envoi_facture
         super(account_invoice, self).action_move_create()
         self.escompte()
+
 
     @api.multi
     def button_reset_taxes(self):
         res=super(account_invoice, self).button_reset_taxes()
         self.escompte()
         return res
+
 
     @api.multi
     def escompte(self):
@@ -149,26 +228,6 @@ class account_invoice(models.Model):
         res['is_num_bl_manuel']=invoice.is_num_bl_manuel
 
         return res
-
-
-#    @api.multi
-#    def initialisation_mouvement_stock(self):
-#        for obj in self:
-#            factures = self.env['is.facturation.fournisseur'].search([
-#                ('name'        , '=', obj.partner_id.id),
-#                ('date_facture', '=', obj.date_invoice),
-#                ('num_facture' , '=', obj.supplier_invoice_number),
-#            ])
-#            for facture in factures:
-#                for line in obj.invoice_line:
-#                    lignes = self.env['is.facturation.fournisseur.line'].search([
-#                        ('facturation_id', '=', facture.id),
-#                        ('selection'     , '=', True),
-#                        ('product_id'    , '=', line.product_id.id),
-#                        ('quantite'      , '=', line.quantity),
-#                    ])
-#                    for ligne in lignes:
-#                        line.is_move_id=ligne.move_id
 
 
 class account_invoice_line(models.Model):

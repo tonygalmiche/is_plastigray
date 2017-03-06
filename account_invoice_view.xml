@@ -69,13 +69,11 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_tree" />
             <field name="arch" type="xml">
-
                 <xpath expr="//field[@name='number']" position="replace" >
                     <field name="internal_number"/> 
                 </xpath>
-
-
                 <xpath expr="//field[@name='state']" position="after" >
+                    <field name="is_date_envoi_mail"/> 
                     <field name="is_folio_id"/> 
                 </xpath>
             </field>
@@ -91,8 +89,21 @@
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
+                <button name="action_invoice_sent" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}"  position="replace" />
+                <button name="action_invoice_sent" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" position="replace" />
+                <button name="invoice_open" position="before" >
+                    <button 
+                        name="action_invoice_sent"
+                        type="object" 
+                        string="Envoyer par mail" 
+                        attrs="{'invisible':['|','|',('state', '!=', 'open'),('is_mode_envoi_facture', '!=', 'mail'),('is_date_envoi_mail', '!=', False)]}" 
+                        groups="is_plastigray.is_comptable_group"/>
+                </button>
+                <xpath expr="//button[@name='invoice_pay_customer']" position="replace" />
                 <field name="date_invoice" position="after">
                     <field name="is_type_facture" />
+                    <field name="is_mode_envoi_facture" />
+                    <field name="is_date_envoi_mail" attrs="{'invisible':[('is_mode_envoi_facture', '!=', 'mail')]}" />
                 </field>
                 <xpath expr="//field[@name='account_id']" position="after" >
                     <field name="is_folio_id"/> 
@@ -181,6 +192,30 @@
             <field name="view_mode">form</field>
             <field name="view_id" ref="account.invoice_form"/>
             <field name="act_window_id" ref="is_factures_a_valider_action"/>
+        </record>
+
+
+        <!-- Factures à envoyer par mail -->
+        <record id="is_factures_envoi_mail_action" model="ir.actions.act_window">
+            <field name="name">Factures à envoyer par mail</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.invoice</field>
+            <field name="domain">[('is_mode_envoi_facture','=','mail'),('type','=','out_invoice'),('is_date_envoi_mail','=',False),('state','=','open')]</field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!-- Ces 2 vues permettent de préciser les vues à utiliser pour l'action précédente -->
+        <record id="is_factures_envoi_mail_action_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="is_factures_envoi_mail_action"/>
+        </record>
+        <record id="is_factures_envoi_mail_action_form_view" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_form"/>
+            <field name="act_window_id" ref="is_factures_envoi_mail_action"/>
         </record>
 
 

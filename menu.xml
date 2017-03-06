@@ -625,6 +625,7 @@
     </record>
 
     <menuitem id="menu_is_ventes_fac_20"   sequence="20" name="Factures à valider"    parent="menu_is_ventes_fac" action="is_factures_a_valider_action" />
+    <menuitem id="menu_is_ventes_fac_22"   sequence="22" name="A envoyer par mail"    parent="menu_is_ventes_fac" action="is_factures_envoi_mail_action" />
     <menuitem id="menu_is_ventes_fac_25"   sequence="25" name="Factures diverses"     parent="menu_is_ventes_fac" action="is_factures_diverses_action" />
     <menuitem id="menu_is_ventes_fac_30"   sequence="30" name="Toutes les factures"   parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
     <menuitem id="menu_is_ventes_fac_40"   sequence="40" name="Tous les avoirs"       parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
