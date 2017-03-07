@@ -195,6 +195,30 @@
         </record>
 
 
+        <!-- Factures à imprimer -->
+        <record id="is_factures_a_imprimer_action" model="ir.actions.act_window">
+            <field name="name">Factures à imprimer = Factures à comptabiliser</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.invoice</field>
+            <field name="domain">[('is_folio_id','=', False),('state','=', 'open'),('type','=', 'out_invoice')]</field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!-- Ces 2 vues permettent de préciser les vues à utiliser pour l'action précédente -->
+        <record id="is_factures_a_imprimer_action_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="is_factures_a_imprimer_action"/>
+        </record>
+        <record id="is_factures_a_imprimer_action_form_view" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_form"/>
+            <field name="act_window_id" ref="is_factures_a_imprimer_action"/>
+        </record>
+
+
         <!-- Factures à envoyer par mail -->
         <record id="is_factures_envoi_mail_action" model="ir.actions.act_window">
             <field name="name">Factures à envoyer par mail</field>

@@ -1316,20 +1316,31 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+    <record id="is_mrp_production_workcenter_line_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_workcenter_line_magasiniers_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production_workcenter_line')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_mrp_production_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_magasiniers_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+
+
+
+
 
 
     <!-- Qualité -->
-    <!--
-    <record id="is_gestion_lot_qualite_access"  model="ir.model.access" >
-        <field name="name">is_gestion_lot_qualite_access</field>
-        <field name="model_id"    eval="ref('model_is_gestion_lot')"/>
-        <field name="group_id"    eval="ref('is_qualite_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    -->
     <record id="is_stock_move_qualite_access"  model="ir.model.access" >
         <field name="name">is_stock_move_qualite_access</field>
         <field name="model_id"    eval="ref('stock.model_stock_move')"/>

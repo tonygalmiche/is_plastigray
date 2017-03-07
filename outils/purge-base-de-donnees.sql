@@ -13,7 +13,6 @@ delete from is_etuve_saisie;
 delete from is_etuve;
 
 -- CBN et Ordres de fabrications
-
 delete from mrp_prevision;
 delete from mrp_production;
 delete from is_pdc;
@@ -58,3 +57,46 @@ delete from is_tarif_cial;
 -- Cout Article => Prix forcés à conserver --
 delete from is_cout_calcul;
 delete from is_cout;
+
+
+
+---- Odoo0 : Conserver dans Odoo0, les clients, les moules, projets et postes de charges.
+
+---- Nomenclatures
+--delete from mrp_bom;
+--delete from mrp_production_product_line;
+
+---- Gammes
+--delete from mrp_routing;
+
+---- Commandes et PIC à 3 ans
+--delete from procurement_order;
+--delete from is_pic_3ans;
+--delete from is_pic_3ans_saisie;
+--delete from is_cde_ferme_cadencee;
+
+---- Inventaire
+--delete from is_inventaire_ecart;
+--delete from is_inventaire_line_tmp;
+
+---- Articles
+--delete from product_product;
+--delete from product_template;
+
+
+---- Liste de prix
+--delete from product_pricelist;
+
+
+-- -- Odoo3 : Supprimer moules projet, postes de charges 
+
+---- Projets et moules
+--delete from is_mold_project;
+--delete from is_mold;
+--delete from is_dossierf;
+
+---- Postes de charge
+--delete from mrp_workcenter;
+
+
+
