@@ -37,7 +37,7 @@ BEGIN
                                    inner join product_pricelist_item    ppi on ppi.price_version_id=ppv.id
         where ppi.product_id=productid
             and ppl.id=pricelistid
-            and min_quantity<=qt
+            and round(min_quantity::numeric,5)<=round(qt::numeric,5)
             and ppl.type='purchase' and ppl.active='t'
             and (ppv.date_end   is null or ppv.date_end   >= date) 
             and (ppv.date_start is null or ppv.date_start <= date) 
