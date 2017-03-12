@@ -153,7 +153,8 @@ class is_stock_move(models.Model):
                         left outer join is_dossierf           id on pt.is_dossierf_id=id.id
                         left outer join stock_production_lot spl on sm.lot_id=spl.id
                 order by sm.date desc, sm.id
-            )
+            );
+
         """)
 
 

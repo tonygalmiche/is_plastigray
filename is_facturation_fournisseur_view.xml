@@ -62,7 +62,7 @@
                             </group>
                         </group>
                         <group>
-                            <field name="line_ids" nolabel="1"  attrs="{'readonly':[('state','=','termine')]}" >
+                            <field name="line_ids" nolabel="1"  attrs="{'readonly':[('state','=','termine')]}">
                                 <tree editable="bottom">
                                     <field name="num_bl_fournisseur"/>
                                     <field name="num_reception"/>

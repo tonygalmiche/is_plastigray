@@ -102,18 +102,15 @@ class is_facturation_fournisseur(models.Model):
                                       inner join product_product           pp on sm.product_id=pp.id
                                       inner join product_template          pt on pp.product_tmpl_id=pt.id 
                                       left outer join purchase_order_line pol on sm.purchase_line_id=pol.id
-                where sm.state='done'
-                      and round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4)>0 
-                      and sp.picking_type_id=1 """
-
-                      #and sm.invoice_state='2binvoiced' 
-                      #sm.product_uom_qty,
-
+                where 
+                    sm.state='done' and 
+                    round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4)>0 and 
+                    sp.picking_type_id=1 and
+                    pt.is_facturable='t'
+            """
             sql=sql+" and sp.partner_id in("+','.join(partners)+") "
             sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
-
             sql=sql+' order by sp.name, pol.id '
-
             cr.execute(sql)
             result=cr.fetchall()
             for row in result:
