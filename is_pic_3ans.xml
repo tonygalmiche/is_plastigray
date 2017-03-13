@@ -120,6 +120,12 @@
                                 <field name="niveau"     attrs="{'invisible': [('type_donnee','!=', 'pdp')]}"/>
                                 <field name="ordre"      attrs="{'invisible': [('type_donnee','!=', 'pdp')]}"/>
                             </group>
+                            <group>
+                                <field name="mold_dossierf"/>
+                                <field name="client_id"        widget="many2one_clickable"/>
+                                <field name="fournisseur_id"   widget="many2one_clickable"/>
+                                <field name="description"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
@@ -139,6 +145,9 @@
                     <field name="origine_id"       widget="many2one_clickable"/>
                     <field name="niveau"/>
                     <field name="ordre"/>
+                    <field name="mold_dossierf"/>
+                    <field name="client_id"        widget="many2one_clickable"/>
+                    <field name="fournisseur_id"   widget="many2one_clickable"/>
                     <field name="write_date"/>
                 </tree>
             </field>
@@ -149,7 +158,7 @@
              <field name="arch" type="xml">
                  <graph type="pivot">
                      <field name="type_donnee"        type="row"/>
-                     <field name="product_id"         type="row"/>
+                     <field name="description"        type="row"/>
                      <field name="annee"              type="col"/>
                      <field name="mois"               type="col"/>
                      <field name="quantite"           type="measure"/>
@@ -167,12 +176,18 @@
                     <field name="mois"/>
                     <field name="product_id"/>
                     <field name="origine_id"/>
+                    <field name="mold_dossierf"/>
+                    <field name="client_id"/>
+                    <field name="fournisseur_id"/>
                     <group expand="0" string="Regrouper par...">
                         <filter string="Type de donnée"    context="{'group_by':'type_donnee'}"/>
                         <filter string="Année"             context="{'group_by':'annee'}"/>
                         <filter string="Mois"              context="{'group_by':'mois'}"/>
                         <filter string="Article"           context="{'group_by':'product_id'}"/>
                         <filter string="Origine du besoin" context="{'group_by':'origine_id'}"/>
+                        <filter string="Moule"             context="{'group_by':'mold_dossierf'}"/>
+                        <filter string="Client"            context="{'group_by':'client_id'}"/>
+                        <filter string="Fournisseur"       context="{'group_by':'fournisseur_id'}"/>
                     </group>
                 </search>
             </field>

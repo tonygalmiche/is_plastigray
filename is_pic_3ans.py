@@ -295,6 +295,23 @@ class is_pic_3ans(models.Model):
     _name='is.pic.3ans'
     _order='mois,origine_id,ordre,product_id'
 
+
+
+    @api.depends('product_id')
+    def _compute(self):
+        for obj in self:
+            if obj.product_id:
+                obj.mold_dossierf  = obj.product_id.is_mold_dossierf
+                obj.client_id      = obj.product_id.is_client_id
+                obj.fournisseur_id = obj.product_id.is_fournisseur_id
+                description=\
+                    obj.product_id.is_code+\
+                    u' ('+(obj.product_id.is_mold_dossierf or u'')+\
+                    u'/'+(obj.product_id.is_client_id.is_code or u'')+\
+                    u'/'+(obj.product_id.is_fournisseur_id.is_code or u'')+u')'
+                obj.description=description
+
+
     type_donnee = fields.Selection([('pic', u'PIC'),('pdp', u'PDP')], u"Type de données", select=True, required=True)
     annee       = fields.Char('Année', required=True                                    , select=True)
     mois        = fields.Char('Mois' , required=True                                    , select=True)
@@ -304,6 +321,10 @@ class is_pic_3ans(models.Model):
     niveau      = fields.Integer('Niveau dans la nomenclature'                          , select=True)
     ordre       = fields.Integer('Ordre dans la nomenclature'                           , select=True)
 
+    mold_dossierf  = fields.Char('Moule ou Dossier F'                       , store=True, compute='_compute')
+    client_id      = fields.Many2one('res.partner', 'Client par défaut'     , store=True, compute='_compute')
+    fournisseur_id = fields.Many2one('res.partner', 'Fournisseur par défaut', store=True, compute='_compute')
+    description    = fields.Char('Article (Moule/Client/Fournisseur)'       , store=True, compute='_compute')
 
     # La fonction name_get est une fonction standard d'Odoo permettant de définir le nom des fiches (dans les relations x2x)
     # La fonction name_search permet de définir les résultats des recherches dans les relations x2x. En général, elle appelle la fonction name_get

@@ -1285,6 +1285,7 @@
 
 
 
+    <menuitem id="is_database_menu" action="is_database_action" name="Bases de données" parent="base.menu_res_company_global" sequence="90"/>
 
 
     <!-- Déplacement des menus standards sous le menu 'Autre' -->
