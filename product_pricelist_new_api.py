@@ -78,6 +78,13 @@ class product_pricelist_version(models.Model):
             }
 
 
+    @api.multi
+    def print_pricelist_version(self):
+        cr, uid, context = self.env.args
+        for obj in self:
+            return self.pool['report'].get_action(cr, uid, obj.id, 'is_plastigray.report_pricelist_version', context=context)
+
+
     def action_dupliquer(self, cr, uid, ids, context=None):
         for obj in self.browse(cr, uid, ids, dict(context, active_test=False)):
             date_end=datetime.datetime.strptime(obj.date_end, '%Y-%m-%d')

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_pricelist_version_style">
+            .header {
+                font-size:11pt;
+            }
+            .footer {
+                font-size:10pt;
+            }
+            .page {
+                font-size:09pt;
+            }
+            .titre {
+                font-size:13pt;
+                font-weight: bold;
+            }
+            .th {
+                font-size:08pt;
+            }
+            .td {
+                font-size:08pt;
+            }
+            .nowrap {
+                white-space: nowrap;
+            }
+
+        </template>
+
+        <template id="report_pricelist_version_layout" inherit_id="web.layout" primary="True">
+            <!-- Add report attributes -->
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <!-- Add report style -->
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_pricelist_version_style"/>
+                </style>
+            </xpath>
+            <!-- Remove conflicting style -->
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+        <template id="report_pricelist_version_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_pricelist_version_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+        <!-- Entête personnalisé Plastigray -->
+        <template id="report_pricelist_version_external_layout_header">
+            <div class="header">
+                <div class="row">
+                    <!--
+                    <div class="col-xs-3  text-left">
+                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                    </div>
+                    -->
+                    <div class="col-xs-12">
+                        <div class="titre text-center">
+                            <span>Liste de prix </span>
+                            <span t-field="o.pricelist_id.name"/> version <span t-field="o.name"/>
+                            du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Pied de page personnalisé Plastigray -->
+        <template id="report_pricelist_version_external_layout_footer">
+            <div class="footer">
+                <div class="row" style="border-top: 1px solid black">
+                    <div class="col-xs-12 text-center">
+                        Page <span class="page" style="font-size:10pt;"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+            <br />
+        </template>
+
+        <!-- Squelette de la page personnalisé pour Plastigray -->
+        <template id="report_pricelist_version_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <t t-call="is_plastigray.report_pricelist_version_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_pricelist_version_external_layout_footer"/>
+        </template>
+
+        <template id="report_pricelist_version_document">
+            <t t-call="is_plastigray.report_pricelist_version_external_layout">
+                <div class="page">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr >
+                                        <th class="text-left"   style="vertical-align:top">Article</th>
+                                        <th class="text-left"   style="vertical-align:top">Séquence</th>
+                                        <th class="text-right"  style="vertical-align:top">Quantité min.</th>
+                                        <th class="text-left"   style="vertical-align:top">Unité d'achat</th>
+                                        <th class="text-right"  style="vertical-align:top">Prix</th>
+                                        <th class="text-center" style="vertical-align:top">Date début</th>
+                                        <th class="text-center" style="vertical-align:top">Date fin</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.items_id" t-as="l">
+                                        <td class="text-left   nowrap"> <span t-field="l.product_id"/> </td>
+                                        <td class="text-left   nowrap"> <span t-field="l.sequence"/>  </td>
+                                        <td class="text-right  nowrap"><t t-esc='"{:,.4f}".format(l.min_quantity).replace(","," ").replace(".",",")'/></td>
+                                        <td class="text-left   nowrap"> <span t-field="l.product_po_uom_id"/>  </td>
+                                        <td class="text-right  nowrap"><t t-esc='"{:,.4f}".format(l.price_surcharge).replace(","," ").replace(".",",")'/></td>
+                                        <td class="text-center nowrap"> <span t-field="l.date_start"/>  </td>
+                                        <td class="text-center nowrap"> <span t-field="l.date_end"/>  </td>
+                                     </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="report_pricelist_version">
+            <t t-call="is_plastigray.report_pricelist_version_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.report_pricelist_version_document" />
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

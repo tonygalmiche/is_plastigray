@@ -127,9 +127,9 @@
                             <div class="row"><span class="col-xs-6">Coût std sous-traitance        </span><span class="col-xs-6 text-right" t-field="o.cout_std_st" /></div>
                             <div class="row"><span class="col-xs-6">Coût std Total                 </span><span class="col-xs-6 text-right" t-field="o.cout_std_total" /></div>
                             <div class="row"><span class="col-xs-6">Prix de vente standard         </span><span class="col-xs-6 text-right" t-field="o.cout_std_prix_vente" /></div>
-                            <div class="row"><span class="col-xs-6">Surcout Présérie               </span><span class="col-xs-6 text-right" t-field="o.cout_std_preserie" /></div>
-                            <div class="row"><span class="col-xs-6">Amortissement moule            </span><span class="col-xs-6 text-right" t-field="o.cout_std_amtmoule" /></div>
-                            <div class="row"><span class="col-xs-6">Prix de vente tarif commercial </span><span class="col-xs-6 text-right" t-field="o.cout_prix_vente" /></div>
+                            <!--<div class="row"><span class="col-xs-6">Surcout Présérie               </span><span class="col-xs-6 text-right" t-field="o.cout_std_preserie" /></div>-->
+                            <!--<div class="row"><span class="col-xs-6">Amortissement moule            </span><span class="col-xs-6 text-right" t-field="o.cout_std_amtmoule" /></div>-->
+                            <!--<div class="row"><span class="col-xs-6">Prix de vente tarif commercial </span><span class="col-xs-6 text-right" t-field="o.cout_prix_vente" /></div>-->
                         </div>
                         <div class="col-xs-2"/>
                         <div class="col-xs-5">

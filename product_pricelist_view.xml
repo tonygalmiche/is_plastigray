@@ -44,7 +44,8 @@
                 <field name="version_id" context="{'type':type}">
                     <tree editable="bottom">
                         <field name="name"/>
-                        <button string="Liste des prix" name= "action_liste_items" type="object" icon="gtk-justify-fill"/>
+                        <button string="Liste des prix"                          name="action_liste_items"      type="object" icon="gtk-justify-fill"/>
+                        <button string="Imprimer cette version de liste de prix" name="print_pricelist_version" type="object" icon="gtk-print" />
                         <field name="active"/>
                         <field name="date_start"/>
                         <field name="date_end"/>

@@ -92,6 +92,7 @@ Module principal du projet Plastigray
         "views/report_ar_commande.xml",
         "views/report_liste_article.xml",
         "views/report_is_cout.xml",
+        "views/report_pricelist_version.xml",
         "views/report.xml",
         "report/stock_bloquer_lot.xml",
         "report/stock_debloquer_lot.xml",
