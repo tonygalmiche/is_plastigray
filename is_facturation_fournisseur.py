@@ -104,6 +104,7 @@ class is_facturation_fournisseur(models.Model):
                                       left outer join purchase_order_line pol on sm.purchase_line_id=pol.id
                 where 
                     sm.state='done' and 
+                    sp.state='done' and
                     round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4)>0 and 
                     sp.picking_type_id=1 and
                     pt.is_facturable='t'
