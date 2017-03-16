@@ -338,6 +338,7 @@
             ref('is_qualite_group'),
             ref('is_rsp_production_group'),
             ref('is_rsp_achats_group'),
+            ref('is_commerciaux_group'),
         ])]"/>
     </record>
     <record id="menu_is_avoir_fournisseur" model="ir.ui.menu" >
@@ -604,7 +605,18 @@
             ref('is_commerciaux_group'),
         ])]"/>
     </record>
-    <menuitem id="menu_is_ventes_fac_10"   sequence="10" name="Livraisons à facturer" parent="menu_is_ventes_fac" action="is_livraisons_a_facturer_action" />
+    <record id="is_livraisons_a_facturer_menu" model="ir.ui.menu" >
+        <field name="name">Livraisons à facturer</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_livraisons_a_facturer_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+
+
+
     <record id="is_comparatif_tarif_facture_menu" model="ir.ui.menu" >
         <field name="name">Comparatif Tarif / Facture</field>
         <field name="sequence">15</field>
@@ -623,14 +635,60 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
-
-    <menuitem id="menu_is_ventes_fac_20"   sequence="20" name="Factures à valider"    parent="menu_is_ventes_fac" action="is_factures_a_valider_action" />
-    <menuitem id="menu_is_ventes_fac_21"   sequence="21" name="Factures à imprimer"   parent="menu_is_ventes_fac" action="is_factures_a_imprimer_action" />
-    <menuitem id="menu_is_ventes_fac_22"   sequence="22" name="A envoyer par mail"    parent="menu_is_ventes_fac" action="is_factures_envoi_mail_action" />
-    <menuitem id="menu_is_ventes_fac_25"   sequence="25" name="Factures diverses"     parent="menu_is_ventes_fac" action="is_factures_diverses_action" />
-    <menuitem id="menu_is_ventes_fac_30"   sequence="30" name="Toutes les factures"   parent="menu_is_ventes_fac" action="account.action_invoice_tree1" />
-    <menuitem id="menu_is_ventes_fac_40"   sequence="40" name="Tous les avoirs"       parent="menu_is_ventes_fac" action="account.action_invoice_tree3" />
-
+    <record id="is_factures_a_valider_menu" model="ir.ui.menu" >
+        <field name="name">Factures à valider</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_factures_a_valider_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_factures_a_imprimer_menu" model="ir.ui.menu" >
+        <field name="name">Factures à imprimer</field>
+        <field name="sequence">21</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_factures_a_imprimer_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_factures_envoi_mail_menu" model="ir.ui.menu" >
+        <field name="name">A envoyer par mail</field>
+        <field name="sequence">22</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_factures_envoi_mail_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_factures_diverses_menu" model="ir.ui.menu" >
+        <field name="name">Factures diverses</field>
+        <field name="sequence">25</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_factures_diverses_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_action_invoice_tree1_menu" model="ir.ui.menu" >
+        <field name="name">Toutes les factures</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="account.action_invoice_tree1"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="is_account_action_invoice_tree3_menu" model="ir.ui.menu" >
+        <field name="name">Tous les avoirs</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="account.action_invoice_tree3"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
     <record id="is_ligne_facture_client_menu" model="ir.ui.menu" >
         <field name="name">Lignes de factures</field>
         <field name="sequence">45</field>
@@ -641,9 +699,6 @@
             ref('is_commerciaux_group'),
         ])]"/>
     </record>
-
-
-
     <record id="is_export_ventes_seriem_menu" model="ir.ui.menu" >
         <field name="name">Export Série-M</field>
         <field name="sequence">50</field>

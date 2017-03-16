@@ -9,6 +9,7 @@ from ftplib import FTP
 import os
 
 
+
 modele_mail=u"""
 <html>
     <head>
@@ -72,6 +73,7 @@ class account_invoice(models.Model):
     is_folio_id       = fields.Many2one('is.account.folio', 'Folio')
     is_bon_a_payer    = fields.Boolean("Bon à payer", default=True)
     is_type_facture   = fields.Selection([('standard', u'Standard'),('diverse', u'Diverse')], u"Type de facture", default='standard', select=True)
+    is_origine_id     = fields.Many2one('account.invoice', "Facture d'origine")
     is_mode_envoi_facture = fields.Selection([
         ('courrier', 'Envoi par courrier'),
         ('mail'    , 'Envoi par mail'),
@@ -243,15 +245,18 @@ class account_invoice_line(models.Model):
             partner_id=False, fposition_id=False, price_unit=False, currency_id=False,
             company_id=None):
 
-        res=super(account_invoice_line, self).product_id_change(product_id, uom_id, qty, name, type,
-            partner_id, fposition_id, price_unit, currency_id,company_id)
-
-        #** Recherche de la section analytique *********************************
+        #** Recherche lot pour retrouver le prix *******************************
+        lot_mini=0
+        is_section_analytique_id=False
         if product_id:
             product = self.env['product.product'].browse(product_id)
-            is_section_analytique_id=product.is_section_analytique_id.id or False
-            res['value']['is_section_analytique_id']=is_section_analytique_id
+            lot_mini=product.lot_mini
+            is_section_analytique_id=product.is_section_analytique_id.id
         #***********************************************************************
+
+        res=super(account_invoice_line, self).product_id_change(product_id, uom_id, lot_mini, name, type,
+            partner_id, fposition_id, price_unit, currency_id,company_id)
+        res['value']['is_section_analytique_id']=is_section_analytique_id
 
         #** Recherche prix dans liste de prix pour la date et qt ***************
         partner = self.env['res.partner'].browse(partner_id)
@@ -265,7 +270,7 @@ class account_invoice_line(models.Model):
                     date=date,
                 )
                 price_unit = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
-                        product_id, qty or 1.0, partner_id, ctx)[pricelist]
+                        product_id, lot_mini or 1.0, partner_id, ctx)[pricelist]
             res['value']['price_unit']=price_unit
         #***********************************************************************
 

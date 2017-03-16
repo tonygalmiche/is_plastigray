@@ -102,6 +102,7 @@
                 <xpath expr="//button[@name='invoice_pay_customer']" position="replace" />
                 <field name="date_invoice" position="after">
                     <field name="is_type_facture" />
+                    <field name="is_origine_id" domain="[('state','=', 'open'),('type','=', 'out_invoice')]" />
                     <field name="is_mode_envoi_facture" />
                     <field name="is_date_envoi_mail" attrs="{'invisible':[('is_mode_envoi_facture', '!=', 'mail')]}" />
                 </field>
@@ -279,6 +280,7 @@
             <field name="inherit_id" ref="account.invoice_supplier_form" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='account_id']" position="after" >
+                    <field name="is_origine_id" domain="[('state','=', 'open'),('type','=', 'in_invoice')]" />
                     <field name="is_folio_id"/> 
                     <field name="is_bon_a_payer"/> 
                 </xpath>
