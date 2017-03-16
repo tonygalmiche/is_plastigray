@@ -246,20 +246,24 @@ class account_invoice_line(models.Model):
             company_id=None):
 
         #** Recherche lot pour retrouver le prix *******************************
-        lot_mini=0
+        partner = self.env['res.partner'].browse(partner_id)
+        lot_livraison=0
         is_section_analytique_id=False
         if product_id:
             product = self.env['product.product'].browse(product_id)
-            lot_mini=product.lot_mini
+            #lot_mini=product.lot_mini
             is_section_analytique_id=product.is_section_analytique_id.id
+
+            lot_livraison=self.env['product.template'].get_lot_livraison(product.product_tmpl_id,partner)
+
         #***********************************************************************
 
-        res=super(account_invoice_line, self).product_id_change(product_id, uom_id, lot_mini, name, type,
+        res=super(account_invoice_line, self).product_id_change(product_id, uom_id, lot_livraison, name, type,
             partner_id, fposition_id, price_unit, currency_id,company_id)
         res['value']['is_section_analytique_id']=is_section_analytique_id
 
         #** Recherche prix dans liste de prix pour la date et qt ***************
-        partner = self.env['res.partner'].browse(partner_id)
+
         pricelist = partner.property_product_pricelist.id
         if product_id:
             date = time.strftime('%Y-%m-%d',time.gmtime()) # Date du jour
@@ -270,7 +274,7 @@ class account_invoice_line(models.Model):
                     date=date,
                 )
                 price_unit = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
-                        product_id, lot_mini or 1.0, partner_id, ctx)[pricelist]
+                        product_id, lot_livraison or 1.0, partner_id, ctx)[pricelist]
             res['value']['price_unit']=price_unit
         #***********************************************************************
 
