@@ -253,9 +253,7 @@ class account_invoice_line(models.Model):
             product = self.env['product.product'].browse(product_id)
             #lot_mini=product.lot_mini
             is_section_analytique_id=product.is_section_analytique_id.id
-
             lot_livraison=self.env['product.template'].get_lot_livraison(product.product_tmpl_id,partner)
-
         #***********************************************************************
 
         res=super(account_invoice_line, self).product_id_change(product_id, uom_id, lot_livraison, name, type,
