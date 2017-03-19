@@ -16,6 +16,7 @@
                             <field name='port_server' />
                             <field name='login' />
                             <field name='password' password='True' />
+                            <field name='is_database_origine_id' />
                         </group>
                     </sheet>
                 </form>
@@ -36,7 +37,7 @@
             </field>
         </record>
         <record id="is_database_action" model="ir.actions.act_window">
-            <field name="name">Bases de données</field>
+            <field name="name">Site</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">is.database</field>
             <field name="view_mode">tree,form</field>
@@ -49,6 +50,7 @@
 
 
         <!-- Copie Projet -->
+        <!--
         <record id="is_copy_is_mold_project_action_server" model="ir.actions.server">
              <field name="name">Copie dans les autres bases de données</field>
             <field name="model_id" ref="is_mold.model_is_mold_project"/>
@@ -60,12 +62,13 @@
             <field name="name">Copie dans les autres bases de données</field>
             <field eval="'ir.actions.server,%d'%is_copy_is_mold_project_action_server" name="value"/>
         </record>
-
+        -->
 
 
 
 
         <!-- Copie Partner -->
+        <!--
         <record id="is_copy_partner_form_view" model="ir.ui.view">
             <field name="name">is_copy_partner_form_view</field>
             <field name="model">is.copy.partner</field>
@@ -92,6 +95,7 @@
             src_model="res.partner"
             view_mode="form"
             target="new"/>
+        -->
         
 
     </data>

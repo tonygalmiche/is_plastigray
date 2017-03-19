@@ -211,18 +211,17 @@ class res_partner(models.Model):
         return res
 
 
-    @api.multi
-    def copy(self, default=None):
-        for partner in self:
-            if partner.is_company:
-                default.update({
-                    'is_code'     : partner.is_code + ' (copie)',
-                    'is_adr_code' : partner.is_adr_code + ' (copie)',
-            })
-        res=super(res_partner, self).copy(default)
-        res.property_account_position      = partner.property_account_position
-        res.property_payment_term          = partner.property_payment_term
-        res.property_supplier_payment_term = partner.property_supplier_payment_term
+    #TODO : Suite à l'installation du module 'project', j'ai du remettre l'ancienne api sinon plantage
+    def copy(self, cr, uid, partner_id, default=None, context=None):
+        if default is None:
+            default = {}
+        for partner in self.browse(cr, uid, [partner_id], context=context):
+            default['is_code']                        = partner.is_code + u' (copie)'
+            default['is_adr_code']                    = partner.is_adr_code + u' (copie)'
+            default['property_account_position']      = partner.property_account_position
+            default['property_payment_term']          = partner.property_payment_term
+            default['property_supplier_payment_term'] = partner.property_supplier_payment_term
+        res=super(res_partner, self).copy(cr, uid, partner_id, default=default, context=context)
         return res
 
 
@@ -233,8 +232,6 @@ class res_partner(models.Model):
             domain.append(('segment_id','=',segment_id))           
         return {'value': val,
                 'domain': {'is_famille_achat': domain}}
-
-
 
 
     @api.multi
