@@ -142,6 +142,8 @@ class is_database(models.Model):
 
     @api.model
     def get_partner_parent_id(self, partner, DB, USERID, USERPASS, sock):
+        print "partner=",partner
+
         ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id)], {})
         print "get_partner_parent_id : ids 1=",ids
         if not ids:
@@ -149,7 +151,7 @@ class is_database(models.Model):
             print "partner.id=",partner.id
             if partner.id:
                 print "### TEST ####"
-                parent_id=self.get_partner_parent_id(self, partner.id, DB, USERID, USERPASS, sock)
+                parent_id=self.get_partner_parent_id(partner, DB, USERID, USERPASS, sock)
             search=[
                 ('name'       , '=', partner.name),
                 ('parent_id'  , '=', parent_id),
@@ -172,7 +174,7 @@ class is_database(models.Model):
     def get_partner_vals(self, partner, DB, USERID, USERPASS, sock):
         partner_vals = {
             'name': partner.name,
-            'parent_id'          : partner.parent_id and self.get_partner_parent_id(partner.parent_id, DB, USERID, USERPASS, sock) or False,
+            #'parent_id'          : partner.parent_id and self.get_partner_parent_id(partner.parent_id, DB, USERID, USERPASS, sock) or False,
             'is_raison_sociale2' : partner.is_raison_sociale2,
             'is_code'            : partner.is_code,
             'is_adr_code'        : partner.is_adr_code,

@@ -99,4 +99,11 @@ delete from is_cout;
 --delete from mrp_workcenter;
 
 
+----delete from is_mem_var;
+----delete from res_partner where id>50;
+----delete from mail_message;
+----delete from ir_attachment;
+
+
+
 
