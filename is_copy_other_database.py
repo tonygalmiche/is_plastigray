@@ -219,24 +219,24 @@ class is_database(models.Model):
 #        return obj
 
 
-#class res_partner(models.Model):
-#    _inherit = 'res.partner'
+class res_partner(models.Model):
+    _inherit = 'res.partner'
 
-#    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True, select=True)
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True, select=True)
 
-#    @api.multi
-#    def write(self, vals):
+    @api.multi
+    def write(self, vals):
 
-#        for obj in self:
-#            res=super(res_partner, self).write(vals)
-#            self.env['is.database'].copy_other_database(obj)
-#            return res
+        for obj in self:
+            res=super(res_partner, self).write(vals)
+            self.env['is.database'].copy_other_database(obj)
+            return res
 
-#    @api.model
-#    def create(self, vals):
-#        obj=super(res_partner, self).create(vals)
-#        self.env['is.database'].copy_other_database(obj)
-#        return obj
+    @api.model
+    def create(self, vals):
+        obj=super(res_partner, self).create(vals)
+        self.env['is.database'].copy_other_database(obj)
+        return obj
 
 
 #class is_mold_project(models.Model):
