@@ -105,15 +105,20 @@ class is_database(models.Model):
 
     def _get_child_ids(self, child_ids, DB, USERID, USERPASS, sock):
         new_child_ids = []
+        flag = False
         for child in child_ids:
-            dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name', '=', child.name)], {})
-            if dest_child_ids:
-                new_child_ids.append(dest_child_ids[0])
-            else:
+            dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name','=', child.name)], {})
+            for dest_partner_vals in sock.execute(DB, USERID, USERPASS, 'res.partner', 'read',dest_child_ids,['name','parent_id'], {}):
+                this_data = (child.parent_id and str(child.parent_id.name) + str(child.name)) or str(child.name)
+                dest_data = (dest_partner_vals.get('parent_id',[]) and str(dest_partner_vals.get('parent_id')[1])+dest_partner_vals.get('name',''))
+                if this_data == dest_data:
+                    new_child_ids.append(dest_child_ids[0])
+                    flag = True
+            if not flag:
                 child_vals = self.get_partner_vals(child, DB, USERID, USERPASS, sock)
                 child_created_id = sock.execute(DB, USERID, USERPASS, 'res.partner', 'create', child_vals, {})
                 new_child_ids.append(child_created_id)
-        return [(6, 0, new_child_ids)]
+        return [(6,0,new_child_ids)]
 
 
 
