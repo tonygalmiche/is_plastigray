@@ -42,11 +42,11 @@ class is_database(models.Model):
                 vals=False
                 if class_name=='res.partner':
                     vals = self.get_partner_vals(obj, DB, USERID, USERPASS, sock)
-                    vals['is_database_origine_id']=obj.id
+                    
                 if vals:
                     ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id)], {})
-                    if not ids:
-                        ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
+#                     if not ids:
+#                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
                     if ids:
                         sock.execute(DB, USERID, USERPASS, class_name, 'write', ids, vals, {})
                         created_id = ids[0]
@@ -107,10 +107,13 @@ class is_database(models.Model):
         new_child_ids = []
         flag = False
         for child in child_ids:
-            dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name','=', child.name)], {})
-            for dest_partner_vals in sock.execute(DB, USERID, USERPASS, 'res.partner', 'read',dest_child_ids,['name','parent_id'], {}):
-                this_data = (child.parent_id and str(child.parent_id.name) + str(child.name)) or str(child.name)
-                dest_data = (dest_partner_vals.get('parent_id',[]) and str(dest_partner_vals.get('parent_id')[1])+dest_partner_vals.get('name',''))
+            dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', child.id)], {})
+            if not dest_child_ids:
+                dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name', '=', child.name)], {})
+#             dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name','=', child.name)], {})
+            for dest_partner_vals in sock.execute(DB, USERID, USERPASS, 'res.partner', 'read',dest_child_ids,['is_database_origine_id','name'], {}):
+                this_data = child.is_database_origine_id
+                dest_data = dest_partner_vals.get('is_database_origine_id', False) #(dest_partner_vals.get('parent_id',[]) and str(dest_partner_vals.get('parent_id')[1])+dest_partner_vals.get('name',''))
                 if this_data == dest_data:
                     new_child_ids.append(dest_child_ids[0])
                     flag = True
@@ -203,6 +206,7 @@ class is_database(models.Model):
             'is_secteur_activite': partner.is_secteur_activite and self.get_is_secteur_activite(partner.is_secteur_activite , DB, USERID, USERPASS, sock) or False,
             'customer'           : partner.customer,
             'supplier'           : partner.supplier,
+            'is_database_origine_id': partner.id
         }
         if partner.is_company:
             partner_vals.update({'child_ids':partner.child_ids and self._get_child_ids(partner.child_ids, DB, USERID, USERPASS, sock) or [] })
