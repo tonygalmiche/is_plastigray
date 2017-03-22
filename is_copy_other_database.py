@@ -108,16 +108,9 @@ class is_database(models.Model):
         flag = False
         for child in child_ids:
             dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', child.id)], {})
-            if not dest_child_ids:
-                dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name', '=', child.name)], {})
-#             dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('name','=', child.name)], {})
-            for dest_partner_vals in sock.execute(DB, USERID, USERPASS, 'res.partner', 'read',dest_child_ids,['is_database_origine_id','name'], {}):
-                this_data = child.is_database_origine_id
-                dest_data = dest_partner_vals.get('is_database_origine_id', False) #(dest_partner_vals.get('parent_id',[]) and str(dest_partner_vals.get('parent_id')[1])+dest_partner_vals.get('name',''))
-                if this_data == dest_data:
-                    new_child_ids.append(dest_child_ids[0])
-                    flag = True
-            if not flag:
+            if dest_child_ids:
+                new_child_ids.append(dest_child_ids[0])
+            else:
                 child_vals = self.get_partner_vals(child, DB, USERID, USERPASS, sock)
                 child_created_id = sock.execute(DB, USERID, USERPASS, 'res.partner', 'create', child_vals, {})
                 new_child_ids.append(child_created_id)
