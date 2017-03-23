@@ -437,4 +437,4 @@ class res_partner(models.Model):
 #            return pdf
 #            #*******************************************************************
 
-
+#Testing
