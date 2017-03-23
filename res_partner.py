@@ -121,7 +121,7 @@ class res_partner(models.Model):
     is_certificat_matiere   = fields.Boolean(u'Certificat matière demandé')
     is_import_function      = fields.Selection(import_function, "Fonction d'importation EDI")
     is_raison_sociale2      = fields.Char('Raison sociale 2')
-    is_code                 = fields.Char('Code')
+    is_code                 = fields.Char('Code 2 for test')
     is_adr_code             = fields.Char('Code adresse')
     is_rue3                 = fields.Char('Rue 3 ou Boite Postale')
     is_secteur_activite     = fields.Many2one('is.secteur.activite', "Secteur d'activité")
