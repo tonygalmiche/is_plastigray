@@ -364,29 +364,244 @@ class res_partner(models.Model):
         return obj
 
 
-#class is_mold_project(models.Model):
-#    _inherit = 'is.mold.project'
+class is_mold_project(models.Model):
+    _inherit = 'is.mold.project'
+ 
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
 
-#    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    @api.multi
+    def write(self, vals):
+        res=super(is_mold_project, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_project()
+        return res
 
-#    @api.multi
-#    def write(self, vals):
-#        for obj in self:
-#            res=super(is_mold_project, self).write(vals)
-#            self.copy_other_database(obj)
-#            return res
+    @api.model
+    def create(self, vals):
+        obj=super(is_mold_project, self).create(vals)
+        obj.copy_other_database_project()
+        return obj
+    
+    @api.multi
+    def copy_other_database_project(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        project_obj = self.env['is.mold.project']
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for project in self:
+            for database in database_lines:
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                project_vals = self.get_project_vals(project, DB, USERID, USERPASS, sock)
+                dest_project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', project.id)], {})
+                if dest_project_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'write', dest_project_ids, project_vals, {})
+                    project_created_id = dest_project_ids[0]
+                else:
+                    project_created_id = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'create', project_vals, {})
+        return True
 
-#    @api.model
-#    def create(self, vals):
-#        obj=super(is_mold_project, self).create(vals)
-#        self.copy_other_database(obj)
-#        return obj
 
-#    @api.multi
-#    def copy_other_database(self,obj):
-#        class_name=self.__class__.__name__
-#        champs=self.env['is.database'].get_fields_model(class_name, exclude=['mold_ids','designation'])
-#        self.env['is.database'].copy_other_database(obj, champs)
+    @api.model
+    def get_project_vals(self, project, DB, USERID, USERPASS, sock):
+        project_vals = {
+        'name': project.name,
+        'client_id' : self._get_client_id(project, DB, USERID, USERPASS, sock),
+        'chef_projet_id' : self._get_chef_projet_id(project, DB, USERID, USERPASS, sock),
+        'mold_ids': self._get_mold_ids(project, DB, USERID, USERPASS, sock),
+        'is_database_origine_id':project.id
+        }
+        return project_vals
+
+    @api.model
+    def _get_client_id(self, project, DB, USERID, USERPASS, sock):
+        if project.client_id:
+            client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id)], {})
+            if client_ids:
+                return client_ids[0]
+        return False
+        
+    @api.model
+    def _get_chef_projet_id(self, project, DB, USERID, USERPASS, sock):
+        if project.chef_projet_id:
+            chef_projet_ids = sock.execute(DB, USERID, USERPASS, 'res.users', 'search', [('login', '=', project.chef_projet_id.login)], {})
+            if chef_projet_ids:
+                return chef_projet_ids[0]
+        return False
+    
+    def _get_mold_ids(self, project, DB, USERID, USERPASS, sock):
+        list_mold_ids =[]
+        for mold in project.mold_ids:
+            dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+            if dest_mold_ids:
+                list_mold_ids.append(dest_mold_ids[0])
+        
+        return [(6, 0, list_mold_ids)]
+        
+
+class is_dossierf(models.Model):
+    _inherit='is.dossierf'
+    
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_dossierf, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_dossierf()
+        return res
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_dossierf, self).create(vals)
+        obj.copy_other_database_dossierf()
+        return obj
+    
+    @api.multi
+    def copy_other_database_dossierf(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for dossierf in self:
+            for database in database_lines:
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                dossierf_vals = self.get_dossierf_vals(dossierf, DB, USERID, USERPASS, sock)
+                dest_dossierf_ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', dossierf.id)], {})
+                if dest_dossierf_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'write', dest_dossierf_ids, dossierf_vals, {})
+                    dossierf_created_id = dest_dossierf_ids[0]
+                else:
+                    dossierf_created_id = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'create', dossierf_vals, {})
+        return True
+    
+    
+    @api.model
+    def get_dossierf_vals(self, dossierf, DB, USERID, USERPASS, sock):
+        dossierf_vals = {
+            'name': dossierf.name,
+            'designation':dossierf.designation,
+            'project':self._get_project(dossierf, DB, USERID, USERPASS, sock),
+            'mold_ids': self._get_mold_ids(dossierf, DB, USERID, USERPASS, sock),
+            'is_database_origine_id':dossierf.id,
+        
+        }
+        return dossierf_vals
+    
+    @api.model    
+    def _get_project(self, dossierf, DB, USERID, USERPASS, sock):
+        if dossierf.project:
+            project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', dossierf.project.id)], {})
+            if project_ids:
+                return project_ids[0]
+        return False
+    
+    def _get_mold_ids(self, dossierf, DB, USERID, USERPASS, sock):
+        list_mold_ids =[]
+        for mold in dossierf.mold_ids:
+            dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+            if dest_mold_ids:
+                list_mold_ids.append(dest_mold_ids[0])
+        
+        return [(6, 0, list_mold_ids)]
+
+class is_mold(models.Model):
+    _inherit = 'is.mold'
+
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_mold, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_mold()
+        return res
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_mold, self).create(vals)
+        obj.copy_other_database_mold()
+        return obj
+    
+    @api.multi
+    def copy_other_database_mold(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for mold in self:
+            for database in database_lines:
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                mold_vals = self.get_mold_vals(mold, DB, USERID, USERPASS, sock)
+                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+                if dest_mold_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.mold', 'write', dest_mold_ids, mold_vals, {})
+                    mold_created_id = dest_mold_ids[0]
+                else:
+                    mold_created_id = sock.execute(DB, USERID, USERPASS, 'is.mold', 'create', mold_vals, {})
+        return True
+
+
+    @api.model
+    def get_mold_vals(self, mold, DB, USERID, USERPASS, sock):
+        mold_vals = {
+        'name': mold.name,
+        'designation' : mold.designation,
+        'project' : self._get_project(mold, DB, USERID, USERPASS, sock),
+        'dossierf_id': self._get_dossierf_id(mold, DB, USERID, USERPASS, sock),
+        'nb_empreintes': mold.nb_empreintes,
+        'moule_a_version': mold.moule_a_version,
+        'date_creation':mold.date_creation,
+        'date_fin':mold.date_fin,
+        'mouliste_id':self._get_mouliste_id(mold, DB, USERID, USERPASS, sock),
+        'carcasse': mold.carcasse,
+        'emplacement':mold.emplacement,
+        'is_database_origine_id':mold.id,
+        }
+        return mold_vals
+
+    @api.model
+    def _get_dossierf_id(self, mold, DB, USERID, USERPASS, sock):
+        if mold.dossierf_id:
+            dossierf_ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', mold.dossierf_id.id)], {})
+            if dossierf_ids:
+                return dossierf_ids[0]
+        return False
+        
+    @api.model    
+    def _get_project(self, mold, DB, USERID, USERPASS, sock):
+        if mold.project:
+            project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', mold.project.id)], {})
+            if project_ids:
+                return project_ids[0]
+        return False
+    
+    @api.model
+    def _get_mouliste_id(self, mold, DB, USERID, USERPASS, sock):
+        if mold.mouliste_id:
+            mouliste_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mold.mouliste_id.id)], {})
+            if mouliste_ids:
+                return mouliste_ids[0]
+        return False
 
 
 
