@@ -134,9 +134,9 @@ class is_database(models.Model):
             ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', search, {})
         if ids:
             id = ids[0]
-        else:
-            vals = self.get_partner_vals(partner, DB, USERID, USERPASS, sock)
-            id = sock.execute(DB, USERID, USERPASS, 'res.partner', 'create', vals, {})
+#         else:
+#             vals = self.get_partner_vals(partner, DB, USERID, USERPASS, sock)
+#             id = sock.execute(DB, USERID, USERPASS, 'res.partner', 'create', vals, {})
         return id
 
 
@@ -170,7 +170,96 @@ class is_database(models.Model):
         return id
 
 
-
+    def get_is_transporteur_id(self, obj, DB, USERID, USERPASS, sock):
+        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id)], {})
+        if ids:
+            return ids[0]
+        return False
+    
+    def get_is_type_contact(self, obj , DB, USERID, USERPASS, sock):
+        is_type_contact_ids = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'search', [('name', '=', obj.name)], {})
+        if is_type_contact_ids:
+            return is_type_contact_ids[0]
+        else:
+            vals = {'name':obj.name}
+            is_type_contact = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'create', vals, {})
+            return is_type_contact
+        
+    def get_is_incoterm(self, obj, DB, USERID, USERPASS, sock):
+        is_incoterm_ids = sock.execute(DB, USERID, USERPASS, 'stock.incoterms', 'search', [('name', '=', obj.name)], {})
+        if is_incoterm_ids:
+            return is_incoterm_ids[0]
+        else:
+            vals = {'name':obj.name,'code':obj.code, 'active':obj.active}
+            is_incoterm = sock.execute(DB, USERID, USERPASS, 'stock.incoterms', 'create', vals, {})
+            return is_incoterm
+        
+    def get_is_segment_achat(self, obj , DB, USERID, USERPASS, sock):
+        is_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('name', '=', obj.name)], {})
+        if is_segment_achat_ids:
+            return is_segment_achat_ids[0]
+        else:
+            vals = {'name':obj.name,'description':obj.description, 'family_line':[(6,0,[self.get_is_famille_achat_ids(is_famille , DB, USERID, USERPASS, sock) for is_famille in obj.family_line])]}
+            is_segment_achat = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', vals, {})
+            return is_segment_achat
+        
+    def get_is_famille_achat_ids(self, obj , DB, USERID, USERPASS, sock):
+        is_famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('name', '=', obj.name)], {})
+        if is_famille_achat_ids:
+            return is_famille_achat_ids[0]
+        else:
+            vals = {'name':obj.name,'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
+            is_famille_achat = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', vals, {})
+            return is_famille_achat
+        
+    def get_is_site_livre_ids(self, obj_ids , DB, USERID, USERPASS, sock):
+        lst_site_livre_ids = []
+        for obj in obj_ids:
+            is_site_livre_ids = sock.execute(DB, USERID, USERPASS, 'is.site', 'search', [('name', '=', obj.name)], {})
+            if is_site_livre_ids:
+                lst_site_livre_ids.append(is_site_livre_ids[0])
+            else:
+                vals = {'name':obj.name}
+                lst_site_livre_id = sock.execute(DB, USERID, USERPASS, 'is.site', 'create', vals, {})
+                lst_site_livre_ids.append(lst_site_livre_id)
+        return [(6,0,lst_site_livre_ids)]
+    
+    def get_is_transmission_cde(self, obj, DB, USERID, USERPASS, sock):
+        is_transmission_cde_ids = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'search', [('name', '=', obj.name)], {})
+        if is_transmission_cde_ids:
+            return is_transmission_cde_ids[0]
+        else:
+            vals = {'name':obj.name}
+            is_transmission_cde = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'create', vals, {})
+            return is_transmission_cde
+    
+    def get_is_norme(self, obj, DB, USERID, USERPASS, sock):
+        is_norme_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('name', '=', obj.name)], {})
+        if is_norme_ids:
+            return is_norme_ids[0]
+        else:
+            vals = {'name':obj.name}
+            is_norme = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'create', vals, {})
+            return is_norme
+    
+    def get_is_certifications(self, obj_ids, DB, USERID, USERPASS, sock):
+        lst_is_certifications = []
+        for obj in obj_ids:
+            is_certifications_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_norme.name', '=', obj.is_norme.name),
+                                                                                                           ('partner_id.name','=',obj.partner_id.name)], {})
+            if is_certifications_ids:
+                lst_is_certifications.append(is_certifications_ids[0])
+            else:
+                vals = {'is_norme':obj.is_norme and self.get_is_norme(obj.is_norme, DB, USERID, USERPASS, sock) or False,
+                        'is_date_validation':obj.is_date_validation,
+                        'is_certificat':obj.is_certificat,
+                        'partner_id':obj.partner_id and  get_is_transporteur_id(obj.partner_id, DB, USERID, USERPASS, sock) or False
+                        }
+                is_certifications = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'create', vals, {})
+                lst_is_certifications.append(is_certifications)
+        return [(6,0,lst_is_certifications)]
+    
+        
     @api.model
     def get_partner_vals(self, partner, DB, USERID, USERPASS, sock):
         partner_vals = {
@@ -188,7 +277,7 @@ class is_database(models.Model):
             'state_id'           : partner.state_id and self.get_state_id(partner.state_id, DB, USERID, USERPASS, sock) or False,
             'zip'                : partner.zip,
             'country_id'         : partner.country_id.id or False,
-            #'is_adr_facturation' : partner.is_adr_facturation and self.get_partner_is_adr_facturation(partner.is_adr_facturation, DB, USERID, USERPASS, sock) or False,
+            'is_adr_facturation' : partner.is_adr_facturation and self.get_partner_is_adr_facturation(partner.is_adr_facturation, DB, USERID, USERPASS, sock) or False,
             'website'            : partner.website,
             'function'           : partner.function,
             'phone'              : partner.phone,
@@ -199,7 +288,39 @@ class is_database(models.Model):
             'is_secteur_activite': partner.is_secteur_activite and self.get_is_secteur_activite(partner.is_secteur_activite , DB, USERID, USERPASS, sock) or False,
             'customer'           : partner.customer,
             'supplier'           : partner.supplier,
-            'is_database_origine_id': partner.id
+            'is_database_origine_id': partner.id,
+            
+            
+            'is_transporteur_id' : partner.is_transporteur_id and self.get_is_transporteur_id(partner.is_transporteur_id, DB, USERID, USERPASS, sock) or False,
+            'is_delai_transport':partner.is_delai_transport,
+            'is_certificat_matiere' :  partner.is_certificat_matiere,
+            'is_import_function'    :  partner.is_import_function,
+            'is_raison_sociale2'    :  partner.is_raison_sociale2,
+            'is_code'               :  partner.is_code,
+            'is_adr_code'           :  partner.is_adr_code,
+            'is_rue3'               :  partner.is_rue3,
+            'is_type_contact'       :  partner.is_type_contact and self.get_is_type_contact(partner.is_type_contact , DB, USERID, USERPASS, sock) or False,
+            'is_adr_groupe'         :  partner.is_adr_groupe,
+            'is_cofor'              :  partner.is_cofor,
+	        'is_incoterm'           :  partner.is_incoterm and self.get_is_incoterm(partner.is_incoterm , DB, USERID, USERPASS, sock) or False,        
+            'is_num_siret'          :  partner.is_num_siret,
+            'is_code_client'        :  partner.is_code_client,
+            'is_segment_achat'      :  partner.is_segment_achat and self.get_is_segment_achat(partner.is_segment_achat , DB, USERID, USERPASS, sock) or False,
+            'is_famille_achat_ids'  :  partner.is_famille_achat_ids and self.get_is_famille_achat_ids(partner.is_famille_achat_ids , DB, USERID, USERPASS, sock) or False,
+            'is_fournisseur_imp'    :  partner.is_fournisseur_imp,
+            'is_site_livre_ids'     :  partner.is_site_livre_ids and self.get_is_site_livre_ids(partner.is_site_livre_ids , DB, USERID, USERPASS, sock) or False,
+            'is_groupage'           :  partner.is_groupage,
+            'is_tolerance_delai'    :  partner.is_tolerance_delai,
+            'is_nb_jours_tolerance' :  partner.is_nb_jours_tolerance,
+            'is_tolerance_quantite' :  partner.is_tolerance_quantite,
+            'is_transmission_cde'   :  partner.is_transmission_cde and self.get_is_transmission_cde(partner.is_transmission_cde , DB, USERID, USERPASS, sock) or False,
+            'is_certifications'     :  partner.is_certifications and self.get_is_certifications(partner.is_certifications , DB, USERID, USERPASS, sock) or False,
+            'is_adr_liv_sur_facture' : partner.is_adr_liv_sur_facture,
+            'is_num_autorisation_tva': partner.is_num_autorisation_tva,
+            'is_caracteristique_bl'  : partner.is_caracteristique_bl,
+            'is_mode_envoi_facture'  : partner.is_mode_envoi_facture,
+            'is_type_cde_fournisseur': partner.is_type_cde_fournisseur,
+
         }
         if partner.is_company:
             partner_vals.update({'child_ids':partner.child_ids and self._get_child_ids(partner.child_ids, DB, USERID, USERPASS, sock) or [] })
