@@ -348,6 +348,7 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True, select=True)
+    is_database_line_ids = fields.Many2many('is.database', id1='partner_id', id2='database_id', string="Sites")
 
     @api.multi
     def write(self, vals):
@@ -391,6 +392,8 @@ class is_mold_project(models.Model):
         database_lines = database_obj.search([])
         for project in self:
             for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
                 DB = database.database
                 USERID = uid
                 DBLOGIN = database.login
@@ -471,6 +474,8 @@ class is_dossierf(models.Model):
         database_lines = database_obj.search([])
         for dossierf in self:
             for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
                 DB = database.database
                 USERID = uid
                 DBLOGIN = database.login
@@ -544,6 +549,8 @@ class is_mold(models.Model):
         database_lines = database_obj.search([])
         for mold in self:
             for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
                 DB = database.database
                 USERID = uid
                 DBLOGIN = database.login
