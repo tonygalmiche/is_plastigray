@@ -130,7 +130,7 @@ class is_database(models.Model):
             self.copy_other_database(partner)
             ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
         if ids:
-            return id[0]
+            return ids[0]
         return False
 
 
@@ -190,18 +190,22 @@ class is_database(models.Model):
         if is_segment_achat_ids:
             return is_segment_achat_ids[0]
         else:
-            vals = {'name':obj.name,'description':obj.description, 'family_line':[(6,0,[self.get_is_famille_achat_ids(is_famille , DB, USERID, USERPASS, sock) for is_famille in obj.family_line])]}
+            vals = {'name':obj.name,'description':obj.description, }
+#             'family_line':[(6,0,[self.get_is_famille_achat_ids(is_famille , DB, USERID, USERPASS, sock) for is_famille in obj.family_line])]
             is_segment_achat = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', vals, {})
             return is_segment_achat
         
-    def get_is_famille_achat_ids(self, obj , DB, USERID, USERPASS, sock):
-        is_famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('name', '=', obj.name)], {})
-        if is_famille_achat_ids:
-            return is_famille_achat_ids[0]
-        else:
-            vals = {'name':obj.name,'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
-            is_famille_achat = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', vals, {})
-            return is_famille_achat
+    def get_is_famille_achat_ids(self, obj_ids , DB, USERID, USERPASS, sock):
+        lst_is_famille_achat_ids = []
+        for obj in obj_ids:
+            famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('name', '=', obj.name)], {})
+            if famille_achat_ids:
+                lst_is_famille_achat_ids.append(famille_achat_ids[0])
+            else:
+                vals = {'name':obj.name,'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
+                is_famille_achat = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', vals, {})
+                lst_is_famille_achat_ids.append(is_famille_achat)
+            return [(6,0,lst_is_famille_achat_ids)]
         
     def get_is_site_livre_ids(self, obj_ids , DB, USERID, USERPASS, sock):
         lst_site_livre_ids = []
@@ -230,21 +234,20 @@ class is_database(models.Model):
             return is_norme_ids[0]
         else:
             vals = {'name':obj.name}
-            is_norme = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'create', vals, {})
+            is_norme = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'create', vals, {})
             return is_norme
     
     def get_is_certifications(self, obj_ids, DB, USERID, USERPASS, sock):
         lst_is_certifications = []
         for obj in obj_ids:
-            is_certifications_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_norme.name', '=', obj.is_norme.name),
-                                                                                                           ('partner_id.name','=',obj.partner_id.name)], {})
+            is_certifications_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_norme.name', '=', obj.is_norme.name)], {})
             if is_certifications_ids:
                 lst_is_certifications.append(is_certifications_ids[0])
             else:
                 vals = {'is_norme':obj.is_norme and self.get_is_norme(obj.is_norme, DB, USERID, USERPASS, sock) or False,
                         'is_date_validation':obj.is_date_validation,
-                        'is_certificat':obj.is_certificat,
-                        'partner_id':obj.partner_id and  get_is_transporteur_id(obj.partner_id, DB, USERID, USERPASS, sock) or False
+#                         'is_certificat':obj.is_certificat,
+#                         'partner_id':obj.partner_id and  self.get_is_transporteur_id(obj.partner_id, DB, USERID, USERPASS, sock) or False
                         }
                 is_certifications = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'create', vals, {})
                 lst_is_certifications.append(is_certifications)
@@ -446,7 +449,7 @@ class is_mold_project(models.Model):
         if project.client_id:
             client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if not client_ids:
-                self.env['is.database'].copy_other_database(project.client_id)
+                self.env['is.database'].copy_other_database( project.client_id)
                 client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if client_ids:
                 return client_ids[0]
@@ -464,9 +467,9 @@ class is_mold_project(models.Model):
         list_mold_ids =[]
         for mold in project.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-#            if not dest_mold_ids:
-#                mold.copy_other_database_mold()
-#                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+#             if not dest_mold_ids:
+#                 mold.copy_other_database_mold()
+#                 dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
@@ -545,9 +548,9 @@ class is_dossierf(models.Model):
         list_mold_ids =[]
         for mold in dossierf.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-#            if not dest_mold_ids:
-#                mold.copy_other_database_mold()
-#                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+#             if not dest_mold_ids:
+#                 mold.copy_other_database_mold()
+#                 dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
