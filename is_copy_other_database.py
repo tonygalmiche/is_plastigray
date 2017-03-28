@@ -127,7 +127,7 @@ class is_database(models.Model):
 
         ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
         if not ids:
-            self.copy_other_database(self, partner)
+            self.copy_other_database(partner)
             ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
         if ids:
             return id[0]
@@ -161,7 +161,7 @@ class is_database(models.Model):
     def get_is_transporteur_id(self, obj, DB, USERID, USERPASS, sock):
         ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
         if not ids:
-            self.copy_other_database(self, obj)
+            self.copy_other_database(obj)
             ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
         if ids:  
             return ids[0]
@@ -446,7 +446,7 @@ class is_mold_project(models.Model):
         if project.client_id:
             client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if not client_ids:
-                self.env['is.database'].copy_other_database(self, project.client_id)
+                self.env['is.database'].copy_other_database(project.client_id)
                 client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if client_ids:
                 return client_ids[0]
@@ -644,7 +644,7 @@ class is_mold(models.Model):
         if mold.mouliste_id:
             mouliste_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mold.mouliste_id.id),'|',('active','=',True),('active','=',False)], {})
             if not mouliste_ids:
-                self.env['is.database'].copy_other_database(self, mold.mouliste_id)
+                self.env['is.database'].copy_other_database(mold.mouliste_id)
                 mouliste_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mold.mouliste_id.id),'|',('active','=',True),('active','=',False)], {})
             if mouliste_ids:
                 return mouliste_ids[0]
