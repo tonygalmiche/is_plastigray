@@ -42,9 +42,10 @@ class is_database(models.Model):
                 vals=False
                 if class_name=='res.partner':
                     vals = self.get_partner_vals(obj, DB, USERID, USERPASS, sock)
-                    
+#                     if database.id not in obj.is_database_line_ids.mapped('is_database_origine_id'):
+#                         vals.update({'active':False})
                 if vals:
-                    ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id)], {})
+                    ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
 #                     if not ids:
 #                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
                     if ids:
@@ -107,7 +108,7 @@ class is_database(models.Model):
         new_child_ids = []
         flag = False
         for child in child_ids:
-            dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', child.id)], {})
+            dest_child_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', child.id),'|',('active','=',True),('active','=',False)], {})
             if dest_child_ids:
                 new_child_ids.append(dest_child_ids[0])
             else:
@@ -124,44 +125,31 @@ class is_database(models.Model):
     def get_partner_is_adr_facturation(self, partner, DB, USERID, USERPASS, sock):
         partner_obj = self.pool.get('res.partner')
 
-        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id)], {})
+        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
         if not ids:
-            search=[
-                ('name'       , '=', partner.name),
-                ('is_code'    , '=', partner.is_code),
-                ('is_adr_code', '=', partner.is_adr_code),
-            ]
-            ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', search, {})
+            self.copy_other_database(self, partner)
+            ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
         if ids:
-            id = ids[0]
-#         else:
-#             vals = self.get_partner_vals(partner, DB, USERID, USERPASS, sock)
-#             id = sock.execute(DB, USERID, USERPASS, 'res.partner', 'create', vals, {})
-        return id
-
+            return id[0]
+        return False
 
 
     @api.model
     def get_partner_parent_id(self, partner, DB, USERID, USERPASS, sock):
-        print "partner=",partner
 
-        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id)], {})
-        print "get_partner_parent_id : ids 1=",ids
+        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
         if not ids:
             parent_id=False
-            print "partner.id=",partner.id
             if partner.id:
-                print "### TEST ####"
                 parent_id=self.get_partner_parent_id(partner, DB, USERID, USERPASS, sock)
             search=[
                 ('name'       , '=', partner.name),
                 ('parent_id'  , '=', parent_id),
                 ('is_code'    , '=', partner.is_code),
                 ('is_adr_code', '=', partner.is_adr_code),
+                '|',('active','=',True),('active','=',False)
             ]
-            print "get_partner_parent_id : search=",search
             ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', search, {})
-            print "get_partner_parent_id : ids 2=",ids
         if ids:
             id=ids[0]
         else:
@@ -171,8 +159,11 @@ class is_database(models.Model):
 
 
     def get_is_transporteur_id(self, obj, DB, USERID, USERPASS, sock):
-        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id)], {})
-        if ids:
+        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
+        if not ids:
+            self.copy_other_database(self, obj)
+            ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
+        if ids:  
             return ids[0]
         return False
     
@@ -259,6 +250,22 @@ class is_database(models.Model):
                 lst_is_certifications.append(is_certifications)
         return [(6,0,lst_is_certifications)]
     
+    def get_is_database_line_ids(self, partner , DB, USERID, USERPASS, sock):
+        lst_is_database_line_ids = []
+        obj_ids = partner.is_database_line_ids
+#         if not obj_ids:
+#             obj_ids = partner.parent_id and partner.parent_id.is_database_line_ids
+        for obj in obj_ids:
+            is_database_line_ids = sock.execute(DB, USERID, USERPASS, 'is.database', 'search', [('is_database_origine_id', '=', obj.id)], {})
+            if is_database_line_ids:
+                lst_is_database_line_ids.append(is_database_line_ids[0])
+            else:
+                vals = {'name':obj.name,
+                        'is_database_origine_id':obj.id,
+                        }
+                is_database_line_id = sock.execute(DB, USERID, USERPASS, 'is.database', 'create', vals, {})
+                lst_is_database_line_ids.append(is_database_line_id)
+        return [(6,0,lst_is_database_line_ids)]
         
     @api.model
     def get_partner_vals(self, partner, DB, USERID, USERPASS, sock):
@@ -320,8 +327,20 @@ class is_database(models.Model):
             'is_caracteristique_bl'  : partner.is_caracteristique_bl,
             'is_mode_envoi_facture'  : partner.is_mode_envoi_facture,
             'is_type_cde_fournisseur': partner.is_type_cde_fournisseur,
-
+            'is_database_line_ids'   : self.get_is_database_line_ids(partner, DB, USERID, USERPASS, sock) or False,
+            'active'                 : True
         }
+        db_ids = self.env['is.database'].search([('database','=',DB)])
+        if db_ids:
+            is_database_line_ids = partner_vals.get('is_database_line_ids',[]) and partner_vals.get('is_database_line_ids',[])[0][2]
+            database_rec = sock.execute(DB, USERID, USERPASS, 'is.database', 'read', is_database_line_ids,['is_database_origine_id','name'], {})
+            origin_db_ids = []
+            if database_rec:
+                for db_rec in database_rec:
+                    if db_rec.get('is_database_origine_id',False):
+                        origin_db_ids.append(db_rec.get('is_database_origine_id'))
+            if db_ids[0].id not in origin_db_ids:
+                partner_vals.update({'active':False})
         if partner.is_company:
             partner_vals.update({'child_ids':partner.child_ids and self._get_child_ids(partner.child_ids, DB, USERID, USERPASS, sock) or [] })
         return partner_vals
@@ -348,7 +367,7 @@ class res_partner(models.Model):
     _inherit = 'res.partner'
 
     is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True, select=True)
-    is_database_line_ids = fields.Many2many('is.database', id1='partner_id', id2='database_id', string="Sites")
+    is_database_line_ids = fields.Many2many('is.database','partner_database_rel','partner_id','database_id', string="Sites")
 
     @api.multi
     def write(self, vals):
@@ -425,7 +444,10 @@ class is_mold_project(models.Model):
     @api.model
     def _get_client_id(self, project, DB, USERID, USERPASS, sock):
         if project.client_id:
-            client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id)], {})
+            client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
+            if not client_ids:
+                self.env['is.database'].copy_other_database(self, project.client_id)
+                client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if client_ids:
                 return client_ids[0]
         return False
@@ -442,6 +464,9 @@ class is_mold_project(models.Model):
         list_mold_ids =[]
         for mold in project.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+            if not dest_mold_ids:
+                mold.copy_other_database_mold()
+                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
@@ -509,6 +534,9 @@ class is_dossierf(models.Model):
     def _get_project(self, dossierf, DB, USERID, USERPASS, sock):
         if dossierf.project:
             project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', dossierf.project.id)], {})
+            if not project_ids:
+                dossierf.project.copy_other_database_project()
+                project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', dossierf.project.id)], {})
             if project_ids:
                 return project_ids[0]
         return False
@@ -517,6 +545,9 @@ class is_dossierf(models.Model):
         list_mold_ids =[]
         for mold in dossierf.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+            if not dest_mold_ids:
+                mold.copy_other_database_mold()
+                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
@@ -591,6 +622,9 @@ class is_mold(models.Model):
         if mold.dossierf_id:
             dossierf_ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', mold.dossierf_id.id)], {})
             if dossierf_ids:
+                mold.dossierf_id.copy_other_database_dossierf()
+                dossierf_ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', mold.dossierf_id.id)], {})
+            if dossierf_ids:
                 return dossierf_ids[0]
         return False
         
@@ -598,6 +632,9 @@ class is_mold(models.Model):
     def _get_project(self, mold, DB, USERID, USERPASS, sock):
         if mold.project:
             project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', mold.project.id)], {})
+            if not project_ids:
+                mold.project.copy_other_database_project()
+                project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', mold.project.id)], {})
             if project_ids:
                 return project_ids[0]
         return False
@@ -605,7 +642,10 @@ class is_mold(models.Model):
     @api.model
     def _get_mouliste_id(self, mold, DB, USERID, USERPASS, sock):
         if mold.mouliste_id:
-            mouliste_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mold.mouliste_id.id)], {})
+            mouliste_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mold.mouliste_id.id),'|',('active','=',True),('active','=',False)], {})
+            if not mouliste_ids:
+                self.env['is.database'].copy_other_database(self, mold.mouliste_id)
+                mouliste_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mold.mouliste_id.id),'|',('active','=',True),('active','=',False)], {})
             if mouliste_ids:
                 return mouliste_ids[0]
         return False
