@@ -464,9 +464,9 @@ class is_mold_project(models.Model):
         list_mold_ids =[]
         for mold in project.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-            if not dest_mold_ids:
-                mold.copy_other_database_mold()
-                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+#            if not dest_mold_ids:
+#                mold.copy_other_database_mold()
+#                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
@@ -545,9 +545,9 @@ class is_dossierf(models.Model):
         list_mold_ids =[]
         for mold in dossierf.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-            if not dest_mold_ids:
-                mold.copy_other_database_mold()
-                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+#            if not dest_mold_ids:
+#                mold.copy_other_database_mold()
+#                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
