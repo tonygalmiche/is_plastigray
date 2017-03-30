@@ -134,6 +134,3 @@ access_is_sale_order_line,access_is_sale_order_line,model_is_sale_order_line,bas
 access_is_database,access_is_database,model_is_database,base.group_user,1,0,0,0
 
 
-
-
-
