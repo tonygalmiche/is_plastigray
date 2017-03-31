@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from openerp import api, fields, models, _
-from openerp.exceptions import ValidationError
+from openerp.exceptions import ValidationError, Warning
 import xmlrpclib
+from openerp.osv import osv
 
 
 #TODO
@@ -27,32 +28,36 @@ class is_database(models.Model):
 
     @api.multi
     def copy_other_database(self, obj):
-        cr , uid, context = self.env.args
-        class_name=obj.__class__.__name__
-        database_lines = self.env['is.database'].search([])
-        for database in database_lines:
-            if database.database:
-                DB = database.database
-                USERID = uid
-                DBLOGIN = database.login
-                USERPASS = database.password
-                DB_SERVER = database.ip_server
-                DB_PORT = database.port_server
-                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
-                vals=False
-                if class_name=='res.partner':
-                    vals = self.get_partner_vals(obj, DB, USERID, USERPASS, sock)
-#                     if database.id not in obj.is_database_line_ids.mapped('is_database_origine_id'):
-#                         vals.update({'active':False})
-                if vals:
-                    ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
-#                     if not ids:
-#                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
-                    if ids:
-                        sock.execute(DB, USERID, USERPASS, class_name, 'write', ids, vals, {})
-                        created_id = ids[0]
-                    else:
-                        created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
+        try:
+            cr , uid, context = self.env.args
+            class_name=obj.__class__.__name__
+            database_lines = self.env['is.database'].search([])
+            for database in database_lines:
+                if database.database:
+                    DB = database.database
+                    USERID = uid
+                    DBLOGIN = database.login
+                    USERPASS = database.password
+                    DB_SERVER = database.ip_server
+                    DB_PORT = database.port_server
+                    sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                    vals=False
+                    if class_name=='res.partner':
+                        vals = self.get_partner_vals(obj, DB, USERID, USERPASS, sock)
+    #                     if database.id not in obj.is_database_line_ids.mapped('is_database_origine_id'):
+    #                         vals.update({'active':False})
+                    if vals:
+                        ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
+    #                     if not ids:
+    #                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
+                        if ids:
+                            sock.execute(DB, USERID, USERPASS, class_name, 'write', ids, vals, {})
+                            created_id = ids[0]
+                        else:
+                            created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
+        except Exception as e:
+            raise osv.except_osv(_('Recursive Client!'),
+                             _('(%s).') % e)
         return True
 
     @api.model
@@ -103,7 +108,6 @@ class is_database(models.Model):
             categ_lst.append(n_categ_id)
         return [(6, 0, categ_lst)]
 
-
     def _get_child_ids(self, child_ids, DB, USERID, USERPASS, sock):
         new_child_ids = []
         flag = False
@@ -117,22 +121,20 @@ class is_database(models.Model):
                 new_child_ids.append(child_created_id)
         return [(6,0,new_child_ids)]
 
-
-
-
-
     @api.model
     def get_partner_is_adr_facturation(self, partner, DB, USERID, USERPASS, sock):
         partner_obj = self.pool.get('res.partner')
-
-        ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
-        if not ids:
-            self.copy_other_database(partner)
+        try:
             ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
-        if ids:
-            return ids[0]
-        return False
-
+            if not ids:
+                self.copy_other_database(partner)
+                ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', partner.id),'|',('active','=',True),('active','=',False)], {})
+            if ids:
+                return ids[0]
+            return False
+        except Exception as e:
+            raise osv.except_osv(_('Client!'),
+                             _('(%s).') % e)
 
     @api.model
     def get_partner_parent_id(self, partner, DB, USERID, USERPASS, sock):
@@ -374,16 +376,23 @@ class res_partner(models.Model):
 
     @api.multi
     def write(self, vals):
-
-        for obj in self:
-            res=super(res_partner, self).write(vals)
-            self.env['is.database'].copy_other_database(obj)
-            return res
+        try:
+            for obj in self:
+                res=super(res_partner, self).write(vals)
+                self.env['is.database'].copy_other_database(obj)
+                return res
+        except Exception as e:
+            raise osv.except_osv(_('Client!'),
+                             _('(%s).') % e)
 
     @api.model
     def create(self, vals):
-        obj=super(res_partner, self).create(vals)
-        self.env['is.database'].copy_other_database(obj)
+        try:
+            obj=super(res_partner, self).create(vals)
+            self.env['is.database'].copy_other_database(obj)
+        except Exception as e:
+            raise osv.except_osv(_('Client!'),
+                             _('(%s).') % e)
         return obj
 
 
@@ -394,16 +403,24 @@ class is_mold_project(models.Model):
 
     @api.multi
     def write(self, vals):
-        res=super(is_mold_project, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_project()
-        return res
+        try:
+            res=super(is_mold_project, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_project()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Project!'),
+                             _('(%s).') % e)
 
     @api.model
     def create(self, vals):
-        obj=super(is_mold_project, self).create(vals)
-        obj.copy_other_database_project()
-        return obj
+        try:
+            obj=super(is_mold_project, self).create(vals)
+            obj.copy_other_database_project()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Project!'),
+                             _('(%s).') % e)
     
     @api.multi
     def copy_other_database_project(self):
