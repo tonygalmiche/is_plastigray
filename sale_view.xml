@@ -2,6 +2,20 @@
 <openerp>
     <data>
 
+
+        <!-- Actualiser prix commande -->
+        <record id="actualiser_prix_sale_order_action_server" model="ir.actions.server">
+             <field name="name">Actualiser prix commande</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="code">action = self.actualiser_prix_commande(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="actualiser_prix_sale_order_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'sale.order'" name="model"/>
+            <field name="name">Actualiser prix commande</field>
+            <field eval="'ir.actions.server,%d'%actualiser_prix_sale_order_action_server" name="value"/>
+        </record>
+
         <record id="is_view_order_form" model="ir.ui.view">
             <field name="name">is_view_order_form</field>
             <field name="model">sale.order</field>

@@ -40,6 +40,24 @@ class sale_order(models.Model):
     }
 
 
+    @api.multi
+    def actualiser_prix_commande(self):
+        for obj in self:
+            for line in obj.order_line:
+                res=line.onchange_date_livraison(
+                    line.is_date_livraison, 
+                    line.product_id.id, 
+                    line.product_uom_qty, 
+                    line.product_uom.id, 
+                    obj.partner_id.id, 
+                    obj.pricelist_id.id, 
+                    obj.company_id.id, 
+                    obj.id)
+                price=res['value']['price_unit']
+                if price:
+                    line.price_unit=price
+
+
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
         res = super(sale_order, self).onchange_partner_id(cr, uid, ids, partner_id, context=context)
         if partner_id:
@@ -66,7 +84,6 @@ class sale_order(models.Model):
             value.update({'is_type_commande_ro': True})
         else:
             value.update({'is_type_commande_ro': False})
-        #value.update({'note': str(len(order_line))})
         return {'value': value}
 
 
@@ -89,7 +106,6 @@ class sale_order(models.Model):
     @api.multi
     def action_acceder_commande(self):
         for obj in self:
-            print obj
             return {
                 'name': "Commande",
                 'view_mode': 'form',
@@ -108,7 +124,6 @@ class sale_order(models.Model):
             if vals['is_type_commande']=='ouverte':
                 product_id=vals['is_article_commande_id']
                 product   = self.env['product.product'].browse([product_id])
-                #partner   = self.env['res.partner'].browse(vals['partner_invoice_id'])
                 partner   = self.env['res.partner'].browse(vals['partner_id'])
                 pricelist_id=vals['pricelist_id']
                 context={}
@@ -366,7 +381,6 @@ class sale_order_line(models.Model):
         
         return {'value': v,
                 'warning': warning}
-
 
 
     # Arrondir au lot et au multiple du lot dans la saisie des commandes
