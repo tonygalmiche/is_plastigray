@@ -194,6 +194,7 @@
             ref('is_rsp_achats_group'),
             ref('is_rsp_production_group'),
             ref('is_comptable_group'),
+            ref('is_commerciaux_group'),
         ])]"/>
     </record>
     <record id="menu_is_achats_liste_prix" model="ir.ui.menu">
