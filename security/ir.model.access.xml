@@ -106,6 +106,16 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+    <record id="is_config_champ_line_access"  model="ir.model.access" >
+        <field name="name">is_config_champ_line_access</field>
+        <field name="model_id"    eval="ref('is_pg_product.model_is_config_champ_line')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
     <record id="is_product_uom_access"  model="ir.model.access" >
         <field name="name">is_product_uom_access</field>
         <field name="model_id"    eval="ref('product.model_product_uom')"/>
