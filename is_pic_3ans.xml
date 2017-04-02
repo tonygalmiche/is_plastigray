@@ -29,9 +29,14 @@
                                 <field name="product_id"/>
                                 <field 
                                     name="recharger"
-                                    on_change="on_change_action(annee,product_id)"
+                                    on_change="on_change_recharger(annee,product_id)"
                                     domain="[('sale_ok','=',True)]"
                                 />
+                                <field 
+                                    name="raz"
+                                    on_change="on_change_raz()"
+                                />
+
                             </group>
                         </group>
                         <group col="4" colspan="4">

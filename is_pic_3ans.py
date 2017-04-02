@@ -21,12 +21,10 @@ class is_pic_3ans_saisie(models.Model):
 
     ordre=0
 
-    #TODO : 
-    #- Faire une sauvegarde avant le caclul pour pouvoir comparer les différences => Attente tests CC avant de faire cela
-
     annee      = fields.Char('Année PIC',                         required=True)
     product_id = fields.Many2one('product.product', 'Article',    required=True)
     recharger  = fields.Boolean('Recharger les données')
+    raz        = fields.Boolean('Mise à 0 des données')
 
     liv_01     = fields.Integer('Livré 01', compute='_compute', readonly=True, store=False)
     liv_02     = fields.Integer('Livré 02', compute='_compute', readonly=True, store=False)
@@ -129,7 +127,7 @@ class is_pic_3ans_saisie(models.Model):
 
 
     @api.multi
-    def on_change_action(self, annee, product_id):
+    def on_change_recharger(self, annee, product_id):
         cr = self._cr
         if annee and product_id:
             annee=num(annee)
@@ -157,6 +155,16 @@ class is_pic_3ans_saisie(models.Model):
                 value[champ]=qt
                 date_debut = date_debut + relativedelta(months=1)
             return {'value': value}
+
+
+    @api.multi
+    def on_change_raz(self):
+        value={}
+        for i in range(1,13):
+            champ="pic_"+("00"+str(i))[-2:]
+            value[champ]=0
+        return {'value': value}
+
 
 
     @api.model
