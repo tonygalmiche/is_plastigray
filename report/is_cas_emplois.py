@@ -20,8 +20,8 @@ class is_cas_emplois(models.Model):
     product_id         = fields.Many2one('product.product', 'Article')
     type               = fields.Selection([('normal', 'Normal'), ('phantom', 'Fantôme')], 'Type de composant')
     is_article_fourni  = fields.Selection([('oui', 'Oui'), ('non', 'Non')], 'Article fourni')
-    product_qty        = fields.Float('Quantité')
-    product_uom        = fields.Many2one('product.uom', 'Article')
+    product_qty        = fields.Float('Quantité', digits=(14,6))
+    product_uom        = fields.Many2one('product.uom', 'Unité')
     date_start         = fields.Date('Valide du')
     date_stop         = fields.Date("Valide jusqu'au")
 
