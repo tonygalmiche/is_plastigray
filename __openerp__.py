@@ -133,6 +133,7 @@ Module principal du projet Plastigray
         "report/is_article_sans_cde_ouverte_fou.xml",
         "report/is_anomalie_position_fiscale.xml",
         "report/is_sale_order_line.xml",
+        "report/is_product_packaging.xml",
         "menu.xml",
     ], 
     "installable": True,

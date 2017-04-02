@@ -132,5 +132,6 @@ access_is_pic_3ans,access_is_pic_3ans,model_is_pic_3ans,base.group_user,1,0,0,0
 access_is_anomalie_position_fiscale,access_is_anomalie_position_fiscale,model_is_anomalie_position_fiscale,base.group_user,1,0,0,0
 access_is_sale_order_line,access_is_sale_order_line,model_is_sale_order_line,base.group_user,1,0,0,0
 access_is_database,access_is_database,model_is_database,base.group_user,1,0,0,0
+access_is_product_packaging,access_is_product_packaging,model_is_product_packaging,base.group_user,1,0,0,0
 
 
