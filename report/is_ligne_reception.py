@@ -14,6 +14,11 @@ class is_ligne_reception(models.Model):
     num_bl             = fields.Char('N°BL fournisseur')
     order_id           = fields.Many2one('purchase.order', 'Commande')
     partner_id         = fields.Many2one('res.partner', 'Fournisseur')
+
+    is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
+    is_date_confirmation = fields.Date('Date de confirmation')
+    is_commentaire       = fields.Text('Commentaire')
+
     product_id         = fields.Many2one('product.template', 'Article')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     commande_ouverte   = fields.Char('Commande ouverte')
@@ -64,6 +69,9 @@ class is_ligne_reception(models.Model):
                         sm.date               as date_mouvement,
                         po.id                 as order_id,  
                         sp.partner_id         as partner_id, 
+                        po.is_demandeur_id       as is_demandeur_id,
+                        po.is_date_confirmation  as is_date_confirmation,
+                        po.is_commentaire        as is_commentaire,
                         pt.id                 as product_id, 
                         pt.is_ref_fournisseur as ref_fournisseur,
                         sm.product_uom        as product_uom,
