@@ -21,6 +21,13 @@
             <field name="code" position="replace" > 
                 <field name="code" invisible="1" /> 
             </field>
+
+            <field name="active" position="after" > 
+                <field name="is_presse_affectee" />
+                <field name="is_presse_generique" />
+            </field>
+
+
             <field name="workcenter_lines" position="replace" > 
                 <field name="workcenter_lines">
                     <tree editable="bottom">
@@ -50,6 +57,8 @@
                 <field name="code" invisible="1" /> 
             </field>
             <field name="name" position="after" > 
+                <field name="is_presse_affectee" />
+                <field name="is_presse_generique" />
                 <field name="is_nb_empreintes" />
                 <field name="is_coef_theia" />
             </field>

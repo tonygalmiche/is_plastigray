@@ -28,9 +28,6 @@ class mrp_bom(models.Model):
             obj.is_qt_um = obj.product_tmpl_id.get_um()
 
 
-
-
-
 class mrp_bom_line(models.Model):
     _name = 'mrp.bom.line'
     _inherit = 'mrp.bom.line'
@@ -103,15 +100,31 @@ class mrp_routing(models.Model):
     _name = 'mrp.routing'
     _inherit = 'mrp.routing'
     
-    is_nb_empreintes = fields.Integer("Nombre d'empreintes par pièce", help="Nombre d'empreintes pour cette pièce dans le moule")
-    is_coef_theia    = fields.Integer("Coefficient Theia"            , help="Nombre de pièces différentes dans le moule")
+
+    @api.depends('name')
+    def _compute(self):
+        for obj in self:
+            boms = self.env['mrp.bom'].search([('routing_id','=',obj.id)])
+            val=False
+            if len(boms)>0:
+                val=True
+            obj.is_presse_affectee=val
+            boms = self.env['mrp.bom'].search([('is_gamme_generique_id','=',obj.id)])
+            val=False
+            if len(boms)>0:
+                val=True
+            obj.is_presse_generique=val
+
+
+    is_presse_affectee  = fields.Boolean("Presse affectée" , store=False, readonly=True, compute='_compute')
+    is_presse_generique = fields.Boolean("Presse générique", store=False, readonly=True, compute='_compute')
+    is_nb_empreintes    = fields.Integer("Nombre d'empreintes par pièce", help="Nombre d'empreintes pour cette pièce dans le moule")
+    is_coef_theia       = fields.Integer("Coefficient Theia"            , help="Nombre de pièces différentes dans le moule")
 
     _defaults = {
         'is_nb_empreintes': 1,
         'is_coef_theia': 1,
     }
-
-
 
 
 class mrp_routing_workcenter(models.Model):
