@@ -92,6 +92,8 @@ class mrp_prevision(models.Model):
                 order=order_obj.create(vals)
                 if order:
                     unlink=True
+                    note=False
+                    vals=False
                     try:
                         res=order_line_obj.onchange_product_id(
                             order.pricelist_id.id, 
@@ -107,10 +109,32 @@ class mrp_prevision(models.Model):
                             state              = 'draft'
                         )
                         vals=res['value']
-                        vals['order_id']=order.id
-                        vals['product_id']=obj.product_id.id
-                        if 'taxes_id' in vals:
-                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
+#                        vals['order_id']=order.id
+#                        vals['product_id']=obj.product_id.id
+#                        if 'taxes_id' in vals:
+#                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
+#                        order_line=order_line_obj.create(vals)
+#                        order.wkf_bid_received() 
+#                        order.wkf_confirm_order()
+#                        order.action_picking_create() 
+#                        order.wkf_approve_order()
+                    except:
+                        unlink=False
+                        note='\n'.join(sys.exc_info()[1])
+                    if vals==False:
+                        vals={
+                            'name'        : obj.product_id.name, 
+                            'product_uom' : obj.uom_po_id.id, 
+                            'product_qty' : obj.quantity_ha, 
+                            'price_unit'  : False, 
+                            'date_planned': obj.start_date_cq, 
+                            'taxes_id'    : False
+                        }
+                    vals['order_id']=order.id
+                    vals['product_id']=obj.product_id.id
+                    if 'taxes_id' in vals:
+                        vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
+                    try:
                         order_line=order_line_obj.create(vals)
                         order.wkf_bid_received() 
                         order.wkf_confirm_order()
@@ -118,7 +142,11 @@ class mrp_prevision(models.Model):
                         order.wkf_approve_order()
                     except:
                         unlink=False
-                        obj.note=unicode(sys.exc_info()[1])
+                        if note==False:
+                            note='\n'.join(sys.exc_info()[1])
+                        else:
+                            note=note+'\n'+'\n'.join(sys.exc_info()[1])
+                    obj.note=unicode(note)
                     if unlink:
                         obj.unlink()
 
@@ -225,8 +253,6 @@ class mrp_prevision(models.Model):
             r=self.get_delai_cq_tps_fab_start_date(type, product_id, quantity, end_date)
             vals.update(r)
 
-            print r, vals
-
             #** Date début des FS en tenant compte du temps de fabrication *****
             #start_date=self._start_date(product_id, quantity, end_date)
             #** Date début des FS pendant les jours ouvrés de l'entreprise *****
@@ -246,10 +272,6 @@ class mrp_prevision(models.Model):
         if sequence_ids:
             sequence_id = sequence_ids[0].res_id
             vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
-
-
-        print "vals=",self,vals
-
         obj = super(mrp_prevision, self).create(vals)
         #***********************************************************************
 
@@ -258,7 +280,6 @@ class mrp_prevision(models.Model):
             id=obj.id
             for row in self.browse([id]):
                 if row.type=='fs':
-                    print "row=",obj, row, row.start_date
                     #** Recherche en tenant compte des articles fantomes *******
                     bom_obj = self.env['mrp.bom']
                     bom_id = bom_obj._bom_find(row.product_id.product_tmpl_id.id, properties=None)
@@ -275,7 +296,6 @@ class mrp_prevision(models.Model):
                             'quantity_origine': line['product_qty'],
                             'state'           : 'valide',
                         }
-                        print "#### vals=",vals
                         self.create(vals)
                     #***********************************************************
 
