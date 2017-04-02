@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <openerp>
-  <data>
+    <data>
+
+
+    <!-- Analyse du CBN -->
+    <record model="ir.actions.act_url" id="is_url_analyse_cbn_action">
+        <field name="name">http://odoo/odoo-erp/cbn/Sugestion_CBN.php</field>
+        <field name="url">http://odoo/odoo-erp/cbn/Sugestion_CBN.php</field>
+        <field name="type">ir.actions.act_url</field>
+    </record>
+
+    <!-- Planning -->
+    <record model="ir.actions.act_url" id="is_url_planning_action">
+        <field name="name">http://odoo/odoo-erp/planning/</field>
+        <field name="url">http://odoo/odoo-erp/planning/</field>
+        <field name="type">ir.actions.act_url</field>
+    </record>
+
+    <!-- Wiki -->
+    <record model="ir.actions.act_url" id="is_url_wiki_action">
+        <field name="name">http://odoowiki</field>
+        <field name="url">http://odoowiki</field>
+        <field name="type">ir.actions.act_url</field>
+    </record>
+
+    <!-- Articles de Prodstar + Odoo -->
+    <record model="ir.actions.act_url" id="is_url_articles_prodstar_odoo_action">
+        <field name="name">http://odoo/odoo-erp/analyses/articles-prodstar-odoo.php</field>
+        <field name="url">http://odoo/odoo-erp/analyses/articles-prodstar-odoo.php</field>
+        <field name="type">ir.actions.act_url</field>
+    </record>
 
 
     <!-- Analyse du CBN -->
@@ -1162,6 +1191,16 @@
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
+    <record id="is_url_articles_prodstar_odoo_menu" model="ir.ui.menu" >
+        <field name="name">Articles Prodstar+Odoo</field>
+        <field name="sequence">50</field>
+        <field name="parent_id" eval="ref('is_analyse_article_menu')"/>
+        <field name="action"    ref="is_url_articles_prodstar_odoo_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
 
 
     <menuitem id="is_analyse_gamme_menu" sequence="15" name="Analyses Gammes" parent="menu_is_analyse"/>
