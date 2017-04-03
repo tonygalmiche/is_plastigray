@@ -27,6 +27,7 @@ Module principal du projet Plastigray
         "is_mold",                # Moules et Projets pour l'injection plastique
         "is_pg_product",          # Fiche article
         "account_cancel",         # Permet d'autoriser l'annulation des factures 
+        "auditlog",
     ], 
     "data" : [
         "security/res.groups.xml",
