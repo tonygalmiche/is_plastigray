@@ -86,8 +86,8 @@ openerp.is_plastigray = function (instance) {
            }
            this.do_action({
                 name: _t("Logs"),
-                res_model : 'auditlog.log',
-                domain : [['res_id', 'in', selected_id], ['model_id.model', '=', view.dataset.model]],
+                res_model : 'auditlog.log.line',
+                domain : [['related_res_id', 'in', selected_id], ['related_model_id.model', '=', view.dataset.model]],
                 views: [[false, 'list'], [false, 'form']],
                 type : 'ir.actions.act_window',
                 view_type : "list",

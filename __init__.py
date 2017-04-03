@@ -31,6 +31,7 @@ import is_etuve
 import is_cde_ferme_cadencee
 import is_pic_3ans
 import is_copy_other_database
+import log
 
 import report
 import wizard

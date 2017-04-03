@@ -31,9 +31,9 @@ class audit_log_wizard(osv.TransientModel):
     def do_click_audit(self,cr, uid, ids, context=None):
         active_ids = context.get('active_ids',[])
         active_model = context.get('active_model','')
-        model, res_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'auditlog', 'action_auditlog_log_tree')
+        model, res_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'is_plastigray', 'action_auditlog_log_line_tree')
         action = self.pool[model].read(cr, uid, [res_id], context=context)[0]
-        action['domain'] = [('res_id','in',active_ids),('model_id.model','=',active_model)]
+        action['domain'] = [('related_res_id','in',active_ids),('related_model_id.model','=',active_model)]
         return action
 
 

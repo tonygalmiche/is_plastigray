@@ -208,7 +208,7 @@
         />
         
         <record id="report_stock_detail_tree" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="is_plastigray.liste_servir_paperformat"/>
+            <field name="paperformat_id" ref="is_plastigray.document_fabrication_landscape_paperformat"/>
         </record>
         
         <report 
@@ -221,7 +221,7 @@
         />
         
         <record id="report_stock_movement_tree" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="is_plastigray.liste_servir_paperformat"/>
+            <field name="paperformat_id" ref="is_plastigray.document_fabrication_landscape_paperformat"/>
         </record>
 
     </data>

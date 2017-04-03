@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_auditlog_log_line_tree">
+            <field name="name">auditlog.log.line.tree</field>
+            <field name="model">auditlog.log.line</field>
+            <field name="arch" type="xml">
+                <tree string="Logs" create="false">
+                    <field name="create_date"/>
+                    <field name="related_name"/>
+                    <field name="related_model_id"/>
+                    <field name="related_res_id"/>
+                    <field name="related_method"/>
+                    <field name="related_user_id"/>
+                    <field name="field_description"/>
+                    <field name="field_name"/>
+                    <field name="old_value_text"/>
+                    <field name="new_value_text"/>
+                </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="view_auditlog_log_line_form">
+            <field name="name">auditlog.log.line.form</field>
+            <field name="model">auditlog.log.line</field>
+            <field name="arch" type="xml">
+                <form string="Log">
+                    <sheet>
+                        <group string="Log">
+                            <group colspan="1">
+                                <field name="create_date" readonly="1"/>
+                                <field name="related_user_id" readonly="1"/>
+                                <field name="related_method" readonly="1"/>
+                                <field name="related_log_type" readonly="1"/>
+                            </group>
+                            <group colspan="1">
+                                <field name="related_model_id" readonly="1"/>
+                                <field name="related_res_id" readonly="1"/>
+                                <field name="related_name" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="HTTP Context">
+                            <field name="related_http_session_id"/>
+                            <field name="related_http_request_id"/>
+                        </group>
+                        <group string="Fields updated">
+                            <group>
+                                <field name="field_id" readonly="1"/>
+                            </group>
+                            <group string="Values" col="4">
+                                <field name="old_value" readonly="1"/>
+                                <field name="new_value" readonly="1"/>
+                                <field name="old_value_text" readonly="1"/>
+                                <field name="new_value_text" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+		<record model="ir.actions.act_window" id="action_auditlog_log_line_tree">
+            <field name="name">Logs Lines</field>
+            <field name="res_model">auditlog.log.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</openerp>
