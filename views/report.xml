@@ -198,7 +198,31 @@
             <field name="paperformat_id" ref="is_plastigray.pricelist_version_paperformat"/>
         </record>
 
-
+			<report 
+            string="Stock détaillés" 
+            id="report_stock_detail_tree" 
+            model="is.stock.quant" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_stockdetails_tree" 
+            file="is_plastigray.report_stockdetails_tree" 
+        />
+        
+        <record id="report_stock_detail_tree" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.liste_servir_paperformat"/>
+        </record>
+        
+        <report 
+            string="Mouvements de stock" 
+            id="report_stock_movement_tree" 
+            model="is.stock.move" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_stockmovement_tree" 
+            file="is_plastigray.report_stockmovement_tree" 
+        />
+        
+        <record id="report_stock_movement_tree" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.liste_servir_paperformat"/>
+        </record>
 
     </data>
 </openerp>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="audit_log_wizard" model="ir.ui.view">
+            <field name="name">audit.log.wizard</field>
+            <field name="model">audit.log.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Audit LOg">
+                    <separator
+                        string="Click to show Audit Log."/>
+                    <footer>
+                        <button name="do_click_audit" string="Next" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_audit_log_wizard" model="ir.actions.act_window">
+            <field name="name">Audit Lod</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">audit.log.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="audit_log_wizard"/>
+            <field name="target">new</field>
+        </record>
+
+
+    </data>
+</openerp>

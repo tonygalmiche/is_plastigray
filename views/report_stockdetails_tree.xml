@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_stockmovement_tree">
+	<t t-call="report.html_container">
+    <t t-call="report.external_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+
+            <h2>Mouvements de stock</h2>
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th><strong>Date</strong></th>
+                        <th><strong>Article</strong></th>
+                        <th><strong>Cat</strong></th>
+                        <th><strong>Moule / DossierF</strong></th>
+                        <th><strong>Type</strong></th>
+                        <th><strong>Description</strong></th>
+                        <th><strong>Rcp/Liv</strong></th>
+                        <th><strong>Lot</strong></th>
+                        <th><strong>Lot fournisseur</strong></th>
+                        <th><strong>Quantité</strong></th>
+                        <th><strong>Unité</strong></th>
+                        <th><strong>Lieu</strong></th>
+                        <th><strong>Login</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="docs" t-as="o">
+                        <td><span t-field="o.date"/> </td>
+                        <td><span t-esc="o.product_id.name"/> </td>
+                        <td><span t-field="o.category"/> </td>
+                        <td><span t-field="o.mold"/> </td>
+                        <td><span t-field="o.type_mv"/> </td>
+                        <td><span t-field="o.name"/> </td>
+                        <td><span t-field="o.picking_id.name"/> </td>
+                        <td><span t-field="o.lot_id.name"/> </td>
+                        <td><span t-field="o.lot_fournisseur"/> </td>
+                        <td><span t-field="o.qty"/> </td>
+                        <td><span t-field="o.product_uom.name"/> </td>
+                        <td><span t-field="o.location_dest"/> </td>
+                        <td><span t-field="o.login"/> </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </t>
+    </t>
+</template>
+
+</data>
+</openerp>

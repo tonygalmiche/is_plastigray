@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_stockdetails_tree">
+	<t t-call="report.html_container">
+    <t t-call="report.external_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+
+            <h2>Stock détaillés</h2>
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th><strong>Code PG</strong></th>
+                        <th><strong>Désignation</strong></th>
+                        <th><strong>Gestionnaire</strong></th>
+                        <th><strong>Catégorie</strong></th>
+                        <th><strong>Moule</strong></th>
+                        <th><strong>Dossier F</strong></th>
+                        <th><strong>Client</strong></th>
+                        <th><strong>Référence Client</strong></th>
+                        <th><strong>Référence Fournisseur</strong></th>
+                        <th><strong>Emplacement</strong></th>
+                        <th><strong>Lot</strong></th>
+                        <th><strong>Lot fournisseur</strong></th>
+                        <th class="text-right"><strong>Quantité</strong></th>
+                        <th><strong>Unité</strong></th>
+                        <th><strong>Date d'entrée</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="docs" t-as="o">
+                        <td><span t-field="o.code_pg"/> </td>
+                        <td><span t-esc="o.designation"/> </td>
+                        <td><span t-field="o.gestionnaire_id.name"/></td>
+                        <td><span t-field="o.category_id.name"/> </td>
+                        <td><span t-field="o.moule"/> </td>
+                        <td><span t-field="o.dossierf"/> </td>
+                        <td><span t-field="o.client_id.name"/> </td>
+                        <td><span t-field="o.ref_client"/> </td>
+                        <td><span t-field="o.ref_fournisseur"/> </td>
+                        <td><span t-field="o.emplacement"/> </td>
+                        <td><span t-field="o.lot"/> </td>
+                        <td><span t-field="o.lot_fournisseur"/> </td>
+                        <td class="text-right"><span t-field="o.quantite"/> </td>
+                        <td><span t-field="o.uom_id.name"/> </td>
+                        <td><span t-field="o.date_entree"/> </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </t>
+    </t>
+</template>
+
+</data>
+</openerp>
