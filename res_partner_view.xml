@@ -23,6 +23,14 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="is_database_line_ids" widget="many2many_tags" nolabel="1" />
+                </xpath>
+
+
+
+
                 <xpath expr="//field[@name='street2']" position="after">
                     <field name="is_rue3" placeholder="Rue 3 ou Boite Postale" />
                 </xpath>
@@ -108,6 +116,7 @@
                                 <field name="phone"/>
                                 <field name="mobile"/>
                                 <field name="email"/>
+                                <field name="is_database_line_ids" widget="many2many_tags"/>
                                 <field name="use_parent_address" invisible="1" />
                             </tree>
                         </field>
