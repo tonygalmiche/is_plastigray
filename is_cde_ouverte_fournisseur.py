@@ -555,10 +555,12 @@ class is_cde_ouverte_fournisseur(models.Model):
                 SQL="""
                     select sp.is_num_bl, sp.is_date_reception, sm.product_uom_qty
                     from stock_picking sp inner join stock_move sm on sm.picking_id=sp.id
-                    where sm.product_id="""+str(product.product_id.id)+""" 
-                          and sp.is_date_reception is not null
-                          and sm.state='done' 
-                          and sp.picking_type_id=1
+                    where 
+                        sm.product_id="""+str(product.product_id.id)+""" and
+                        sp.is_date_reception is not null and
+                        sm.state='done' and
+                        sp.picking_type_id=1 and 
+                        sp.partner_id="""+str(obj.partner_id.id)+""" 
                     order by sp.is_date_reception desc, sm.date desc
                     limit 1
                 """
@@ -594,6 +596,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                 where=[
                     ('state'       ,'=', 'confirmed'),
                     ('product_id'  ,'=', product.product_id.id),
+                    ('partner_id'  ,'=', obj.partner_id.id), 
                 ]
                 now  = datetime.date.today()                     # Date du jour
                 date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
