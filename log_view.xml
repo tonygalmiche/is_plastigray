@@ -45,8 +45,8 @@
                             <field name="related_http_session_id"/>
                             <field name="related_http_request_id"/>
                         </group>
-                        <group string="Fields updated">
-                            <group>
+                        <group col="4" colspan="4">
+                            <group string="Fields updated">
                                 <field name="field_id" readonly="1"/>
                             </group>
                             <group string="Values" col="4">
