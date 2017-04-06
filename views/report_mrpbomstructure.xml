@@ -14,7 +14,12 @@
                 <thead>
                     <tr>
                         <th class="text-left">Article</th>
+                        <th class="text-left">Segment</th>
                         <th class="text-center">Catégorie</th>
+                        <th class="text-center">Qt par UC</th>
+                        <th class="text-center">Qt par UM</th>
+                        <th class="text-center">Gamme</th>
+                        <th class="text-center">Gamme générique</th>
                         <th class="text-right">Quantité</th>
                         <th class="text-left">Unité</th>
                     </tr>
@@ -32,8 +37,23 @@
                                 <span t-field="o.product_tmpl_id.is_code"/>
                                 <span t-field="o.product_tmpl_id.name"/>
                             </td>
-                            <td class="text-center">
+                            <td class="text-left">
+                                <span t-field="o.segment_id.name"/>
+                            </td>
+                            <td class="text-left">
                                 <span t-field="o.product_tmpl_id.is_category_id.name"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="o.is_qt_uc"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-field="o.is_qt_um"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-field="o.routing_id.name"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-field="o.is_gamme_generique_id.name"/>
                             </td>
                             <td class="text-right">
                                 <span t-esc="formatLang(o.product_qty,4)"/>
@@ -48,8 +68,23 @@
                                 <span t-esc="l['pcode']"/>
                                 <span t-esc="l['pname']"/>
                             </td>
-                            <td class="text-center">
-                                <span t-esc="l['is_category_id']"/>
+                            <td class="text-left">
+                                <span t-esc="l.get('segment','')"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="l.get('is_category_id','')"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="l.get('is_qt_uc','')"/>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="l.get('is_qt_um','')"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="l.get('routing_id','')"/>
+                            </td>
+                            <td class="text-left">
+                                <span t-esc="l.get('is_gamme_generique_id','')"/>
                             </td>
                             <td class="text-right">
                                 <span t-esc="formatLang(l['pqty'],4)"/>

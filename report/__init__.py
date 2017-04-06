@@ -41,4 +41,5 @@ import is_article_sans_cde_ouverte_fou
 import is_anomalie_position_fiscale
 import is_sale_order_line
 import is_product_packaging
+import bom_structure
 
