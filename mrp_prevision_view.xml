@@ -79,10 +79,20 @@
                         <group>
                             <div style="background-color:#EEEEEE">
                                 Précisions sur les calculs : <br />
-                                - Pour une FS, le champ 'Date de fin' issu du calcul des besoins correspond à la date d'expédition de la commande ramené au lundi précédent
-                                - Le champ 'Date début contrôle qualité', tient compte du champ 'Délai contrôle qualité' et des jours d'ouverture de la société<br /> 
+                                - Pour une FS, le champ 'Date de fin' issu du calcul des besoins correspond à la date d'expédition de 
+                                la commande ramené au lundi précédent
+                                - Le champ 'Date début contrôle qualité', tient compte du champ 'Délai contrôle qualité' et des jours 
+                                d'ouverture de la société<br /> 
                                 - 'Temps de fabrication (H)' =  'Temps de fabrication' de la fiche article x Quantité / (3600 x 24)
-                                - Le champ 'Date de début' tient compte du champ 'Temps de fabrication (H)' arrondi à l'entier supérieur et des jours d'ouverture de la société
+                                - Le champ 'Date de début' tient compte du champ 'Temps de fabrication (H)' arrondi à l'entier supérieur 
+                                et des jours d'ouverture de la société<br /> <br /> 
+                                Pour une SA : <br /> 
+                                - Date fin contrôle qualité = Date du besoin (positionné au lundi) <br /> 
+                                - Date début contrôle qualité = Date fin contrôle qualité - Délai CQ - 2. <br /> 
+                                Ce délai est calculé en jours ouvrés pour Plastigray. <br /> 
+                                Ensuite, il faut rechercher le premier jour ouvré du fournisseur pour fixer la date de réception par fourniseur <br /> 
+                                - Date de début = Date début contrôle qualité - Délai fourniseur en jours calendaires.<br /> 
+                                Ensuite, il faut rechercher le premier jour ouvré de Plastigray pour pouvoir passer la commande un jour ouvré <br /> 
                             </div>
                         </group>
 
