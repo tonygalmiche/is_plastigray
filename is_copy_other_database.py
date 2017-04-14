@@ -82,13 +82,14 @@ class is_database(models.Model):
 
     @api.model
     def get_is_secteur_activite(self, obj , DB, USERID, USERPASS, sock):
-        ids = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'search', [('name', '=', obj.name)], {})
+        ids = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'search', [('is_database_origine_id', '=', obj.id)], {})
+        if not ids:
+            obj.copy_other_database_secteur_activite()
+            ids = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if ids:
             return ids[0]
-        else:
-            vals = {'name':obj.name}
-            new_id = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'create', vals, {})
-            return new_id
+        return False
+            
 
     @api.model
     def create_check_categ(self, category, DB, USERID, USERPASS, sock):
@@ -170,11 +171,11 @@ class is_database(models.Model):
         return False
     
     def get_is_type_contact(self, obj , DB, USERID, USERPASS, sock):
-        is_type_contact_ids = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'search', [('name', '=', obj.name)], {})
+        is_type_contact_ids = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if is_type_contact_ids:
             return is_type_contact_ids[0]
         else:
-            vals = {'name':obj.name}
+            vals = {'name':obj.name, 'is_database_origine_id':obj.id}
             is_type_contact = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'create', vals, {})
             return is_type_contact
         
@@ -188,11 +189,11 @@ class is_database(models.Model):
             return is_incoterm
         
     def get_is_segment_achat(self, obj , DB, USERID, USERPASS, sock):
-        is_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('name', '=', obj.name)], {})
+        is_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if is_segment_achat_ids:
             return is_segment_achat_ids[0]
         else:
-            vals = {'name':obj.name,'description':obj.description, }
+            vals = {'name':obj.name,'description':obj.description, 'is_database_origine_id':obj.id}
 #             'family_line':[(6,0,[self.get_is_famille_achat_ids(is_famille , DB, USERID, USERPASS, sock) for is_famille in obj.family_line])]
             is_segment_achat = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', vals, {})
             return is_segment_achat
@@ -200,54 +201,57 @@ class is_database(models.Model):
     def get_is_famille_achat_ids(self, obj_ids , DB, USERID, USERPASS, sock):
         lst_is_famille_achat_ids = []
         for obj in obj_ids:
-            famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('name', '=', obj.name)], {})
+            famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', obj.id)], {})
             if famille_achat_ids:
                 lst_is_famille_achat_ids.append(famille_achat_ids[0])
             else:
-                vals = {'name':obj.name,'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
+                vals = {'is_database_origine_id':obj.id,'name':obj.name,'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
                 is_famille_achat = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', vals, {})
                 lst_is_famille_achat_ids.append(is_famille_achat)
-            return [(6,0,lst_is_famille_achat_ids)]
+        return [(6,0,lst_is_famille_achat_ids)]
         
     def get_is_site_livre_ids(self, obj_ids , DB, USERID, USERPASS, sock):
         lst_site_livre_ids = []
         for obj in obj_ids:
-            is_site_livre_ids = sock.execute(DB, USERID, USERPASS, 'is.site', 'search', [('name', '=', obj.name)], {})
+            is_site_livre_ids = sock.execute(DB, USERID, USERPASS, 'is.site', 'search', [('is_database_origine_id', '=', obj.id)], {})
             if is_site_livre_ids:
                 lst_site_livre_ids.append(is_site_livre_ids[0])
             else:
-                vals = {'name':obj.name}
+                vals = {'name':obj.name, 'is_database_origine_id':obj.id}
                 lst_site_livre_id = sock.execute(DB, USERID, USERPASS, 'is.site', 'create', vals, {})
                 lst_site_livre_ids.append(lst_site_livre_id)
         return [(6,0,lst_site_livre_ids)]
     
     def get_is_transmission_cde(self, obj, DB, USERID, USERPASS, sock):
-        is_transmission_cde_ids = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'search', [('name', '=', obj.name)], {})
+        is_transmission_cde_ids = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if is_transmission_cde_ids:
             return is_transmission_cde_ids[0]
         else:
-            vals = {'name':obj.name}
+            vals = {'name':obj.name, 'is_database_origine_id':obj.id}
             is_transmission_cde = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'create', vals, {})
             return is_transmission_cde
+            return False
     
     def get_is_norme(self, obj, DB, USERID, USERPASS, sock):
-        is_norme_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('name', '=', obj.name)], {})
+        is_norme_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if is_norme_ids:
             return is_norme_ids[0]
         else:
-            vals = {'name':obj.name}
+            vals = {'name':obj.name, 'is_database_origine_id':obj.id}
             is_norme = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'create', vals, {})
             return is_norme
+            return False
     
     def get_is_certifications(self, obj_ids, DB, USERID, USERPASS, sock):
         lst_is_certifications = []
         for obj in obj_ids:
-            is_certifications_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_norme.name', '=', obj.is_norme.name)], {})
+            is_certifications_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_database_origine_id', '=', obj.id)], {})
             if is_certifications_ids:
                 lst_is_certifications.append(is_certifications_ids[0])
             else:
                 vals = {'is_norme':obj.is_norme and self.get_is_norme(obj.is_norme, DB, USERID, USERPASS, sock) or False,
                         'is_date_validation':obj.is_date_validation,
+                        'is_database_origine_id':obj.id,
 #                         'is_certificat':obj.is_certificat,
 #                         'partner_id':obj.partner_id and  self.get_is_transporteur_id(obj.partner_id, DB, USERID, USERPASS, sock) or False
                         }
@@ -726,3 +730,613 @@ class is_mold(models.Model):
 #                else:
 #                    created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
 
+
+class is_segment_achat(models.Model):
+    _inherit = 'is.segment.achat'
+
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_segment_achat, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_segment_achat()
+        return res
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_segment_achat, self).create(vals)
+        obj.copy_other_database_segment_achat()
+        return obj
+    
+    
+    @api.multi
+    def copy_other_database_segment_achat(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for segment in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                segment_achat_vals = self.get_segment_achat_vals(segment, DB, USERID, USERPASS, sock)
+                dest_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', segment.id)], {})
+                if dest_segment_achat_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'write', dest_segment_achat_ids, segment_achat_vals, {})
+                    segment_achat_created_id = dest_segment_achat_ids[0]
+                else:
+                    segment_achat_created_id = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', segment_achat_vals, {})
+        return True
+
+    def _get_family_line(self, segment, DB, USERID, USERPASS, sock):
+        lines = []
+        for family_line in segment.family_line:
+            lines.append(((0, 0, {'name':family_line.name, 'description': family_line.description,})))
+#             family_line_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', family_line.id)], {})
+#             if not family_line_ids:
+#                 family_line.copy_other_database_famille_achat()
+#                 family_line_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', family_line.id)], {})
+#             if family_line_ids:
+#                 lines.append(family_line_ids[0]) 
+        return lines
+    
+    @api.model
+    def get_segment_achat_vals(self, segment, DB, USERID, USERPASS, sock):
+        segment_achat_vals ={
+                             'name'       : segment.name,
+                             'description': segment.description,
+                             'is_database_origine_id':segment.id,
+#                             'family_line': self._get_family_line(segment, DB, USERID, USERPASS, sock)
+                             
+                             }
+        return segment_achat_vals
+        
+class is_famille_achat(models.Model):
+    _inherit = 'is.famille.achat'
+  
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+ 
+    @api.multi
+    def write(self, vals):
+        res=super(is_famille_achat, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_famille_achat()
+        return res
+ 
+    @api.model
+    def create(self, vals):
+        obj=super(is_famille_achat, self).create(vals)
+        obj.copy_other_database_famille_achat()
+        return obj
+#     
+#     
+    @api.multi
+    def copy_other_database_famille_achat(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for famille in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                famille_achat_vals = self.get_famille_achat_vals(famille, DB, USERID, USERPASS, sock)
+                print "famille_achat_vals....a..",famille_achat_vals
+                dest_famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', famille.id)], {})
+                if dest_famille_achat_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'write', dest_famille_achat_ids, famille_achat_vals, {})
+                    famille_achat_created_id = dest_famille_achat_ids[0]
+                else:
+                    famille_achat_created_id = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', famille_achat_vals, {})
+        return True
+# 
+ 
+    @api.model
+    def get_segment_id(self, famille, DB, USERID, USERPASS, sock):
+        if famille.segment_id:
+            segment_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', famille.segment_id.id)], {})
+            if not segment_ids:
+                famille.segment_id.copy_other_database_segment_achat()
+                segment_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', famille.segment_id.id)], {})
+            if segment_ids:
+                return segment_ids[0]
+        return False
+#         
+    @api.model
+    def get_famille_achat_vals(self, famille, DB, USERID, USERPASS, sock):
+        famille_achat_vals ={
+                             'name'       : famille.name,
+                             'description': famille.description,
+                            'segment_id' : self.get_segment_id(famille, DB, USERID, USERPASS, sock),
+                              'is_database_origine_id':famille.id,
+                             }
+         
+        return famille_achat_vals
+    
+    
+class is_site(models.Model):
+    _inherit = 'is.site'
+ 
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_site, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_is_site()
+        return res
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_site, self).create(vals)
+        obj.copy_other_database_is_site()
+        return obj
+    
+    
+    @api.multi
+    def copy_other_database_is_site(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for is_site in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                is_site_vals = self.get_is_site_vals(is_site, DB, USERID, USERPASS, sock)
+                dest_is_site_ids = sock.execute(DB, USERID, USERPASS, 'is.site', 'search', [('is_database_origine_id', '=', is_site.id)], {})
+                if dest_is_site_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.site', 'write', dest_is_site_ids, is_site_vals, {})
+                    is_site_created_id = dest_is_site_ids[0]
+                else:
+                    is_site_created_id = sock.execute(DB, USERID, USERPASS, 'is.site', 'create', is_site_vals, {})
+        return True
+
+        
+    @api.model
+    def get_is_site_vals(self, is_site, DB, USERID, USERPASS, sock):
+        is_site_vals ={
+                     'name' : is_site.name,
+                     'is_database_origine_id':is_site.id
+                     }
+        return is_site_vals
+    
+    
+class is_transmission_cde(models.Model):
+    _inherit = 'is.transmission.cde'
+
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_transmission_cde, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_transmission_cde()
+        return res
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_transmission_cde, self).create(vals)
+        obj.copy_other_database_transmission_cde()
+        return obj
+    
+    
+    @api.multi
+    def copy_other_database_transmission_cde(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for is_transmission in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                is_transmission_vals = self.get_is_transmission_vals(is_transmission, DB, USERID, USERPASS, sock)
+                dest_is_transmission_ids = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'search', [('is_database_origine_id', '=', is_transmission.id)], {})
+                if dest_is_transmission_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'write', dest_is_transmission_ids, is_transmission_vals, {})
+                    is_transmission_created_id = dest_is_transmission_ids[0]
+                else:
+                    is_transmission_created_id = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'create', is_transmission_vals, {})
+        return True
+
+        
+    @api.model
+    def get_is_transmission_vals(self, is_transmission, DB, USERID, USERPASS, sock):
+        is_transmission_vals ={
+                     'name' : is_transmission.name,
+                     'is_database_origine_id':is_transmission.id,
+                     }
+        return is_transmission_vals
+    
+
+
+class is_norme_certificats(models.Model):
+    _inherit = 'is.norme.certificats'
+
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        res=super(is_norme_certificats, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_norme_certificats()
+        return res
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_norme_certificats, self).create(vals)
+        obj.copy_other_database_norme_certificats()
+        return obj
+    
+    
+    @api.multi
+    def copy_other_database_norme_certificats(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for norme_certificats in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                norme_certificats_vals = self.get_is_norme_certificats_vals(norme_certificats, DB, USERID, USERPASS, sock)
+                dest_norme_certificats_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', norme_certificats.id)], {})
+                if dest_norme_certificats_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'write', dest_norme_certificats_ids, norme_certificats_vals, {})
+                    norme_certificats_created_id = dest_norme_certificats_ids[0]
+                else:
+                    norme_certificats_created_id = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'create', norme_certificats_vals, {})
+        return True
+
+        
+    @api.model
+    def get_is_norme_certificats_vals(self, norme_certificats, DB, USERID, USERPASS, sock):
+        norme_certificats_vals ={
+                     'name' : norme_certificats.name,
+                     'is_database_origine_id':norme_certificats.id,
+                     }
+        return norme_certificats_vals
+    
+    
+class is_certifications_qualite(models.Model):
+    _inherit = 'is.certifications.qualite'
+    
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        res=super(is_certifications_qualite, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_certifications_qualite()
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_certifications_qualite, self).create(vals)
+        obj.copy_other_database_certifications_qualite()
+        return obj
+
+    
+    @api.multi
+    def copy_other_database_certifications_qualite(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for certifications_qualite in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                certifications_qualite_vals = self.get_is_certifications_qualite_vals(certifications_qualite, DB, USERID, USERPASS, sock)
+                dest_certifications_qualite_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_database_origine_id', '=', certifications_qualite.id)], {})
+                print "certifications_qualite_vals...",certifications_qualite_vals
+                if dest_certifications_qualite_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'write', dest_certifications_qualite_ids, certifications_qualite_vals, {})
+                    certifications_qualite_created_id = dest_certifications_qualite_ids[0]
+                else:
+                    certifications_qualite_created_id = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'create', certifications_qualite_vals, {})
+        return True
+
+
+    @api.model
+    def _get_is_norme(self, certifications_qualite, DB, USERID, USERPASS, sock):
+        if certifications_qualite.is_norme:
+            is_norme_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', certifications_qualite.is_norme.id)], {})
+            if not is_norme_ids:
+                certifications_qualite.is_norme.copy_other_database_norme_certificats()
+                is_norme_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', certifications_qualite.is_norme.id)], {})
+            if is_norme_ids:
+                return is_norme_ids[0]
+        return False
+
+    @api.model
+    def _get_certificat_ids(self, certifications_qualite, DB, USERID, USERPASS, sock):
+        certificat_data = []
+        for  certificat in certifications_qualite.is_certificat_ids:
+            certificat_data.append(((0, 0, {'name':certificat.name, 'datas':certificat.datas, 'res_model':certificat.res_model})))
+        return certificat_data
+    @api.model
+    def get_is_certifications_qualite_vals(self, certifications_qualite, DB, USERID, USERPASS, sock):
+        certifications_qualite_vals ={
+                     'is_norme' : self._get_is_norme(certifications_qualite, DB, USERID, USERPASS, sock),
+                     'is_date_validation':certifications_qualite.is_date_validation,
+                     'is_certificat_ids':self._get_certificat_ids(certifications_qualite, DB, USERID, USERPASS, sock),
+                     'is_database_origine_id':certifications_qualite.id,
+                     }
+        return certifications_qualite_vals
+    
+    
+class is_facturation_fournisseur_justification(models.Model):
+    _inherit='is.facturation.fournisseur.justification'
+
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        res=super(is_facturation_fournisseur_justification, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_fournisseur_justification()
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_facturation_fournisseur_justification, self).create(vals)
+        obj.copy_other_database_fournisseur_justification()
+        return obj
+
+    
+    @api.multi
+    def copy_other_database_fournisseur_justification(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for justification in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                justification_vals = self.get_justification_vals(justification, DB, USERID, USERPASS, sock)
+                dest_justification_ids = sock.execute(DB, USERID, USERPASS, 'is.facturation.fournisseur.justification', 'search', [('is_database_origine_id', '=', justification.id)], {})
+                if dest_justification_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.facturation.fournisseur.justification', 'write', dest_justification_ids, justification_vals, {})
+                    justification_created_id = dest_justification_ids[0]
+                else:
+                    justification_created_id = sock.execute(DB, USERID, USERPASS, 'is.facturation.fournisseur.justification', 'create', justification_vals, {})
+        return True
+
+    @api.model
+    def get_justification_vals(self, justification, DB, USERID, USERPASS, sock):
+        justification_vals ={
+                     'name' : justification.name,
+                     'is_database_origine_id':justification.id,
+                     }
+        return justification_vals
+    
+    
+class is_secteur_activite(models.Model):
+    _inherit='is.secteur.activite'
+ 
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        res=super(is_secteur_activite, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_secteur_activite()
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_secteur_activite, self).create(vals)
+        obj.copy_other_database_secteur_activite()
+        return obj
+
+    
+    @api.multi
+    def copy_other_database_secteur_activite(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for activite in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                activite_vals = self.get_activite_vals(activite, DB, USERID, USERPASS, sock)
+                dest_activite_ids = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'search', [('is_database_origine_id', '=', activite.id)], {})
+                if dest_activite_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'write', dest_activite_ids, activite_vals, {})
+                    activite_created_id = dest_activite_ids[0]
+                else:
+                    activite_created_id = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'create', activite_vals, {})
+        return True
+
+    @api.model
+    def get_activite_vals(self, activite, DB, USERID, USERPASS, sock):
+        activite_vals ={
+                     'name' : activite.name,
+                     'is_database_origine_id':activite.id,
+                     }
+        return activite_vals
+    
+
+class is_type_contact(models.Model):
+    _inherit='is.type.contact'
+    
+    
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        res=super(is_type_contact, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_type_contact()
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_type_contact, self).create(vals)
+        obj.copy_other_database_type_contact()
+        return obj
+
+    
+    @api.multi
+    def copy_other_database_type_contact(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for type_contact in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                type_contact_vals = self.get_type_contact_vals(type_contact, DB, USERID, USERPASS, sock)
+                dest_type_contact_ids = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'search', [('is_database_origine_id', '=', type_contact.id)], {})
+                if dest_type_contact_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'write', dest_type_contact_ids, type_contact_vals, {})
+                    type_contact_created_id = dest_type_contact_ids[0]
+                else:
+                    type_contact_created_id = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'create', type_contact_vals, {})
+        return True
+
+    @api.model
+    def get_type_contact_vals(self, type_contact, DB, USERID, USERPASS, sock):
+        type_contact_vals ={
+                     'name' : type_contact.name,
+                     'is_database_origine_id':type_contact.id,
+                     }
+        return type_contact_vals
+    
+class is_escompte(models.Model):
+    _inherit='is.escompte'
+
+    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        res=super(is_escompte, self).write(vals)
+        for obj in self:
+            obj.copy_other_database_is_escompte()
+        return res
+
+
+    @api.model
+    def create(self, vals):
+        obj=super(is_escompte, self).create(vals)
+        obj.copy_other_database_is_escompte()
+        return obj
+
+    
+    @api.multi
+    def copy_other_database_is_escompte(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for is_escompte in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                is_escompte_vals = self.get_is_escompte_vals(is_escompte, DB, USERID, USERPASS, sock)
+                dest_is_escompte_ids = sock.execute(DB, USERID, USERPASS, 'is.escompte', 'search', [('is_database_origine_id', '=', is_escompte.id)], {})
+                if dest_is_escompte_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.escompte', 'write', dest_is_escompte_ids, is_escompte_vals, {})
+                    is_escompte_created_id = dest_is_escompte_ids[0]
+                else:
+                    is_escompte_created_id = sock.execute(DB, USERID, USERPASS, 'is.escompte', 'create', is_escompte_vals, {})
+        return True
+
+    @api.model
+    def _get_is_escompte_compte(self, is_escompte, DB, USERID, USERPASS, sock):
+        if is_escompte.compte:
+            dest_compte_ids = sock.execute(DB, USERID, USERPASS, 'account.account', 'search', [('code', '=', is_escompte.compte.code)], {})
+            if dest_compte_ids:
+                return dest_compte_ids[0]
+        return False
+            
+    
+    @api.model
+    def get_is_escompte_vals(self, is_escompte, DB, USERID, USERPASS, sock):
+        is_escompte_vals ={
+                     'name' : is_escompte.name,
+                     'taux' : is_escompte.taux,
+                     'compte': self._get_is_escompte_compte(is_escompte, DB, USERID, USERPASS, sock),
+                     'is_database_origine_id':is_escompte.id
+                     }
+        return is_escompte_vals
