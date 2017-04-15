@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-
-from openerp import api, fields, models, tools, _
+from openerp import tools
+from openerp import api, fields, models, _
 from openerp.exceptions import ValidationError, Warning
 import xmlrpclib
 from openerp.osv import osv
+import unicodedata
 
 
 #TODO
@@ -57,7 +58,7 @@ class is_database(models.Model):
                             created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
         except Exception as e:
             raise osv.except_osv(_('Recursive Client!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
         return True
 
     @api.model
@@ -135,7 +136,7 @@ class is_database(models.Model):
             return False
         except Exception as e:
             raise osv.except_osv(_('Client!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     @api.model
     def get_partner_parent_id(self, partner, DB, USERID, USERPASS, sock):
@@ -387,7 +388,7 @@ class res_partner(models.Model):
                 return res
         except Exception as e:
             raise osv.except_osv(_('Client!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -396,7 +397,7 @@ class res_partner(models.Model):
             self.env['is.database'].copy_other_database(obj)
         except Exception as e:
             raise osv.except_osv(_('Client!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
         return obj
 
 
@@ -414,7 +415,7 @@ class is_mold_project(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Project!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -424,7 +425,7 @@ class is_mold_project(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Project!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
     
     @api.multi
     def copy_other_database_project(self):
@@ -745,7 +746,7 @@ class is_segment_achat(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Segment!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
 
     @api.model
@@ -756,7 +757,7 @@ class is_segment_achat(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Segment!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     
     
@@ -823,7 +824,7 @@ class is_famille_achat(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Famille!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
  
     @api.model
     def create(self, vals):
@@ -833,7 +834,7 @@ class is_famille_achat(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Famille!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 #     
 #     
     @api.multi
@@ -901,7 +902,7 @@ class is_site(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Site!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
             
     @api.model
     def create(self, vals):
@@ -911,7 +912,7 @@ class is_site(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Site!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
     
     
     @api.multi
@@ -964,7 +965,7 @@ class is_transmission_cde(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Transmission!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -974,7 +975,7 @@ class is_transmission_cde(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Transmission!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
     
     
     @api.multi
@@ -1028,7 +1029,7 @@ class is_norme_certificats(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Norme!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -1038,7 +1039,7 @@ class is_norme_certificats(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Norme!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
     
     
     @api.multi
@@ -1091,7 +1092,7 @@ class is_certifications_qualite(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Qualite!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
 
     @api.model
@@ -1102,7 +1103,7 @@ class is_certifications_qualite(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Qualite!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     
     @api.multi
@@ -1174,7 +1175,7 @@ class is_facturation_fournisseur_justification(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Justification!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
 
     @api.model
@@ -1185,7 +1186,7 @@ class is_facturation_fournisseur_justification(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Justification!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     
     @api.multi
@@ -1237,7 +1238,7 @@ class is_secteur_activite(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Secteur!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
 
     @api.model
@@ -1248,7 +1249,7 @@ class is_secteur_activite(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Secteur!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
 
     
@@ -1302,7 +1303,7 @@ class is_type_contact(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('Contact!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
 
     @api.model
@@ -1313,7 +1314,7 @@ class is_type_contact(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('Contact!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     
     @api.multi
@@ -1364,7 +1365,7 @@ class is_escompte(models.Model):
             return res
         except Exception as e:
             raise osv.except_osv(_('escompte!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -1374,7 +1375,7 @@ class is_escompte(models.Model):
             return obj
         except Exception as e:
             raise osv.except_osv(_('escompte!'),
-                             _('(%s).') % tools.ustr(e))
+                             _('(%s).') % str(e).encode('utf-8'))
 
     
     @api.multi
