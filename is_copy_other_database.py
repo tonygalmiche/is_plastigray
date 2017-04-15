@@ -738,16 +738,26 @@ class is_segment_achat(models.Model):
 
     @api.multi
     def write(self, vals):
-        res=super(is_segment_achat, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_segment_achat()
-        return res
+        try:
+            res=super(is_segment_achat, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_segment_achat()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Segment!'),
+                             _('(%s).') % e)
+
 
     @api.model
     def create(self, vals):
-        obj=super(is_segment_achat, self).create(vals)
-        obj.copy_other_database_segment_achat()
-        return obj
+        try:
+            obj=super(is_segment_achat, self).create(vals)
+            obj.copy_other_database_segment_achat()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Segment!'),
+                             _('(%s).') % e)
+
     
     
     @api.multi
@@ -806,16 +816,24 @@ class is_famille_achat(models.Model):
  
     @api.multi
     def write(self, vals):
-        res=super(is_famille_achat, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_famille_achat()
-        return res
+        try:
+            res=super(is_famille_achat, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_famille_achat()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Famille!'),
+                             _('(%s).') % e)
  
     @api.model
     def create(self, vals):
-        obj=super(is_famille_achat, self).create(vals)
-        obj.copy_other_database_famille_achat()
-        return obj
+        try:
+            obj=super(is_famille_achat, self).create(vals)
+            obj.copy_other_database_famille_achat()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Famille!'),
+                             _('(%s).') % e)
 #     
 #     
     @api.multi
@@ -876,16 +894,24 @@ class is_site(models.Model):
 
     @api.multi
     def write(self, vals):
-        res=super(is_site, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_is_site()
-        return res
-
+        try:
+            res=super(is_site, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_is_site()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Site!'),
+                             _('(%s).') % e)
+            
     @api.model
     def create(self, vals):
-        obj=super(is_site, self).create(vals)
-        obj.copy_other_database_is_site()
-        return obj
+        try:
+            obj=super(is_site, self).create(vals)
+            obj.copy_other_database_is_site()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Site!'),
+                             _('(%s).') % e)
     
     
     @api.multi
@@ -931,16 +957,24 @@ class is_transmission_cde(models.Model):
 
     @api.multi
     def write(self, vals):
-        res=super(is_transmission_cde, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_transmission_cde()
-        return res
+        try:
+            res=super(is_transmission_cde, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_transmission_cde()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Transmission!'),
+                             _('(%s).') % e)
 
     @api.model
     def create(self, vals):
-        obj=super(is_transmission_cde, self).create(vals)
-        obj.copy_other_database_transmission_cde()
-        return obj
+        try:
+            obj=super(is_transmission_cde, self).create(vals)
+            obj.copy_other_database_transmission_cde()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Transmission!'),
+                             _('(%s).') % e)
     
     
     @api.multi
@@ -987,16 +1021,24 @@ class is_norme_certificats(models.Model):
 
     @api.multi
     def write(self, vals):
-        res=super(is_norme_certificats, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_norme_certificats()
-        return res
+        try:
+            res=super(is_norme_certificats, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_norme_certificats()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Norme!'),
+                             _('(%s).') % e)
 
     @api.model
     def create(self, vals):
-        obj=super(is_norme_certificats, self).create(vals)
-        obj.copy_other_database_norme_certificats()
-        return obj
+        try:
+            obj=super(is_norme_certificats, self).create(vals)
+            obj.copy_other_database_norme_certificats()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Norme!'),
+                             _('(%s).') % e)
     
     
     @api.multi
@@ -1042,17 +1084,25 @@ class is_certifications_qualite(models.Model):
     
     @api.multi
     def write(self, vals):
-        res=super(is_certifications_qualite, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_certifications_qualite()
-        return res
+        try:
+            res=super(is_certifications_qualite, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_certifications_qualite()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Qualite!'),
+                             _('(%s).') % e)
 
 
     @api.model
     def create(self, vals):
-        obj=super(is_certifications_qualite, self).create(vals)
-        obj.copy_other_database_certifications_qualite()
-        return obj
+        try:
+            obj=super(is_certifications_qualite, self).create(vals)
+            obj.copy_other_database_certifications_qualite()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Qualite!'),
+                             _('(%s).') % e)
 
     
     @api.multi
@@ -1074,7 +1124,6 @@ class is_certifications_qualite(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 certifications_qualite_vals = self.get_is_certifications_qualite_vals(certifications_qualite, DB, USERID, USERPASS, sock)
                 dest_certifications_qualite_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_database_origine_id', '=', certifications_qualite.id)], {})
-                print "certifications_qualite_vals...",certifications_qualite_vals
                 if dest_certifications_qualite_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'write', dest_certifications_qualite_ids, certifications_qualite_vals, {})
                     certifications_qualite_created_id = dest_certifications_qualite_ids[0]
@@ -1118,17 +1167,25 @@ class is_facturation_fournisseur_justification(models.Model):
     
     @api.multi
     def write(self, vals):
-        res=super(is_facturation_fournisseur_justification, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_fournisseur_justification()
-        return res
+        try:
+            res=super(is_facturation_fournisseur_justification, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_fournisseur_justification()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Justification!'),
+                             _('(%s).') % e)
 
 
     @api.model
     def create(self, vals):
-        obj=super(is_facturation_fournisseur_justification, self).create(vals)
-        obj.copy_other_database_fournisseur_justification()
-        return obj
+        try:
+            obj=super(is_facturation_fournisseur_justification, self).create(vals)
+            obj.copy_other_database_fournisseur_justification()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Justification!'),
+                             _('(%s).') % e)
 
     
     @api.multi
@@ -1173,17 +1230,26 @@ class is_secteur_activite(models.Model):
     
     @api.multi
     def write(self, vals):
-        res=super(is_secteur_activite, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_secteur_activite()
-        return res
+        try:
+            res=super(is_secteur_activite, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_secteur_activite()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Secteur!'),
+                             _('(%s).') % e)
 
 
     @api.model
     def create(self, vals):
-        obj=super(is_secteur_activite, self).create(vals)
-        obj.copy_other_database_secteur_activite()
-        return obj
+        try:
+            obj=super(is_secteur_activite, self).create(vals)
+            obj.copy_other_database_secteur_activite()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Secteur!'),
+                             _('(%s).') % e)
+
 
     
     @api.multi
@@ -1229,17 +1295,25 @@ class is_type_contact(models.Model):
     
     @api.multi
     def write(self, vals):
-        res=super(is_type_contact, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_type_contact()
-        return res
+        try:
+            res=super(is_type_contact, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_type_contact()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Contact!'),
+                             _('(%s).') % e)
 
 
     @api.model
     def create(self, vals):
-        obj=super(is_type_contact, self).create(vals)
-        obj.copy_other_database_type_contact()
-        return obj
+        try:
+            obj=super(is_type_contact, self).create(vals)
+            obj.copy_other_database_type_contact()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Contact!'),
+                             _('(%s).') % e)
 
     
     @api.multi
@@ -1283,17 +1357,24 @@ class is_escompte(models.Model):
     
     @api.multi
     def write(self, vals):
-        res=super(is_escompte, self).write(vals)
-        for obj in self:
-            obj.copy_other_database_is_escompte()
-        return res
-
+        try:
+            res=super(is_escompte, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_is_escompte()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('escompte!'),
+                             _('(%s).') % e)
 
     @api.model
     def create(self, vals):
-        obj=super(is_escompte, self).create(vals)
-        obj.copy_other_database_is_escompte()
-        return obj
+        try:
+            obj=super(is_escompte, self).create(vals)
+            obj.copy_other_database_is_escompte()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('escompte!'),
+                             _('(%s).') % e)
 
     
     @api.multi
