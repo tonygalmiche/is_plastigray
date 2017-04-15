@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import api, fields, models, _
+from openerp import api, fields, models, tools, _
 from openerp.exceptions import ValidationError, Warning
 import xmlrpclib
 from openerp.osv import osv
@@ -175,16 +175,16 @@ class is_database(models.Model):
         if is_type_contact_ids:
             return is_type_contact_ids[0]
         else:
-            vals = {'name':obj.name, 'is_database_origine_id':obj.id}
+            vals = {'name':tools.ustr(obj.name), 'is_database_origine_id':obj.id}
             is_type_contact = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'create', vals, {})
             return is_type_contact
         
     def get_is_incoterm(self, obj, DB, USERID, USERPASS, sock):
-        is_incoterm_ids = sock.execute(DB, USERID, USERPASS, 'stock.incoterms', 'search', [('name', '=', obj.name)], {})
+        is_incoterm_ids = sock.execute(DB, USERID, USERPASS, 'stock.incoterms', 'search', [('name', '=', tools.ustr(obj.name))], {})
         if is_incoterm_ids:
             return is_incoterm_ids[0]
         else:
-            vals = {'name':obj.name,'code':obj.code, 'active':obj.active}
+            vals = {'name':tools.ustr(obj.name),'code':obj.code, 'active':obj.active}
             is_incoterm = sock.execute(DB, USERID, USERPASS, 'stock.incoterms', 'create', vals, {})
             return is_incoterm
         
@@ -193,7 +193,7 @@ class is_database(models.Model):
         if is_segment_achat_ids:
             return is_segment_achat_ids[0]
         else:
-            vals = {'name':obj.name,'description':obj.description, 'is_database_origine_id':obj.id}
+            vals = {'name':tools.ustr(obj.name),'description':tools.ustr(obj.description), 'is_database_origine_id':obj.id}
 #             'family_line':[(6,0,[self.get_is_famille_achat_ids(is_famille , DB, USERID, USERPASS, sock) for is_famille in obj.family_line])]
             is_segment_achat = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', vals, {})
             return is_segment_achat
@@ -205,7 +205,7 @@ class is_database(models.Model):
             if famille_achat_ids:
                 lst_is_famille_achat_ids.append(famille_achat_ids[0])
             else:
-                vals = {'is_database_origine_id':obj.id,'name':obj.name,'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
+                vals = {'is_database_origine_id':obj.id,'name':tools.ustr(obj.name),'description':obj.description, 'segment_id':self.get_is_segment_achat(obj.segment_id , DB, USERID, USERPASS, sock)}
                 is_famille_achat = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', vals, {})
                 lst_is_famille_achat_ids.append(is_famille_achat)
         return [(6,0,lst_is_famille_achat_ids)]
@@ -217,7 +217,7 @@ class is_database(models.Model):
             if is_site_livre_ids:
                 lst_site_livre_ids.append(is_site_livre_ids[0])
             else:
-                vals = {'name':obj.name, 'is_database_origine_id':obj.id}
+                vals = {'name':tools.ustr(obj.name), 'is_database_origine_id':obj.id}
                 lst_site_livre_id = sock.execute(DB, USERID, USERPASS, 'is.site', 'create', vals, {})
                 lst_site_livre_ids.append(lst_site_livre_id)
         return [(6,0,lst_site_livre_ids)]
@@ -227,7 +227,7 @@ class is_database(models.Model):
         if is_transmission_cde_ids:
             return is_transmission_cde_ids[0]
         else:
-            vals = {'name':obj.name, 'is_database_origine_id':obj.id}
+            vals = {'name':tools.ustr(obj.name), 'is_database_origine_id':obj.id}
             is_transmission_cde = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'create', vals, {})
             return is_transmission_cde
             return False
@@ -237,7 +237,7 @@ class is_database(models.Model):
         if is_norme_ids:
             return is_norme_ids[0]
         else:
-            vals = {'name':obj.name, 'is_database_origine_id':obj.id}
+            vals = {'name':tools.ustr(obj.name), 'is_database_origine_id':obj.id}
             is_norme = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'create', vals, {})
             return is_norme
             return False
@@ -279,7 +279,7 @@ class is_database(models.Model):
     @api.model
     def get_partner_vals(self, partner, DB, USERID, USERPASS, sock):
         partner_vals = {
-            'name': partner.name,
+            'name': tools.ustr(partner.name),
             #'parent_id'          : partner.parent_id and self.get_partner_parent_id(partner.parent_id, DB, USERID, USERPASS, sock) or False,
             'is_raison_sociale2' : partner.is_raison_sociale2,
             'is_code'            : partner.is_code,
@@ -789,7 +789,7 @@ class is_segment_achat(models.Model):
     def _get_family_line(self, segment, DB, USERID, USERPASS, sock):
         lines = []
         for family_line in segment.family_line:
-            lines.append(((0, 0, {'name':family_line.name, 'description': family_line.description,})))
+            lines.append(((0, 0, {'name':tools.ustr(family_line.name), 'description': family_line.description,})))
 #             family_line_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', family_line.id)], {})
 #             if not family_line_ids:
 #                 family_line.copy_other_database_famille_achat()
@@ -801,8 +801,8 @@ class is_segment_achat(models.Model):
     @api.model
     def get_segment_achat_vals(self, segment, DB, USERID, USERPASS, sock):
         segment_achat_vals ={
-                             'name'       : segment.name,
-                             'description': segment.description,
+                             'name'       : tools.ustr(segment.name),
+                             'description': tools.ustr(segment.description),
                              'is_database_origine_id':segment.id,
 #                             'family_line': self._get_family_line(segment, DB, USERID, USERPASS, sock)
                              
@@ -878,8 +878,8 @@ class is_famille_achat(models.Model):
     @api.model
     def get_famille_achat_vals(self, famille, DB, USERID, USERPASS, sock):
         famille_achat_vals ={
-                             'name'       : famille.name,
-                             'description': famille.description,
+                             'name'       : tools.ustr(famille.name),
+                             'description': tools.ustr(famille.description),
                             'segment_id' : self.get_segment_id(famille, DB, USERID, USERPASS, sock),
                               'is_database_origine_id':famille.id,
                              }
@@ -944,7 +944,7 @@ class is_site(models.Model):
     @api.model
     def get_is_site_vals(self, is_site, DB, USERID, USERPASS, sock):
         is_site_vals ={
-                     'name' : is_site.name,
+                     'name' : tools.ustr(is_site.name),
                      'is_database_origine_id':is_site.id
                      }
         return is_site_vals
@@ -1007,7 +1007,7 @@ class is_transmission_cde(models.Model):
     @api.model
     def get_is_transmission_vals(self, is_transmission, DB, USERID, USERPASS, sock):
         is_transmission_vals ={
-                     'name' : is_transmission.name,
+                     'name' : tools.ustr(is_transmission.name),
                      'is_database_origine_id':is_transmission.id,
                      }
         return is_transmission_vals
@@ -1071,7 +1071,7 @@ class is_norme_certificats(models.Model):
     @api.model
     def get_is_norme_certificats_vals(self, norme_certificats, DB, USERID, USERPASS, sock):
         norme_certificats_vals ={
-                     'name' : norme_certificats.name,
+                     'name' : tools.ustr(norme_certificats.name),
                      'is_database_origine_id':norme_certificats.id,
                      }
         return norme_certificats_vals
@@ -1147,7 +1147,7 @@ class is_certifications_qualite(models.Model):
     def _get_certificat_ids(self, certifications_qualite, DB, USERID, USERPASS, sock):
         certificat_data = []
         for  certificat in certifications_qualite.is_certificat_ids:
-            certificat_data.append(((0, 0, {'name':certificat.name, 'datas':certificat.datas, 'res_model':certificat.res_model})))
+            certificat_data.append(((0, 0, {'name':tools.ustr(certificat.name), 'datas':certificat.datas, 'res_model':certificat.res_model})))
         return certificat_data
     @api.model
     def get_is_certifications_qualite_vals(self, certifications_qualite, DB, USERID, USERPASS, sock):
@@ -1217,7 +1217,7 @@ class is_facturation_fournisseur_justification(models.Model):
     @api.model
     def get_justification_vals(self, justification, DB, USERID, USERPASS, sock):
         justification_vals ={
-                     'name' : justification.name,
+                     'name' : tools.ustr(justification.name),
                      'is_database_origine_id':justification.id,
                      }
         return justification_vals
@@ -1281,7 +1281,7 @@ class is_secteur_activite(models.Model):
     @api.model
     def get_activite_vals(self, activite, DB, USERID, USERPASS, sock):
         activite_vals ={
-                     'name' : activite.name,
+                     'name' : tools.ustr(activite.name),
                      'is_database_origine_id':activite.id,
                      }
         return activite_vals
@@ -1345,7 +1345,7 @@ class is_type_contact(models.Model):
     @api.model
     def get_type_contact_vals(self, type_contact, DB, USERID, USERPASS, sock):
         type_contact_vals ={
-                     'name' : type_contact.name,
+                     'name' : tools.ustr(type_contact.name),
                      'is_database_origine_id':type_contact.id,
                      }
         return type_contact_vals
@@ -1415,7 +1415,7 @@ class is_escompte(models.Model):
     @api.model
     def get_is_escompte_vals(self, is_escompte, DB, USERID, USERPASS, sock):
         is_escompte_vals ={
-                     'name' : is_escompte.name,
+                     'name' : tools.ustr(is_escompte.name),
                      'taux' : is_escompte.taux,
                      'compte': self._get_is_escompte_compte(is_escompte, DB, USERID, USERPASS, sock),
                      'is_database_origine_id':is_escompte.id
