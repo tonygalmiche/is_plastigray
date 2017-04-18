@@ -784,6 +784,8 @@ class is_segment_achat(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 segment_achat_vals = self.get_segment_achat_vals(segment, DB, USERID, USERPASS, sock)
                 dest_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', segment.id)], {})
+                if not dest_segment_achat_ids:
+                    dest_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('name', '=', segment.name)], {})
                 if dest_segment_achat_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'write', dest_segment_achat_ids, segment_achat_vals, {})
                     segment_achat_created_id = dest_segment_achat_ids[0]
@@ -859,8 +861,9 @@ class is_famille_achat(models.Model):
                 DB_PORT = database.port_server
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 famille_achat_vals = self.get_famille_achat_vals(famille, DB, USERID, USERPASS, sock)
-                print "famille_achat_vals....a..",famille_achat_vals
                 dest_famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', famille.id)], {})
+                if not dest_famille_achat_ids:
+                    dest_famille_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('name', '=', famille.name)], {})
                 if dest_famille_achat_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'write', dest_famille_achat_ids, famille_achat_vals, {})
                     famille_achat_created_id = dest_famille_achat_ids[0]
@@ -938,6 +941,8 @@ class is_site(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 is_site_vals = self.get_is_site_vals(is_site, DB, USERID, USERPASS, sock)
                 dest_is_site_ids = sock.execute(DB, USERID, USERPASS, 'is.site', 'search', [('is_database_origine_id', '=', is_site.id)], {})
+                if not dest_is_site_ids:
+                    dest_is_site_ids = sock.execute(DB, USERID, USERPASS, 'is.site', 'search', [('name', '=', is_site.name)], {})
                 if dest_is_site_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.site', 'write', dest_is_site_ids, is_site_vals, {})
                     is_site_created_id = dest_is_site_ids[0]
@@ -1001,6 +1006,8 @@ class is_transmission_cde(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 is_transmission_vals = self.get_is_transmission_vals(is_transmission, DB, USERID, USERPASS, sock)
                 dest_is_transmission_ids = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'search', [('is_database_origine_id', '=', is_transmission.id)], {})
+                if not dest_is_transmission_ids:
+                    dest_is_transmission_ids = sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'search', [('name', '=', is_transmission.name)], {})
                 if dest_is_transmission_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.transmission.cde', 'write', dest_is_transmission_ids, is_transmission_vals, {})
                     is_transmission_created_id = dest_is_transmission_ids[0]
@@ -1065,6 +1072,8 @@ class is_norme_certificats(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 norme_certificats_vals = self.get_is_norme_certificats_vals(norme_certificats, DB, USERID, USERPASS, sock)
                 dest_norme_certificats_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', norme_certificats.id)], {})
+                if not dest_norme_certificats_ids:
+                    dest_norme_certificats_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('name', '=', norme_certificats.name)], {})
                 if dest_norme_certificats_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'write', dest_norme_certificats_ids, norme_certificats_vals, {})
                     norme_certificats_created_id = dest_norme_certificats_ids[0]
@@ -1129,6 +1138,8 @@ class is_certifications_qualite(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 certifications_qualite_vals = self.get_is_certifications_qualite_vals(certifications_qualite, DB, USERID, USERPASS, sock)
                 dest_certifications_qualite_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_database_origine_id', '=', certifications_qualite.id)], {})
+#                 if not dest_certifications_qualite_ids:
+#                     dest_certifications_qualite_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_norme', '=', certifications_qualite.is_norme.id)], {})
                 if dest_certifications_qualite_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'write', dest_certifications_qualite_ids, certifications_qualite_vals, {})
                     certifications_qualite_created_id = dest_certifications_qualite_ids[0]
@@ -1212,6 +1223,8 @@ class is_facturation_fournisseur_justification(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 justification_vals = self.get_justification_vals(justification, DB, USERID, USERPASS, sock)
                 dest_justification_ids = sock.execute(DB, USERID, USERPASS, 'is.facturation.fournisseur.justification', 'search', [('is_database_origine_id', '=', justification.id)], {})
+                if not dest_justification_ids:
+                    dest_justification_ids = sock.execute(DB, USERID, USERPASS, 'is.facturation.fournisseur.justification', 'search', [('name', '=', justification.name)], {})
                 if dest_justification_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.facturation.fournisseur.justification', 'write', dest_justification_ids, justification_vals, {})
                     justification_created_id = dest_justification_ids[0]
@@ -1254,8 +1267,6 @@ class is_secteur_activite(models.Model):
         except Exception as e:
             raise osv.except_osv(_('Secteur!'),
                              _('(%s).') % str(e).decode('utf-8'))
-
-
     
     @api.multi
     def copy_other_database_secteur_activite(self):
@@ -1276,6 +1287,8 @@ class is_secteur_activite(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 activite_vals = self.get_activite_vals(activite, DB, USERID, USERPASS, sock)
                 dest_activite_ids = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'search', [('is_database_origine_id', '=', activite.id)], {})
+                if not dest_activite_ids:
+                    dest_activite_ids = sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'search', [('name', '=', activite.name)], {})
                 if dest_activite_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.secteur.activite', 'write', dest_activite_ids, activite_vals, {})
                     activite_created_id = dest_activite_ids[0]
@@ -1340,6 +1353,8 @@ class is_type_contact(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 type_contact_vals = self.get_type_contact_vals(type_contact, DB, USERID, USERPASS, sock)
                 dest_type_contact_ids = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'search', [('is_database_origine_id', '=', type_contact.id)], {})
+                if not dest_type_contact_ids:
+                    dest_type_contact_ids = sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'search', [('name', '=', type_contact.name)], {})
                 if dest_type_contact_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.type.contact', 'write', dest_type_contact_ids, type_contact_vals, {})
                     type_contact_created_id = dest_type_contact_ids[0]
@@ -1401,6 +1416,8 @@ class is_escompte(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 is_escompte_vals = self.get_is_escompte_vals(is_escompte, DB, USERID, USERPASS, sock)
                 dest_is_escompte_ids = sock.execute(DB, USERID, USERPASS, 'is.escompte', 'search', [('is_database_origine_id', '=', is_escompte.id)], {})
+                if not dest_is_escompte_ids:
+                    dest_is_escompte_ids = sock.execute(DB, USERID, USERPASS, 'is.escompte', 'search', [('name', '=', is_escompte.name)], {})
                 if dest_is_escompte_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.escompte', 'write', dest_is_escompte_ids, is_escompte_vals, {})
                     is_escompte_created_id = dest_is_escompte_ids[0]
