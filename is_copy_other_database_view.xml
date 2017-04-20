@@ -16,7 +16,6 @@
                             <field name='port_server' />
                             <field name='login' />
                             <field name='password' password='True' />
-                            <field name='is_database_origine_id' />
                         </group>
                     </sheet>
                 </form>
@@ -33,6 +32,7 @@
                     <field name='database' />
                     <field name='login' />
                     <field name='password' />
+                    <field name='is_database_origine_id' />
                 </tree>
             </field>
         </record>
@@ -43,6 +43,66 @@
             <field name="view_mode">tree,form</field>
             <field name="view_type">form</field>
         </record>
+
+
+        <!-- Dossier F -->
+        <record id="is_dossierf_form_view_inherit" model="ir.ui.view">
+            <field name="name">is_dossierf_form_view_inherit</field>
+            <field name="model">is.dossierf</field>
+            <field name="inherit_id" ref="is_mold.is_dossierf_form_view" />
+            <field name="arch" type="xml">
+                <field name="chef_projet_id" position="after">
+                    <field name="is_database_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_dossierf_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_dossierf_tree_view_inherit</field>
+            <field name="model">is.dossierf</field>
+            <field name="inherit_id" ref="is_mold.is_dossierf_tree_view" />
+            <field name="arch" type="xml">
+                <field name="chef_projet_id" position="after">
+                    <field name="is_database_origine_id"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Moules  -->
+        <record id="is_mold_form_view_inherit" model="ir.ui.view">
+            <field name="name">is_mold_form_view_inherit</field>
+            <field name="model">is.mold</field>
+            <field name="inherit_id" ref="is_mold.is_mold_form_view" />
+            <field name="arch" type="xml">
+                <field name="emplacement" position="after">
+                    <field name="is_database_id"/>
+                </field>
+            </field>
+        </record>
+        <record id="is_mold_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_mold_tree_view_inherit</field>
+            <field name="model">is.mold</field>
+            <field name="inherit_id" ref="is_mold.is_mold_tree_view" />
+            <field name="arch" type="xml">
+                <field name="emplacement" position="after">
+                    <field name="is_database_id"/>
+                    <field name="is_database_origine_id"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Projets -->
+        <record id="is_mold_project_tree_view_inherit" model="ir.ui.view">
+            <field name="name">is_mold_project_tree_view_inherit</field>
+            <field name="model">is.mold.project</field>
+            <field name="inherit_id" ref="is_mold.is_mold_project_tree_view" />
+            <field name="arch" type="xml">
+                <field name="chef_projet_id" position="after">
+                    <field name="is_database_origine_id"/>
+                </field>
+            </field>
+        </record>
+
+
 
 
 <!--

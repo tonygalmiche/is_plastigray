@@ -29,7 +29,7 @@ class is_database(models.Model):
     database               = fields.Char('Base de données', required=False)
     login                  = fields.Char('Login'          , required=False)
     password               = fields.Char('Mot de passe'   , required=False)
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def copy_other_database(self, obj):
@@ -55,6 +55,16 @@ class is_database(models.Model):
                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
     #                     if not ids:
     #                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
+                        if not ids:
+                            if class_name=='res.partner':
+                                search=[
+                                    ('name'       , '=', obj.name),
+                                    ('parent_id'  , '=', obj.parent_id.id or False),
+                                    ('is_code'    , '=', obj.is_code),
+                                    ('is_adr_code', '=', obj.is_adr_code),
+                                    '|',('active','=',True),('active','=',False)
+                                ]
+                                ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', search, {})
                         if ids:
                             sock.execute(DB, USERID, USERPASS, class_name, 'write', ids, vals, {})
                             created_id = ids[0]
@@ -312,10 +322,10 @@ class is_database(models.Model):
             'is_database_origine_id': partner.id,
             
             
-            'is_transporteur_id' : partner.is_transporteur_id and self.get_is_transporteur_id(partner.is_transporteur_id, DB, USERID, USERPASS, sock) or False,
-            'is_delai_transport':partner.is_delai_transport,
-            'is_certificat_matiere' :  partner.is_certificat_matiere,
-            'is_import_function'    :  partner.is_import_function,
+            #'is_transporteur_id' : partner.is_transporteur_id and self.get_is_transporteur_id(partner.is_transporteur_id, DB, USERID, USERPASS, sock) or False,
+            #'is_delai_transport':partner.is_delai_transport,
+            #'is_certificat_matiere' :  partner.is_certificat_matiere,
+            #'is_import_function'    :  partner.is_import_function,
             'is_raison_sociale2'    :  partner.is_raison_sociale2,
             'is_code'               :  partner.is_code,
             'is_adr_code'           :  partner.is_adr_code,
@@ -323,7 +333,7 @@ class is_database(models.Model):
             'is_type_contact'       :  partner.is_type_contact and self.get_is_type_contact(partner.is_type_contact , DB, USERID, USERPASS, sock) or False,
             'is_adr_groupe'         :  partner.is_adr_groupe,
             'is_cofor'              :  partner.is_cofor,
-	        'is_incoterm'           :  partner.is_incoterm and self.get_is_incoterm(partner.is_incoterm , DB, USERID, USERPASS, sock) or False,        
+            #'is_incoterm'           :  partner.is_incoterm and self.get_is_incoterm(partner.is_incoterm , DB, USERID, USERPASS, sock) or False,        
             'is_num_siret'          :  partner.is_num_siret,
             'is_code_client'        :  partner.is_code_client,
             'is_segment_achat'      :  partner.is_segment_achat and self.get_is_segment_achat(partner.is_segment_achat , DB, USERID, USERPASS, sock) or False,
@@ -340,9 +350,17 @@ class is_database(models.Model):
             'is_num_autorisation_tva': partner.is_num_autorisation_tva,
             'is_caracteristique_bl'  : partner.is_caracteristique_bl,
             'is_mode_envoi_facture'  : partner.is_mode_envoi_facture,
-            'is_type_cde_fournisseur': partner.is_type_cde_fournisseur,
+            #'is_type_cde_fournisseur': partner.is_type_cde_fournisseur,
             'is_database_line_ids'   : self.get_is_database_line_ids(partner, DB, USERID, USERPASS, sock) or False,
-            'active'                 : True
+
+            'property_account_position'      : partner.property_account_position.id,
+            'property_payment_term'          : partner.property_payment_term.id,
+            'property_supplier_payment_term' : partner.property_supplier_payment_term.id,
+            'is_escompte'                    : partner.is_escompte.id,
+            'is_type_reglement'              : partner.is_type_reglement.id,
+            'is_rib_id'                      : partner.is_rib_id.id,
+
+            'active'                 : True,
         }
         db_ids = self.env['is.database'].search([('database','=',DB)])
         if db_ids:
@@ -358,6 +376,77 @@ class is_database(models.Model):
         if partner.is_company:
             partner_vals.update({'child_ids':partner.child_ids and self._get_child_ids(partner.child_ids, DB, USERID, USERPASS, sock) or [] })
         return partner_vals
+
+
+
+
+
+
+
+
+
+
+
+
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_database, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_is_database()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('database!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_database, self).create(vals)
+            obj.copy_other_database_is_database()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('database!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+    
+    @api.multi
+    def copy_other_database_is_database(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for obj in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = uid
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                vals = self.get_is_database_vals(obj, DB, USERID, USERPASS, sock)
+                ids = sock.execute(DB, USERID, USERPASS, 'is.database', 'search', [('is_database_origine_id', '=', obj.id)], {})
+                if not ids:
+                    ids = sock.execute(DB, USERID, USERPASS, 'is.database', 'search', [('name', '=', obj.name)], {})
+                if ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.database', 'write', ids, vals, {})
+                    created_id = ids[0]
+                else:
+                    created_id = sock.execute(DB, USERID, USERPASS, 'is.database', 'create', vals, {})
+        return True
+
+
+    @api.model
+    def get_is_database_vals(self, obj, DB, USERID, USERPASS, sock):
+        vals ={
+            'name'                   : tools.ustr(obj.name),
+            'is_database_origine_id' : obj.id,
+        }
+        return vals
+
 
 #    @api.multi
 #    def write(self, vals):
@@ -380,11 +469,18 @@ class is_database(models.Model):
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True, select=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True, select=True)
     is_database_line_ids = fields.Many2many('is.database','partner_database_rel','partner_id','database_id', string="Sites")
 
     @api.multi
     def write(self, vals):
+        for obj in self:
+            if 'is_adr_facturation' in vals:
+                if vals['is_adr_facturation']==obj.id:
+                    vals['is_adr_facturation']=False
+            else:
+                if obj.is_adr_facturation.id==obj.id:
+                    vals['is_adr_facturation']=False
         try:
             for obj in self:
                 res=super(res_partner, self).write(vals)
@@ -408,7 +504,7 @@ class res_partner(models.Model):
 class is_mold_project(models.Model):
     _inherit = 'is.mold.project'
  
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def write(self, vals):
@@ -450,12 +546,14 @@ class is_mold_project(models.Model):
                 DB_PORT = database.port_server
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 project_vals = self.get_project_vals(project, DB, USERID, USERPASS, sock)
-                dest_project_ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', project.id)], {})
-                if dest_project_ids:
-                    sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'write', dest_project_ids, project_vals, {})
-                    project_created_id = dest_project_ids[0]
+                ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('is_database_origine_id', '=', project.id)], {})
+                if not ids:
+                    ids = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'search', [('name', '=', project.name)], {})
+                if ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'write', ids, project_vals, {})
+                    created_id = ids[0]
                 else:
-                    project_created_id = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'create', project_vals, {})
+                    created_id = sock.execute(DB, USERID, USERPASS, 'is.mold.project', 'create', project_vals, {})
         return True
 
 
@@ -505,7 +603,8 @@ class is_mold_project(models.Model):
 class is_dossierf(models.Model):
     _inherit='is.dossierf'
     
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_id         = fields.Many2one('is.database', "Site")
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def write(self, vals):
@@ -538,12 +637,14 @@ class is_dossierf(models.Model):
                 DB_PORT = database.port_server
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 dossierf_vals = self.get_dossierf_vals(dossierf, DB, USERID, USERPASS, sock)
-                dest_dossierf_ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', dossierf.id)], {})
-                if dest_dossierf_ids:
-                    sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'write', dest_dossierf_ids, dossierf_vals, {})
-                    dossierf_created_id = dest_dossierf_ids[0]
+                ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', dossierf.id)], {})
+                if not ids:
+                    ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('name', '=', dossierf.name)], {})
+                if ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'write', ids, dossierf_vals, {})
+                    created_id = ids[0]
                 else:
-                    dossierf_created_id = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'create', dossierf_vals, {})
+                    created_id = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'create', dossierf_vals, {})
         return True
     
     
@@ -555,7 +656,7 @@ class is_dossierf(models.Model):
             'project':self._get_project(dossierf, DB, USERID, USERPASS, sock),
             'mold_ids': self._get_mold_ids(dossierf, DB, USERID, USERPASS, sock),
             'is_database_origine_id':dossierf.id,
-        
+            'is_database_id':self._get_is_database_id(dossierf, DB, USERID, USERPASS, sock),
         }
         return dossierf_vals
     
@@ -582,10 +683,25 @@ class is_dossierf(models.Model):
         
         return [(6, 0, list_mold_ids)]
 
+
+    @api.model
+    def _get_is_database_id(self, dossierf, DB, USERID, USERPASS, sock):
+        if dossierf.is_database_id:
+            ids = sock.execute(DB, USERID, USERPASS, 'is.database', 'search', [('is_database_origine_id', '=', dossierf.is_database_id.id)], {})
+            if ids:
+                return ids[0]
+        return False
+
+
+
+
+
+
 class is_mold(models.Model):
     _inherit = 'is.mold'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_id         = fields.Many2one('is.database', "Site")
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
 
     @api.multi
@@ -619,12 +735,15 @@ class is_mold(models.Model):
                 DB_PORT = database.port_server
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 mold_vals = self.get_mold_vals(mold, DB, USERID, USERPASS, sock)
-                dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-                if dest_mold_ids:
-                    sock.execute(DB, USERID, USERPASS, 'is.mold', 'write', dest_mold_ids, mold_vals, {})
-                    mold_created_id = dest_mold_ids[0]
+
+                ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
+                if not ids:
+                    ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('name', '=', mold.name)], {})
+                if ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.mold', 'write', ids, mold_vals, {})
+                    created_id = ids[0]
                 else:
-                    mold_created_id = sock.execute(DB, USERID, USERPASS, 'is.mold', 'create', mold_vals, {})
+                    created_id = sock.execute(DB, USERID, USERPASS, 'is.mold', 'create', mold_vals, {})
         return True
 
 
@@ -643,6 +762,7 @@ class is_mold(models.Model):
         'carcasse': mold.carcasse,
         'emplacement':mold.emplacement,
         'is_database_origine_id':mold.id,
+        'is_database_id':self._get_is_database_id(mold, DB, USERID, USERPASS, sock),
         }
         return mold_vals
 
@@ -679,6 +799,14 @@ class is_mold(models.Model):
                 return mouliste_ids[0]
         return False
 
+
+    @api.model
+    def _get_is_database_id(self, mold, DB, USERID, USERPASS, sock):
+        if mold.is_database_id:
+            ids = sock.execute(DB, USERID, USERPASS, 'is.database', 'search', [('is_database_origine_id', '=', mold.is_database_id.id)], {})
+            if ids:
+                return ids[0]
+        return False
 
 
 
@@ -739,7 +867,7 @@ class is_mold(models.Model):
 class is_segment_achat(models.Model):
     _inherit = 'is.segment.achat'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def write(self, vals):
@@ -819,7 +947,7 @@ class is_segment_achat(models.Model):
 class is_famille_achat(models.Model):
     _inherit = 'is.famille.achat'
   
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
  
     @api.multi
     def write(self, vals):
@@ -898,7 +1026,7 @@ class is_famille_achat(models.Model):
 class is_site(models.Model):
     _inherit = 'is.site'
  
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def write(self, vals):
@@ -963,7 +1091,7 @@ class is_site(models.Model):
 class is_transmission_cde(models.Model):
     _inherit = 'is.transmission.cde'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def write(self, vals):
@@ -1029,7 +1157,7 @@ class is_transmission_cde(models.Model):
 class is_norme_certificats(models.Model):
     _inherit = 'is.norme.certificats'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
     @api.multi
     def write(self, vals):
@@ -1094,7 +1222,7 @@ class is_norme_certificats(models.Model):
 class is_certifications_qualite(models.Model):
     _inherit = 'is.certifications.qualite'
     
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
     
     @api.multi
     def write(self, vals):
@@ -1179,7 +1307,7 @@ class is_certifications_qualite(models.Model):
 class is_facturation_fournisseur_justification(models.Model):
     _inherit='is.facturation.fournisseur.justification'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
     
     @api.multi
     def write(self, vals):
@@ -1244,7 +1372,7 @@ class is_facturation_fournisseur_justification(models.Model):
 class is_secteur_activite(models.Model):
     _inherit='is.secteur.activite'
  
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
     
     @api.multi
     def write(self, vals):
@@ -1309,7 +1437,7 @@ class is_type_contact(models.Model):
     _inherit='is.type.contact'
     
     
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
     
     @api.multi
     def write(self, vals):
@@ -1373,7 +1501,7 @@ class is_type_contact(models.Model):
 class is_escompte(models.Model):
     _inherit='is.escompte'
 
-    is_database_origine_id = fields.Integer("Id d'origine (is.database)", readonly=True)
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
     
     @api.multi
     def write(self, vals):
@@ -1443,3 +1571,6 @@ class is_escompte(models.Model):
                      'is_database_origine_id':is_escompte.id
                      }
         return is_escompte_vals
+
+
+

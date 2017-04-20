@@ -23,19 +23,13 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="arch" type="xml">
-
                 <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="is_database_line_ids" widget="many2many_tags" nolabel="1" />
+                    <field name="is_database_line_ids" widget="many2many_tags" nolabel="1" placeholder="Sites"/>
                 </xpath>
-
-
-
-
                 <xpath expr="//field[@name='street2']" position="after">
                     <field name="is_rue3" placeholder="Rue 3 ou Boite Postale" />
                 </xpath>
                 <xpath expr="//field[@name='user_id']" position="after">
-                    <field name="is_cofor" attrs="{'invisible': [('customer', '!=', True)] }"/>
                     <field name="is_incoterm" />
                     <field 
                         name   = "is_transporteur_id" 
@@ -188,6 +182,9 @@
             <field name="inherit_id" ref="base.view_partner_form" />
             <field name="groups_id" eval="[(4, ref('account.group_account_invoice'))]"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_account_position']" position="before">
+                    <field name="is_cofor" attrs="{'invisible': [('customer', '!=', True)] }"/>
+                </xpath>
                 <xpath expr="//field[@name='property_payment_term']" position="after">
                     <field name="is_escompte" />
                 </xpath>
@@ -271,6 +268,19 @@
 
 
 
+
+
+        <!-- Liste des clients -->
+        <record id="is_view_partner_tree" model="ir.ui.view">
+            <field name="name">is_view_partner_tree</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <field name="email" position="after">
+                    <field name="is_database_origine_id"/>
+                </field>
+            </field>
+        </record>
         <record id="is_action_partner_supplier_form" model="ir.actions.act_window">
             <field name="name">Sociétés</field>
             <field name="type">ir.actions.act_window</field>
@@ -299,6 +309,7 @@
                     <field name="city"/>
                     <field name="is_type_cde_fournisseur"/>
                     <field name="property_product_pricelist_purchase"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -326,6 +337,7 @@
             <field name="arch" type="xml">
                 <tree string="tree" editable="top">
                     <field name="name"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -346,6 +358,7 @@
             <field name="arch" type="xml">
                 <tree string="tree" editable="top">
                     <field name="name"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -368,6 +381,7 @@
                     <field name="name"/>
                     <field name="taux"/>
                     <field name="compte"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -392,6 +406,7 @@
             <field name="arch" type="xml">
                 <tree string="Segment d'achat">
                     <field name="name"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -432,6 +447,7 @@
                 <tree string="Famille d'achat">
                     <field name="name" />
                     <field name="segment_id" />
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -468,6 +484,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -498,6 +515,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -528,6 +546,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -559,6 +578,7 @@
                 <tree>
                     <field name="is_norme" />
                     <field name="is_date_validation" />
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

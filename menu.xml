@@ -406,7 +406,7 @@
     <menuitem id="menu_is_achats_table"    sequence="90" name="Tables"                    parent="menu_is_achats" groups="is_gestionnaire_tables_group" />
     <menuitem id="menu_is_achats_table_10" sequence="10" name="Segment d'achat"           parent="menu_is_achats_table" action="action_is_segment_achat"/>
     <menuitem id="menu_is_achats_table_20" sequence="20" name="Famille d'achat"           parent="menu_is_achats_table" action="action_is_famille_achat"/>
-    <menuitem id="menu_is_achats_table_30" sequence="30" name="Site livré"                parent="menu_is_achats_table" action="action_is_site"/>
+    <!--<menuitem id="menu_is_achats_table_30" sequence="30" name="Site livré"                parent="menu_is_achats_table" action="action_is_site"/>-->
     <menuitem id="menu_is_achats_table_40" sequence="40" name="Mode transmission cde"     parent="menu_is_achats_table" action="action_is_transmission_cde"/>
     <menuitem id="menu_is_achats_table_50" sequence="50" name="Norme Certificat"          parent="menu_is_achats_table" action="action_is_norme_certificats"/>
     <menuitem id="menu_is_achats_table_60" sequence="60" name="Certifications Qualité"    parent="menu_is_achats_table" action="action_is_certifications_qualite"/>
