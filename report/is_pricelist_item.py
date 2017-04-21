@@ -12,6 +12,7 @@ class is_pricelist_item(models.Model):
 
     pricelist_name     = fields.Char('Liste de prix')
     pricelist_type     = fields.Char('Type')
+    base               = fields.Integer('Base')
     price_version_id   = fields.Many2one('product.pricelist.version', 'Version')
     version_date_start = fields.Date('Date début version')
     version_date_end   = fields.Date('Date fin version')
@@ -27,6 +28,9 @@ class is_pricelist_item(models.Model):
     item_date_start    = fields.Date('Date début ligne')
     item_date_end      = fields.Date('Date fin ligne')
 
+
+#pp.type='purchase' and  ppi.base!=2;
+
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_pricelist_item')
         cr.execute("""
@@ -35,6 +39,7 @@ class is_pricelist_item(models.Model):
                     ppi.id                as id,
                     pl.name               as pricelist_name,
                     pl.type               as pricelist_type,
+                    ppi.base              as base,
                     ppi.price_version_id  as price_version_id,
                     ppv.date_start        as version_date_start,
                     ppv.date_end          as version_date_end,
@@ -81,6 +86,20 @@ class is_pricelist_item(models.Model):
                 'context': {'default_price_version_id': obj.price_version_id.id }
             }
 
+
+    @api.multi
+    def corriger_anomalie_pricelist(self):
+        for obj in self:
+            base=False
+            if obj.pricelist_type=='purchase' and obj.base!=2:
+                base=2
+            if obj.pricelist_type=='sale' and obj.base!=1:
+                base=1
+
+            if base:
+                items=self.env['product.pricelist.item'].browse(obj.id)
+                for item in items:
+                    item.base=base
 
 
 
