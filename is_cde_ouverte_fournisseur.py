@@ -439,7 +439,7 @@ class is_cde_ouverte_fournisseur(models.Model):
             return {
                 'type' : 'ir.actions.act_url',
                 'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
-                'target': 'self',
+                'target': 'new',
             }
 
 
