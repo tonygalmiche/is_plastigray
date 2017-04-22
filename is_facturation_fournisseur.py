@@ -317,7 +317,7 @@ class is_facturation_fournisseur_justification(models.Model):
     _name='is.facturation.fournisseur.justification'
     _order='name'
 
-    name     = fields.Char('Justification')
-
+    name        = fields.Char('Justification')
+    commentaire = fields.Char('Commentaire')
 
 

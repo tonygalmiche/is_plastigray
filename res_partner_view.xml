@@ -337,6 +337,7 @@
             <field name="arch" type="xml">
                 <tree string="tree" editable="top">
                     <field name="name"/>
+                    <field name="commentaire"/>
                     <field name="is_database_origine_id"/>
                 </tree>
             </field>
@@ -358,6 +359,7 @@
             <field name="arch" type="xml">
                 <tree string="tree" editable="top">
                     <field name="name"/>
+                    <field name="commentaire"/>
                     <field name="is_database_origine_id"/>
                 </tree>
             </field>
@@ -515,6 +517,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="commentaire"/>
                     <field name="is_database_origine_id"/>
                 </tree>
             </field>
@@ -546,6 +549,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="commentaire"/>
                     <field name="is_database_origine_id"/>
                 </tree>
             </field>

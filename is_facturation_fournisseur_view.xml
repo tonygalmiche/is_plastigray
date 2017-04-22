@@ -119,6 +119,7 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" />
+                    <field name="commentaire"/>
                     <field name="is_database_origine_id"/>
                 </tree>
             </field>

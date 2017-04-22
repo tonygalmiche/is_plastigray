@@ -56,14 +56,16 @@ class is_transmission_cde(models.Model):
     _name = 'is.transmission.cde'
     _description = 'Mode de transmission des cmds'
     
-    name = fields.Char('Mode de transmission des commandes', required=True)
+    name        = fields.Char('Mode de transmission des commandes', required=True)
+    commentaire = fields.Char('Commentaire')
 
 
 class is_norme_certificats(models.Model):
     _name = 'is.norme.certificats'
     _description = u'Norme Certificat qualité'
     
-    name = fields.Char('Nome certificat', required=True)
+    name        = fields.Char('Nome certificat', required=True)
+    commentaire = fields.Char('Commentaire')
 
 
 class is_certifications_qualite(models.Model):
@@ -82,7 +84,8 @@ class is_secteur_activite(models.Model):
     _order='name'
     _sql_constraints = [('name_uniq','UNIQUE(name)', 'Ce code existe déjà')] 
 
-    name = fields.Char("Secteur d'activité", required=True)
+    name        = fields.Char("Secteur d'activité", required=True)
+    commentaire = fields.Char('Commentaire')
 
 
 class is_type_contact(models.Model):
@@ -90,7 +93,8 @@ class is_type_contact(models.Model):
     _order='name'
     _sql_constraints = [('name_uniq','UNIQUE(name)', 'Ce code existe déjà')] 
 
-    name = fields.Char("Type de contact", required=True)
+    name        = fields.Char("Type de contact", required=True)
+    commentaire = fields.Char('Commentaire')
 
 
 class is_escompte(models.Model):
