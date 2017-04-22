@@ -19,6 +19,8 @@ sys.setdefaultencoding("utf-8")
 #- Ajouter un champ 'active' pour désactier l'objet dans une société ou il n'apparait plus
 
 
+#test_recursive=0
+
 class is_database(models.Model):
     _name = 'is.database'
     _order='name'
@@ -31,14 +33,32 @@ class is_database(models.Model):
     password               = fields.Char('Mot de passe'   , required=False)
     is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
+
+
+
     @api.multi
     def copy_other_database(self, obj):
+        #global test_recursive 
         try:
             cr , uid, context = self.env.args
             class_name=obj.__class__.__name__
             database_lines = self.env['is.database'].search([])
             for database in database_lines:
                 if database.database:
+                    if class_name=='res.partner':
+                        #test_recursive=test_recursive+1
+                        #print obj.id, obj.is_adr_facturation
+
+                        if obj.id==obj.is_adr_facturation.id:
+                            raise osv.except_osv('Client recursif 2 !','')
+
+                        #if test_recursive>10:
+                        #    test_recursive=0
+                        #    raise osv.except_osv('Client recursif !','')
+
+
+                    #print database.database, obj, test_recursive
+
                     DB = database.database
                     USERID = uid
                     DBLOGIN = database.login
@@ -71,8 +91,12 @@ class is_database(models.Model):
                         else:
                             created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
         except Exception as e:
-            raise osv.except_osv(_('Recursive Client!'),
-                             _('(%s).') % str(e).decode('utf-8'))
+            raise osv.except_osv('Client recursif !','')
+
+#            raise osv.except_osv(_('Recursive Client!'),
+#                             _('(%s).') % str(e).decode('utf-8'))
+
+
         return True
 
     @api.model
@@ -149,8 +173,9 @@ class is_database(models.Model):
                 return ids[0]
             return False
         except Exception as e:
-            raise osv.except_osv(_('Client!'),
-                             _('(%s).') % str(e).decode('utf-8'))
+            raise osv.except_osv('Client recursif !','')
+#            raise osv.except_osv(_('Client!'),
+#                             _('(%s).') % str(e).decode('utf-8'))
 
     @api.model
     def get_partner_parent_id(self, partner, DB, USERID, USERPASS, sock):
@@ -485,10 +510,13 @@ class res_partner(models.Model):
             for obj in self:
                 res=super(res_partner, self).write(vals)
                 self.env['is.database'].copy_other_database(obj)
+                #global test_recursive
+                #test_recursive=0
                 return res
         except Exception as e:
-            raise osv.except_osv(_('Client!'),
-                             _('(%s).') % tools.ustr(e).decode('utf-8'))
+            raise osv.except_osv('Client recursif !','')
+#            raise osv.except_osv(_('Client!'),
+#                             _('(%s).') % tools.ustr(e).decode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -496,8 +524,12 @@ class res_partner(models.Model):
             obj=super(res_partner, self).create(vals)
             self.env['is.database'].copy_other_database(obj)
         except Exception as e:
-            raise osv.except_osv(_('Client!'),
-                             _('(%s).') % str(e).decode('utf-8'))
+            raise osv.except_osv('Client recursif !','')
+#            raise osv.except_osv(_('Client!'),
+#                             _('(%s).') % str(e).decode('utf-8'))
+        #global test_recursive
+        #test_recursive=0
+
         return obj
 
 
