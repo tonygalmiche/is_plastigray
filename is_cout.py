@@ -611,6 +611,19 @@ class is_cout(models.Model):
 
 
     @api.multi
+    def write(self, vals):
+        for obj in self:
+            matiere   = vals.get('cout_std_matiere'  , obj.cout_std_matiere)
+            condition = vals.get('cout_std_condition', obj.cout_std_condition)
+            machine   = vals.get('cout_std_machine'  , obj.cout_std_machine)
+            mo        = vals.get('cout_std_mo'       , obj.cout_std_mo)
+            st        = vals.get('cout_std_st'       , obj.cout_std_st)
+            vals['cout_std_total']=matiere+condition+machine+mo+st
+        res=super(is_cout, self).write(vals)
+        return res
+
+
+    @api.multi
     def action_calcul_cout(self):
         for obj in self:
             vals={
@@ -647,6 +660,31 @@ class is_cout(models.Model):
     def initialisation_prix_vente_standard(self):
         for obj in self:
             obj.cout_std_prix_vente = obj.prix_vente-obj.amortissement_moule-obj.surcout_pre_serie
+
+
+    @api.multi
+    def cout_standard_indice_precedent(self):
+        if len(self)>1:
+            raise Warning(u"Modification multiple non autorisée !")
+        for obj in self:
+            is_code=obj.name.is_code
+            indice=is_code[6:7]
+            if indice=='':
+                raise Warning(u"Code sans indice !")
+            code=is_code[0:6]
+            if indice!='A':
+                code=code+chr(ord(indice)-1)
+            couts=self.env['is.cout'].search([('name.is_code', '=', code)])
+            if len(couts)==0:
+                raise Warning(u"Coût précédent non trouvé !")
+            for cout in couts:
+                obj.cout_std_matiere    = cout.cout_std_matiere
+                obj.cout_std_condition  = cout.cout_std_condition
+                obj.cout_std_machine    = cout.cout_std_machine
+                obj.cout_std_mo         = cout.cout_std_mo
+                obj.cout_std_st         = cout.cout_std_st
+                obj.cout_std_total      = cout.cout_std_total
+                obj.cout_std_prix_vente = cout.cout_std_prix_vente
 
 
 class is_cout_nomenclature(models.Model):
