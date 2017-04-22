@@ -2,6 +2,22 @@
 <openerp>
     <data>
 
+
+        <!-- Envoi par mail -->
+        <record id="envoi_par_mail_action_server" model="ir.actions.server">
+             <field name="name">Envoi par mail</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="code">action = self.envoi_par_mail(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="envoi_par_mail_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'account.invoice'" name="model"/>
+            <field name="name">Envoi par mail</field>
+            <field eval="'ir.actions.server,%d'%envoi_par_mail_action_server" name="value"/>
+        </record>
+
+
+
         <!-- Folio -->
         <record id="is_account_folio_tree_view" model="ir.ui.view">
             <field name="name">is.account.folio.tree.view</field>
@@ -91,6 +107,8 @@
                 </xpath>
                 <button name="action_invoice_sent" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}"  position="replace" />
                 <button name="action_invoice_sent" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" position="replace" />
+
+                <!--
                 <button name="invoice_open" position="before" >
                     <button 
                         name="action_invoice_sent"
@@ -99,12 +117,15 @@
                         attrs="{'invisible':['|','|',('state', '!=', 'open'),('is_mode_envoi_facture', '!=', 'mail'),('is_date_envoi_mail', '!=', False)]}" 
                         groups="is_plastigray.is_comptable_group"/>
                 </button>
+                -->
+
+
                 <xpath expr="//button[@name='invoice_pay_customer']" position="replace" />
                 <field name="date_invoice" position="after">
                     <field name="is_type_facture" />
                     <field name="is_origine_id" domain="[('state','=', 'open'),('type','=', 'out_invoice')]" />
                     <field name="is_mode_envoi_facture" />
-                    <field name="is_date_envoi_mail" attrs="{'invisible':[('is_mode_envoi_facture', '!=', 'mail')]}" />
+                    <field name="is_date_envoi_mail" attrs="{'invisible':[('is_mode_envoi_facture', '!=', 'mail'),('is_mode_envoi_facture', '!=', 'mail_client')]}" />
                 </field>
                 <xpath expr="//field[@name='account_id']" position="after" >
                     <field name="is_folio_id"/> 
@@ -225,7 +246,7 @@
             <field name="name">Factures à envoyer par mail</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.invoice</field>
-            <field name="domain">[('is_mode_envoi_facture','=','mail'),('type','=','out_invoice'),('is_date_envoi_mail','=',False),('state','=','open')]</field>
+            <field name="domain">[('is_mode_envoi_facture','like','mail'),('type','=','out_invoice'),('is_date_envoi_mail','=',False),('state','=','open')]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
