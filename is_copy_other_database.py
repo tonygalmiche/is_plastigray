@@ -227,17 +227,33 @@ class is_database(models.Model):
             vals = {'name':tools.ustr(obj.name),'code':obj.code, 'active':obj.active}
             is_incoterm = sock.execute(DB, USERID, USERPASS, 'stock.incoterms', 'create', vals, {})
             return is_incoterm
-        
+
+
+    def get_is_rib_id(self, obj , DB, USERID, USERPASS, sock):
+        is_rib_id = sock.execute(DB, USERID, USERPASS, 'res.partner.bank', 'search', [('acc_number', '=', obj.is_rib_id.acc_number)], {})
+        if is_rib_id:
+            return is_rib_id[0]
+        return False
+
+
+    def get_user_id(self, obj , DB, USERID, USERPASS, sock):
+        user_id = sock.execute(DB, USERID, USERPASS, 'res.users', 'search', [('login', '=', obj.user_id.login)], {})
+        print user_id
+        if user_id:
+            return user_id[0]
+        return False
+
+
     def get_is_segment_achat(self, obj , DB, USERID, USERPASS, sock):
         is_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if is_segment_achat_ids:
             return is_segment_achat_ids[0]
         else:
             vals = {'name':tools.ustr(obj.name),'description':tools.ustr(obj.description), 'is_database_origine_id':obj.id}
-#             'family_line':[(6,0,[self.get_is_famille_achat_ids(is_famille , DB, USERID, USERPASS, sock) for is_famille in obj.family_line])]
             is_segment_achat = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', vals, {})
             return is_segment_achat
         
+
     def get_is_famille_achat_ids(self, obj_ids , DB, USERID, USERPASS, sock):
         lst_is_famille_achat_ids = []
         for obj in obj_ids:
@@ -383,7 +399,9 @@ class is_database(models.Model):
             'property_supplier_payment_term' : partner.property_supplier_payment_term.id,
             'is_escompte'                    : partner.is_escompte.id,
             'is_type_reglement'              : partner.is_type_reglement.id,
-            'is_rib_id'                      : partner.is_rib_id.id,
+            'is_rib_id'                      : partner.is_rib_id and self.get_is_rib_id(partner, DB, USERID, USERPASS, sock) or False,
+            'user_id'                        : partner.user_id and self.get_user_id(partner, DB, USERID, USERPASS, sock) or False,
+
 
             'active'                 : True,
         }
