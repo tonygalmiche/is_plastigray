@@ -614,11 +614,10 @@ class is_cout(models.Model):
     def write(self, vals):
         for obj in self:
             matiere   = vals.get('cout_std_matiere'  , obj.cout_std_matiere)
-            condition = vals.get('cout_std_condition', obj.cout_std_condition)
             machine   = vals.get('cout_std_machine'  , obj.cout_std_machine)
             mo        = vals.get('cout_std_mo'       , obj.cout_std_mo)
             st        = vals.get('cout_std_st'       , obj.cout_std_st)
-            vals['cout_std_total']=matiere+condition+machine+mo+st
+            vals['cout_std_total']=matiere+machine+mo+st
         res=super(is_cout, self).write(vals)
         return res
 
