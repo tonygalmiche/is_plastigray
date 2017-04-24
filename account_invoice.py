@@ -159,10 +159,9 @@ class account_invoice(models.Model):
             attachments = self.env['ir.attachment'].search([
                 ('res_model','=','account.invoice'),
                 ('res_id'   ,'=',id),
-            ])
+            ], order='id desc', limit=1)
             if len(attachments)==0:
                 raise Warning(u"Facture "+invoice.number+" non générée (non imprimée) !")
-
             for attachment in attachments:
                 attachment_ids.append(attachment.id)
 
