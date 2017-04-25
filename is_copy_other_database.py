@@ -810,7 +810,7 @@ class is_mold(models.Model):
         'date_fin':mold.date_fin,
         'mouliste_id':self._get_mouliste_id(mold, DB, USERID, USERPASS, sock),
         'carcasse': mold.carcasse,
-        'emplacement':mold.emplacement,
+        #'emplacement':mold.emplacement,
         'is_database_origine_id':mold.id,
         'is_database_id':self._get_is_database_id(mold, DB, USERID, USERPASS, sock),
         }
