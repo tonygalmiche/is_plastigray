@@ -187,10 +187,8 @@ class account_invoice(models.Model):
 
 
         email_cc   = user.name+u' <'+user.email+u'>'
-
-        #TODO : A revoir après les tests 
-        #email_to   = u','.join(emails_to)
-        email_to   = email_cc
+        email_to   = u','.join(emails_to)
+        #email_to   = email_cc
 
         email_from = email_cc
         subject    = u'Facture Plastigray pour '+partner.name+u' ('+u','.join(emails_to)+u')'
