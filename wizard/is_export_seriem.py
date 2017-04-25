@@ -44,7 +44,7 @@ class is_export_seriem(models.TransientModel):
                 ('date_invoice', '<=', obj.date_fin),
                 ('is_folio_id' , '=' , False),
                 ('type'        , 'in' , type_facture)
-            ])
+            ], order='is_bon_a_payer, ai.number')
 
             if len(invoices)==0:
                 raise Warning('Aucune facture à traiter')
