@@ -64,7 +64,7 @@ class purchase_order(models.Model):
                     line.product_qty, 
                     line.product_uom.id,
                     obj.partner_id.id, 
-                    date_order   = line.date_planned,
+                    date_order   = line.date_planned+u' 12:00:00',
                     date_planned = line.date_planned,
                 )
                 price=res['value']['price_unit']
