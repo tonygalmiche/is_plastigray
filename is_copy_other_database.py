@@ -5,7 +5,7 @@ from openerp.exceptions import ValidationError, Warning
 import xmlrpclib
 from openerp.osv import osv
 import unicodedata
-
+from openerp import SUPERUSER_ID
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -60,7 +60,7 @@ class is_database(models.Model):
                     #print database.database, obj, test_recursive
 
                     DB = database.database
-                    USERID = uid
+                    USERID = SUPERUSER_ID
                     DBLOGIN = database.login
                     USERPASS = database.password
                     DB_SERVER = database.ip_server
@@ -464,7 +464,7 @@ class is_database(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -589,7 +589,7 @@ class is_mold_project(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -680,7 +680,7 @@ class is_dossierf(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -778,7 +778,7 @@ class is_mold(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -954,7 +954,7 @@ class is_segment_achat(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1032,7 +1032,7 @@ class is_famille_achat(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1111,7 +1111,7 @@ class is_site(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1176,7 +1176,7 @@ class is_transmission_cde(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1242,14 +1242,14 @@ class is_norme_certificats(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
                 DB_PORT = database.port_server
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 norme_certificats_vals = self.get_is_norme_certificats_vals(norme_certificats, DB, USERID, USERPASS, sock)
-                dest_norme_certificats_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', norme_certificats.id)], {})
+                dest_norme_certificats_ids = sock.execute(DB, 1, USERPASS, 'is.norme.certificats', 'search', [('is_database_origine_id', '=', norme_certificats.id)], {})
                 if not dest_norme_certificats_ids:
                     dest_norme_certificats_ids = sock.execute(DB, USERID, USERPASS, 'is.norme.certificats', 'search', [('name', '=', norme_certificats.name)], {})
                 if dest_norme_certificats_ids:
@@ -1308,7 +1308,7 @@ class is_certifications_qualite(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1393,7 +1393,7 @@ class is_facturation_fournisseur_justification(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1457,7 +1457,7 @@ class is_secteur_activite(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1523,7 +1523,7 @@ class is_type_contact(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
@@ -1586,7 +1586,7 @@ class is_escompte(models.Model):
                 if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
                     continue
                 DB = database.database
-                USERID = uid
+                USERID = SUPERUSER_ID
                 DBLOGIN = database.login
                 USERPASS = database.password
                 DB_SERVER = database.ip_server
