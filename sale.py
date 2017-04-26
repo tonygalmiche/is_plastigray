@@ -139,7 +139,7 @@ class sale_order(models.Model):
                     )
                     price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, pricelist_id,
                             product_id, qty, vals['partner_id'], ctx)[pricelist_id]
-                    if not price:
+                    if price is False:
                         raise Warning("Il n'existe pas de tarif (liste de prix) pour l'article '"+str(product.is_code)+"' / qt="+str(qty)+ " / date="+str(date))
 
 
