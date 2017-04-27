@@ -397,7 +397,9 @@ class sale_order_line(models.Model):
                                                                      fiscal_position, flag, context=context)
         vals['value']['product_uom_qty'] = qty
         if date_order is False:
-            return
+            if 'warning' in vals:
+                vals['warning']=False
+            return vals
 
         #** Recherche prix dans liste de prix pour la date et qt ***********
         price=0
