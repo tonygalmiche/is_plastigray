@@ -13,10 +13,25 @@
 
     <!-- Planning -->
     <record model="ir.actions.act_url" id="is_url_planning_action">
-        <field name="name">http://odoo/odoo-erp/planning/</field>
-        <field name="url">http://odoo/odoo-erp/planning/</field>
+        <field name="name">is_url_planning_action</field>
         <field name="type">ir.actions.act_url</field>
     </record>
+
+
+    <!--
+    <record id="is_url_planning_action" model="ir.actions.server">
+        <field name="name">Planning</field>
+        <field name="condition">True</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_mrp_production" />
+        <field name="state">code</field>
+        <field name="code">self.url_planning_action(cr, uid, context.get('active_ids', []), context=context)</field>
+    </record>
+    -->
+
+
+
+
 
     <!-- Wiki -->
     <record model="ir.actions.act_url" id="is_url_wiki_action">
@@ -848,6 +863,8 @@
             ref('is_magasiniers_group'),
         ])]"/>
     </record>
+
+
     <record id="menu_is_planning_production" model="ir.ui.menu" >
         <field name="name">Planning</field>
         <field name="sequence">30</field>
