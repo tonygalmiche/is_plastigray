@@ -129,9 +129,9 @@ class sale_order(models.Model):
                 context={}
                 if pricelist_id:
                     pricelist=self.env['product.pricelist'].browse(pricelist_id)
-
                     qty = self.env['product.template'].get_lot_livraison(product.product_tmpl_id, partner)
-                    date = time.strftime('%Y-%m-%d')
+                    #date = time.strftime('%Y-%m-%d')
+                    date = vals['date_order']
                     ctx = dict(
                         context,
                         uom=product.uom_id.id,
@@ -198,6 +198,7 @@ class sale_order(models.Model):
                 'pricelist_id'           : obj.pricelist_id.id,
                 'partner_id'             : obj.partner_id.id,
                 'partner_invoice_id'     : obj.partner_invoice_id.id,
+                'date_order'             : obj.date_order,
             }
             self._verif_tarif(vals2)
             self._verif_existe(vals2)
@@ -395,6 +396,8 @@ class sale_order_line(models.Model):
                                                                      lang, update_tax, date_order, packaging,
                                                                      fiscal_position, flag, context=context)
         vals['value']['product_uom_qty'] = qty
+        if date_order is False:
+            return
 
         #** Recherche prix dans liste de prix pour la date et qt ***********
         price=0
