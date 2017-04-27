@@ -220,6 +220,9 @@ class sale_order_line(models.Model):
     is_type_commande      = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
     is_client_order_ref   = fields.Char("Commande client")
     is_ref_client         = fields.Char('Référence client', related='product_id.is_ref_client', readonly=True)
+    is_date_confirmation  = fields.Date("Date de confirmation")
+    is_comment_confirm    = fields.Char("Commentaire de confirmation")
+
 
     @api.depends('is_date_livraison')
     def _date_expedition(self):
