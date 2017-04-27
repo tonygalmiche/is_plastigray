@@ -194,7 +194,8 @@ TODO :
                                 </tr>
                               </thead>
                               <tbody>
-                                <t t-set="pds_total" t-value="0"/>
+                                <t t-set="pds_brut_total" t-value="0"/>
+                                <t t-set="pds_net_total" t-value="0"/>
                                 <tr t-foreach="o.move_lines" t-as="move">
                                     <t t-if="(o.state != 'partially_available') or (move.reserved_availability > 0)">
                                         <t t-set="qt1" t-value="move.product_uom_qty"/>
@@ -208,8 +209,11 @@ TODO :
                                             <t t-set="nb3"    t-value="l.qty*l.ul_qty*l.rows"/>
                                             <t t-set="unite3" t-value="l.ul_container.name"/>
                                         </t>
-                                        <t t-set="pds" t-value="qt1*move.product_id.weight"/>
-                                        <t t-set="pds_total" t-value="pds_total + pds"/>
+                                        <t t-set="pds_brut" t-value="qt1*move.product_id.weight"/>
+                                        <t t-set="pds_brut_total" t-value="pds_brut_total + pds_brut"/>
+
+                                        <t t-set="pds_net" t-value="qt1*move.product_id.weight_net"/>
+                                        <t t-set="pds_net_total" t-value="pds_net_total + pds_net"/>
                                         <td>
                                             <span t-field="move.is_sale_line_id.is_client_order_ref"/>
                                         </td>
@@ -265,7 +269,8 @@ TODO :
                                             <t t-if="nb3">
                                                 <span t-esc="unite3"/><br />
                                             </t>
-                                            <span t-esc="pds"/> KG
+                                            <span t-esc="pds_brut"/> KG (brut)<br />
+                                            <span t-esc="pds_net"/> KG (net)<br />
                                         </td>
 
 
@@ -287,8 +292,12 @@ TODO :
                                         <th class="text-left"  t-if="o.partner_id.lang == 'fr_FR'">Informations</th> 
                                         <th class="text-left"  t-if="o.partner_id.lang != 'fr_FR'">Informations</th>
 
-                                        <th class="text-right" t-if="o.partner_id.lang == 'fr_FR'">Poids</th> 
+                                        <th class="text-right" t-if="o.partner_id.lang == 'fr_FR'">Poids Brut</th> 
                                         <th class="text-right" t-if="o.partner_id.lang != 'fr_FR'">Weight</th>
+
+                                        <th class="text-right" t-if="o.partner_id.lang == 'fr_FR'">Poids Net</th> 
+                                        <th class="text-right" t-if="o.partner_id.lang != 'fr_FR'">Net Weight</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -311,7 +320,10 @@ TODO :
                                         <span t-field="o.partner_id.is_incoterm.name" /><br />
                                     </td>
                                     <td class="text-right">
-                                        <span t-esc="pds_total"/> KG
+                                        <span t-esc="pds_brut_total"/> KG
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-esc="pds_net_total"/> KG
                                     </td>
                                 </tbody>
                             </table>
