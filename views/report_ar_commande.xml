@@ -67,7 +67,7 @@
             <div class="header">
                 <div class="row">
                     <div class="col-xs-5  text-center">
-                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                        <img t-if="company.is_logo" t-att-src="'data:image/png;base64,%s' % company.is_logo" style="max-height: 60px;"/>
                         <div class="expediteur">
                             <b><span t-field="o.company_id.partner_id.name" /> <span t-field="o.company_id.partner_id.street" /></b><br />
                             <span t-field="o.company_id.partner_id.zip" /> <span t-field="o.company_id.partner_id.city" /><br />

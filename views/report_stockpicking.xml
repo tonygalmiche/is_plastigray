@@ -77,7 +77,7 @@ TODO :
 
                 <div class="row">
                     <div class="col-xs-4  text-center">
-                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 60px;"/>
+                        <img t-if="company.is_logo" t-att-src="'data:image/png;base64,%s' % company.is_logo" style="max-height: 60px;"/>
                         <div class="expediteur">
                             S.A.S. au capital de 2 102 400 € <br />
                             Siège social : ZAC de Gray Sud <br />
