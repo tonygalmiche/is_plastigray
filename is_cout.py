@@ -502,6 +502,7 @@ class is_cout_calcul(models.Model):
                         cout.is_category_id     = row.product_id.is_category_id
                         cout.is_gestionnaire_id = row.product_id.is_gestionnaire_id
                         cout.is_mold_id         = row.product_id.is_mold_id
+                        cout.is_mold_dossierf   = row.product_id.is_mold_dossierf
                         cout.uom_id             = row.product_id.uom_id
                         cout.lot_mini           = row.product_id.lot_mini
 
@@ -556,6 +557,7 @@ class is_cout(models.Model):
     is_category_id         = fields.Many2one('is.category', 'Catégorie')
     is_gestionnaire_id     = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     is_mold_id             = fields.Many2one('is.mold', 'Moule')
+    is_mold_dossierf       = fields.Char('Moule ou Dossier F')
     type_article           = fields.Selection([('A', u'Acheté'),('F', u'Fabriqué'),('ST', u'Sous-traité')], "Type d'article")
     uom_id                 = fields.Many2one('product.uom', 'Unité')
     lot_mini               = fields.Float("Lot d'appro.")
