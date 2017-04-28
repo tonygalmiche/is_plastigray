@@ -106,6 +106,7 @@
                                 <field name="is_gestionnaire_id"/> 
                                 <!--<field name="is_mold_id"/>-->
                                 <field name="is_mold_dossierf"/> 
+                                <field name="partner_id"/> 
                                 <field name="uom_id"/> 
                                 <field name="lot_mini"/> 
                             </group>
@@ -255,11 +256,13 @@
                     <field name="is_gestionnaire_id"/> 
                     <!--<field name="is_mold_id"/>-->
                     <field name="is_mold_dossierf"/> 
+                    <field name="partner_id"/> 
                     <group expand="0" string="Regrouper par...">
                         <filter string="Type d'article"   context="{'group_by':'type_article'}"/>
                         <filter string="Catégorie"        context="{'group_by':'is_category_id'}"/>
                         <filter string="Gestionnaire"     context="{'group_by':'is_gestionnaire_id'}"/>
                         <filter string="Moule"            context="{'group_by':'is_mold_dossierf'}"/>
+                        <filter string="Client"           context="{'group_by':'partner_id'}"/>
                     </group>
                 </search>
             </field>
@@ -275,6 +278,7 @@
                     <field name="code_pg"/> 
                     <field name="designation"/> 
                     <field name="is_mold_dossierf"/> 
+                    <field name="partner_id"/> 
                     <field name="is_category_id"/> 
                     <field name="is_gestionnaire_id"/> 
                     <field name="type_article"/> 
@@ -332,6 +336,8 @@
                 <tree>
                     <field name="code_pg"/> 
                     <field name="designation"/> 
+                    <field name="is_mold_dossierf"/> 
+                    <field name="partner_id"/> 
                     <field name="cout_std_matiere"/> 
                     <field name="cout_std_machine"/> 
                     <field name="cout_std_mo"/> 

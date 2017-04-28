@@ -493,26 +493,29 @@ class is_cout_calcul(models.Model):
 
                         cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
 
-                        cout.cout_act_matiere   = cout_act_matiere
-                        cout.cout_act_condition = cout_act_condition
-                        cout.cout_act_machine   = cout_act_machine
-                        cout.cout_act_mo        = cout_act_mo
-                        cout.cout_act_st        = cout_act_st
-                        cout.cout_act_total     = cout_act_total
-                        cout.is_category_id     = row.product_id.is_category_id
-                        cout.is_gestionnaire_id = row.product_id.is_gestionnaire_id
-                        cout.is_mold_id         = row.product_id.is_mold_id
-                        cout.is_mold_dossierf   = row.product_id.is_mold_dossierf
-                        cout.uom_id             = row.product_id.uom_id
-                        cout.lot_mini           = row.product_id.lot_mini
+                        #Client par défaut
+                        for row in row.product_id.is_client_ids:
+                            if row.client_defaut:
+                                cout.partner_id=row.client_id.id
 
+                        cout.cout_act_matiere    = cout_act_matiere
+                        cout.cout_act_condition  = cout_act_condition
+                        cout.cout_act_machine    = cout_act_machine
+                        cout.cout_act_mo         = cout_act_mo
+                        cout.cout_act_st         = cout_act_st
+                        cout.cout_act_total      = cout_act_total
+                        cout.is_category_id      = row.product_id.is_category_id
+                        cout.is_gestionnaire_id  = row.product_id.is_gestionnaire_id
+                        cout.is_mold_id          = row.product_id.is_mold_id
+                        cout.is_mold_dossierf    = row.product_id.is_mold_dossierf
+                        cout.uom_id              = row.product_id.uom_id
+                        cout.lot_mini            = row.product_id.lot_mini
                         cout.cout_act_prix_vente = cout.prix_vente-cout.amortissement_moule-cout.surcout_pre_serie
-
-                        row.cout_act_matiere    = cout_act_matiere
-                        row.cout_act_machine    = cout_act_machine
-                        row.cout_act_mo         = cout_act_mo
-                        row.cout_act_st         = cout_act_st
-                        row.cout_act_total      = cout_act_total
+                        row.cout_act_matiere     = cout_act_matiere
+                        row.cout_act_machine     = cout_act_machine
+                        row.cout_act_mo          = cout_act_mo
+                        row.cout_act_st          = cout_act_st
+                        row.cout_act_total       = cout_act_total
 
             obj.state="termine"
 
@@ -558,6 +561,7 @@ class is_cout(models.Model):
     is_gestionnaire_id     = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     is_mold_id             = fields.Many2one('is.mold', 'Moule')
     is_mold_dossierf       = fields.Char('Moule ou Dossier F')
+    partner_id             = fields.Many2one('res.partner', 'Client par défaut')
     type_article           = fields.Selection([('A', u'Acheté'),('F', u'Fabriqué'),('ST', u'Sous-traité')], "Type d'article")
     uom_id                 = fields.Many2one('product.uom', 'Unité')
     lot_mini               = fields.Float("Lot d'appro.")
