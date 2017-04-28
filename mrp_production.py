@@ -6,25 +6,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools import float_compare, float_is_zero
 from openerp import tools, SUPERUSER_ID
 import openerp.addons.decimal_precision as dp
-from openerp.http import request
-
-
-
-#TODO : Remettre cette class dans un fichier séparé pour mieux gérer les url
-class ir_actions_act_url(models.Model):
-    _inherit = 'ir.actions.act_url'
-
-    def read(self, cr, uid, ids, fields=None, context=None, load='_classic_read'):
-        if not context: context = {}
-        results = super(ir_actions_act_url, self).read(cr, uid, ids, fields=fields, context=context, load=load)
-        if load=='_classic_read' and len(ids) == 1:
-                if results[0]['name']==u'is_url_planning_action':
-                    ip=request.httprequest.environ['REMOTE_ADDR'] 
-                    url='http://odoo/odoo-erp/planning/?uid='+str(uid)
-                    results[0].update({'url': url})
-        return results
-
-
 
 
 class MrpProduction(models.Model):
