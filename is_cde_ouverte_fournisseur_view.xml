@@ -189,9 +189,15 @@
             <field name="model">is.cde.ouverte.fournisseur</field>
             <field name="arch" type="xml">
                 <search>
+                    <filter string="Commande ouverte"            domain="[('type_commande','=','ouverte')]"/>
+                    <filter string="Commande ferme avec horizon" domain="[('type_commande','=','ferme')]"/>
+                    <filter string="Commande ferme uniquement"   domain="[('type_commande','=','ferme_uniquement')]"/>
                     <field name="name"/> 
                     <field name="partner_id"/> 
                     <field name="type_commande"/> 
+                    <group expand="1" string="Regrouper par">
+                        <filter string="Type de commande" context="{'group_by':'type_commande'}"/>
+                    </group>
                 </search>
             </field>
         </record>

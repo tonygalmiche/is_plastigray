@@ -648,8 +648,9 @@ class is_cde_ouverte_fournisseur(models.Model):
                     ('product_id'  ,'=', product.product_id.id),
                     ('partner_id'  ,'=', obj.partner_id.id), 
                 ]
-                now  = datetime.date.today()                     # Date du jour
-                date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                now  = datetime.date.today()                      # Date du jour
+                #date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
+                date_approve = now + datetime.timedelta(days=-3)  # Date -3 jours : TODO Passage de 7 à 3 jours le 28/04/2017
                 date_approve = date_approve.strftime('%Y-%m-%d')
                 nb_ferme_imprime=0
                 attente_confirmation=0

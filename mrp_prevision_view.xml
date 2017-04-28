@@ -106,27 +106,27 @@
             <field name="model">mrp.prevision</field>
             <field name="arch" type="xml">
                 <search string="Prevision">
-                    <filter string="Inactive" icon="terp-gdu-smart-failing" domain="[('active','=',False)]"/>
-
+                    <filter string="SA"       domain="[('type','=','sa')]"/>
+                    <filter string="FS"       domain="[('type','=','fs')]"/>
+                    <filter string="FT"       domain="[('type','=','ft')]"/>
                     <field name="name" string="OD" filter_domain="['|',('name', 'ilike', self),('parent_id', 'ilike', self)]"/>
-
-                    <!--<field name="name"/>-->
                     <field name="product_id"/>
+                    <field name="is_category_id"/>
+                    <field name="is_gestionnaire_id"/>
                     <field name="partner_id"/>
                     <field name="start_date"/>
                     <field name="end_date"/>
                     <field name="type"/>
                     <field name="niveau"/>
                     <field name="company_id" groups="base.group_multi_company"/>
-
                     <group expand="1" string="Regrouper par">
-                        <filter string="Type"        context="{'group_by':'type'}"/>
-                        <filter string="Article"     context="{'group_by':'product_id'}"/>
-                        <filter string="Fournisseur" context="{'group_by':'partner_id'}"/>
-                        <filter string="Semaine"     context="{'group_by':'start_date:week'}"/>
+                        <filter string="Type"         context="{'group_by':'type'}"/>
+                        <filter string="Article"      context="{'group_by':'product_id'}"/>
+                        <filter string="Catégorie"    context="{'group_by':'is_category_id'}"/>
+                        <filter string="Gestionnaire" context="{'group_by':'is_gestionnaire_id'}"/>
+                        <filter string="Fournisseur"  context="{'group_by':'partner_id'}"/>
+                        <filter string="Semaine"      context="{'group_by':'start_date:week'}"/>
                     </group>
-
-
                 </search>
             </field>
         </record>

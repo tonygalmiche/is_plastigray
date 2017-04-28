@@ -31,8 +31,8 @@ class mrp_prevision(models.Model):
         ('sa', "SA")
     ], "Type", required=True)
     product_id         = fields.Many2one('product.product', 'Article', required=True)
-    is_category_id     = fields.Many2one('is.category', 'Catégorie'       , related='product_id.is_category_id'    , readonly=True)
-    is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire', related='product_id.is_gestionnaire_id', readonly=True)
+    is_category_id     = fields.Many2one('is.category', 'Catégorie', readonly=True)
+    is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire', readonly=True)
     partner_id         = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
     start_date         = fields.Date('Date de début')
     start_date_cq      = fields.Date('Date début contrôle qualité'   , readonly=True)
@@ -226,6 +226,9 @@ class mrp_prevision(models.Model):
         product_id  = vals.get('product_id', None)
         product     = self.env['product.product'].browse(product_id)
         company     = user.company_id
+
+        vals['is_gestionnaire_id'] = product.is_gestionnaire_id.id
+        vals['is_category_id']     = product.is_category_id.id
 
         #** Quantité arrondie au lot à la création uniquement ******************
         type       = vals.get('type'      , None)

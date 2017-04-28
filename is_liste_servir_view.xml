@@ -12,9 +12,9 @@
             <field name="arch" type="xml">
                 <tree string="tree" create="false" >
                     <button string="Créer Liste à servir"   name="action_creer_liste_servir" type="object" icon="gtk-add"    attrs="{'invisible':[('liste_servir_id','!=',False)]}" />
-                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]"/>
-                    <button string="Voir la liste à servir" name="action_voir_liste_servir" type="object" icon="gtk-zoom-in" attrs="{'invisible':[('liste_servir_id','=',False)]}" />
-                    <field name="liste_servir_id"/>
+                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]" widget="many2one_clickable"/>
+                    <!--<button string="Voir la liste à servir" name="action_voir_liste_servir" type="object" icon="gtk-zoom-in" attrs="{'invisible':[('liste_servir_id','=',False)]}" />-->
+                    <field name="liste_servir_id" widget="many2one_clickable"/>
                     <field name="zip"/>
                     <field name="city"/>
                     <field name="delai_transport"/>
