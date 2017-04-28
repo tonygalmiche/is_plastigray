@@ -72,6 +72,7 @@ class is_edi_cde_cli(models.Model):
 
     name            = fields.Date('Date de création', readonly='1')
     partner_id      = fields.Many2one('res.partner', 'Client', required=False)
+    date_maxi       = fields.Date(u"Date de livraison limite d'intégration", help="Au delà de cette date, les nouvelles commandes ne seront pas importés et les commandes existantes ne seront pas supprimées")
     import_function = fields.Char("Fonction d'importation", compute='_import_function', readonly=True)
     file_ids        = fields.Many2many('ir.attachment', 'is_doc_attachment_rel', 'doc_id', 'file_id', 'Fichiers')
     create_id       = fields.Many2one('res.users', 'Importe par', readonly=True)
@@ -217,6 +218,9 @@ class is_edi_cde_cli(models.Model):
                 #Ne pas supprimer les commandes fermes
                 if obj.import_function=="eCar":
                     filtre.append(('is_type_commande', '!=', 'ferme'))
+                #Ne pas supprimer les commandes au dela de la date limite
+                if obj.date_maxi:
+                    filtre.append(('is_date_livraison', '<=', obj.date_maxi))
                 order_line=line_obj.search(filtre)
                 for row in order_line:
                     row.unlink()
@@ -226,16 +230,22 @@ class is_edi_cde_cli(models.Model):
             for line in obj.line_ids:
                 if line.order_id:
                     if line.quantite!=0 and order_id:
-                        vals={
-                            'order_id'            : line.order_id.id, 
-                            'is_date_livraison'   : line.date_livraison, 
-                            'is_type_commande'    : line.type_commande, 
-                            'product_id'          : line.order_id.is_article_commande_id.id, 
-                            'product_uom_qty'     : line.quantite, 
-                            'is_client_order_ref' : line.order_id.client_order_ref, 
-                            'price_unit'          : line.prix,
-                        }
-                        line_obj.create(vals)
+                        #Ne pas importer les commandes au dela de la date limite
+                        test=True
+                        if obj.date_maxi:
+                            if line.date_livraison>obj.date_maxi:
+                                test=False
+                        if test:
+                            vals={
+                                'order_id'            : line.order_id.id, 
+                                'is_date_livraison'   : line.date_livraison, 
+                                'is_type_commande'    : line.type_commande, 
+                                'product_id'          : line.order_id.is_article_commande_id.id, 
+                                'product_uom_qty'     : line.quantite, 
+                                'is_client_order_ref' : line.order_id.client_order_ref, 
+                                'price_unit'          : line.prix,
+                            }
+                            line_obj.create(vals)
             #*******************************************************************
             obj.state='traite'
 
