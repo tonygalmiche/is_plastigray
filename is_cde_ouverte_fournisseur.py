@@ -140,16 +140,17 @@ class is_cde_ouverte_fournisseur(models.Model):
     _name='is.cde.ouverte.fournisseur'
     _order='partner_id'
 
-    name           = fields.Char("N°", readonly=True)
-    partner_id     = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
-    contact_id     = fields.Many2one('res.partner', 'Contact Logistique')
-    pricelist_id   = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
-    type_commande  = fields.Selection(type_commande_list, "Type de commande", required=True)
-    sans_commande  = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
-    commentaire    = fields.Text("Commentaire")
-    product_ids    = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
-    tarif_ids      = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
-    historique_ids = fields.One2many('is.cde.ouverte.fournisseur.histo'  , 'order_id', u"Historique")
+    name                 = fields.Char("N°", readonly=True)
+    partner_id           = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
+    contact_id           = fields.Many2one('res.partner', 'Contact Logistique')
+    pricelist_id         = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
+    type_commande        = fields.Selection(type_commande_list, "Type de commande", required=True)
+    sans_commande        = fields.Selection([('oui', 'Oui'),('non', 'Non')], "Articles sans commandes", help="Imprimer dans les documents les articles sans commandes")
+    attente_confirmation = fields.Integer("Attente confirmation fournisseur", readonly=True)
+    commentaire          = fields.Text("Commentaire")
+    product_ids          = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
+    tarif_ids            = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
+    historique_ids       = fields.One2many('is.cde.ouverte.fournisseur.histo'  , 'order_id', u"Historique")
 
 
     @api.model
@@ -462,6 +463,48 @@ class is_cde_ouverte_fournisseur(models.Model):
             self.envoi_mail(name,subject)
 
 
+
+    @api.multi
+    def print_relance(self):
+        for obj in self:
+            self.set_histo(obj.id, u'Impression Relance fournisseur')
+        return self.env['report'].get_action(self, 'is_plastigray.report_relance_fournisseur')
+
+
+    @api.multi
+    def mail_relance(self):
+        for obj in self:
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            attachment_obj = self.env['ir.attachment']
+            model=self._name
+            name='relance-fournisseur.pdf'
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_relance_fournisseur')
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdf.encode('base64'),
+            }
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+            subject=u"Relance fournisseur Plastigray pour "+obj.partner_id.name;
+            self.envoi_mail(name,subject)
+            self.set_histo(obj.id, u'Envoi Relance fournisseur par mail à '+str(obj.contact_id.email))
+            # ******************************************************************
+
+
+
     @api.multi
     def envoi_mail(self, name, subject):
         for obj in self:
@@ -581,6 +624,8 @@ class is_cde_ouverte_fournisseur(models.Model):
 
             for product in obj.product_ids:
                 product.line_ids.unlink()
+
+            attente_confirmation_total=0
             for product in obj.product_ids:
                 if obj.type_commande!='ferme_uniquement':
                     for row in self.env['mrp.prevision'].search([('type','=','sa'),('product_id','=',product.product_id.id)]):
@@ -602,6 +647,7 @@ class is_cde_ouverte_fournisseur(models.Model):
                 date_approve = now + datetime.timedelta(days=-7) # Date -7 jours
                 date_approve = date_approve.strftime('%Y-%m-%d')
                 nb_ferme_imprime=0
+                attente_confirmation=0
                 for row in self.env['purchase.order.line'].search(where):
                     #** Test si réceptions en cours sur la ligne de cde ********
                     where=[
@@ -616,6 +662,10 @@ class is_cde_ouverte_fournisseur(models.Model):
                         if row.order_id.date_approve>date_approve:
                             imprimer_commande=True
                             nb_ferme_imprime=nb_ferme_imprime+1
+
+                        if row.order_id.is_date_confirmation is False:
+                            attente_confirmation       = attente_confirmation+1
+                            attente_confirmation_total = attente_confirmation_total+1
 
                         #** Recherche Qt réceptionnée sur cette commande *******
                         where=[
@@ -637,26 +687,30 @@ class is_cde_ouverte_fournisseur(models.Model):
                             'quantite_rcp'      : quantite_rcp,
                             'uom_id'            : row.product_uom.id,
                             'purchase_order_id' : row.order_id.id,
+                            'date_fournisseur'  : row.order_id.is_date_confirmation,
                             'imprimer_commande' : imprimer_commande,
                         }
                         line=self.env['is.cde.ouverte.fournisseur.line'].create(vals)
                 product.nb_ferme_imprime=nb_ferme_imprime
                 product.nb_commandes=len(product.line_ids)
+                product.attente_confirmation=attente_confirmation
+            obj.attente_confirmation=attente_confirmation_total
 
 
 class is_cde_ouverte_fournisseur_product(models.Model):
     _name='is.cde.ouverte.fournisseur.product'
     _order='product_id'
 
-    order_id         = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
-    product_id       = fields.Many2one('product.product', 'Article'  , required=True)
-    num_bl           = fields.Char("Dernier BL"     , readonly=True)
-    date_bl          = fields.Date("Date BL"        , readonly=True)
-    qt_bl            = fields.Float("Qt reçue"      , readonly=True)
-    nb_ferme_imprime = fields.Integer("Nb fermes à imprimer", readonly=True)
-    nb_commandes     = fields.Integer("Nb commandes"        , readonly=True)
-    imprimer         = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
-    line_ids      = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
+    order_id             = fields.Many2one('is.cde.ouverte.fournisseur', 'Commande ouverte fournisseur', required=True, ondelete='cascade', readonly=True)
+    product_id           = fields.Many2one('product.product', 'Article'  , required=True)
+    num_bl               = fields.Char("Dernier BL"     , readonly=True)
+    date_bl              = fields.Date("Date BL"        , readonly=True)
+    qt_bl                = fields.Float("Qt reçue"      , readonly=True)
+    nb_ferme_imprime     = fields.Integer("Nb fermes à imprimer", readonly=True)
+    nb_commandes         = fields.Integer("Nb commandes"        , readonly=True)
+    imprimer             = fields.Boolean("A imprimer", help="Si cette case n'est pas cochée, l'article ne sera pas imprimé")
+    attente_confirmation = fields.Integer("Attente confirmation fournisseur", readonly=True)
+    line_ids             = fields.One2many('is.cde.ouverte.fournisseur.line'   , 'product_id', u"Commandes")
 
 
     @api.multi
@@ -701,6 +755,7 @@ class is_cde_ouverte_fournisseur_line(models.Model):
     uom_id            = fields.Many2one('product.uom', 'Unité')
     mrp_prevision_id  = fields.Many2one('mrp.prevision' , 'SA')
     purchase_order_id = fields.Many2one('purchase.order', 'Commande')
+    date_fournisseur  = fields.Date("Date confirmation fournisseur")
     imprimer_commande = fields.Boolean("Imprimer la commande", default=False)
 
 

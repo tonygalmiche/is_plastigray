@@ -87,6 +87,7 @@ Module principal du projet Plastigray
         "views/report_stockpicking.xml",
         "views/report_invoice.xml",
         "views/report_cde_ouverte_fournisseur.xml",
+        "views/report_relance_fournisseur.xml",
         "views/report_cde_ferme_cadencee.xml",
         "views/report_appel_de_livraison.xml",
         "views/report_document_fabrication.xml",

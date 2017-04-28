@@ -26,20 +26,84 @@
             <field name="arch" type="xml">
                 <form string="Form">  
                     <header>
-                        <button name="integrer_commandes"       string="Intégrer les commandes"           attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" class="oe_highlight" type="object"  />
-                        <button name="integrer_commandes"       string="Intégrer les commandes et les SA" attrs="{'invisible': [('type_commande', '=' , 'ferme_uniquement')]}" class="oe_highlight" type="object"  />
+                        <button 
+                            name="integrer_commandes"
+                            string="Intégrer les commandes"
+                            attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" 
+                            class="oe_highlight" type="object"
+                        />
+                        <button 
+                            name="integrer_commandes"
+                            string="Intégrer les commandes et les SA" 
+                            attrs="{'invisible': [('type_commande', '=' , 'ferme_uniquement')]}" 
+                            class="oe_highlight" type="object"  
+                        />
+                        <button 
+                            name="print_commande_ouverte"
+                            string="Imprimer la commande ouverte"
+                            attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"
+                            type="object"
+                        />
+                        <button
+                            name="mail_commande_ouverte"
+                            string="Envoyer par mail la commande ouverte"
+                            attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"
+                            type="object"
+                            confirm="Voulez-vous vraiment envoyer ce document par mail ?"
+                        />
+                        <button 
+                            name="print_appel_de_livraison"
+                            string="Imprimer l'appel de livraison"
+                            attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"
+                            type="object"
+                        />
+                        <button
+                            name="mail_appel_de_livraison"
+                            string="Envoyer par mail l'appel de livraison" 
+                            attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"
+                            type="object"
+                            confirm="Voulez-vous vraiment envoyer ce document par mail ?"
+                        />
+                        <button 
+                            name="print_appel_de_livraison"
+                            string="Imprimer l'horizon des besoins"
+                            attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"
+                            type="object" 
+                        />
+                        <button
+                            name="mail_appel_de_livraison"
+                            string="Envoyer par mail l'horizon des besoins"
+                            attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"
+                            type="object"
+                            confirm="Voulez-vous vraiment envoyer ce document par mail ?"
+                        />
+                        <button
+                            name="print_ferme_uniquement"
+                            string="Imprimer les commandes fermes"
+                            attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}"
+                            type="object"
+                        />
+                        <button
+                            name="mail_ferme_uniquement"
+                            string="Envoyer par mail les commandes fermes"
+                            attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" 
+                            type="object" 
+                            confirm="Voulez-vous vraiment envoyer ce document par mail ?"
+                        />
+                        <button 
+                            name="print_relance"
+                            string="Imprimer relances"
+                            attrs="{'invisible': [('attente_confirmation', '==', 0)]}" 
+                            type="object"
+                        />
+                        <button
+                            name="mail_relance"
+                            string="Envoyer par mail relances" 
+                            attrs="{'invisible': [('attente_confirmation', '==', 0)]}" 
+                            type="object"
+                            confirm="Voulez-vous vraiment envoyer ce document par mail ?"
+                        />
 
-                        <button name="print_commande_ouverte"   string="Imprimer la commande ouverte"         attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object"  />
-                        <button name="mail_commande_ouverte"    string="Envoyer par mail la commande ouverte" attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object"  />
-
-                        <button name="print_appel_de_livraison" string="Imprimer l'appel de livraison"         attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object" />
-                        <button name="mail_appel_de_livraison"  string="Envoyer par mail l'appel de livraison" attrs="{'invisible': [('type_commande', '!=', 'ouverte')]}"          type="object" />
-
-                        <button name="print_appel_de_livraison" string="Imprimer l'horizon des besoins"         attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"            type="object" />
-                        <button name="mail_appel_de_livraison"  string="Envoyer par mail l'horizon des besoins" attrs="{'invisible': [('type_commande', '!=', 'ferme')]}"            type="object" />
-
-                        <button name="print_ferme_uniquement"   string="Imprimer les commandes fermes"         attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" type="object" />
-                        <button name="mail_ferme_uniquement"    string="Envoyer par mail les commandes fermes" attrs="{'invisible': [('type_commande', '!=', 'ferme_uniquement')]}" type="object" />
                     </header>
                     <sheet>
                         <group>
@@ -50,6 +114,9 @@
                                 <field name="pricelist_id"  /> 
                                 <field name="type_commande"  /> 
                                 <field name="sans_commande"  /> 
+                            </group>
+                            <group>
+                                <field name="attente_confirmation"/> 
                             </group>
                         </group>
                         <notebook>
@@ -62,12 +129,13 @@
                                                 name= "action_acces_commandes" type="object" icon="gtk-justify-fill"
                                             />
                                             <field name="product_id" widget="many2one_clickable" /> 
-                                            <field name="num_bl"    /> 
-                                            <field name="date_bl"   /> 
-                                            <field name="qt_bl"     /> 
-                                            <field name="nb_commandes"  />
-                                            <field name="nb_ferme_imprime"  /> 
-                                            <field name="imprimer"  /> 
+                                            <field name="num_bl"/> 
+                                            <field name="date_bl"/> 
+                                            <field name="qt_bl"/> 
+                                            <field name="nb_commandes"/>
+                                            <field name="nb_ferme_imprime"/> 
+                                            <field name="attente_confirmation"/> 
+                                            <field name="imprimer"/> 
                                         </tree>
                                     </field>
                                 </group>
@@ -181,6 +249,7 @@
                                     <field name="uom_id"/> 
                                     <field name="mrp_prevision_id"/> 
                                     <field name="purchase_order_id"/> 
+                                    <field name="date_fournisseur"/> 
                                     <field name="imprimer_commande"/> 
                                 </tree>
                             </field>

@@ -80,7 +80,18 @@
         </record>
 
 
-
+        <report 
+            id="report_relance_fournisseurs"
+            model="is.cde.ouverte.fournisseur"
+            string="Relance fournisseur"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_relance_fournisseur"
+            file="is_plastigray.report_relance_fournisseur"
+            multi="True"
+        />
+        <record id="report_relance_fournisseurs" model="ir.actions.report.xml" >
+            <field name="paperformat_id" ref="is_plastigray.cde_ouverte_fournisseur_paperformat"/>
+        </record>
 
 
         <report 
