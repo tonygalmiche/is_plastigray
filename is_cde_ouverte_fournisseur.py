@@ -628,7 +628,12 @@ class is_cde_ouverte_fournisseur(models.Model):
             attente_confirmation_total=0
             for product in obj.product_ids:
                 if obj.type_commande!='ferme_uniquement':
-                    for row in self.env['mrp.prevision'].search([('type','=','sa'),('product_id','=',product.product_id.id)]):
+                    where=[
+                        ('type'      , '=' ,'sa'),
+                        ('product_id', '=' ,product.product_id.id),
+                        ('partner_id', '=' , obj.partner_id.id), 
+                    ]
+                    for row in self.env['mrp.prevision'].search(where):
                         vals={
                             'product_id'       : product.id,
                             'date'             : row.start_date_cq or row.end_date,
