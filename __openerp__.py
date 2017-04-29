@@ -69,6 +69,8 @@ Module principal du projet Plastigray
         "is_pic_3ans.xml",
         "is_copy_other_database_view.xml",
         "log_view.xml",
+        "purchase_state.xml",
+        "purchase_workflow.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
