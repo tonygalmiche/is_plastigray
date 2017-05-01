@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+		<record id="nomenclature_componant_wizard_view" model="ir.ui.view">
+            <field name="name">nomenclature.componant.wizard.form</field>
+            <field name="model">nomenclature.componant.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Nomenclature Componant">
+                    <group>
+                    	<field name="nomenclature_id"/>
+                    	<label string=""/>
+                    </group>
+                    <footer>
+                        <button name="do_search_component" string="Click Here" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_nomenclature_componant_wiz" model="ir.actions.act_window">
+            <field name="name">Nomenclature Componant</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">nomenclature.componant.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="nomenclature_componant_wizard_view"/>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem id="menu_nomenclature_componant_wiz" sequence="60" name="Nomenclature Componant" parent="menu_is_nomenclatures" action="action_nomenclature_componant_wiz" />
+    </data>
+</openerp>
