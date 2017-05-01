@@ -78,7 +78,7 @@ Module principal du projet Plastigray
         "wizard/is_export_seriem_view.xml",
         "wizard/stock_transfer_details.xml",
         "wizard/audit_log_wizard.xml",
-        "wizard/nomenclature_componant_wizard.xml",
+        "wizard/is_cas_emploi_wizard.xml",
         "views/web_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",

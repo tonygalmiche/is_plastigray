@@ -3,18 +3,21 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 
 
-class nomenclature_componant_wizard(models.TransientModel):
-    _name = 'nomenclature.componant.wizard'
+class  is_cas_emploi_wizard(models.TransientModel):
+    _name = 'is.cas.emploi.wizard'
     
     
-    nomenclature_id = fields.Many2one('mrp.bom','Nomenclature')
+    product_id = fields.Many2one('product.product','Product')
     
     @api.multi
     def do_search_component(self):
         bom_ln_obj = self.env['mrp.bom.line']
+        bom_obj = self.env['mrp.bom']
         parent_bom_lst = []
         for rec in self:
-            bom_ids = [rec.nomenclature_id]
+            bom_l_ids = bom_ln_obj.search([('product_id','=',rec.product_id.id)])
+            bom_ids = bom_l_ids.mapped('bom_id')
+            parent_bom_lst.extend(bom_l_ids.mapped('bom_id.id'))
             while(bom_ids):
                 a_bom_list = []
                 for bom in bom_ids:

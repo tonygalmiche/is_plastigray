@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-		<record id="nomenclature_componant_wizard_view" model="ir.ui.view">
-            <field name="name">nomenclature.componant.wizard.form</field>
-            <field name="model">nomenclature.componant.wizard</field>
+		<record id="is_cas_emploi_wizard_view" model="ir.ui.view">
+            <field name="name">is.cas.emploi.wizard.form</field>
+            <field name="model">is.cas.emploi.wizard</field>
             <field name="arch" type="xml">
                 <form string="Nomenclature Componant">
                     <group>
-                    	<field name="nomenclature_id"/>
+                    	<field name="product_id"/>
                     	<label string=""/>
                     </group>
                     <footer>
@@ -21,16 +21,16 @@
 
 
 
-        <record id="action_nomenclature_componant_wiz" model="ir.actions.act_window">
+        <record id="action_is_cas_emploi_wizard" model="ir.actions.act_window">
             <field name="name">Nomenclature Componant</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">nomenclature.componant.wizard</field>
+            <field name="res_model">is.cas.emploi.wizard</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="nomenclature_componant_wizard_view"/>
+            <field name="view_id" ref="is_cas_emploi_wizard_view"/>
             <field name="target">new</field>
         </record>
         
-        <menuitem id="menu_nomenclature_componant_wiz" sequence="60" name="Nomenclature Componant" parent="menu_is_nomenclatures" action="action_nomenclature_componant_wiz" />
+        <menuitem id="menu_is_cas_emploi_wizard" sequence="60" name="Nomenclature Componant" parent="menu_is_nomenclatures" action="action_is_cas_emploi_wizard" />
     </data>
 </openerp>
