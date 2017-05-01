@@ -28,6 +28,8 @@ Module principal du projet Plastigray
         "is_pg_product",          # Fiche article
         "account_cancel",         # Permet d'autoriser l'annulation des factures 
         "auditlog",
+	"web",
+	"web_widget_color",
     ], 
     "data" : [
         "security/res.groups.xml",
@@ -70,6 +72,7 @@ Module principal du projet Plastigray
         "is_copy_other_database_view.xml",
         "log_view.xml",
         "purchase_workflow.xml",
+	"company_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
