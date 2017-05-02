@@ -13,4 +13,6 @@ class res_company(models.Model):
     is_cpta_pwd     = fields.Char('Mot de passe AS400 CPTA')
 
     is_logo         = fields.Binary("Logo", help="Logo utilisé dans les documents (BL, facures,..)")
+    bg_color        = fields.Char('Background color')
+    text_color      = fields.Char('Text color')
 

@@ -5,6 +5,7 @@
         <template id="assets_backend" name="is_plastigray assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/is_plastigray/static/src/js/web_view.js"></script>
+		<script type="text/javascript" src="/is_plastigray/static/src/js/web_menu_color.js"></script>
             </xpath>
         </template>
     </data>
