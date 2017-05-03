@@ -43,7 +43,10 @@
                         <td><span t-field="o.emplacement"/> </td>
                         <td><span t-field="o.lot"/> </td>
                         <td><span t-field="o.lot_fournisseur"/> </td>
-                        <td class="text-right"><span t-field="o.quantite"/> </td>
+
+                        <!--<td class="text-right"><span t-field="o.quantite"/> </td>-->
+                        <td class="text-right"><span style="white-space: nowrap;" t-field="o.quantite"/></td>
+
                         <td><span t-field="o.uom_id.name"/> </td>
                         <td><span t-field="o.date_entree"/> </td>
                     </tr>

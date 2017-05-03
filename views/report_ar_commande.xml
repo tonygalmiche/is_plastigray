@@ -173,8 +173,8 @@
                                         <td class="text-left">   <span t-field="l.product_id.name"/></td>
                                         <td class="text-left">   <span t-field="l.product_id.is_ref_client"/></td>
                                         <td class="text-left">   <span t-field="l.is_client_order_ref"/></td>
-                                        <td class="text-right">  <span t-field="l.product_uom_qty"/></td>
-                                        <td class="text-right">  <t t-esc='"{:,.1f}".format(nb_uc).replace(","," ").replace(".",",")'/></td>
+                                        <td class="text-right nowrap">  <span t-field="l.product_uom_qty"/></td>
+                                        <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(nb_uc).replace(","," ").replace(".",",")'/></td>
                                         <td class="text-left">   <span t-field="l.product_id.is_uc"/></td>
                                         <td class="text-center"> <span t-field="l.is_date_livraison"/></td>
                                     </tr>

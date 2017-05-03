@@ -38,7 +38,7 @@
                         <td><span t-field="o.picking_id.name"/> </td>
                         <td><span t-field="o.lot_id.name"/> </td>
                         <td><span t-field="o.lot_fournisseur"/> </td>
-                        <td><span t-field="o.qty"/> </td>
+                        <td><span style="white-space: nowrap;" t-field="o.qty"/></td>
                         <td><span t-field="o.product_uom.name"/> </td>
                         <td><span t-field="o.location_dest"/> </td>
                         <td><span t-field="o.login"/> </td>
