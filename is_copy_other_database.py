@@ -622,9 +622,9 @@ class is_mold_project(models.Model):
     def _get_client_id(self, project, DB, USERID, USERPASS, sock):
         if project.client_id:
             client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
-            if not client_ids:
-                self.env['is.database'].copy_other_database( project.client_id)
-                client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
+            #if not client_ids:
+            #    self.env['is.database'].copy_other_database( project.client_id)
+            #    client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if client_ids:
                 return client_ids[0]
         return False
