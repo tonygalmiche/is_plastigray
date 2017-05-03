@@ -7,7 +7,7 @@ class  is_cas_emploi_wizard(models.TransientModel):
     _name = 'is.cas.emploi.wizard'
     
     
-    product_id = fields.Many2one('product.product','Product')
+    product_id = fields.Many2one('product.product','Article')
     
     @api.multi
     def do_search_component(self):

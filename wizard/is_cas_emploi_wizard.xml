@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-		<record id="is_cas_emploi_wizard_view" model="ir.ui.view">
+        <record id="is_cas_emploi_wizard_view" model="ir.ui.view">
             <field name="name">is.cas.emploi.wizard.form</field>
             <field name="model">is.cas.emploi.wizard</field>
             <field name="arch" type="xml">
-                <form string="Nomenclature Componant">
+                <form string="Cas d'emplois">
                     <group>
-                    	<field name="product_id"/>
-                    	<label string=""/>
+                        <field name="product_id"/>
+                        <label string=""/>
                     </group>
                     <footer>
-                        <button name="do_search_component" string="Click Here" type="object" class="oe_highlight"/>
+                        <button name="do_search_component" string="OK" type="object" class="oe_highlight"/>
                         or
-                        <button string="Cancel" class="oe_link" special="cancel" />
+                        <button string="Annuler" class="oe_link" special="cancel" />
                     </footer>
                 </form>
             </field>
@@ -22,7 +22,7 @@
 
 
         <record id="action_is_cas_emploi_wizard" model="ir.actions.act_window">
-            <field name="name">Nomenclature Componant</field>
+            <field name="name">Cas d'emplois</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">is.cas.emploi.wizard</field>
             <field name="view_type">form</field>
@@ -30,7 +30,8 @@
             <field name="view_id" ref="is_cas_emploi_wizard_view"/>
             <field name="target">new</field>
         </record>
-        
+        <!--
         <menuitem id="menu_is_cas_emploi_wizard" sequence="60" name="Nomenclature Componant" parent="menu_is_nomenclatures" action="action_is_cas_emploi_wizard" />
+        -->
     </data>
 </openerp>
