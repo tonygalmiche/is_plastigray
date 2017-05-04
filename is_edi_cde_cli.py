@@ -392,13 +392,6 @@ class is_edi_cde_cli(models.Model):
                         'num_commande_client' : num_commande_client,
                         'ref_article_client'  : ref_article_client,
                     }
-                    quantite=str(lig[12])
-                    quantite=quantite.replace(",", ".")
-                    qt=0
-                    try:
-                        qt=float(quantite)
-                    except ValueError:
-                        continue
                     type_commande=lig[7]
                     if type_commande=="P":
                         type_commande="previsionnel"
@@ -407,13 +400,26 @@ class is_edi_cde_cli(models.Model):
                     date_livraison=lig[9].strip()
                     d=datetime.strptime(date_livraison, '%d.%m.%Y')
                     date_livraison=d.strftime('%Y-%m-%d')
-                    ligne = {
-                        'quantite'      : qt,
-                        'type_commande' : type_commande,
-                        'date_livraison': date_livraison,
-                    }
-                    val.update({'lignes':[ligne]})
-                    res.append(val)
+
+                    quantite=str(lig[12])
+                    quantite=quantite.replace(",", ".")
+                    quantite=quantite.replace(" ", "")
+                    if quantite=='':
+                        quantite=0
+                    qt=0
+                    try:
+                        qt=float(quantite)
+                    except ValueError:
+                        print '## ValueError', ref_article_client, date_livraison, lig[12]
+
+                    if qt!=0:
+                        ligne = {
+                            'quantite'      : qt,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes':[ligne]})
+                        res.append(val)
         return res
 
 
