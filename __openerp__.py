@@ -73,6 +73,7 @@ Module principal du projet Plastigray
         "log_view.xml",
         "purchase_workflow.xml",
 	"is_gabarit_controle_view.xml",
+	"is_plaquette_etalon_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

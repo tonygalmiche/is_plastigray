@@ -34,6 +34,7 @@ import is_copy_other_database
 import log
 import ir_actions_act_url
 import is_gabarit_controle
+import is_plaquette_etalon
 
 import report
 import wizard
