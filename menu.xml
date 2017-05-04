@@ -1419,6 +1419,33 @@
     <menuitem id="is_ir_module_category_menu" sequence="93" name="Applications"          parent="base.menu_users" action="is_ir_module_category_action" />
 
 
+<!-- 	Outillages -->
+	<menuitem id="menu_main_outillages" sequence="90" name="Outillages"/>
+	<menuitem id="menu_sub_main_outillages" sequence="10" parent="menu_main_outillages" name="Outillages"/>
+	<menuitem id="menu_sub_main_outillages_table" sequence="20" parent="menu_main_outillages" name="Tables"/>
+	
+	<menuitem id="menu_is_gabarit_controle" 
+	          sequence="10" 
+	          name="Gabarit de contrôle" 
+	          parent="menu_sub_main_outillages" 
+	          action="is_gabarit_controle_action"
+	          groups="is_plastigray.is_identification_group,is_plastigray.is_controle_periodique_group,is_plastigray.is_resultat_du_controle_group"/>
+	<menuitem id="menu_is_instrument_mesure" 
+	          sequence="20" 
+	          name="Instruments de mesure" 
+	          parent="menu_sub_main_outillages" 
+	          action="is_instrument_mesure_action" 
+	          groups="is_plastigray.is_identification_group,is_plastigray.is_controle_periodique_group,is_plastigray.is_resultat_du_controle_group"/>
+	<menuitem id="menu_is_plaquette_etalon" 
+	          sequence="30" 
+	          name="Plaquette étalon" 
+	          parent="menu_sub_main_outillages" 
+	          action="is_plaquette_etalon_action" 
+	          groups="is_plastigray.is_identification_group,is_plastigray.is_controle_periodique_group,is_plastigray.is_resultat_du_controle_group"/>
+
+	<menuitem id="menu_is_emplacement_outillage" sequence="10" name="Site d'affectation" parent="menu_sub_main_outillages_table" action="is_emplacement_outillage_action" />
+	<menuitem id="menu_is_type_controle_gabarit" sequence="20" name="Type de contrôle" parent="menu_sub_main_outillages_table" action="is_type_controle_gabarit_action" />
+  	<menuitem id="menu_is_famille_instrument" sequence="30" name="Familles d'instruments" parent="menu_sub_main_outillages_table" action="is_famille_instrument_action" />
 
   </data>
 </openerp>
