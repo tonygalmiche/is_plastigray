@@ -35,6 +35,7 @@ import log
 import ir_actions_act_url
 import is_gabarit_controle
 import is_plaquette_etalon
+import is_instrument_mesure
 
 import report
 import wizard

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<record model="ir.ui.view" id="is_instrument_mesure_form_view">
+            <field name="name">is_instrument_mesure_form_view</field>
+            <field name="model">is.instrument.mesure</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            	<form string="Instruments de mesure">
+            		<sheet>
+		                <group col="4" colspan="4">
+		                	<group groups="is_plastigray.is_identification_group">
+		                		<field name="code_pg"/>
+		                		<field name="famille_id"/>
+		                		<field name="num_serie"/>
+		                		<field name="type" attrs="{'invisible':[('type_boolean','!=',True)]}"/>
+		                		<field name="resolution" attrs="{'invisible':[('resolution_boolean','!=',True)]}"/>
+		                		<field name="lieu_stockage"/>
+		                		<field name="type_boolean" invisible="1"/>
+		                	</group>
+		                	<group groups="is_plastigray.is_identification_group">
+		                		<field name="designation"/>
+		                		<field name="fabriquant_id"/>
+		                		<field name="date_reception"/>
+		                		<field name="etendue" attrs="{'invisible':[('etendue_boolean','!=',True)]}"/>
+		                		<field name="site_id"/>
+		                		<field name="etendue_boolean" invisible="1"/>
+		                		<field name="resolution_boolean" invisible="1"/>
+		                	</group>
+		                </group>
+		                <group col="4" colspan="4">
+		                	<group groups="is_plastigray.is_identification_group">
+		                		<field name="service_affecte"/>
+		                	</group>
+		                </group>
+		                <group col="4" colspan="4">
+		                	<group groups="is_plastigray.is_controle_periodique_group">
+		                		<field name="frequence"/>
+		                	</group>
+		                	<group groups="is_plastigray.is_controle_periodique_group">
+		                		<field name="periodicite"/>
+		                	</group>
+		                	<newline/>
+		                	<group groups="is_plastigray.is_resultat_du_controle_group">
+		                		<field name="controle"/>
+		                		<field name="commentaire" attrs="{'invisible':[('controle','!=','visuel')],'required':[('controle','=','visuel')]}"/>
+		                		<field name="date_controle"/>
+		                		<field name="classe" attrs="{'invisible':[('classe_boolean','!=',True)]}"/>
+		                		<field name="classe_boolean" invisible="1"/>
+		                	</group>
+		                	<group groups="is_plastigray.is_resultat_du_controle_group">
+		                		<field name="cause_arret"  attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
+		                		<field name="organisme_controleur"/>
+		                		<field name="fournisseur_id" attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"/>
+		                		<field name="etat_conformite"/>
+		                	</group>
+		                </group>
+		                <group col="4" colspan="4" groups="is_plastigray.is_resultat_du_controle_group">
+	                		<field name="rapport_de_controle"/>
+	                	</group>
+		            </sheet>
+            	</form>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="is_instrument_mesure_tree_view">
+            <field name="name">is_instrument_mesure_tree_view</field>
+            <field name="model">is.instrument.mesure</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+            	<tree string="Instruments de mesure">
+            		<field name="code_pg"/>
+                	<field name="designation"/>
+                	<field name="famille_id"/>
+                	<field name="fabriquant_id"/>
+                	<field name="num_serie"/>
+                	<field name="date_reception"/>
+                	<field name="type"/>
+                	<field name="etendue"/>
+                	<field name="resolution"/>
+                	<field name="site_id"/>
+                	<field name="lieu_stockage"/>
+            	</tree>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="is_instrument_mesure_search_view" >
+            <field name="name">is_instrument_mesure_search_view</field>
+            <field name="model">is.instrument.mesure</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code_pg"/>
+                    <field name="designation"/>
+                    <field name="famille_id"/>
+                    <field name="fabriquant_id"/>
+                    <field name="site_id"/>
+                    <field name="fournisseur_id"/>
+                </search>
+            </field>
+        </record>     
+        
+        <record id="is_instrument_mesure_action" model="ir.actions.act_window" >
+            <field name="name">Instruments de mesure</field>
+            <field name="res_model">is.instrument.mesure</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+
+		<record model="ir.ui.view" id="is_famille_instrument_form_view">
+            <field name="name">is_famille_instrument_form_view</field>
+            <field name="model">is.famille.instrument</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+            	<form string="Familles d'instruments">
+            		<sheet>
+		                <group col="4" colspan="4">
+		                	<field name="name"/>
+		                	<field name="intensive"/>
+		                	<field name="moyenne"/>
+		                	<field name="faible"/>
+		                	<field name="tolerance"/>
+		                	<field name="afficher_classe"/>
+		                	<field name="afficher_type"/>
+		                </group>
+		            </sheet>
+		        </form>
+		    </field>
+		</record>
+		
+		
+		<record model="ir.ui.view" id="is_famille_instrument_tree_view">
+            <field name="name">is_famille_instrument_tree_view</field>
+            <field name="model">is.famille.instrument</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+            	<tree string="Familles d'instruments">
+            		<field name="name"/>
+	               	<field name="intensive"/>
+	               	<field name="moyenne"/>
+	               	<field name="faible"/>
+	               	<field name="tolerance"/>
+	               	<field name="afficher_classe"/>
+	               	<field name="afficher_type"/>
+            	</tree>
+            </field>
+       </record>
+		
+		<record model="ir.ui.view" id="is_famille_instrument_search_view" >
+            <field name="name">is_famille_instrument_search_view</field>
+            <field name="model">is.famille.instrument</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="intensive"/>
+                    <field name="moyenne"/>
+                    <field name="faible"/>
+                    <field name="tolerance"/>
+                </search>
+            </field>
+        </record>     
+		
+		<record id="is_famille_instrument_action" model="ir.actions.act_window" >
+            <field name="name">Familles d'instruments</field>
+            <field name="res_model">is.famille.instrument</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+    </data>
+</openerp>  
