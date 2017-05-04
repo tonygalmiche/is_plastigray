@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_feuilles_inventaire">
+	<t t-call="report.html_container">
+    <t t-call="report.internal_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+
+            <h2>Inventaire Feuilles</h2>
+            <t t-foreach="docs" t-as="o">
+	             <table class="table table-condensed" style="border:solid 1px #CCC;margin-bottom:0px">
+	                 <tr>
+	                     <td><strong>Inventaire</strong></td>
+	                     <td><span t-field="o.inventaire_id.name"/></td>
+	                     <td><strong>Date de création</strong></td>
+	                     <td><span t-field="o.date_creation"/></td>
+	                 </tr>
+	                 <tr>
+	                     <td><strong>Numéro de feuille</strong></td>
+	                     <td><span t-field="o.name"/></td>
+	                     <td><strong>Créé par</strong></td>
+	                     <td><span t-field="o.createur_id.name"/></td>
+	                 </tr>
+	             </table>
+	             <br/>
+				<div style="color:green">Astuce : Pour la saisie des lignes, vous pouvez utiliser la touche TAB pour passer au champ suivant ou à la ligne suivante pour éviter d'utiliser la souris. La barre d'espace permet de cocher ou décocher une case</div>
+	            <br/>
+	            <table class="table table-condensed" width="100%">
+	                <thead>
+	                    <tr width="100%">
+	                        <th><strong>Article</strong></th>
+	                        <th><strong>Encours</strong></th>
+	                        <th><strong>Composant</strong></th>
+	                        <th><strong>US</strong></th>
+	                        <th><strong>UC</strong></th>
+	                        <th class="text-right"><strong>US par UC</strong></th>
+	                        <th width="20%"><strong>Emplacement</strong></th>
+	                        <th class="text-right"><strong>Qt US saisie</strong></th>
+	                        <th class="text-right"><strong>Qt UC saisie</strong></th>
+	                        <th class="text-right"><strong>Qt US</strong></th>
+	                        <th><strong>Lieu</strong></th>
+	                    </tr>
+	                </thead>
+	                <tbody>
+	                    <tr t-foreach="o.line_ids" t-as="l">
+	                        <td><span t-field="l.product_id.name"/> </td>
+	                        <td><span t-field="l.encours"/> </td>
+	                        <td><span t-field="l.composant_encours"/></td>
+	                        <td><span t-field="l.us_id.name"/> </td>
+	                        <td><span t-field="l.uc"/> </td>
+	                        <td class="text-right"><span t-field="l.uc_us"/> </td>
+	                        <td><span t-field="l.location_id.complete_name"/> </td>
+	                        <td class="text-right"><span t-field="l.qt_us"/> </td>
+	                        <td class="text-right"><span t-field="l.qt_uc"/> </td>
+	                        <td class="text-right"><span t-field="l.qt_us_calc"/> </td>
+	                        <td><span t-field="l.lieu"/> </td>
+	                    </tr>
+	                </tbody>
+	            </table>
+	            <table class="table table-condensed">
+                    <tr>
+                        <td><strong>Anomalies</strong></td>
+                    </tr>
+                    <tr>
+                        <td><span t-field="o.anomalies"/></td>
+                    </tr>
+	            </table>
+	            
+	        </t>
+
+
+        </div>
+    </t>
+    </t>
+</template>
+
+</data>
+</openerp>

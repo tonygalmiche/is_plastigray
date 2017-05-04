@@ -104,6 +104,7 @@ Module principal du projet Plastigray
         "views/report_pricelist_version.xml",
         "views/report_stockdetails_tree.xml",
         "views/report_stockmovement_tree.xml",
+	"views/report_feuilles_inventaire.xml,
         "views/report.xml",
         "report/stock_bloquer_lot.xml",
         "report/stock_debloquer_lot.xml",
