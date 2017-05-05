@@ -10,8 +10,8 @@ class is_plaquette_etalon(models.Model):
     _name='is.plaquette.etalon'
     _order='code_pg'
 
-    code_pg = fields.Char("Code PG")
-    designation = fields.Char("Désignation")
+    code_pg = fields.Char("Code PG", required=True)
+    designation = fields.Char("Désignation", required=True)
     fabriquant_id = fields.Many2one("res.partner","Fabricant")
     date_reception = fields.Date("Date de réception")
     site_id = fields.Many2one("is.emplacement.outillage","Site d'affectation")

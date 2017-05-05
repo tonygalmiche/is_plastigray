@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    	<record model="ir.ui.view" id="is_plaquette_etalon_form_view">
+        <record model="ir.ui.view" id="is_plaquette_etalon_form_view">
             <field name="name">is_plaquette_etalon_form_view</field>
             <field name="model">is.plaquette.etalon</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-            	<form string="Plaquette étalon">  
-	            	<sheet>
-		                <group col="4" colspan="4" string="Identification">
-		                	<group>
-		                		<field name="code_pg"/>
-		                		<field name="fabriquant_id"/>
-		                		<field name="site_id"/>
-		                	</group>
-		                	<group>
-		                		<field name="designation"/>
-		                		<field name="date_reception"/>
-		                		<field name="lieu_stockage"/>
-		                	</group>
-	                    </group>
-	                    <group col="4" colspan="4" string="Contrôle périodique">
-	                    	<group>
-	                    		<field name="periodicite"/>
-	                    	</group>
-	                    	<group>
-	                    		<field name="type_controle"/>
-	                    	</group>
-		                 </group>
-		                 <group col="4" colspan="4" string="Résultat du contrôle">
-	                    	<group>
-	                    		<field name="controle"/>
-	                    		<field name="commentaire" attrs="{'invisible':[('controle','!=','visuel')],'required':[('controle','=','visuel')]}"/>
-	                    		<field name="organisme_controleur"/>
-	                    		<field name="etat_conformite"/>
-	                    	</group>
-	                    	<group>
-	                    		<field name="cause_arret" attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
-	                    		<field name="date_controle"/>
-	                    		<field name="fournisseur_id" attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"/>
-	                    	</group>
-			                <group col="4" colspan="4" groups="is_plastigray.is_resultat_du_controle_group">
-			                	<field name="rapport_de_controle"/>
-			                </group>
-			             </group>
-		            </sheet>
-		        </form>
+                <form string="Plaquette étalon">  
+                    <sheet>
+                        <group col="4" colspan="4" string="Identification">
+                            <group>
+                                <field name="code_pg"/>
+                                <field name="fabriquant_id" domain="[('supplier' ,'=',True),('is_company','=',True)]"/>
+                                <field name="site_id"/>
+                            </group>
+                            <group>
+                                <field name="designation"/>
+                                <field name="date_reception"/>
+                                <field name="lieu_stockage"/>
+                            </group>
+                        </group>
+                        <group col="4" colspan="4" string="Contrôle périodique">
+                            <group>
+                                <field name="periodicite"/>
+                            </group>
+                            <group>
+                                <field name="type_controle"/>
+                            </group>
+                         </group>
+                         <group col="4" colspan="4" string="Résultat du contrôle">
+                            <group>
+                                <field name="controle"/>
+                                <field name="commentaire" attrs="{'invisible':[('controle','!=','visuel')],'required':[('controle','=','visuel')]}"/>
+                                <field name="organisme_controleur"/>
+                                <field name="etat_conformite"/>
+                            </group>
+                            <group>
+                                <field name="cause_arret" attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
+                                <field name="date_controle"/>
+                                <field 
+                                    name="fournisseur_id" 
+                                    domain="[('supplier' ,'=',True),('is_company','=',True)]"
+                                    attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"
+                                />
+                            </group>
+                            <group col="4" colspan="4" groups="is_plastigray.is_resultat_du_controle_group">
+                                <field name="rapport_de_controle"/>
+                            </group>
+                         </group>
+                    </sheet>
+                </form>
             </field>
         </record>
         <record model="ir.ui.view" id="is_plaquette_etalon_tree_view">
@@ -53,14 +57,14 @@
             <field name="model">is.plaquette.etalon</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-            	<tree string="Plaquette étalon">
-	            	<field name="code_pg"/>
-	               	<field name="designation"/>
-	               	<field name="fabriquant_id"/>
-	               	<field name="date_reception"/>
-	               	<field name="site_id"/>
-	               	<field name="lieu_stockage"/>
-               	</tree>
+                <tree string="Plaquette étalon">
+                    <field name="code_pg"/>
+                       <field name="designation"/>
+                       <field name="fabriquant_id"/>
+                       <field name="date_reception"/>
+                       <field name="site_id"/>
+                       <field name="lieu_stockage"/>
+                   </tree>
             </field>
         </record>
         

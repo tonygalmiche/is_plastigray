@@ -9,13 +9,20 @@ class is_instrument_mesure(models.Model):
     _name = 'is.instrument.mesure'
     _order = 'code_pg'
 
-    @api.depends('famille_id', 'fabriquant_id')
+    @api.depends('famille_id', 'frequence')
     def _compute_periodicite(self):
         for obj in self:
-            obj.periodicite = ''
+            periodicite=False
+            if obj.frequence=='intensive':
+                periodicite=obj.famille_id.intensive
+            if obj.frequence=='moyenne':
+                periodicite=obj.famille_id.moyenne
+            if obj.frequence=='faible':
+                periodicite=obj.famille_id.faible
+            obj.periodicite=periodicite
 
-    code_pg = fields.Char("Code PG")
-    designation = fields.Char("Désignation")
+    code_pg = fields.Char("Code PG", required=True)
+    designation = fields.Char("Désignation",required=True)
     famille_id = fields.Many2one("is.famille.instrument", "Famille")
     fabriquant_id = fields.Many2one("res.partner", "Fabricant")
     num_serie = fields.Char("N° de série")
@@ -59,7 +66,7 @@ class is_instrument_mesure(models.Model):
 class is_famille_instrument(models.Model):
     _name = 'is.famille.instrument'
     
-    name = fields.Char("Nom de la famille")
+    name = fields.Char("Nom de la famille", required=True)
     intensive = fields.Char("INTENSIVE (fréquence f >= 1 fois / jour) en mois")
     moyenne = fields.Char("MOYENNE ( 1fois / 5 jours < f < 1fois / jour ) en mois")
     faible = fields.Char("FAIBLE (f <=1fois / 5 jours) en mois")

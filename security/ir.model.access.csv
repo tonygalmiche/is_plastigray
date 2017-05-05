@@ -134,4 +134,17 @@ access_is_sale_order_line,access_is_sale_order_line,model_is_sale_order_line,bas
 access_is_database,access_is_database,model_is_database,base.group_user,1,0,0,0
 access_is_product_packaging,access_is_product_packaging,model_is_product_packaging,base.group_user,1,0,0,0
 
+access_is_gabarit_controle,access_is_gabarit_controle,model_is_gabarit_controle,base.group_user,1,0,0,0
+access_is_emplacement_outillage,access_is_emplacement_outillage,model_is_emplacement_outillage,base.group_user,1,0,0,0
+access_is_type_controle_gabarit,access_is_type_controle_gabarit,model_is_type_controle_gabarit,base.group_user,1,0,0,0
+access_is_plaquette_etalon,access_is_plaquette_etalon,model_is_plaquette_etalon,base.group_user,1,0,0,0
+access_is_instrument_mesure,access_is_instrument_mesure,model_is_instrument_mesure,base.group_user,1,0,0,0
+access_is_famille_instrument,access_is_famille_instrument,model_is_famille_instrument,base.group_user,1,0,0,0
+
+
+
+
+
+
+
 
