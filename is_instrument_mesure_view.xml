@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
             	<form string="Instruments de mesure">
             		<sheet>
-		                <group col="4" colspan="4">
-		                	<group groups="is_plastigray.is_identification_group">
+		                <group col="4" colspan="4" string="Identification">
+		                	<group>
 		                		<field name="code_pg"/>
 		                		<field name="famille_id"/>
 		                		<field name="num_serie"/>
@@ -18,7 +18,7 @@
 		                		<field name="lieu_stockage"/>
 		                		<field name="type_boolean" invisible="1"/>
 		                	</group>
-		                	<group groups="is_plastigray.is_identification_group">
+		                	<group>
 		                		<field name="designation"/>
 		                		<field name="fabriquant_id"/>
 		                		<field name="date_reception"/>
@@ -27,37 +27,36 @@
 		                		<field name="etendue_boolean" invisible="1"/>
 		                		<field name="resolution_boolean" invisible="1"/>
 		                	</group>
-		                </group>
-		                <group col="4" colspan="4">
-		                	<group groups="is_plastigray.is_identification_group">
+			                <group col="4" colspan="4">
 		                		<field name="service_affecte"/>
-		                	</group>
+			                </group>
 		                </group>
-		                <group col="4" colspan="4">
-		                	<group groups="is_plastigray.is_controle_periodique_group">
+		                <group col="4" colspan="4" string="Contrôle périodique">
+		                	<group>
 		                		<field name="frequence"/>
 		                	</group>
-		                	<group groups="is_plastigray.is_controle_periodique_group">
+		                	<group>
 		                		<field name="periodicite"/>
 		                	</group>
-		                	<newline/>
-		                	<group groups="is_plastigray.is_resultat_du_controle_group">
+		                </group>
+		                <group col="4" colspan="4" string="Résultat du contrôle">
+		                	<group>
 		                		<field name="controle"/>
 		                		<field name="commentaire" attrs="{'invisible':[('controle','!=','visuel')],'required':[('controle','=','visuel')]}"/>
 		                		<field name="date_controle"/>
 		                		<field name="classe" attrs="{'invisible':[('classe_boolean','!=',True)]}"/>
 		                		<field name="classe_boolean" invisible="1"/>
 		                	</group>
-		                	<group groups="is_plastigray.is_resultat_du_controle_group">
+		                	<group>
 		                		<field name="cause_arret"  attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
 		                		<field name="organisme_controleur"/>
 		                		<field name="fournisseur_id" attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"/>
 		                		<field name="etat_conformite"/>
 		                	</group>
+		                	<group col="4" colspan="4">
+		                		<field name="rapport_de_controle"/>
+		                	</group>
 		                </group>
-		                <group col="4" colspan="4" groups="is_plastigray.is_resultat_du_controle_group">
-	                		<field name="rapport_de_controle"/>
-	                	</group>
 		            </sheet>
             	</form>
             </field>

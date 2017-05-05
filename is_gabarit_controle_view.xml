@@ -8,42 +8,44 @@
             <field name="arch" type="xml">
             	<form string="Gabarit de contrôle">  
 	            	<sheet>
-		                <group col="4" colspan="4">
-		                	<group groups="is_plastigray.is_identification_group">
+		                <group col="4" colspan="4" string="Identification">
+		                	<group>
 		                		<field name="code_pg"/>
 		                		<field name="fabriquant_id"/>
 		                		<field name="reference_plan"/>
 		                		<field name="client_id"/>
 		                		<field name="lieu_stockage"/>
 		                	</group>
-		                	<group groups="is_plastigray.is_identification_group">
+		                	<group>
 		                		<field name="designation"/>
 		                		<field name="date_reception"/>
 		                		<field name="indice_plan"/>
 		                		<field name="site_id"/>
 		                		<field name="moule_ids" widget="many2many_tags"/>
 		                	</group>
-		                	<newline/>
-			                <group groups="is_plastigray.is_controle_periodique_group">
+		                </group>
+		                <group col="4" colspan="4" string="Contrôle périodique">
+			                <group>
 			                	<field name="periodicite"/>
 			                </group>
-			                <group groups="is_plastigray.is_controle_periodique_group">
+			                <group>
 			                	<field name="type_controle"/>
 			                </group>
-			                <newline/>
-			                <group groups="is_plastigray.is_resultat_du_controle_group">
+			            </group>
+			            <group col="4" colspan="4" string="Résultat du contrôle">
+			                <group>
 			                	<field name="controle"/>
 			                	<field name="date_controle"/>
 			                	<field name="fournisseur_id" attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"/>/>
 			                </group>
-			                <group groups="is_plastigray.is_resultat_du_controle_group">
+			                <group>
 			                	<field name="cause_arret" attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
 			                	<field name="organisme_controleur"/>
 			                	<field name="etat_conformite"/>
 			                </group>
-			            </group>
-			            <group col="4" colspan="4" groups="is_plastigray.is_resultat_du_controle_group">
-			                <field name="rapport_de_controle"/>
+			                <group col="4" colspan="4">
+				                <field name="rapport_de_controle"/>
+				            </group>
 			            </group>
 		            </sheet>
 		        </form>

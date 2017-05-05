@@ -119,26 +119,6 @@
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
 
-    <record model="res.groups" id="is_identification_group" >
-        <field name="name">Identification</field>
-        <field name="comment"></field>
-        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
-    </record>
-
-	<record model="res.groups" id="is_controle_periodique_group" >
-        <field name="name">Contrôle périodique</field>
-        <field name="comment"></field>
-        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
-    </record>
-    
-    <record model="res.groups" id="is_resultat_du_controle_group" >
-        <field name="name">Résultat du contrôle</field>
-        <field name="comment"></field>
-        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
-    </record>
-
-
-
 
 <!--
         <record model="res.groups" id="group_is_bloque_lot">
