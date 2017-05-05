@@ -698,6 +698,12 @@ class is_inventaire_line(models.Model):
         'state': 'creation',
     }
 
+    @api.multi
+    def get_emplacement(self, obj):
+        emplacement_name = ''
+        if obj.location_id.location_id:
+            emplacement_name = str(obj.location_id.location_id.name) + '/' + str(obj.location_id.name)
+        return emplacement_name
 
     @api.depends('product_id','qt_us','qt_uc')
     def _compute(self):

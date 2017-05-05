@@ -29,28 +29,30 @@
 	            <table class="table table-condensed" width="100%">
 	                <thead>
 	                    <tr width="100%">
-	                        <th><strong>Article</strong></th>
-	                        <th><strong>Encours</strong></th>
-	                        <th><strong>Composant</strong></th>
-	                        <th><strong>US</strong></th>
-	                        <th><strong>UC</strong></th>
-	                        <th class="text-right"><strong>US par UC</strong></th>
-	                        <th width="20%"><strong>Emplacement</strong></th>
-	                        <th class="text-right"><strong>Qt US saisie</strong></th>
-	                        <th class="text-right"><strong>Qt UC saisie</strong></th>
-	                        <th class="text-right"><strong>Qt US</strong></th>
-	                        <th><strong>Lieu</strong></th>
+	                    	<th width="7%"><strong>Code</strong></th>
+	                        <th width="23%"><strong>Article</strong></th>
+	                        <th width="6%"><strong>Encours</strong></th>
+	                        <th width="7%"><strong>Composant</strong></th>
+	                        <th width="5%"><strong>US</strong></th>
+	                        <th width="13%"><strong>UC</strong></th>
+	                        <th width="5%" class="text-right"><strong>US par UC</strong></th>
+	                        <th width="8%" class="text-right"><strong>Emplacement</strong></th>
+	                        <th width="8%" class="text-right"><strong>Qt US saisie</strong></th>
+	                        <th width="8%" class="text-right"><strong>Qt UC saisie</strong></th>
+	                        <th width="8%" class="text-right"><strong>Qt US</strong></th>
+	                        <th width="8%"><strong>Lieu</strong></th>
 	                    </tr>
 	                </thead>
 	                <tbody>
 	                    <tr t-foreach="o.line_ids" t-as="l">
+	                    	<td><span t-field="l.product_id.is_code"/> </td>
 	                        <td><span t-field="l.product_id.name"/> </td>
 	                        <td><span t-field="l.encours"/> </td>
 	                        <td><span t-field="l.composant_encours"/></td>
 	                        <td><span t-field="l.us_id.name"/> </td>
 	                        <td><span t-field="l.uc"/> </td>
 	                        <td class="text-right"><span t-field="l.uc_us"/> </td>
-	                        <td><span t-field="l.location_id.complete_name"/> </td>
+	                        <td class="text-right"><t t-esc="l.get_emplacement(l)" /></td>
 	                        <td class="text-right"><span t-field="l.qt_us"/> </td>
 	                        <td class="text-right"><span t-field="l.qt_uc"/> </td>
 	                        <td class="text-right"><span t-field="l.qt_us_calc"/> </td>
@@ -77,3 +79,4 @@
 
 </data>
 </openerp>
+
