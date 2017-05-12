@@ -443,7 +443,7 @@ class is_edi_cde_cli(models.Model):
                         ])
                         # Recherche commande ouverte
                         order=self.env['sale.order'].search([
-                            ('partner_id.id'         , '=', obj.partner_id.id),
+                            ('partner_id.is_code'    , '=', obj.partner_id.is_code),
                             ('is_article_commande_id', '=', product.id),
                             ('is_type_commande'      , '=', 'ouverte'),
                             ('state'                 , '=', 'draft'),
