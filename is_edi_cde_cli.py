@@ -255,7 +255,6 @@ class is_edi_cde_cli(models.Model):
         datas={}
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
-
         if import_function=="902810":
             datas=self.get_data_902810(attachment)
 
@@ -264,8 +263,8 @@ class is_edi_cde_cli(models.Model):
 
         if import_function=="GXS":
             datas=self.get_data_GXS(attachment)
-
-
+        if import_function=="Plasti-ka":
+            datas=self.get_data_plastika(attachment)
         return datas
 
 
@@ -424,6 +423,60 @@ class is_edi_cde_cli(models.Model):
 
 
 
+
+    @api.multi
+    def get_data_plastika(self, attachment):
+        res = []
+        for obj in self:
+            csvfile=base64.decodestring(attachment.datas)
+            csvfile=csvfile.split("\r\n")
+            tab=[]
+            ct=0
+            for row in csvfile:
+                ct=ct+1
+                if ct>1:
+                    lig=row.split("\t")
+                    if len(lig)==3:
+                        # Recherche article
+                        product=self.env['product.product'].search([
+                            ('is_code'   , '=', lig[0]),
+                        ])
+                        # Recherche commande ouverte
+                        order=self.env['sale.order'].search([
+                            ('partner_id.id'         , '=', obj.partner_id.id),
+                            ('is_article_commande_id', '=', product.id),
+                            ('is_type_commande'      , '=', 'ouverte'),
+                            ('state'                 , '=', 'draft'),
+                        ])
+                        ref_article_client  = product.is_ref_client
+                        num_commande_client = order.client_order_ref
+                        val={
+                            'num_commande_client' : num_commande_client,
+                            'ref_article_client'  : ref_article_client,
+                        }
+                        type_commande="previsionnel"
+                        date_livraison=lig[1].strip()
+                        d=datetime.strptime(date_livraison, '%d/%m/%y')
+                        date_livraison=d.strftime('%Y-%m-%d')
+                        quantite=str(lig[2])
+                        quantite=quantite.replace(",", ".")
+                        quantite=quantite.replace(" ", "")
+                        if quantite=='':
+                            quantite=0
+                        qt=0
+                        try:
+                            qt=float(quantite)
+                        except ValueError:
+                            print '## ValueError', ref_article_client, date_livraison, lig[2]
+                        if qt!=0:
+                            ligne = {
+                                'quantite'      : qt,
+                                'type_commande' : type_commande,
+                                'date_livraison': date_livraison,
+                            }
+                            val.update({'lignes':[ligne]})
+                            res.append(val)
+        return res
 
 
 
