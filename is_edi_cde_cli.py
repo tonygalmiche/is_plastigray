@@ -132,6 +132,10 @@ class is_edi_cde_cli(models.Model):
                         product_id = False
                         prix       = 0;
                         anomalie2  = []
+                        if "anomalie" in ligne:
+                            if ligne["anomalie"]:
+                                anomalie2.append(ligne["anomalie"])
+
                         if len(order):
                             quantite   = int(ligne["quantite"])
                             product    = order[0].is_article_commande_id
@@ -441,6 +445,9 @@ class is_edi_cde_cli(models.Model):
                         product=self.env['product.product'].search([
                             ('is_code'   , '=', lig[0]),
                         ])
+                        anomalie=False
+                        if len(product)==0:
+                            anomalie=u'Article '+lig[0]+u' non trouvé'
                         # Recherche commande ouverte
                         order=self.env['sale.order'].search([
                             ('partner_id.is_code'    , '=', obj.partner_id.is_code),
@@ -448,6 +455,8 @@ class is_edi_cde_cli(models.Model):
                             ('is_type_commande'      , '=', 'ouverte'),
                             ('state'                 , '=', 'draft'),
                         ])
+                        if len(order)==0:
+                            anomalie=u"Commande non trouvée pour l'article "+lig[0]
                         ref_article_client  = product.is_ref_client
                         num_commande_client = order.client_order_ref
                         val={
@@ -469,10 +478,13 @@ class is_edi_cde_cli(models.Model):
                         except ValueError:
                             print '## ValueError', ref_article_client, date_livraison, lig[2]
                         if qt!=0:
+ 
+
                             ligne = {
                                 'quantite'      : qt,
                                 'type_commande' : type_commande,
                                 'date_livraison': date_livraison,
+                                'anomalie'      : anomalie
                             }
                             val.update({'lignes':[ligne]})
                             res.append(val)
