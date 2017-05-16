@@ -11,6 +11,7 @@ import tempfile
 import os
 from pyPdf import PdfFileWriter, PdfFileReader
 from contextlib import closing
+import threading
 
 
 class is_cout_calcul(models.Model):
@@ -666,6 +667,31 @@ class is_cout(models.Model):
         for obj in self:
             obj.cout_std_prix_vente = obj.prix_vente-obj.amortissement_moule-obj.surcout_pre_serie
 
+    @api.model
+    def print_btn_report(self):
+        threaded_calculation = threading.Thread(target=self.save_cout_report, args=())
+        threaded_calculation.start()
+        return True
+    
+    
+    def save_cout_report(self):
+        with api.Environment.manage():
+            new_cr = self.pool.cursor()
+            self = self.with_env(self.env(cr=new_cr))
+            report_service = 'is_plastigray.report_is_cout'
+            file_param  = self.env['ir.config_parameter'].get_param('path_report_pdf')
+            if not os.path.exists(file_param):
+                os.makedirs(file_param)
+            for rec in self.search([], order="id desc"):
+                result, format = self.env['report'].get_pdf(rec, report_service), 'pdf'
+                file_name = file_param + '/'+str(rec.id) +'.pdf'
+                fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
+                try:
+                    os.write(fd, result)
+                finally:
+                    os.close(fd)
+            new_cr.close()
+            return {}
 
     @api.multi
     def cout_standard_indice_precedent(self):
@@ -735,5 +761,27 @@ class is_cout_gamme_mo(models.Model):
     cout_fab      = fields.Float('Coût Fabrication'      , digits=(12, 4))
     tps_fab       = fields.Float('Tps Fabrication (s)')
     cout_total    = fields.Float('Coût Total'            , digits=(12, 4))
+
+
+class base_config_settings(models.TransientModel):
+    _inherit = 'base.config.settings'
+    
+    path_report_pdf = fields.Char('Report saved Path', 
+                                               help="Location to store pdf.")
+        
+    @api.model
+    def get_default_path_report_pdf(self, fields):
+        path_report_pdf = self.env['ir.config_parameter'].get_param('path_report_pdf')
+        if not path_report_pdf:
+            path_report_pdf = '/tmp/Cout article'
+        return {'path_report_pdf': str(path_report_pdf)}
+    
+    @api.one
+    def set_default_path_report_pdf(self):
+        config = self
+        config = config and config[0]
+        val = '%s' % (config.path_report_pdf) or '/tmp/Cout article'
+        self.env['ir.config_parameter'].set_param('path_report_pdf', val)
+        return True
 
 
