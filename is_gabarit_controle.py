@@ -28,6 +28,7 @@ class is_gabarit_controle(models.Model):
     fournisseur_id       = fields.Many2one("res.partner","Fournisseur")
     etat_conformite      = fields.Selection([('conforme','Conforme'),('non_conforme','Non Conforme')], string="Etat de la conformité")
     rapport_de_controle  = fields.Binary("Rapport de contrôle ")
+    controle_ids = fields.One2many('is.historique.controle', 'gabarit_id', string='Historique des contrôles')
     
     
 

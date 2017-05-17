@@ -54,6 +54,7 @@ class is_instrument_mesure(models.Model):
     classe_boolean = fields.Boolean('Is Classe?', default=False)
     etat_conformite = fields.Selection([('conforme', 'Conforme'), ('non_conforme', 'Non Conforme')], string="Etat de la conformité")
     rapport_de_controle = fields.Binary("Rapport de contrôle")
+    controle_ids = fields.One2many('is.historique.controle', 'instrument_id', string='Historique des contrôles')
     
     @api.onchange('famille_id')
     def onchange_famille_id(self):

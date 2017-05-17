@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<!-- Historique des contrôles Form View -->
+        <record model="ir.ui.view" id="view_is_historique_controle_form_is_plastigray">
+            <field name="name">view.is.historique.controle.form.is.plastigray</field>
+            <field name="model">is.historique.controle</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Historique des contrôles">  
+                    <sheet>
+                        <group col="4" colspan="4">
+                            <group col="4" colspan="4">
+                                <field name="site_id" />
+                                <field name="date_controle" />
+                                <field name="affectation" />
+                                <field name="operation" />
+                                <field name="organisme" />
+                                <field name="resultat" />
+                                <field name="commentaire" />
+                                <field name="classe" />
+                                <field name="plaquette_id" invisible="1" />
+                                <field name="instrument_id" invisible="1" />
+                                <field name="gabarit_id" invisible="1" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+		<!-- Historique des contrôles Tree View -->
+        <record model="ir.ui.view" id="view_is_historique_controle_tree_is_plastigray">
+            <field name="name">view.is.historique.controle.tree.is.plastigray</field>
+            <field name="model">is.historique.controle</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Historique des contrôles">
+                    <field name="date_controle" />
+                    <field name="site_id" />
+                    <field name="affectation" />
+                    <field name="operation" />
+                    <field name="organisme" />
+                    <field name="resultat" />
+                    <field name="commentaire" />
+                    <field name="classe" />
+                   </tree>
+            </field>
+        </record>
+
+		<!-- Historique des contrôles Action -->
+        <record id="action_is_historique_controle_is_plastigray" model="ir.actions.act_window" >
+            <field name="name">Historique des contrôles</field>
+            <field name="res_model">is.historique.controle</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+		<!-- Historique des contrôles Menu -->
+        <menuitem id="menu_is_historique_controle_plastigray" 
+              name="Historique des contrôles" 
+              parent="menu_sub_main_outillages"
+              sequence="4"
+              action="action_is_historique_controle_is_plastigray"
+    	/>
+
+    </data>
+</openerp>

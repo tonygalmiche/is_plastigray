@@ -61,6 +61,11 @@
                                 <field name="rapport_de_controle"/>
                             </group>
                         </group>
+                        <notebook>
+                         	<page string="Historique des contrôles">
+                         		<field name="controle_ids" />
+                         	</page>
+                         </notebook>
                     </sheet>
                 </form>
             </field>
