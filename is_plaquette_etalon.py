@@ -9,6 +9,7 @@ from datetime import datetime
 class is_plaquette_etalon(models.Model):
     _name='is.plaquette.etalon'
     _order='code_pg'
+    _rec_name='code_pg'
 
     code_pg = fields.Char("Code PG", required=True)
     designation = fields.Char("Désignation", required=True)
