@@ -1451,7 +1451,39 @@
 
     <menuitem id="menu_is_emplacement_outillage" sequence="10" name="Site d'affectation" parent="menu_sub_main_outillages_table" action="is_emplacement_outillage_action" />
     <menuitem id="menu_is_type_controle_gabarit" sequence="20" name="Type de contrôle" parent="menu_sub_main_outillages_table" action="is_type_controle_gabarit_action" />
-      <menuitem id="menu_is_famille_instrument" sequence="30" name="Familles d'instruments" parent="menu_sub_main_outillages_table" action="is_famille_instrument_action" />
+    <menuitem id="menu_is_famille_instrument" sequence="30" name="Familles d'instruments" parent="menu_sub_main_outillages_table" action="is_famille_instrument_action" />
+
+	<!-- Presses - Outillages Menu -->
+	<menuitem 
+		id="menu_press_outillages" 
+		parent="menu_main_outillages"
+		name="Presses"
+		sequence="20" 
+	/>
+	<!-- Presses - Presses sub menu -->
+	<menuitem 
+		id="menu_is_press_press_outillages" 
+        sequence="1" 
+        name="Presses" 
+        parent="menu_press_outillages" 
+        action="action_is_presse_plastigray" 
+    />
+	<!-- Classe Presse - Table sub menu - Outillages -->
+	<menuitem 
+		id="menu_is_presse_classe_table_outillages" 
+		sequence="20"
+		name="Classe Presse" 
+		parent="menu_sub_main_outillages_table" 
+		action="action_is_presse_classe_is_plastigray"
+	/>
+	<!-- Constructeur - Table sub menu - Outillages -->
+	<menuitem 
+		id="menu_is_outillage_constructeur_table_outillages" 
+		sequence="20"
+		name="Constructeur" 
+		parent="menu_sub_main_outillages_table" 
+		action="action_is_outillage_constructeur_is_plastigray"
+	/>
 
   </data>
 </openerp>

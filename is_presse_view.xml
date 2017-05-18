@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<!-- Classe Presse Form View -->
+        <record model="ir.ui.view" id="view_is_presse_classe_form_is_plastigray">
+            <field name="name">view.is.presse.classe.form.is.plastigray</field>
+            <field name="model">is.presse.classe</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Classe Presse">  
+                    <sheet>
+                        <group col="4" colspan="4">
+                            <field name="name" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+		<!-- Classe Presse Tree View -->
+        <record model="ir.ui.view" id="view_is_presse_classe_tree_is_plastigray">
+            <field name="name">view.is.presse.classe.tree.is.plastigray</field>
+            <field name="model">is.presse.classe</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Classe Presse">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+		<!-- Classe Presse Action -->
+        <record id="action_is_presse_classe_is_plastigray" model="ir.actions.act_window" >
+            <field name="name">Classe Presse</field>
+            <field name="res_model">is.presse.classe</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+		<!-- Outillage Constructeur Form View -->
+        <record model="ir.ui.view" id="view_is_outillage_constructeur_form_is_plastigray">
+            <field name="name">view.is.outillage.constructeur.form.is.plastigray</field>
+            <field name="model">is.outillage.constructeur</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Outillage Constructeur">  
+                    <sheet>
+                        <group col="4" colspan="4">
+                            <field name="name" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Outillage Constructeur Tree View -->
+        <record model="ir.ui.view" id="view_is_outillage_constructeur_tree_is_plastigray">
+            <field name="name">view.is.outillage.constructeur.tree.is.plastigray</field>
+            <field name="model">is.outillage.constructeur</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Outillage Constructeur">  
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Outillage Constructeur Action -->
+        <record id="action_is_outillage_constructeur_is_plastigray" model="ir.actions.act_window" >
+            <field name="name">Constructeur</field>
+            <field name="res_model">is.outillage.constructeur</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+		<!-- Presse Form View -->
+        <record model="ir.ui.view" id="view_is_presse_form_is_plastigray">
+            <field name="name">view.is.presse.form.is.plastigray</field>
+            <field name="model">is.presse</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Presse">  
+                    <sheet>
+                        <group col="4" colspan="4" string="Caractéristiques techniques">
+                            <group>
+                                <field name="name"/>
+                                <field name="emplacement"/>
+                                <field name="puissance"/>
+                                <field name="type_de_presse"/>
+                                <field name="num_construceur"/>
+                                <field name="annee"/>
+                                <field name="volume_tremie"/>
+                            </group>
+                            <group>
+                                <field name="classe" />
+                                <field name="classe_commerciale"/>
+                                <field name="puissance_reelle"/>
+                                <field name="constructeur"/>
+                                <field name="type_commande"/>
+                                <field name="energie"/>
+                                <field name="volume_alimentateur"/>
+                            </group>
+                        </group>
+                        <group col="4" colspan="4" string="Capacité moule">
+                        	<group>
+                        		<field name="dimension_col_h"/>
+                        		<field name="diametre_colonne"/>
+                        		<field name="energie"/>
+                        		<field name="epaisseur_moule_mini"/>
+                        		<field name="dimension_plateau_h"/>
+                        		<field name="dimension_hors_tout_haut"/>
+                        	</group>
+                        	<group>
+                        		<field name="dimension_col_v"/>
+                        		<field name="epaisseur_moule"/>
+                        		<field name="epaisseur_faux_plateau"/>
+                        		<field name="epaisseur_moule_maxi"/>
+                        		<field name="dimension_plateau_v"/>
+                        		<field name="dimension_hors_tout_bas"/>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Capacité injection">
+                        	<group>
+                        		<field name="coefficient_vis"/>
+                        		<field name="type_clapet"/>
+                        		<field name="presse_matiere"/>
+                        	</group>
+                        	<group>
+                        		<field name="diametre_vis"/>
+                        		<field name="volume_injectable"/>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Course">
+                        	<group>
+                        		<field name="course_ejection"/>
+                        	</group>
+                        	<group>
+                        		<field name="course_ouverture"/>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Centrage">
+                        	<group>
+                        		<field name="diametre_centrage_moule"/>
+                        	</group>
+                        	<group>
+                        		<field name="diametre_centrage_presse"/>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Hauteur">
+                        	<group>
+                        		<field name="hauteur_porte_sol"/>
+                        	</group>
+                        	<group>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Bridage">
+                        	<group>
+                        		<field name="bridage_rapide"/>
+                        		<field name="pas_bridage"/>
+                        	</group>
+                        	<group>
+                        		<field name="diametre_bridage"/>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Huile">
+                        	<group>
+                        		<field name="type_huile_hydraulique"/>
+                        	</group>
+                        	<group>
+                        		<field name="volume_reservoir"/>
+                        	</group>
+                        </group>
+                        <group col="4" colspan="4" string="Autres informations">
+                        	<group>
+                        		<field name="encombrement"/>
+                        		<field name="type_huile_graissage"/>
+                        		<field name="nombre_noyau"/>
+                        		<field name="nb_noyau_pf"/>
+                        		<field name="nombre_circuit_haut"/>
+                        		<field name="zone_chauffe"/>
+                        	</group>
+                        	<group>
+                        		<field name="puissance_electrique"/>
+                        		<field name="puissance_electrique_chauffe"/>
+                        		<field name="compensation_cosinus"/>
+                        		<field name="nb_noyau_pm"/>
+                        		<field name="diametre_passage_buse"/>
+                        		<field name="poids"/>
+                        	</group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+		<!-- Presse Tree View -->
+        <record model="ir.ui.view" id="view_is_presse_tree_is_plastigray">
+            <field name="name">view.is.presse.tree.is.plastigray</field>
+            <field name="model">is.presse</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Presse">
+                    <field name="name"/>
+                    <field name="classe" />
+                    <field name="emplacement"/>
+                    <field name="classe_commerciale"/>
+                    <field name="puissance"/>
+                    <field name="puissance_reelle"/>
+                    <field name="type_de_presse"/>
+                    <field name="constructeur"/>
+                    <field name="num_construceur"/>
+                    <field name="type_commande"/>
+                    <field name="annee"/>
+                    <field name="energie"/>
+                    <field name="volume_tremie"/>
+                    <field name="volume_alimentateur"/>
+                </tree>
+            </field>
+        </record>
+
+		<!-- Presses Search View -->
+		<record id="view_is_presse_search_is_plastigray" model="ir.ui.view">
+            <field name="name">view.is.presse.search.is.plastigray</field>
+            <field name="model">is.presse</field>
+            <field name="arch" type="xml">
+                <search string="Presses">
+                	<group expand="0" string="Capacité moule">
+                        <filter string="Dimension entre col H" domain="[]" context="{'group_by':'dimension_col_h'}"/>
+                        <filter string="Dimension entre col V" domain="[]" context="{'group_by':'dimension_col_v'}"/>
+                        <filter string="Ø colonne" domain="[]" context="{'group_by':'diametre_colonne'}"/>
+                        <filter string="Épaisseur moule Mini presse" domain="[]" context="{'group_by':'epaisseur_moule'}"/>
+                        <filter string="Faux plateau" domain="[]" context="{'group_by':'energie'}"/>
+                        <filter string="Épaisseur faux plateau" domain="[]" context="{'group_by':'epaisseur_faux_plateau'}"/>
+                        <filter string="Épaisseur moule mini réel" domain="[]" context="{'group_by':'epaisseur_moule_mini'}"/>
+                        <filter string="Épaisseur moule Maxi" domain="[]" context="{'group_by':'epaisseur_moule_maxi'}"/>
+                        <filter string="Dimension demi plateau H" domain="[]" context="{'group_by':'dimension_plateau_h'}"/>
+                        <filter string="Dimension demi plateau V" domain="[]" context="{'group_by':'dimension_plateau_v'}"/>
+                        <filter string="Dimension hors tout Haut" domain="[]" context="{'group_by':'dimension_hors_tout_haut'}"/>
+                        <filter string="Dimension hors tout Bas" domain="[]" context="{'group_by':'dimension_hors_tout_bas'}"/>
+                    </group>
+				    <group expand="0" string="Capacité injection">
+                        <filter string="Coefficient de vis" domain="[]" context="{'group_by':'coefficient_vis'}"/>
+                        <filter string="Ø Vis" domain="[]" context="{'group_by':'diametre_vis'}"/>
+                        <filter string="Type de clapet" domain="[]" context="{'group_by':'type_clapet'}"/>
+                        <filter string="Volume injectable (cm3)" domain="[]" context="{'group_by':'volume_injectable'}"/>
+                        <filter string="Pression matière (bar)" domain="[]" context="{'group_by':'presse_matiere'}"/>
+                    </group>
+                    <group expand="0" string="Course">
+                        <filter string="Course éjection" domain="[]" context="{'group_by':'course_ejection'}"/>
+                        <filter string="Course ouverture" domain="[]" context="{'group_by':'course_ouverture'}"/>
+                    </group>
+                    <group expand="0" string="Centrage">
+                        <filter string="Ø centrage moule" domain="[]" context="{'group_by':'diametre_centrage_moule'}"/>
+                        <filter string="Ø centrage presse" domain="[]" context="{'group_by':'diametre_centrage_presse'}"/>
+                    </group>
+                    <group expand="0" string="Hauteur">
+                        <filter string="Hauteur porte / sol" domain="[]" context="{'group_by':'hauteur_porte_sol'}"/>
+                    </group>
+                    <group expand="0" string="Bridage">
+                        <filter string="Bridage rapide entre axe" domain="[]" context="{'group_by':'bridage_rapide'}"/>
+                        <filter string="Ø" domain="[]" context="{'group_by':'diametre_bridage'}"/>
+                        <filter string="Pas" domain="[]" context="{'group_by':'pas_bridage'}"/>
+                    </group>
+                    <group expand="0" string="Huile">
+                        <filter string="Type huile hydraulique" domain="[]" context="{'group_by':'type_huile_hydraulique'}"/>
+                        <filter string="Volume réservoir" domain="[]" context="{'group_by':'volume_reservoir'}"/>
+                    </group>
+                    <group expand="0" string="Autres informations">
+                        <filter string="Encombrement" domain="[]" context="{'group_by':'encombrement'}"/>
+                        <filter string="Puissance électrique moteur" domain="[]" context="{'group_by':'puissance_electrique'}"/>
+                        <filter string="Type huile graissage centralisé" domain="[]" context="{'group_by':'type_huile_graissage'}"/>
+                        <filter string="Puissance électrique chauffe" domain="[]" context="{'group_by':'puissance_electrique_chauffe'}"/>
+                        <filter string="Nbre Noyau Total" domain="[]" context="{'group_by':'nombre_noyau'}"/>
+                        <filter string="Compensation cosinus" domain="[]" context="{'group_by':'compensation_cosinus'}"/>
+                        <filter string="Nbre Noyau PF" domain="[]" context="{'group_by':'nb_noyau_pf'}"/>
+                        <filter string="Nbre Noyau PM" domain="[]" context="{'group_by':'nb_noyau_pm'}"/>
+                        <filter string="Nbre circuit Eau" domain="[]" context="{'group_by':'nombre_circuit_haut'}"/>
+                        <filter string="Ø Passage Buse" domain="[]" context="{'group_by':'diametre_passage_buse'}"/>
+                        <filter string="Zones de chauffe" domain="[]" context="{'group_by':'zone_chauffe'}"/>
+                        <filter string="Poids" domain="[]" context="{'group_by':'poids'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+		<!-- Presse Action -->
+        <record id="action_is_presse_plastigray" model="ir.actions.act_window" >
+            <field name="name">Presse</field>
+            <field name="res_model">is.presse</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</openerp>

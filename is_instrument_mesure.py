@@ -8,6 +8,7 @@ from datetime import datetime
 class is_instrument_mesure(models.Model):
     _name = 'is.instrument.mesure'
     _order = 'code_pg'
+    _rec_name='code_pg'
 
     @api.depends('famille_id', 'frequence')
     def _compute_periodicite(self):

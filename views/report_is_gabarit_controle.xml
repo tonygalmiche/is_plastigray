@@ -31,34 +31,58 @@
                         </div>
                         <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
                             <tr>
-                                <td class="text-left" width="20%"><b>N° d'identification</b></td>
-                                <td class="text-left" width="30%"></td>
-                                <td class="text-left" width="20%"></td>
-                                <td class="text-left" width="30%"></td>
+                                <td class="text-left" width="20%"><b>Code PG</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.code_pg"/></td>
+                                <td class="text-left" width="20%"><b>Désignation</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.designation"/></td>
                             </tr>
                             <tr>
-                                <td width="20%"><b>Désignation</b></td>
-                                <td width="30%"><span t-field="o.designation"/></td>
-                                <td width="20%"><b>Marque</b></td>
-                                <td width="30%"></td>
-                            </tr>
-                            <tr>
-                                <td width="20%"><b>Site</b></td>
-                                <td width="30%"><span t-field="o.site_id.name"/></td>
-                                <td width="20%"></td>
-                                <td width="30%"></td>
-                            </tr>
-                            <tr> 
-                                <td width="20%"><b>N° Série</b></td>
-                                <td width="30%"></td>
-                                <td width="20%"><b>Périodicité</b></td>
-                                <td width="30%"><span t-field="o.periodicite"/></td>
-                            </tr>
-                            <tr>
+                                <td width="20%"><b>Fabricant</b></td>
+                                <td width="30%"><span t-field="o.fabriquant_id.name"/></td>
                                 <td width="20%"><b>Date de réception</b></td>
                                 <td width="30%"><span t-field="o.date_reception"/></td>
-                                <td width="20%"></td>
-                                <td width="30%"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Référence plan</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.reference_plan"/></td>
+                                <td class="text-left" width="20%"><b>Indice plan</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.indice_plan"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Client</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.client_id.name"/></td>
+                                <td class="text-left" width="20%"><b>Site d'affectation</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.site_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Lieu de stockage</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.lieu_stockage"/></td>
+                                <td class="text-left" width="20%"><b>Périodicité</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.periodicite"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Type de contrôle</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.type_controle.name"/></td>
+                                <td class="text-left" width="20%"><b>Contrôle</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.controle"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Cause arrêt</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.cause_arret"/></td>
+                                <td class="text-left" width="20%"><b>Date du contrôle</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.date_controle"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Organisme contrôleur</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.organisme_controleur"/></td>
+                                <td class="text-left" width="20%"><b>Fournisseur</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.fournisseur_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Code</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.etat_conformite"/></td>
+                                <td class="text-left" width="20%"><b>Etat de la conformité</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.etat_conformite"/></td>
                             </tr>
                         </table>
                         <br/>

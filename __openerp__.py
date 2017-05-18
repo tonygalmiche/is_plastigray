@@ -76,6 +76,7 @@ Module principal du projet Plastigray
         "is_plaquette_etalon_view.xml",
         "is_instrument_mesure_view.xml",
         "is_historique_controle_view.xml",
+        "is_presse_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

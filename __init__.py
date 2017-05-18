@@ -37,6 +37,7 @@ import is_gabarit_controle
 import is_plaquette_etalon
 import is_instrument_mesure
 import is_historique_controle
+import is_presse
 
 import report
 import wizard
