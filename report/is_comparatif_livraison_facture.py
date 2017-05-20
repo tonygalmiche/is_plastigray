@@ -15,7 +15,7 @@ class is_comparatif_livraison_facture(models.Model):
     state              = fields.Char('Etat Facture')
     picking_id         = fields.Many2one('stock.picking', 'Livraison')
     partner_id         = fields.Many2one('res.partner', 'Client')
-    product_id         = fields.Many2one('product.template', 'Article')
+    product_id         = fields.Many2one('product.product', 'Article')
     product_uom             = fields.Many2one('product.uom', 'Unité Livraison')
     uos_id             = fields.Many2one('product.uom', 'Unité Facture')
     product_uom_qty           = fields.Float('Quantité Livraison')
