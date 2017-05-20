@@ -38,6 +38,7 @@ import is_plaquette_etalon
 import is_instrument_mesure
 import is_historique_controle
 import is_presse
+import is_prechauffeur
 
 import report
 import wizard

@@ -1487,6 +1487,12 @@
         action="action_is_outillage_constructeur_is_plastigray"
     />
 
+    <!-- Préchauffeurs - Outillages Menu -->
+    <menuitem id="menu_prechauffeurs_outillages" parent="menu_main_outillages" name="Préchauffeurs" sequence="10" />
+
+    <!-- Préchauffeurs - Préchauffeurs sub menu -->
+    <menuitem id="menu_is_prechauffeurs_prechauffeurs_outillages" sequence="10" name="Préchauffeurs" parent="menu_prechauffeurs_outillages" action="action_is_prechauffeur_is_plastigray" />
+
   </data>
 </openerp>
 

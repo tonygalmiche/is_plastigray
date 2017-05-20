@@ -77,6 +77,7 @@ Module principal du projet Plastigray
         "is_instrument_mesure_view.xml",
         "is_historique_controle_view.xml",
         "is_presse_view.xml",
+        "is_prechauffeur_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

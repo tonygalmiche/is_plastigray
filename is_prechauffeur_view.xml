@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Préchauffeurs Form View -->
+        <record model="ir.ui.view" id="view_is_prechauffeur_form_is_plastigray">
+            <field name="name">view.is.prechauffeur.form.is.plastigray</field>
+            <field name="model">is.prechauffeur</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Préchauffeurs">
+                    <sheet>
+                        <group col="4" colspan="4" string="Identification">
+                            <group>
+                                <field name="name" />
+                                <field name="site_id" />
+                                <field name="presse_id" />
+                                <field name="constructeur_id" />
+                            </group>
+                            <group>
+                                <field name="type_prechauffeur" />
+                                <field name="num_serie" />
+                                <field name="date_fabrication" />
+                            </group>
+                        </group>
+                        <group col="4" colspan="4" string="Encombrement">
+                            <group>
+                                <field name="poids" />
+                                <field name="longueur" />
+                            </group>
+                            <group>
+                                <field name="largeur" />
+                                <field name="hauteur" />
+                            </group>
+                        </group>
+                        <group col="4" colspan="4" string="Caractéristiques techniques">
+                            <group>
+                                <field name="type_fluide" />
+                                <field name="temperature_maxi" />
+                                <field name="puissance_installee" />
+                                <field name="puissance_chauffe" />
+                                <field name="puissance_refroidissement" />
+                            </group>
+                            <group>
+                                <field name="debit_maximum" />
+                                <field name="pression_maximum" />
+                                <field name="commande_deportee" />
+                                <field name="option_depression" />
+                                <field name="mesure_debit" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Préchauffeurs Tree View -->
+        <record model="ir.ui.view" id="view_is_prechauffeur_tree_is_plastigray">
+            <field name="name">view.is.prechauffeur.tree.is.plastigray</field>
+            <field name="model">is.prechauffeur</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Préchauffeurs">
+                    <field name="name" invisible="context.get('identification',True)"/>
+                    <field name="site_id" invisible="context.get('identification',True)"/>
+                    <field name="presse_id" invisible="context.get('identification',True)"/>
+                    <field name="constructeur_id" invisible="context.get('identification',True)"/>
+                    <field name="type_prechauffeur" invisible="context.get('identification',True)"/>
+                    <field name="num_serie" invisible="context.get('identification',True)"/>
+                    <field name="date_fabrication" invisible="context.get('identification',True)"/>
+                    <field name="poids" invisible="context.get('encombrement',True)"/>
+                    <field name="longueur" invisible="context.get('encombrement',True)"/>
+                    <field name="largeur" invisible="context.get('encombrement',True)"/>
+                    <field name="hauteur" invisible="context.get('encombrement',True)"/>
+                    <field name="type_fluide" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="temperature_maxi" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="puissance_installee" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="puissance_chauffe" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="puissance_refroidissement" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="debit_maximum" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="pression_maximum" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="commande_deportee" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="option_depression" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="mesure_debit" invisible="context.get('caracteristiques_techniques',True)"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Préchauffeurs Search View -->
+        <record id="view_is_prechauffeur_search_is_plastigray" model="ir.ui.view">
+            <field name="name">view.is.prechauffeur.search.is.plastigray</field>
+            <field name="model">is.prechauffeur</field>
+            <field name="arch" type="xml">
+                <search string="Préchauffeurs">
+                    <filter name="identification_filter" filter_domain="[]" context="{'identification':False}" string="Identification"/>
+                    <filter name="encombrement_filter" filter_domain="[]" context="{'encombrement':False}" string="Encombrement"/>
+                    <filter name="caracteristiques_techniques_filter" filter_domain="[]" context="{'caracteristiques_techniques':False}" string="Caractéristiques techniques"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Préchauffeurs Action -->
+        <record id="action_is_prechauffeur_is_plastigray" model="ir.actions.act_window" >
+            <field name="name">Préchauffeurs</field>
+            <field name="res_model">is.prechauffeur</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_identification_filter':1}</field>
+        </record>
+
+    </data>
+</openerp>
