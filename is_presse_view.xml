@@ -202,20 +202,59 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree string="Presse">
-                    <field name="name"/>
-                    <field name="classe" />
-                    <field name="emplacement"/>
-                    <field name="classe_commerciale"/>
-                    <field name="puissance"/>
-                    <field name="puissance_reelle"/>
-                    <field name="type_de_presse"/>
-                    <field name="constructeur"/>
-                    <field name="num_construceur"/>
-                    <field name="type_commande"/>
-                    <field name="annee"/>
-                    <field name="energie"/>
-                    <field name="volume_tremie"/>
-                    <field name="volume_alimentateur"/>
+                    <field name="name" invisible="context.get('caracteristigues',True)"/>
+                    <field name="classe" invisible="context.get('caracteristigues',True)"/>
+                    <field name="emplacement" invisible="context.get('caracteristigues',True)"/>
+                    <field name="classe_commerciale" invisible="context.get('caracteristigues',True)"/>
+                    <field name="puissance" invisible="context.get('caracteristigues',True)"/>
+                    <field name="puissance_reelle" invisible="context.get('caracteristigues',True)"/>
+                    <field name="type_de_presse" invisible="context.get('caracteristigues',True)"/>
+                    <field name="constructeur" invisible="context.get('caracteristigues',True)"/>
+                    <field name="num_construceur" invisible="context.get('caracteristigues',True)"/>
+                    <field name="type_commande" invisible="context.get('caracteristigues',True)"/>
+                    <field name="annee" invisible="context.get('caracteristigues',True)"/>
+                    <field name="energie" invisible="context.get('caracteristigues',True)"/>
+                    <field name="volume_tremie" invisible="context.get('caracteristigues',True)"/>
+                    <field name="volume_alimentateur" invisible="context.get('caracteristigues',True)"/>
+               		<field name="dimension_col_h" invisible="context.get('capacite_moule',True)"/>
+               		<field name="diametre_colonne" invisible="context.get('capacite_moule',True)"/>
+               		<field name="energie" invisible="context.get('capacite_moule',True)"/>
+               		<field name="epaisseur_moule_mini" invisible="context.get('capacite_moule',True)"/>
+               		<field name="dimension_plateau_h" invisible="context.get('capacite_moule',True)"/>
+               		<field name="dimension_hors_tout_haut" invisible="context.get('capacite_moule',True)"/>
+               		<field name="dimension_col_v" invisible="context.get('capacite_moule',True)"/>
+               		<field name="epaisseur_moule" invisible="context.get('capacite_moule',True)"/>
+               		<field name="epaisseur_faux_plateau" invisible="context.get('capacite_moule',True)"/>
+               		<field name="epaisseur_moule_maxi" invisible="context.get('capacite_moule',True)"/>
+               		<field name="dimension_plateau_v" invisible="context.get('capacite_moule',True)"/>
+               		<field name="dimension_hors_tout_bas" invisible="context.get('capacite_moule',True)"/>
+               		<field name="coefficient_vis" invisible="context.get('capacite_injection',True)"/>
+               		<field name="type_clapet" invisible="context.get('capacite_injection',True)"/>
+               		<field name="presse_matiere" invisible="context.get('capacite_injection',True)"/>
+               		<field name="diametre_vis" invisible="context.get('capacite_injection',True)"/>
+               		<field name="volume_injectable" invisible="context.get('capacite_injection',True)"/>
+                    <field name="course_ejection" invisible="context.get('course',True)"/>
+                    <field name="course_ouverture" invisible="context.get('course',True)"/>
+                    <field name="diametre_centrage_moule" invisible="context.get('centrage',True)"/>
+                    <field name="diametre_centrage_presse" invisible="context.get('centrage',True)"/>
+                    <field name="hauteur_porte_sol" invisible="context.get('hauteur',True)"/>
+               		<field name="bridage_rapide" invisible="context.get('bridage',True)"/>
+               		<field name="pas_bridage" invisible="context.get('bridage',True)"/>
+               		<field name="diametre_bridage" invisible="context.get('bridage',True)"/>
+               		<field name="type_huile_hydraulique" invisible="context.get('huile',True)"/>
+               		<field name="volume_reservoir" invisible="context.get('huile',True)"/>
+               		<field name="encombrement" invisible="context.get('autres',True)"/>
+               		<field name="type_huile_graissage" invisible="context.get('autres',True)"/>
+               		<field name="nombre_noyau" invisible="context.get('autres',True)"/>
+               		<field name="nb_noyau_pf" invisible="context.get('autres',True)"/>
+               		<field name="nombre_circuit_haut" invisible="context.get('autres',True)"/>
+               		<field name="zone_chauffe" invisible="context.get('autres',True)"/>
+               		<field name="puissance_electrique" invisible="context.get('autres',True)"/>
+               		<field name="puissance_electrique_chauffe" invisible="context.get('autres',True)"/>
+               		<field name="compensation_cosinus" invisible="context.get('autres',True)"/>
+               		<field name="nb_noyau_pm" invisible="context.get('autres',True)"/>
+               		<field name="diametre_passage_buse" invisible="context.get('autres',True)"/>
+               		<field name="poids" invisible="context.get('autres',True)"/>
                 </tree>
             </field>
         </record>
@@ -226,61 +265,15 @@
             <field name="model">is.presse</field>
             <field name="arch" type="xml">
                 <search string="Presses">
-                	<group expand="0" string="Capacité moule">
-                        <filter string="Dimension entre col H" domain="[]" context="{'group_by':'dimension_col_h'}"/>
-                        <filter string="Dimension entre col V" domain="[]" context="{'group_by':'dimension_col_v'}"/>
-                        <filter string="Ø colonne" domain="[]" context="{'group_by':'diametre_colonne'}"/>
-                        <filter string="Épaisseur moule Mini presse" domain="[]" context="{'group_by':'epaisseur_moule'}"/>
-                        <filter string="Faux plateau" domain="[]" context="{'group_by':'energie'}"/>
-                        <filter string="Épaisseur faux plateau" domain="[]" context="{'group_by':'epaisseur_faux_plateau'}"/>
-                        <filter string="Épaisseur moule mini réel" domain="[]" context="{'group_by':'epaisseur_moule_mini'}"/>
-                        <filter string="Épaisseur moule Maxi" domain="[]" context="{'group_by':'epaisseur_moule_maxi'}"/>
-                        <filter string="Dimension demi plateau H" domain="[]" context="{'group_by':'dimension_plateau_h'}"/>
-                        <filter string="Dimension demi plateau V" domain="[]" context="{'group_by':'dimension_plateau_v'}"/>
-                        <filter string="Dimension hors tout Haut" domain="[]" context="{'group_by':'dimension_hors_tout_haut'}"/>
-                        <filter string="Dimension hors tout Bas" domain="[]" context="{'group_by':'dimension_hors_tout_bas'}"/>
-                    </group>
-				    <group expand="0" string="Capacité injection">
-                        <filter string="Coefficient de vis" domain="[]" context="{'group_by':'coefficient_vis'}"/>
-                        <filter string="Ø Vis" domain="[]" context="{'group_by':'diametre_vis'}"/>
-                        <filter string="Type de clapet" domain="[]" context="{'group_by':'type_clapet'}"/>
-                        <filter string="Volume injectable (cm3)" domain="[]" context="{'group_by':'volume_injectable'}"/>
-                        <filter string="Pression matière (bar)" domain="[]" context="{'group_by':'presse_matiere'}"/>
-                    </group>
-                    <group expand="0" string="Course">
-                        <filter string="Course éjection" domain="[]" context="{'group_by':'course_ejection'}"/>
-                        <filter string="Course ouverture" domain="[]" context="{'group_by':'course_ouverture'}"/>
-                    </group>
-                    <group expand="0" string="Centrage">
-                        <filter string="Ø centrage moule" domain="[]" context="{'group_by':'diametre_centrage_moule'}"/>
-                        <filter string="Ø centrage presse" domain="[]" context="{'group_by':'diametre_centrage_presse'}"/>
-                    </group>
-                    <group expand="0" string="Hauteur">
-                        <filter string="Hauteur porte / sol" domain="[]" context="{'group_by':'hauteur_porte_sol'}"/>
-                    </group>
-                    <group expand="0" string="Bridage">
-                        <filter string="Bridage rapide entre axe" domain="[]" context="{'group_by':'bridage_rapide'}"/>
-                        <filter string="Ø" domain="[]" context="{'group_by':'diametre_bridage'}"/>
-                        <filter string="Pas" domain="[]" context="{'group_by':'pas_bridage'}"/>
-                    </group>
-                    <group expand="0" string="Huile">
-                        <filter string="Type huile hydraulique" domain="[]" context="{'group_by':'type_huile_hydraulique'}"/>
-                        <filter string="Volume réservoir" domain="[]" context="{'group_by':'volume_reservoir'}"/>
-                    </group>
-                    <group expand="0" string="Autres informations">
-                        <filter string="Encombrement" domain="[]" context="{'group_by':'encombrement'}"/>
-                        <filter string="Puissance électrique moteur" domain="[]" context="{'group_by':'puissance_electrique'}"/>
-                        <filter string="Type huile graissage centralisé" domain="[]" context="{'group_by':'type_huile_graissage'}"/>
-                        <filter string="Puissance électrique chauffe" domain="[]" context="{'group_by':'puissance_electrique_chauffe'}"/>
-                        <filter string="Nbre Noyau Total" domain="[]" context="{'group_by':'nombre_noyau'}"/>
-                        <filter string="Compensation cosinus" domain="[]" context="{'group_by':'compensation_cosinus'}"/>
-                        <filter string="Nbre Noyau PF" domain="[]" context="{'group_by':'nb_noyau_pf'}"/>
-                        <filter string="Nbre Noyau PM" domain="[]" context="{'group_by':'nb_noyau_pm'}"/>
-                        <filter string="Nbre circuit Eau" domain="[]" context="{'group_by':'nombre_circuit_haut'}"/>
-                        <filter string="Ø Passage Buse" domain="[]" context="{'group_by':'diametre_passage_buse'}"/>
-                        <filter string="Zones de chauffe" domain="[]" context="{'group_by':'zone_chauffe'}"/>
-                        <filter string="Poids" domain="[]" context="{'group_by':'poids'}"/>
-                    </group>
+                	<filter name="caracteristigues_filter" filter_domain="[]" context="{'caracteristigues':False}" string="Caractéristiques"/>
+                	<filter name="capacite moule_filter" filter_domain="[]" context="{'capacite_moule':False}" string="Capacité moule"/>
+                	<filter name="capacite_injection_filter" filter_domain="[]" context="{'capacite_injection':False}" string="Capacité injection"/>
+                	<filter name="course_filter" filter_domain="[]" context="{'course':False}" string="Course"/>
+                	<filter name="centrage_filter" filter_domain="[]" context="{'centrage':False}" string="Centrage"/>
+                	<filter name="hauteur_porte_sol_filter" filter_domain="[]" context="{'hauteur':False}" string="Hauteur"/>
+                	<filter name="bridage_filter" filter_domain="[]" context="{'bridage':False}" string="Bridage"/>
+                	<filter name="huile_filter" filter_domain="[]" context="{'huile':False}" string="Huile"/>
+                	<filter name="autres_filter" filter_domain="[]" context="{'autres':False}" string="Autres informations"/>
                 </search>
             </field>
         </record>
@@ -291,6 +284,7 @@
             <field name="res_model">is.presse</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_caracteristigues_filter':1}</field>
         </record>
 
     </data>
