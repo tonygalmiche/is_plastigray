@@ -608,8 +608,33 @@
         <field name="perm_create" eval="True"/>
     </record>
 
-
-
+    <record id="is_presse_classe_access"  model="ir.model.access" >
+        <field name="name">is_presse_classe_access</field>
+        <field name="model_id"    eval="ref('model_is_presse_classe')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_outillages_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_outillage_constructeur_access"  model="ir.model.access" >
+        <field name="name">is_outillage_constructeur_access</field>
+        <field name="model_id"    eval="ref('model_is_outillage_constructeur')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_outillages_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_presse_access"  model="ir.model.access" >
+        <field name="name">is_presse_access</field>
+        <field name="model_id"    eval="ref('model_is_presse')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_outillages_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
 
     <!-- Accès Responsable de production -->
     <record id="is_atelier_access"  model="ir.model.access" >

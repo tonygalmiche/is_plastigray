@@ -142,10 +142,7 @@ access_is_instrument_mesure,access_is_instrument_mesure,model_is_instrument_mesu
 access_is_famille_instrument,access_is_famille_instrument,model_is_famille_instrument,base.group_user,1,0,0,0
 access_is_historique_controle,access_is_historique_controle,model_is_historique_controle,base.group_user,1,0,0,0
 
-
-
-
-
-
-
+access_is_presse_classe,access_is_presse_classe,model_is_presse_classe,base.group_user,1,0,0,0
+access_is_outillage_constructeur,access_is_outillage_constructeur,model_is_outillage_constructeur,base.group_user,1,0,0,0
+access_is_presse,access_is_presse,model_is_presse,base.group_user,1,0,0,0
 

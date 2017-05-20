@@ -8,7 +8,7 @@ from datetime import datetime
 class is_historique_controle(models.Model):
     _name='is.historique.controle'
     _order='date_controle desc'
-    _rec_name='affectation'
+    _rec_name='date_controle'
 
     plaquette_id = fields.Many2one('is.plaquette.etalon', string='Plaquette étalon')
     instrument_id = fields.Many2one('is.instrument.mesure', string='Instruments de mesure')
