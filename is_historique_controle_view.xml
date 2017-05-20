@@ -45,9 +45,11 @@
                     <field name="resultat" />
                     <field name="commentaire" />
                     <field name="classe" />
+                    <!-- 
                     <field name="plaquette_id" widget="many2one_clickable" />
                     <field name="instrument_id" widget="many2one_clickable" />
                     <field name="gabarit_id" widget="many2one_clickable" />
+                     -->
                 </tree>
             </field>
         </record>
@@ -70,3 +72,4 @@
 
     </data>
 </openerp>
+
