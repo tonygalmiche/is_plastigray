@@ -145,4 +145,9 @@ access_is_historique_controle,access_is_historique_controle,model_is_historique_
 access_is_presse_classe,access_is_presse_classe,model_is_presse_classe,base.group_user,1,0,0,0
 access_is_outillage_constructeur,access_is_outillage_constructeur,model_is_outillage_constructeur,base.group_user,1,0,0,0
 access_is_presse,access_is_presse,model_is_presse,base.group_user,1,0,0,0
+access_is_prechauffeur,access_is_prechauffeur,model_is_prechauffeur,base.group_user,1,0,0,0
+
+
+
+
 
