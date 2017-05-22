@@ -62,10 +62,37 @@
                             </group>
                         </group>
                         <notebook>
-                         	<page string="Historique des contrôles">
-                         		<field name="controle_ids" />
-                         	</page>
-                         </notebook>
+                            <page string="Historique des contrôles">
+                                <field name="controle_ids">
+                                    <form string="Historique des contrôles">  
+                                        <sheet>
+                                            <group col="4" colspan="4">
+                                                <group col="4" colspan="4">
+                                                    <field name="site_id" />
+                                                    <field name="date_controle" />
+                                                    <field name="affectation" />
+                                                    <field name="operation" />
+                                                    <field name="organisme" />
+                                                    <field name="resultat" />
+                                                    <field name="commentaire" />
+                                                    <field name="classe" />
+                                                </group>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                    <tree string="Historique des contrôles">
+                                        <field name="date_controle" />
+                                        <field name="site_id" />
+                                        <field name="affectation" />
+                                        <field name="operation" />
+                                        <field name="organisme" />
+                                        <field name="resultat" />
+                                        <field name="commentaire" />
+                                        <field name="classe" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
