@@ -107,7 +107,7 @@
                         	<group>
                         		<field name="dimension_col_h"/>
                         		<field name="diametre_colonne"/>
-                        		<field name="energie"/>
+                        		<field name="faux_plateau"/>
                         		<field name="epaisseur_moule_mini"/>
                         		<field name="dimension_plateau_h"/>
                         		<field name="dimension_hors_tout_haut"/>
@@ -218,7 +218,7 @@
                     <field name="volume_alimentateur" invisible="context.get('caracteristigues',True)"/>
                		<field name="dimension_col_h" invisible="context.get('capacite_moule',True)"/>
                		<field name="diametre_colonne" invisible="context.get('capacite_moule',True)"/>
-               		<field name="energie" invisible="context.get('capacite_moule',True)"/>
+               		<field name="faux_plateau" invisible="context.get('capacite_moule',True)"/>
                		<field name="epaisseur_moule_mini" invisible="context.get('capacite_moule',True)"/>
                		<field name="dimension_plateau_h" invisible="context.get('capacite_moule',True)"/>
                		<field name="dimension_hors_tout_haut" invisible="context.get('capacite_moule',True)"/>

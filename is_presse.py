@@ -48,7 +48,7 @@ class is_presse(models.Model):
     dimension_col_v     = fields.Char(string='Dimension entre col V')
     diametre_colonne    = fields.Char(string='Ø colonne')
     epaisseur_moule     = fields.Char(string='Épaisseur moule Mini presse')
-    energie = fields.Selection([
+    faux_plateau = fields.Selection([
         ('oui','Oui'),
         ('non','Non'),
     ], string='Faux plateau')
