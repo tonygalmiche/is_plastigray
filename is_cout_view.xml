@@ -2,20 +2,20 @@
 
 <openerp>
     <data noupdate="1">
-	<record model="ir.config_parameter" id="data_path_report_pdf">
+    <record model="ir.config_parameter" id="data_path_report_pdf">
             <field name="key">path_report_pdf</field>
             <field name="value">/tmp/Cout article</field>
         </record>
     </data>
     <data>
 
-	<record id="view_is_cout_configuration2" model="ir.ui.view">
-	    <field name="name">Config settings</field>
-	    <field name="model">base.config.settings</field>
-	    <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+    <record id="view_is_cout_configuration2" model="ir.ui.view">
+        <field name="name">Config settings</field>
+        <field name="model">base.config.settings</field>
+        <field name="inherit_id" ref="base_setup.view_general_configuration"/>
             <field name="arch" type="xml">
-            	<xpath expr="//form" position="inside">
-            		<group>
+                <xpath expr="//form" position="inside">
+                    <group>
                         <label for="path_report_pdf" string="Report (Coût article) Location"/>
                             <div>
                                 <field name="path_report_pdf" class="oe_inline" colspan="2"/>
@@ -26,10 +26,10 @@
             </field>
         </record>
 
-	<record model="ir.cron" id="cron_cout_article_report">
+    <record model="ir.cron" id="cron_cout_article_report">
             <field name="name">Save Cout Article Report in file system</field>
             <field name="interval_number">1</field>
-            <field name="active" eval="True"/>
+            <field name="active" eval="False"/>
             <field name="user_id" ref="base.user_root"/>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
