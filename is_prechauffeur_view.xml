@@ -15,7 +15,9 @@
                                 <field name="name" />
                                 <field name="site_id" />
                                 <field name="presse_id" />
-                                <field name="constructeur_id" />
+                                <field name="mold_id" />
+                                <field name="constructeur" />
+                                <field name="marque" />
                             </group>
                             <group>
                                 <field name="type_prechauffeur" />
@@ -64,7 +66,9 @@
                     <field name="name" invisible="context.get('identification',True)"/>
                     <field name="site_id" invisible="context.get('identification',True)"/>
                     <field name="presse_id" invisible="context.get('identification',True)"/>
-                    <field name="constructeur_id" invisible="context.get('identification',True)"/>
+                    <field name="mold_id" invisible="context.get('identification',True)"/>
+                    <field name="constructeur" invisible="context.get('identification',True)"/>
+                    <field name="marque" invisible="context.get('identification',True)"/>
                     <field name="type_prechauffeur" invisible="context.get('identification',True)"/>
                     <field name="num_serie" invisible="context.get('identification',True)"/>
                     <field name="date_fabrication" invisible="context.get('identification',True)"/>
@@ -92,6 +96,14 @@
             <field name="model">is.prechauffeur</field>
             <field name="arch" type="xml">
                 <search string="Préchauffeurs">
+                    <field name="name"/>
+                    <field name="site_id"/>
+                    <field name="presse_id"/>
+                    <field name="mold_id"/>
+                    <field name="constructeur"/>
+                    <field name="marque"/>
+                    <field name="type_prechauffeur"/>
+                    <field name="num_serie"/>
                     <filter name="identification_filter" filter_domain="[]" context="{'identification':False}" string="Identification"/>
                     <filter name="encombrement_filter" filter_domain="[]" context="{'encombrement':False}" string="Encombrement"/>
                     <filter name="caracteristiques_techniques_filter" filter_domain="[]" context="{'caracteristiques_techniques':False}" string="Caractéristiques techniques"/>
