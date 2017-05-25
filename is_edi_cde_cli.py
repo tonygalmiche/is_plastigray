@@ -231,6 +231,7 @@ class is_edi_cde_cli(models.Model):
             #*******************************************************************
 
             #** Importation des commandes **************************************
+            sequence=0
             for line in obj.line_ids:
                 if line.order_id:
                     if line.quantite!=0 and order_id:
@@ -240,7 +241,9 @@ class is_edi_cde_cli(models.Model):
                             if line.date_livraison>obj.date_maxi:
                                 test=False
                         if test:
+                            sequence=sequence+10
                             vals={
+                                'sequence'            : sequence,
                                 'order_id'            : line.order_id.id, 
                                 'is_date_livraison'   : line.date_livraison, 
                                 'is_type_commande'    : line.type_commande, 
