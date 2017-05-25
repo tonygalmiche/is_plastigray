@@ -20,7 +20,8 @@ class is_outillage_constructeur(models.Model):
 class is_presse(models.Model):
     _name='is.presse'
 
-    name   = fields.Char(string='Numéro de presse')
+    name        = fields.Char(string='Numéro de presse')
+    designation = fields.Char(string='Désignation')
     classe = fields.Selection([
         ('1','1'),
         ('2','2'),
@@ -32,7 +33,7 @@ class is_presse(models.Model):
     emplacement        = fields.Many2one('is.emplacement.outillage', string='Emplacement ')
     classe_commerciale = fields.Many2one('is.presse.classe', string='Classe commerciale')
     puissance          = fields.Many2one('is.presse.classe', string='Puissance')
-    puissance_reelle   = fields.Char(string='Puissance réelle')
+    puissance_reelle   = fields.Char(string='Puissance réelle (T)')
     type_de_presse     = fields.Char(string='Type de presse')
     constructeur       = fields.Many2one('is.outillage.constructeur', string='Constructeur')
     num_construceur    = fields.Char(string='N° constructeur')
@@ -82,7 +83,9 @@ class is_presse(models.Model):
         ('RSL68','RSL68'),
     ], string='Type huile hydraulique')
     volume_reservoir     = fields.Char(string='Volume réservoir')
-    encombrement         = fields.Char(string='Encombrement')
+    longueur             = fields.Integer(string='Longueur (mm)')
+    largeur              = fields.Integer(string='Largeur (mm)')
+    hauteur              = fields.Integer(string='Hauteur (mm)')
     puissance_electrique = fields.Char(string='Puissance électrique moteur')
     type_huile_graissage = fields.Selection([
         ('sans','sans'),
