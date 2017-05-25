@@ -674,6 +674,7 @@ class is_cout(models.Model):
         return True
 
     def save_cout_report(self):
+        user = self.env['res.users'].browse(self._uid)
         with api.Environment.manage():
             new_cr = self.pool.cursor()
             self = self.with_env(self.env(cr=new_cr))
@@ -681,9 +682,11 @@ class is_cout(models.Model):
             file_param  = self.env['ir.config_parameter'].get_param('path_report_pdf')
             if not os.path.exists(file_param):
                 os.makedirs(file_param)
-            for rec in self.search([], order="id desc"):
+            for rec in self.search([], order="name",limit=10000):
+                code_pg=rec.name.is_code
                 result, format = self.env['report'].get_pdf(rec, report_service), 'pdf'
-                file_name = file_param + '/'+str(rec.id) +'.pdf'
+                file_name = file_param + '/'+str(code_pg) +'.pdf'
+                print file_name
                 fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
                 try:
                     os.write(fd, result)
@@ -699,13 +702,15 @@ class is_cout(models.Model):
         mail_pool = self.env['mail.mail']
         values={}
         values.update({'subject': 'Coût article printing task finished.'})
+        values.update({'email_from': user.partner_id.email})
         values.update({'email_to': user.partner_id.email})
         values.update({'body_html': 'Printing of Coût article Reports are finished.' })
         values.update({'body': 'Printing of Coût article Reports are finished.' })
 #         values.update({'res_id': 'obj.id' }) #[optional] here is the record id, where you want to post that email after sending
         values.update({'model': 'is.cout' }) #[optional] here is the object(like 'project.project')  to whose record id you want to post that email after sending
-        msg_id = mail_pool.create(values)
+        msg_id = mail_pool.sudo().create(values)
         # And then call send function of the mail.mail,
+        print values, msg_id
         if msg_id:
             msg_id.send()
         return True

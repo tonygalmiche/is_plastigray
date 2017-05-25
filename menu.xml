@@ -148,6 +148,17 @@
     <menuitem id="menu_is_cout_40"     sequence="40" name="Coût article"   parent="menu_is_cout"  action="is_cout_action" />
     <menuitem id="is_cout_export_menu" sequence="50" name="Coût Std / Act" parent="menu_is_cout"  action="is_cout_export_action" />
 
+    <record id="menu_sauvegarde_cout_pdf" model="ir.ui.menu" >
+        <field name="name">Sauvegarde coûts en PDF</field>
+        <field name="sequence">60</field>
+        <field name="parent_id" eval="ref('menu_is_cout')"/>
+        <field name="action"    ref="action_is_shedule_cout_article_report"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+
+
     <record id="menu_is_societes" model="ir.ui.menu">
         <field name="name">Société</field>
         <field name="sequence">40</field>

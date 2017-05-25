@@ -1,36 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-		<record id="is_shedule_cout_article_report_view" model="ir.ui.view">
+        <record id="is_shedule_cout_article_report_view" model="ir.ui.view">
             <field name="name">shedule.cout.article.report.form</field>
             <field name="model">shedule.cout.article.report</field>
             <field name="arch" type="xml">
-                <form string="Shedule Cout Article Report">
+                <form string="Sauvegarde coûts en PDF">
                     <label string=""/>
                     <group>
-                    	<field name="next_call"/>
+                        <field name="next_call"/>
                     </group>
                     <footer>
-                        <button name="set_sheduler_cout_article" string="Set Next Execution" type="object" class="oe_highlight"/>
+                        <button name="set_sheduler_cout_article" string="OK" type="object" class="oe_highlight"/>
                         or
-                        <button string="Cancel" class="oe_link" special="cancel" />
+                        <button string="Annuler" class="oe_link" special="cancel" />
                     </footer>
                 </form>
             </field>
         </record>
 
-
-
         <record id="action_is_shedule_cout_article_report" model="ir.actions.act_window">
-            <field name="name">Execution Of Cout Aricle Report</field>
+            <field name="name">Sauvegarde coûts en PDF</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">shedule.cout.article.report</field>
             <field name="view_type">form</field>
             <field name="view_id" ref="is_shedule_cout_article_report_view"/>
             <field name="target">new</field>
         </record>
-        
-        <menuitem id="is_shedule_cout_article_menu" sequence="60" name="Shadule Of Cout Aricle" parent="menu_is_cout"  action="action_is_shedule_cout_article_report" />
-
     </data>
 </openerp>
