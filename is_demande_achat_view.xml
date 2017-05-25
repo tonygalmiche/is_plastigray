@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="is_demande_achat_form_view">
+            <field name="name">is.demande.achat.form.view</field>
+            <field name="model">is.demande.achat</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_envoye" type="object" string="Envoye" class="oe_highlight" states="brouillon"/>
+                        <button name="action_termine" type="object" string="Termine" class="oe_highlight" states="envoye"/>
+                        <button name="action_po" type="object" string="Create Purchase Order" class="oe_highlight" attrs="{'invisible':[('is_pos','=',True)]}" />
+                        <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <h1>
+                            <field name="name" class="oe_inline" readonly="1"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="demandeur_id" required="1" />
+                                <field name="acheteur_id" required="1" />
+                                <field name="type_da"/> 
+                                <field name="sous_type_da"/> 
+                                <field name="lieu_autre"/>
+                                <field name="delai_souhaite" required="1" /> 
+                                <field name="lieu_livraison"/> 
+                                
+                           </group>
+                            <group>
+                                <field name="fournisseur_id" required="1" />
+                                <field name="commentaire"/>
+                                <field name="fournisseur_autre"/>
+                                <field name="piece_jointe"/>
+                                <field name="piece_jointe_autre"/> 
+                                <field name="equipement_mesure"/>
+                                <field name="is_pos" invisible="1"/>
+                                <field name="po_id" readonly="1" />
+                            </group>
+                        </group>
+                        <group>
+                            <field name="fiche_securite"/>
+                        </group>
+                        <group string="Lignes" >
+                            <field name="line_ids" nolabel="1">
+                                <tree editable="bottom" >
+                                    <field name="product_id"/>
+                                    <field name="code_fournisseur"/>
+                                    <field name="designation"/>
+                                    <field name="qt_cde"/>
+                                    <field name="prix"/>
+                                    <field name="compte"/>
+                                    <field name="section"/>
+                                    <field name="chantier"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_achat_tree_view">
+            <field name="name">is.demande.achat_tree_view</field>
+            <field name="model">is.demande.achat</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/> 
+                    <field name="demandeur_id"/> 
+                    <field name="acheteur_id"/> 
+                    <field name="type_da"/> 
+                    <field name="sous_type_da"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_achat_search_view" >
+            <field name="name">is.demande.achat_search_view</field>
+            <field name="model">is.demande.achat</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="demandeur_id"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_demande_achat_action">
+            <field name="name">Demandes d'achat</field>
+            <field name="res_model">is.demande.achat</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1504,6 +1504,10 @@
     <!-- Préchauffeurs - Préchauffeurs sub menu -->
     <menuitem id="menu_is_prechauffeurs_prechauffeurs_outillages" sequence="10" name="Préchauffeurs" parent="menu_prechauffeurs_outillages" action="action_is_prechauffeur_is_plastigray" />
 
+    <!-- Achats / Demandes d'achats -->
+    <menuitem id="menu_demandes_d_achats" sequence="25" name="Demandes d'achats"  parent="menu_is_achats" />
+    <menuitem id="menu_demandes_d_achat_11"  sequence="25" parent="menu_demandes_d_achats" action="is_demande_achat_action" />
+
   </data>
 </openerp>
 

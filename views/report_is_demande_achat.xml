@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <template id="report_is_demande_achat">
+        <t t-call="report.html_container">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <t t-foreach="docs" t-as="o">
+                        <t t-if="not o or not 'company_id' in o">
+                            <t t-set="company" t-value="res_company"></t>
+                        </t>
+        
+                        <div class="header">
+                            <table class="table table-condensed" width="100%">
+                                <tr>
+                                    <td width="25%">
+                                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+                                    </td>
+                                    <td class="text-center" width="50%">
+                                        <b>Fiche de vie</b>
+                                    </td>
+                                    <td class="text-center" width="25%">
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
+                            <tr>
+                                <td class="text-left" style="border: 2px solid black;" width="20%"><b>DEMANDE D'ACHAT</b></td>
+                                <td class="text-left" style="border: 2px solid black;" width="30%"><b>Gray</b></td>
+                                <td class="text-left" style="border: 2px solid black;" width="20%"><b><span t-field="o.sous_type_da"/></b></td>
+                                <td class="text-left" style="border: 2px solid black;" width="20%"><b><span t-field="o.name"/></b></td>
+                            </tr>
+                        </table>
+                        <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Demandeur :</b><span t-field="o.demandeur_id.name"/></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b>Delai Liv souhaite : </b><span t-field="o.delai_souhaite"/></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Lieu de Livraison :</b><span t-field="o.lieu_livraison.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b>Fournisseur : </b><span t-field="o.fournisseur_id.name"/></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Date d'emission :</b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b>Fournisseur (Autre) : </b><span t-field="o.fournisseur_autre"/></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Autre :</b><span t-field="o.lieu_autre"/></td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
+                            <thead>
+                                <tr width="100%">
+                                    <th width="5%" style="border: 2px solid black;"><strong>Lig</strong></th>
+                                    <th width="20%" style="border: 2px solid black;"><strong>Code PG</strong></th>
+                                    <th width="20%" style="border: 2px solid black;"><strong>Code Fournisseur</strong></th>
+                                    <th width="20%" style="border: 2px solid black;"><strong>Designation</strong></th>
+                                    <th width="5%" style="border: 2px solid black;"><strong>Qt Cde</strong></th>
+                                    <th width="5%" style="border: 2px solid black;"><strong>Prix</strong></th>
+                                    <th width="5%" style="border: 2px solid black;"><strong>Compte</strong></th>
+                                    <th width="5%" style="border: 2px solid black;"><strong>Section</strong></th>
+                                    <th width="5%" style="border: 2px solid black;"><strong>Chantier</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="counter" t-value="0" />
+                                <t t-set="total" t-value="0" />
+                                <tr t-foreach="o.line_ids" t-as="l">
+                                    <t t-set="counter" t-value="counter+1" />
+                                    <t t-set="total" t-value="total+l.prix" />
+                                    <td style="border: 2px solid black;"><span t-esc="counter"/></td>
+                                    <td style="border: 2px solid black;"><span t-field="l.product_id.name"/> </td>
+                                    <td style="border: 2px solid black;"><span t-field="l.code_fournisseur"/> </td>
+                                    <td style="border: 2px solid black;"><span t-field="l.designation"/> </td>
+                                    <td style="border: 2px solid black;"><span t-field="l.qt_cde"/></td>
+                                    <td style="border: 2px solid black;"><span t-field="l.prix"/></td>
+                                    <td style="border: 2px solid black;"><span t-field="l.compte"/></td>
+                                    <td style="border: 2px solid black;"><span t-field="l.section"/></td>
+                                    <td style="border: 2px solid black;"><span t-field="l.chantier"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="border: 2px solid black;"></td>
+                                    <td style="border: 2px solid black;"></td>
+                                    <td style="border: 2px solid black;"></td>
+                                    <td style="border: 2px solid black;"></td>
+                                    <td style="border: 2px solid black;"><b>Total</b></td>
+                                    <td style="border: 2px solid black;"><span t-esc="total"/></td>
+                                    <td style="border: 2px solid black;"></td>
+                                    <td style="border: 2px solid black;"></td>
+                                    <td style="border: 2px solid black;"></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                        <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
+                            <tr>
+                                <td class="text-left"><b>Piece Jointe :</b><span t-field="o.piece_jointe"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left"><b>Piece Jointe (Autre) :</b><span t-field="o.piece_jointe_autre"/></td>
+                            </tr>
+                        </table>
+                        <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
+                            <tr>
+                                <td class="text-left"><b>Commentaire :</b><span t-field="o.commentaire"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left"><b>Equipement de mesure a etalonner :</b><span t-field="o.equipement_mesure"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left"><b>Demander la fiche de donnees de securite au fournisseur :</b><span t-field="o.fiche_securite"/></td>
+                            </tr>
+                        </table>
+                        <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Date :</b><span t-usertime="%Y-%m-%d %H-%M-%S" /></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b>Date : </b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Date :</b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Service Achat :</b></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Visa Demandeur :</b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b>Visa Responsable Service</b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Visa Responsable Budget</b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Date Rcp</b></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b></b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b></b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b></b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>N code :</b></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b></b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="30%"><b></b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b></b></td>
+                                <td class="text-left" style="border-left: 2px solid black;" width="20%"><b>Date Cde :</b></td>
+                            </tr>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report 
+        string="Demande Achat" 
+        id="report_demande_achat" 
+        model="is.demande.achat" 
+        report_type="qweb-pdf"
+        name="is_plastigray.report_is_demande_achat" 
+        file="is_plastigray.report_is_demande_achat"
+        header="False"
+    />
+    
+    <record id="report_demande_achat" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="is_plastigray.plan_de_charge_portrait_paperformat"/>
+    </record>
+
+</data>
+</openerp>
+

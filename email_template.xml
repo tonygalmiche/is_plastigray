@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<openerp>
+    <data>
+
+        <record id="demande_chart_demandeur_id_email_template" model="email.template">
+            <field name="name">Demande Chart of Demandeur</field>
+            <field name="email_from">${(object.demandeur_id.email or '')|safe}</field>
+            <field name="subject">Demande Chart of Demandeur</field>
+            <field name="email_to">${object.demandeur_id.email|safe}</field>
+            <field name="lang">${object.lang}</field>
+            <field name="model_id" ref="is_plastigray.model_is_demande_achat"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+Hello ${object.demandeur_id.name},
+<table cellspacing="1" border="0" cellpadding="4">
+    <tr>
+        <td>Fournisseur : ${object.fournisseur_id.name}</td>
+        <td>Delai Liv souhaite : ${object.delai_souhaite}</td>
+    </tr>
+    <tr>
+        <td>Type : ${object.type_da}</td>
+        <td>Piece Jointe : ${object.piece_jointe}</td>
+    </tr>
+</table>
+<p>
+    Thanks,
+</p>
+            ]]></field>
+        </record>
+        
+        <record id="demande_chart_acheteur_id_email_template" model="email.template">
+            <field name="name">Demande Chart of Acheteur</field>
+            <field name="email_from">${(object.acheteur_id.email or '')|safe}</field>
+            <field name="subject">Demande Chart of Acheteur</field>
+            <field name="email_to">${object.acheteur_id.email|safe}</field>
+            <field name="lang">${object.lang}</field>
+            <field name="model_id" ref="is_plastigray.model_is_demande_achat"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[
+Hello ${object.acheteur_id.name},
+<table cellspacing="1" border="0" cellpadding="4">
+    <tr>
+        <td>Fournisseur : ${object.fournisseur_id.name}</td>
+        <td>Delai Liv souhaite : ${object.delai_souhaite}</td>
+    </tr>
+    <tr>
+        <td>Type : ${object.type_da}</td>
+        <td>Piece Jointe : ${object.piece_jointe}</td>
+    </tr>
+</table>
+<p>
+    Thanks,
+</p>
+            ]]></field>
+        </record>
+
+    </data>
+</openerp>
