@@ -672,8 +672,7 @@ class is_cout(models.Model):
         threaded_calculation = threading.Thread(target=self.save_cout_report, args=())
         threaded_calculation.start()
         return True
-    
-    
+
     def save_cout_report(self):
         with api.Environment.manage():
             new_cr = self.pool.cursor()
@@ -690,8 +689,26 @@ class is_cout(models.Model):
                     os.write(fd, result)
                 finally:
                     os.close(fd)
+            self.send_mail_notyfy_user()
             new_cr.close()
+            
             return {}
+
+    def send_mail_notyfy_user(self):
+        user = self.env['res.users'].browse(self._uid)
+        mail_pool = self.env['mail.mail']
+        values={}
+        values.update({'subject': 'Coût article printing task finished.'})
+        values.update({'email_to': user.partner_id.email})
+        values.update({'body_html': 'Printing of Coût article Reports are finished.' })
+        values.update({'body': 'Printing of Coût article Reports are finished.' })
+#         values.update({'res_id': 'obj.id' }) #[optional] here is the record id, where you want to post that email after sending
+        values.update({'model': 'is.cout' }) #[optional] here is the object(like 'project.project')  to whose record id you want to post that email after sending
+        msg_id = mail_pool.create(values)
+        # And then call send function of the mail.mail,
+        if msg_id:
+            msg_id.send()
+        return True
 
     @api.multi
     def cout_standard_indice_precedent(self):

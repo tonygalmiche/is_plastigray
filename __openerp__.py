@@ -87,6 +87,7 @@ Module principal du projet Plastigray
         "wizard/stock_transfer_details.xml",
         "wizard/audit_log_wizard.xml",
         "wizard/is_cas_emploi_wizard.xml",
+        "wizard/set_sheduler_cout_article.xml",
         "views/web_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",
