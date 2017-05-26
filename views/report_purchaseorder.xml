@@ -77,9 +77,16 @@
                 <img t-if="company.is_logo" t-att-src="'data:image/png;base64,%s' % company.is_logo" style="max-height: 60px;"/>
                 <div class="livraison">
                     Adresse de livraison : <br />
-                    <span t-field="company.name"/> <span t-field="company.street"/><br />
-                    <span t-field="company.street2"/><br />
-                    <span t-field="company.zip"/> <span t-field="company.city"/><br /><br />
+                    <t t-if="not o.is_livre_a_id">
+                        <span t-field="company.name"/> <span t-field="company.street"/><br />
+                        <span t-field="company.street2"/><br />
+                        <span t-field="company.zip"/> <span t-field="company.city"/><br /><br />
+                    </t>
+                    <t t-if="o.is_livre_a_id">
+                        <span t-field="o.is_livre_a_id.name"/> <span t-field="o.is_livre_a_id.street"/><br />
+                        <t t-if="o.is_livre_a_id.street2"><span t-field="o.is_livre_a_id.street2"/><br /></t>
+                        <span t-field="o.is_livre_a_id.zip"/> <span t-field="o.is_livre_a_id.city"/><br /><br />
+                    </t>
                 </div>
                 <div class="facturation">
                     Adrese de facturation : PLASTIGRAY SAS <br />
@@ -103,6 +110,9 @@
         </div><br />
         <div class="row">
             <div class="col-xs-12">
+                <t t-if="o.is_demandeur_id">
+                    Contact : <b><span t-field="o.is_demandeur_id.name"/> / <span t-field="o.is_demandeur_id.partner_id.email"/> </b><br />
+                </t>
                 <i>
                 Conditions de paiement :  <span t-field="o.partner_id.property_supplier_payment_term.name"/> <br />
                 Type de réglement :       <span t-field="o.partner_id.is_type_reglement.name"/> <br />

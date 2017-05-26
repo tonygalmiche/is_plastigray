@@ -35,10 +35,10 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form" />
             <field name="arch" type="xml">
-            	<xpath expr="//header/button[@name='purchase_confirm']" position="before">
+                <xpath expr="//header/button[@name='purchase_confirm']" position="before">
                     <button name="do_demande_achat" states="draft" type="object" string="Faire une demande d'achat" id="draft_demande_achat"/>
                     <button name="do_demande_achat" states="demande_achat" type="object" string="Confirmation de cette demande d'achat" id="draft_demande_confirm" context="{'confirm_demande_achat':True}"/>
-                	<button name="action_cancel_draft" type="object" states="demande_achat" string="Set to Draft"/>
+                    <button name="action_cancel_draft" type="object" states="demande_achat" string="Set to Draft"/>
                 </xpath>
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
@@ -58,6 +58,17 @@
                 <button string="Send PO by Email" position="attributes" > 
                     <attribute name="invisible">1</attribute>
                 </button>
+
+                <field name="date_order" position="after">
+                    <field name="is_livre_a_id"  domain="[('is_company','=',True)]"/>
+                </field>
+
+                <field name="picking_type_id" position="replace"/>
+                <field name="location_id" position="after">
+                    <field name="picking_type_id" on_change="onchange_picking_type_id(picking_type_id, context)" domain="[('code','=','incoming')]" options="{'no_create': True}" context="{'special_shortened_wh_name': True}" groups="stock.group_locations"/>
+                </field>
+
+
                 <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="is_justification" />
                 </xpath>
@@ -95,7 +106,7 @@
             </field>
         </record>
 
-		<record id="purchase_demande_achat" model="ir.actions.act_window">
+        <record id="purchase_demande_achat" model="ir.actions.act_window">
             <field name="name">Quotation</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
@@ -105,7 +116,7 @@
             <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
         </record>
     
-    	<menuitem id="menu_is_achats_cde_11" sequence="11" name="Demandes d'achats" parent="menu_is_achats_cde" action="purchase_demande_achat" />
+        <menuitem id="menu_is_achats_cde_11" sequence="11" name="Demandes d'achats" parent="menu_is_achats_cde" action="purchase_demande_achat" />
 
         <!--
         <record id="purchase_order_tree" model="ir.ui.view">

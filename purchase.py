@@ -46,6 +46,7 @@ class purchase_order_line(models.Model):
 class purchase_order(models.Model):
     _inherit = "purchase.order"
 
+    is_livre_a_id        = fields.Many2one('res.partner', 'Livrer à', help="Indiquez l'adresse de livraison si celle-ci est différente de celle de la société")
     is_num_da            = fields.Char("N°Demande d'achat")
     is_document          = fields.Char("Document (N° de dossier)")
     is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
