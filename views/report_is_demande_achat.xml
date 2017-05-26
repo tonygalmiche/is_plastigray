@@ -55,13 +55,17 @@
                         <br/>
                         <table class="table table-condensed" width="100%" style="border: 2px solid black;border-collapse: collapse;">
                             <thead>
-                                <tr width="100%">
-                                    <th width="5%" style="border: 2px solid black;"><strong>Lig</strong></th>
-                                    <th width="20%" style="border: 2px solid black;"><strong>Code PG</strong></th>
-                                    <th width="20%" style="border: 2px solid black;"><strong>Code Fournisseur</strong></th>
-                                    <th width="20%" style="border: 2px solid black;"><strong>Designation</strong></th>
-                                    <th width="5%" style="border: 2px solid black;"><strong>Qt Cde</strong></th>
-                                    <th width="5%" style="border: 2px solid black;"><strong>Prix</strong></th>
+                                <tr width="100%" style="background:#ffff00">
+                                    <th width="5%" rowspan="2" style="border: 2px solid black;"><strong>Lig</strong></th>
+                                    <th width="20%" rowspan="2" style="border: 2px solid black;"><strong>Code PG</strong></th>
+                                    <th width="20%" rowspan="2" style="border: 2px solid black;"><strong>Code Fournisseur</strong></th>
+                                    <th width="20%" rowspan="2" style="border: 2px solid black;"><strong>Designation</strong></th>
+                                    <th width="5%" rowspan="2" style="border: 2px solid black;"><strong>Qt Cde</strong></th>
+                                    <th width="5%" rowspan="2" style="border: 2px solid black;"><strong>Prix</strong></th>
+                                    <th colspan="3" ><strong>Imputation Comptable</strong></th>
+                                </tr>
+                                <tr width="100%" style="background:#ffff00">
+
                                     <th width="5%" style="border: 2px solid black;"><strong>Compte</strong></th>
                                     <th width="5%" style="border: 2px solid black;"><strong>Section</strong></th>
                                     <th width="5%" style="border: 2px solid black;"><strong>Chantier</strong></th>
@@ -83,16 +87,16 @@
                                     <td style="border: 2px solid black;"><span t-field="l.section"/></td>
                                     <td style="border: 2px solid black;"><span t-field="l.chantier"/></td>
                                 </tr>
-                                <tr>
-                                    <td style="border: 2px solid black;"></td>
-                                    <td style="border: 2px solid black;"></td>
-                                    <td style="border: 2px solid black;"></td>
-                                    <td style="border: 2px solid black;"></td>
-                                    <td style="border: 2px solid black;"><b>Total</b></td>
+                                <tr style="background:#ffff00">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>Total</b></td>
                                     <td style="border: 2px solid black;"><span t-esc="total"/></td>
-                                    <td style="border: 2px solid black;"></td>
-                                    <td style="border: 2px solid black;"></td>
-                                    <td style="border: 2px solid black;"></td>
+                                    <td><span t-esc="company.currency_id.name"/></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                                 
                             </tbody>
@@ -159,7 +163,7 @@
     />
     
     <record id="report_demande_achat" model="ir.actions.report.xml">
-        <field name="paperformat_id" ref="is_plastigray.plan_de_charge_portrait_paperformat"/>
+        <field name="paperformat_id" ref="is_plastigray.plan_de_charge_landscape_paperformat"/>
     </record>
 
 </data>

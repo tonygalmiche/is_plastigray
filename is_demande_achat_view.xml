@@ -47,6 +47,7 @@
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom" >
                                     <field name="product_id"/>
+                                    <field name="product_uom" />
                                     <field name="code_fournisseur"/>
                                     <field name="designation"/>
                                     <field name="qt_cde"/>

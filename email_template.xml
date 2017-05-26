@@ -14,14 +14,15 @@
 Hello ${object.demandeur_id.name},
 <table cellspacing="1" border="0" cellpadding="4">
     <tr>
-        <td>Fournisseur : ${object.fournisseur_id.name}</td>
-        <td>Delai Liv souhaite : ${object.delai_souhaite}</td>
+        <td>Fournisseur : ${object.fournisseur_id.name or ''}</td>
+        <td>Delai Liv souhaite : ${object.delai_souhaite or ''}</td>
     </tr>
     <tr>
-        <td>Type : ${object.type_da}</td>
-        <td>Piece Jointe : ${object.piece_jointe}</td>
+        <td>Type : ${object.type_da or ''}</td>
+        <td>Piece Jointe : ${object.piece_jointe or ''}</td>
     </tr>
 </table>
+<div><b>To view data <a href='${object.record_url}'>click here</a></b></div>
 <p>
     Thanks,
 </p>
@@ -40,14 +41,15 @@ Hello ${object.demandeur_id.name},
 Hello ${object.acheteur_id.name},
 <table cellspacing="1" border="0" cellpadding="4">
     <tr>
-        <td>Fournisseur : ${object.fournisseur_id.name}</td>
-        <td>Delai Liv souhaite : ${object.delai_souhaite}</td>
+        <td>Fournisseur : ${object.fournisseur_id.name or ''}</td>
+        <td>Delai Liv souhaite : ${object.delai_souhaite or ''}</td>
     </tr>
     <tr>
-        <td>Type : ${object.type_da}</td>
-        <td>Piece Jointe : ${object.piece_jointe}</td>
+        <td>Type : ${object.type_da or ''}</td>
+        <td>Piece Jointe : ${object.piece_jointe or ''}</td>
     </tr>
 </table>
+<div><b>To view data <a href='${object.record_url}'>click here</a></b></div>
 <p>
     Thanks,
 </p>

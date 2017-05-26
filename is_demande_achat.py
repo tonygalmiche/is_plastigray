@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models,fields,api
+from openerp.tools.translate import _
+import werkzeug
+from urlparse import urljoin
 
 class is_demande_achat(models.Model):
     _name='is.demande.achat'
@@ -42,6 +45,7 @@ class is_demande_achat(models.Model):
                               ('envoye','Envoye'),
                               ('termine','Termine'),
                              ], string='Equipement de mesure a etalonner', select=True)
+    record_url         = fields.Char('Record URL for Mail')
 
 
     _defaults = {
@@ -57,6 +61,26 @@ class is_demande_achat(models.Model):
             sequence_id = sequence_ids[0].res_id
             vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
         res = super(is_demande_achat, self).create(vals)
+        model, action_id = data_obj.get_object_reference('is_plastigray', 'is_demande_achat_action')
+        print ":action_id::",action_id
+        base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+        menu_id = self.env['ir.ui.menu'].search([('name','=', "Demandes d'achat")])
+        print "::menu_id::",menu_id
+        route = 'login'
+        query = dict(db=self._cr.dbname)
+        fragment = dict()
+        fragment['action'] = action_id
+        fragment['view_type'] = 'form'
+        fragment['menu_id'] = menu_id[0]
+        fragment['model'] = model
+        fragment['id'] = res.id
+
+        if fragment:
+            query['redirect'] = '/web#' + werkzeug.url_encode(fragment)
+            
+        record_url = urljoin(base_url, "/web/%s?%s" % (route, werkzeug.url_encode(query)))
+        res.record_url = record_url
+        
         return res
 
     @api.multi
@@ -78,6 +102,7 @@ class is_demande_achat(models.Model):
         po_obj = self.env['purchase.order']
         stock_location_obj = self.env['stock.location']
         product_pricelist_obj = self.env['product.pricelist']
+        line_obj = self.env['purchase.order.line']
         for rec in self:
             location_id = stock_location_obj.search([('usage', '=', 'supplier')])
             pricelist_id = product_pricelist_obj.search([('type', '=', 'sale')])
@@ -89,18 +114,36 @@ class is_demande_achat(models.Model):
             }
             po_line = []
             for line in rec.line_ids:
-                val = {
+                
+                on_change_val=line_obj.onchange_product_id(
+                    pricelist_id[0].id, 
+                    line.product_id.id, 
+                    line.qt_cde, 
+                    line.product_uom.id, 
+                    rec.fournisseur_id.id, 
+                )
+                val = on_change_val['value']
+                val.update({
                     'product_id': line.product_id and line.product_id.id or False,
-                    'name': line.product_id and line.product_id.name or '',
                     'product_qty': line.qt_cde,
                     'price_unit': line.prix,
-                    'date_planned': rec.delai_souhaite,
-                }
+                    'taxes_id': [(6, 0, on_change_val['value']['taxes_id'])],
+                })
                 po_line.append((0, 0, val))
             po_val.update({'order_line': po_line})
             po_id = po_obj.create(po_val)
             rec.po_id = po_id
             rec.is_pos = True
+            return {
+                'domain': "[('id','=', " + str(po_id.id) + ")]",
+                'name': _('Purchase Orders'),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'res_model': 'purchase.order',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'search_view_id': po_id.id
+            }
 
 
 class is_demande_achat_line(models.Model):
@@ -115,4 +158,10 @@ class is_demande_achat_line(models.Model):
     compte = fields.Char('Compte')
     section = fields.Char('Section')
     chantier = fields.Char('Chantier')
+    product_uom = fields.Many2one('product.uom', string='unit of purchase')
+    
+    @api.onchange('product_id')
+    def onchange_product_id(self):
+        if self.product_id and self.product_id.uom_po_id:
+            self.product_uom = self.product_id.uom_po_id.id
 
