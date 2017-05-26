@@ -80,7 +80,7 @@ class account_invoice(models.Model):
         ('mail'       , 'Envoi par mail (1 mail par facture)'),
         ('mail_client', 'Envoi par mail (1 mail par client)'),
     ], "Mode d'envoi de la facture")
-    is_date_envoi_mail = fields.Datetime("Mail envoyé le", readonly=True)
+    is_date_envoi_mail = fields.Datetime("Mail envoyé le", readonly=False)
 
     def _compute(self):
         for obj in self:
