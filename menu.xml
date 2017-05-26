@@ -1508,6 +1508,9 @@
     <menuitem id="menu_demandes_d_achats" sequence="25" name="Demandes d'achats"  parent="menu_is_achats" />
     <menuitem id="menu_demandes_d_achat_11"  sequence="25" parent="menu_demandes_d_achats" action="is_demande_achat_action" />
 
+    <menuitem id="menu_main_facturation_pk" sequence="95" name="Facturation PK" parent="menu_is_ventes" />
+    <menuitem id="menu_factures_pk"  sequence="25" parent="menu_main_facturation_pk" action="is_facture_pk_action" />
+
   </data>
 </openerp>
 

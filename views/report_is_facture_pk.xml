@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+    <template id="report_is_facture_pk">
+        <t t-call="report.html_container">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <t t-foreach="docs" t-as="o">
+                        <t t-if="not o or not 'company_id' in o">
+                            <t t-set="company" t-value="res_company"></t>
+                        </t>
+        
+                        <div class="header">
+                            <table class="table table-condensed" width="100%">
+                                <tr>
+                                    <td width="25%">
+                                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+                                    </td>
+                                    <td class="text-center" width="50%">
+                                        <b>Fiche de vie</b>
+                                    </td>
+                                    <td class="text-center" width="25%">
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
+                            <tr>
+                                <td class="text-left" width="20%"><b>N de Facture</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.num_facture"/></td>
+                                <td class="text-left" width="20%"><b>Date de facture</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.date_facture"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-left" width="20%"><b>Annee de la facture</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.annee_facture"/></td>
+                                <td class="text-left" width="20%"><b>N de BL</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.num_bl"/></td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <br/>
+                        <table class="table table-condensed" width="100%">
+                            <thead>
+                                <tr width="100%">
+                                    <th width="8%"><strong>Commande</strong></th>
+                                    <th width="13%"><strong>Ref PK</strong></th>
+                                    <th width="25%"><strong>Designation</strong></th>
+                                    <th width="8%"><strong>Poids</strong></th>
+                                    <th width="8%"><strong>Quantite</strong></th>
+                                    <th width="8%"><strong>P.U.M.P</strong></th>
+                                    <th width="8%"><strong>P.T.M.P</strong></th>
+                                    <th width="8%"><strong>P.U.P.F</strong></th>
+                                    <th><strong>P.Total P.F.</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="l">
+                                    <td><span t-field="l.commande"/> </td>
+                                    <td><span t-field="l.ref_pk"/> </td>
+                                    <td><span t-field="l.designation"/> </td>
+                                    <td><span t-field="l.poids"/></td>
+                                    <td><span t-field="l.qt"/> </td>
+                                    <td><span t-field="l.pump"/> </td>
+                                    <td><span t-field="l.ptmp"/> </td>
+                                    <td><span t-field="l.pupf"/> </td>
+                                    <td><span t-field="l.total_pf"/> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report 
+        string="Facture Pk" 
+        id="report_facture_pk" 
+        model="is.facture.pk" 
+        report_type="qweb-pdf"
+        name="is_plastigray.report_is_facture_pk" 
+        file="is_plastigray.report_is_facture_pk"
+        header="False"
+    />
+
+   <record id="report_facture_pk" model="ir.actions.report.xml">
+        <field name="paperformat_id" ref="is_plastigray.plan_de_charge_portrait_paperformat"/>
+    </record>
+
+</data>
+</openerp>
+

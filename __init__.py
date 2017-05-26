@@ -40,6 +40,7 @@ import is_historique_controle
 import is_presse
 import is_prechauffeur
 import is_demande_achat
+import is_facture_pk
 
 import report
 import wizard
