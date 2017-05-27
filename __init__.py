@@ -41,6 +41,7 @@ import is_presse
 import is_prechauffeur
 import is_demande_achat
 import is_facture_pk
+import is_moyen_fabrication
 
 import report
 import wizard
