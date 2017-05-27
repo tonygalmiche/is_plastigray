@@ -81,6 +81,7 @@ Module principal du projet Plastigray
         "is_demande_achat_view.xml",
         "email_template.xml",
         "is_facture_pk_view.xml",
+        "is_moyen_fabrication_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

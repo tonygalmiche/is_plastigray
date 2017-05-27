@@ -1530,6 +1530,11 @@
     <menuitem id="menu_main_facturation_pk" sequence="95" name="Facturation PK" parent="menu_is_ventes" />
     <menuitem id="menu_factures_pk"  sequence="25" parent="menu_main_facturation_pk" action="is_facture_pk_action" />
 
+    <menuitem id="menu_type_equipement" sequence="45" name="Type Equipement"     parent="menu_sub_main_outillages_table" action="is_type_equipement_action" />
+    
+    <menuitem id="menu_sub_main_moyens_fabrication_table" sequence="30" parent="menu_main_outillages" name="Moyens Fabrication"/>
+    <menuitem id="menu_moyens_fabrication" sequence="10" name="Moyens Fabrication"     parent="menu_sub_main_moyens_fabrication_table" action="is_moyen_fabrication_action" />
+
   </data>
 </openerp>
 

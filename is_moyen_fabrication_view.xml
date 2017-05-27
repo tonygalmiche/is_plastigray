@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    
+            <record model="ir.ui.view" id="is_type_equipement_form_view">
+            <field name="name">is.type.equipement.form.view</field>
+            <field name="model">is.type.equipement</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/> 
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_type_equipement_tree_view">
+            <field name="name">is.type.equipement_tree_view</field>
+            <field name="model">is.type.equipement</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_type_equipement_search_view" >
+            <field name="name">is.type.equipement_search_view</field>
+            <field name="model">is.type.equipement</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_type_equipement_action">
+            <field name="name">Type Equipement</field>
+            <field name="res_model">is.type.equipement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- New model -->
+
+        <record model="ir.ui.view" id="is_moyen_fabrication_form_view">
+            <field name="name">is.moyen.fabrication.form.view</field>
+            <field name="model">is.moyen.fabrication</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <sheet>
+                        <h1>
+                        <label string="Name" class="oe_inline oe_edit_only" /><br/>
+                        <field name="name" class="oe_inline" />
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="type_equipement"/> 
+                                <field name="designation"/> 
+                                <field name="mold_ids" widget="many2many_tags" /> 
+                                <field name="base_capacitaire"/> 
+                                <field name="site_id"/> 
+                            </group>
+                            <group>
+                                <field name="emplacement"/> 
+                                <field name="fournisseur_id"/> 
+                                <field name="ref_fournisseur"/> 
+                                <field name="date_creation"/> 
+                                <field name="date_fin"/> 
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_moyen_fabrication_tree_view">
+            <field name="name">is.moyen.fabrication_tree_view</field>
+            <field name="model">is.moyen.fabrication</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/> 
+                    <field name="type_equipement"/> 
+                    <field name="designation"/> 
+                    <field name="date_creation"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_moye_fabrication_search_view" >
+            <field name="name">is.moyen.fabrication_search_view</field>
+            <field name="model">is.moyen.fabrication</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="type_equipement"/> 
+                    <field name="designation"/> 
+                    <field name="date_creation"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_moyen_fabrication_action">
+            <field name="name">Moyens Fabrication</field>
+            <field name="res_model">is.moyen.fabrication</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+</data>
+</openerp>
