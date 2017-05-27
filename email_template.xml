@@ -3,56 +3,31 @@
     <data>
 
         <record id="demande_chart_demandeur_id_email_template" model="email.template">
-            <field name="name">Demande Chart of Demandeur</field>
+            <field name="name">Demande d'achat éffectuée</field>
             <field name="email_from">${(object.demandeur_id.email or '')|safe}</field>
-            <field name="subject">Demande Chart of Demandeur</field>
+            <field name="subject">Demande d'achat ${object.name} éffectuée</field>
             <field name="email_to">${object.demandeur_id.email|safe}</field>
             <field name="lang">${object.lang}</field>
             <field name="model_id" ref="is_plastigray.model_is_demande_achat"/>
             <field name="auto_delete" eval="True"/>
             <field name="body_html"><![CDATA[
-Hello ${object.demandeur_id.name},
-<table cellspacing="1" border="0" cellpadding="4">
-    <tr>
-        <td>Fournisseur : ${object.fournisseur_id.name or ''}</td>
-        <td>Delai Liv souhaite : ${object.delai_souhaite or ''}</td>
-    </tr>
-    <tr>
-        <td>Type : ${object.type_da or ''}</td>
-        <td>Piece Jointe : ${object.piece_jointe or ''}</td>
-    </tr>
-</table>
-<div><b>To view data <a href='${object.record_url}'>click here</a></b></div>
-<p>
-    Thanks,
-</p>
+<p>Bonjour ${object.demandeur_id.name},</p>
+<p>La demande d'achat <a href='${object.record_url}'>${object.name}</a> a été traitée par ${object.acheteur_id.name}</p>
             ]]></field>
         </record>
         
         <record id="demande_chart_acheteur_id_email_template" model="email.template">
-            <field name="name">Demande Chart of Acheteur</field>
+            <field name="name">Demande d'achat à traiter</field>
             <field name="email_from">${(object.acheteur_id.email or '')|safe}</field>
-            <field name="subject">Demande Chart of Acheteur</field>
+            <field name="subject">Demande d'achat ${object.name} à traiter</field>
             <field name="email_to">${object.acheteur_id.email|safe}</field>
             <field name="lang">${object.lang}</field>
             <field name="model_id" ref="is_plastigray.model_is_demande_achat"/>
             <field name="auto_delete" eval="True"/>
             <field name="body_html"><![CDATA[
-Hello ${object.acheteur_id.name},
-<table cellspacing="1" border="0" cellpadding="4">
-    <tr>
-        <td>Fournisseur : ${object.fournisseur_id.name or ''}</td>
-        <td>Delai Liv souhaite : ${object.delai_souhaite or ''}</td>
-    </tr>
-    <tr>
-        <td>Type : ${object.type_da or ''}</td>
-        <td>Piece Jointe : ${object.piece_jointe or ''}</td>
-    </tr>
-</table>
-<div><b>To view data <a href='${object.record_url}'>click here</a></b></div>
-<p>
-    Thanks,
-</p>
+<p>Bonjour ${object.demandeur_id.name},</p>
+<p>La demande d'achat <a href='${object.record_url}'>${object.name}</a> créée par ${object.demandeur_id.name} est à traiter</p>
+<p>Merci d'avance</p>
             ]]></field>
         </record>
 

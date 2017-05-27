@@ -9,30 +9,33 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_envoye" type="object" string="Envoye" class="oe_highlight" states="brouillon"/>
-                        <button name="action_termine" type="object" string="Termine" class="oe_highlight" states="envoye"/>
-                        <button name="action_po" type="object" string="Create Purchase Order" class="oe_highlight" attrs="{'invisible':[('is_pos','=',True)]}" />
+                        <button name="action_envoye" type="object" string="Envoyer la demander d'achat" class="oe_highlight" states="brouillon"/>
+                        <button name="action_termine" type="object" string="Terminer" class="oe_highlight" states="envoye"/>
+                        <button 
+                            name="action_po" 
+                            type="object" 
+                            string="Créer la commande" 
+                            class="oe_highlight" 
+                            attrs="{'invisible':['|',('state','!=','termine'),('is_pos','=',True)]}" />
                         <field name="state" widget="statusbar" />
                     </header>
-                    <sheet>
+                    <sheet class="oe_form_sheet_width_wider">
                         <h1>
                             <field name="name" class="oe_inline" readonly="1"/>
                         </h1>
                         <group>
                             <group>
-                                <field name="demandeur_id" required="1" />
+                                <field name="fournisseur_id" required="1" />
+                                <field name="fournisseur_autre"/>
                                 <field name="acheteur_id" required="1" />
                                 <field name="type_da"/> 
                                 <field name="sous_type_da"/> 
-                                <field name="lieu_autre"/>
                                 <field name="delai_souhaite" required="1" /> 
                                 <field name="lieu_livraison"/> 
-                                
+                                <field name="lieu_autre"/>
                            </group>
                             <group>
-                                <field name="fournisseur_id" required="1" />
-                                <field name="commentaire"/>
-                                <field name="fournisseur_autre"/>
+                                <field name="demandeur_id" required="1" />
                                 <field name="piece_jointe"/>
                                 <field name="piece_jointe_autre"/> 
                                 <field name="equipement_mesure"/>
@@ -42,10 +45,12 @@
                         </group>
                         <group>
                             <field name="fiche_securite"/>
+                            <field name="commentaire"/>
                         </group>
                         <group string="Lignes" >
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom" >
+                                    <field name="sequence"/>
                                     <field name="product_id"/>
                                     <field name="product_uom" />
                                     <field name="code_fournisseur"/>
@@ -92,6 +97,14 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+        <record model="ir.actions.act_window" id="is_mes_demande_achat_action">
+            <field name="name">Mes demandes d'achat</field>
+            <field name="res_model">is.demande.achat</field>
+            <field name="domain">[('demandeur_id','=',uid)]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
     </data>
 </openerp>

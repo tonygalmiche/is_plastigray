@@ -238,6 +238,28 @@
     <menuitem id="menu_is_achats_prix_20" sequence="20" name="Lignes liste de prix"  parent="menu_is_achats_prix" action="is_pricelist_item_purchase_action" />
 
 
+    <!-- Achats / Demandes d'achats -->
+    <menuitem id="menu_demandes_achats" sequence="25" name="Demandes d'achats"  parent="menu_is_achats" />
+    <record id="is_mes_demande_achat_menu" model="ir.ui.menu">
+        <field name="name">Mes demandes d'achat</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('menu_demandes_achats')"/>
+        <field name="action"    ref="is_mes_demande_achat_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('base.group_user'),
+        ])]"/>
+    </record>
+    <record id="menu_demandes_achats_20" model="ir.ui.menu">
+        <field name="name">Demandes d'achat</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('menu_demandes_achats')"/>
+        <field name="action"    ref="is_demande_achat_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_achats_group'),
+        ])]"/>
+    </record>
+
+
     <!-- Achats / Commandes -->
     <record id="menu_is_achats_cde" model="ir.ui.menu">
         <field name="name">Commandes</field>
@@ -1504,9 +1526,6 @@
     <!-- Préchauffeurs - Préchauffeurs sub menu -->
     <menuitem id="menu_is_prechauffeurs_prechauffeurs_outillages" sequence="10" name="Préchauffeurs" parent="menu_prechauffeurs_outillages" action="action_is_prechauffeur_is_plastigray" />
 
-    <!-- Achats / Demandes d'achats -->
-    <menuitem id="menu_demandes_d_achats" sequence="25" name="Demandes d'achats"  parent="menu_is_achats" />
-    <menuitem id="menu_demandes_d_achat_11"  sequence="25" parent="menu_demandes_d_achats" action="is_demande_achat_action" />
 
     <menuitem id="menu_main_facturation_pk" sequence="95" name="Facturation PK" parent="menu_is_ventes" />
     <menuitem id="menu_factures_pk"  sequence="25" parent="menu_main_facturation_pk" action="is_facture_pk_action" />

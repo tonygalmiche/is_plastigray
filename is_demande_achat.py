@@ -40,10 +40,10 @@ class is_demande_achat(models.Model):
     commentaire        = fields.Char('Commentaire')
     is_pos             = fields.Boolean('Is Pos ?')
     line_ids           = fields.One2many('is.demande.achat.line', 'achat_id', string='Lignes')
-    po_id              = fields.Many2one('purchase.order', string='Purchase Order')
+    po_id              = fields.Many2one('purchase.order', string='Commande')
     state              = fields.Selection([('brouillon','Brouillon'),
-                              ('envoye','Envoye'),
-                              ('termine','Termine'),
+                              ('envoye','Envoyé'),
+                              ('termine','Terminé'),
                              ], string='Equipement de mesure a etalonner', select=True)
     record_url         = fields.Char('Record URL for Mail')
 
@@ -64,23 +64,21 @@ class is_demande_achat(models.Model):
         model, action_id = data_obj.get_object_reference('is_plastigray', 'is_demande_achat_action')
         print ":action_id::",action_id
         base_url = self.env['ir.config_parameter'].get_param('web.base.url')
-        menu_id = self.env['ir.ui.menu'].search([('name','=', "Demandes d'achat")])
-        print "::menu_id::",menu_id
+        #menu_id = self.env['ir.ui.menu'].search([('name','=', "Demandes d'achat")])
+        menu_id = data_obj.get_object_reference('is_plastigray', 'is_mes_demande_achat_menu')
         route = 'login'
         query = dict(db=self._cr.dbname)
+        model, action_id = data_obj.get_object_reference('is_plastigray', 'is_demande_achat_action')
         fragment = dict()
         fragment['action'] = action_id
         fragment['view_type'] = 'form'
         fragment['menu_id'] = menu_id[0]
         fragment['model'] = model
         fragment['id'] = res.id
-
         if fragment:
             query['redirect'] = '/web#' + werkzeug.url_encode(fragment)
-            
         record_url = urljoin(base_url, "/web/%s?%s" % (route, werkzeug.url_encode(query)))
         res.record_url = record_url
-        
         return res
 
     @api.multi
@@ -148,17 +146,19 @@ class is_demande_achat(models.Model):
 
 class is_demande_achat_line(models.Model):
     _name='is.demande.achat.line'
+    _order='sequence'
 
-    achat_id = fields.Many2one('is.demande.achat', string='Ligne')
-    product_id = fields.Many2one('product.product', string='Code PG')
+    achat_id         = fields.Many2one('is.demande.achat', string='Ligne')
+    sequence         = fields.Char('Séquence')
+    product_id       = fields.Many2one('product.product', string='Code PG')
     code_fournisseur = fields.Char('Code Fournisseur')
-    designation = fields.Char('Désignation')
-    qt_cde = fields.Float('Qt Cde')
-    prix = fields.Float('Prix')
-    compte = fields.Char('Compte')
-    section = fields.Char('Section')
-    chantier = fields.Char('Chantier')
-    product_uom = fields.Many2one('product.uom', string='unit of purchase')
+    designation      = fields.Char('Désignation')
+    qt_cde           = fields.Float('Qt Cde')
+    prix             = fields.Float('Prix')
+    compte           = fields.Char('Compte')
+    section          = fields.Char('Section')
+    chantier         = fields.Char('Chantier')
+    product_uom      = fields.Many2one('product.uom', string='Unité')
     
     @api.onchange('product_id')
     def onchange_product_id(self):
