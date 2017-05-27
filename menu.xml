@@ -810,6 +810,26 @@
     </record>
 
 
+    <!-- Facturation PK -->
+    <record id="menu_main_facturation_pk" model="ir.ui.menu" >
+        <field name="name">Facturation PK</field>
+        <field name="sequence">55</field>
+        <field name="parent_id" eval="ref('menu_is_ventes')"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+    <record id="menu_factures_pk" model="ir.ui.menu" >
+        <field name="name">Facturation PK</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('menu_main_facturation_pk')"/>
+        <field name="action"    ref="is_facture_pk_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+
+
     <!-- PIC à 3 ans -->
     <record id="is_pic_3ans_main_menu" model="ir.ui.menu" >
         <field name="name">PIC à 3 ans</field>
@@ -1527,8 +1547,6 @@
     <menuitem id="menu_is_prechauffeurs_prechauffeurs_outillages" sequence="10" name="Préchauffeurs" parent="menu_prechauffeurs_outillages" action="action_is_prechauffeur_is_plastigray" />
 
 
-    <menuitem id="menu_main_facturation_pk" sequence="95" name="Facturation PK" parent="menu_is_ventes" />
-    <menuitem id="menu_factures_pk"  sequence="25" parent="menu_main_facturation_pk" action="is_facture_pk_action" />
 
     <menuitem id="menu_type_equipement" sequence="45" name="Type Equipement"     parent="menu_sub_main_outillages_table" action="is_type_equipement_action" />
     

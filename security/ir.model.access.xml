@@ -645,6 +645,36 @@
         <field name="perm_create" eval="True"/>
     </record>
 
+
+    <record id="is_type_equipement_access"  model="ir.model.access" >
+        <field name="name">is_type_equipement_access</field>
+        <field name="model_id"    eval="ref('model_is_type_equipement')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_outillages_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_moyen_fabrication_access"  model="ir.model.access" >
+        <field name="name">is_moyen_fabrication_access</field>
+        <field name="model_id"    eval="ref('model_is_moyen_fabrication')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_outillages_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_moyen_fabrication_autre_access"  model="ir.model.access" >
+        <field name="name">is_moyen_fabrication_autre_access</field>
+        <field name="model_id"    eval="ref('model_is_moyen_fabrication_autre')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_outillages_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
     <!-- Accès Responsable de production -->
     <record id="is_atelier_access"  model="ir.model.access" >
         <field name="name">is_atelier_access</field>
@@ -1601,9 +1631,24 @@
         <field name="perm_create" eval="False"/>
     </record>
 
-
-stock.picking)
-
+    <record id="is_facture_pk_comptable_access"  model="ir.model.access" >
+        <field name="name">is_facture_pk_comptable_access</field>
+        <field name="model_id"    eval="ref('model_is_facture_pk')"/>
+        <field name="group_id"    eval="ref('is_comptable_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_facture_pk_line_comptable_access"  model="ir.model.access" >
+        <field name="name">is_facture_pk_line_comptable_access</field>
+        <field name="model_id"    eval="ref('model_is_facture_pk_line')"/>
+        <field name="group_id"    eval="ref('is_comptable_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
 
 
 </data>

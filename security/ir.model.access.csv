@@ -148,6 +148,15 @@ access_is_prechauffeur,access_is_prechauffeur,model_is_prechauffeur,base.group_u
 access_is_demande_achat,access_is_demande_achat,model_is_demande_achat,base.group_user,1,1,1,1
 access_is_demande_achat_line,access_is_demande_achat_line,model_is_demande_achat_line,base.group_user,1,1,1,1
 
+access_is_facture_pk,access_is_facture_pk,model_is_facture_pk,base.group_user,1,0,0,0
+access_is_facture_pk_line,access_is_facture_pk_line,model_is_facture_pk_line,base.group_user,1,0,0,0
+access_is_type_equipement,access_is_type_equipement,model_is_type_equipement,base.group_user,1,0,0,0
+access_is_moyen_fabrication,access_is_moyen_fabrication,model_is_moyen_fabrication,base.group_user,1,0,0,0
+access_is_moyen_fabrication_autre,access_is_moyen_fabrication_autre,model_is_moyen_fabrication_autre,base.group_user,1,0,0,0
+
+
+
+
 
 
 
