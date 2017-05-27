@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="view_is_moyen_fabrication_autre_form_plastigray">
+            <field name="name">view.is.moyen.fabrication.autre.form.plastigray</field>
+            <field name="model">is.moyen.fabrication.autre</field>
+            <field name="arch" type="xml">
+                <form string="Autres Moyens Fabrication">
+                    <sheet>
+                        <h1>
+	                        <label string="Name" class="oe_inline oe_edit_only" /><br/>
+	                        <field name="name" class="oe_inline" />
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="type_equipement"/>
+                                <field name="designation"/>
+                                <field name="mold_id"/>
+                            </group>
+                            <group>
+                                <field name="site_id"/>
+                                <field name="emplacement"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_is_moyen_fabrication_autre_tree_plastigray">
+            <field name="name">view.is.moyen.fabrication.autre.tree.plastigray</field>
+            <field name="model">is.moyen.fabrication.autre</field>
+            <field name="arch" type="xml">
+                <tree string="Autres Moyens Fabrication">
+                    <field name="name"/>
+                    <field name="type_equipement"/>
+                    <field name="designation"/>
+                    <field name="mold_id"/>
+                    <field name="site_id"/>
+                    <field name="emplacement"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_is_moyen_fabrication_autre_search_plastigray" >
+            <field name="name">view.is.moyen.fabrication.autre.search.plastigray</field>
+            <field name="model">is.moyen.fabrication.autre</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="action_is_moyen_fabrication_autre_plastigray">
+            <field name="name">Autres Moyens Fabrication</field>
+            <field name="res_model">is.moyen.fabrication.autre</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+</data>
+</openerp>
