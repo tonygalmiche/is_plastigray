@@ -8,7 +8,14 @@ from datetime import datetime
 class is_presse_classe(models.Model):
     _name='is.presse.classe'
 
-    name = fields.Char(string='Name')
+    name = fields.Char(string='Classe commerciale')
+
+
+class is_presse_puissance(models.Model):
+    _name='is.presse.puissance'
+
+    name = fields.Char(string='Puissance')
+
 
 
 class is_outillage_constructeur(models.Model):
@@ -31,8 +38,8 @@ class is_presse(models.Model):
         ('6','6'),
     ], string='Classe')
     emplacement        = fields.Many2one('is.emplacement.outillage', string='Emplacement ')
-    classe_commerciale = fields.Many2one('is.presse.classe', string='Classe commerciale')
-    puissance          = fields.Many2one('is.presse.classe', string='Puissance')
+    classe_commerciale = fields.Many2one('is.presse.classe'        , string='Classe commerciale')
+    puissance          = fields.Many2one('is.presse.puissance'     , string='Puissance')
     puissance_reelle   = fields.Char(string='Puissance réelle (T)')
     type_de_presse     = fields.Char(string='Type de presse')
     constructeur       = fields.Many2one('is.outillage.constructeur', string='Constructeur')
@@ -40,8 +47,9 @@ class is_presse(models.Model):
     type_commande      = fields.Char(string='Type de commande')
     annee              = fields.Char(string='Année')
     energie = fields.Selection([
-        ('electrique','Electrique'),
-        ('hydraulique','Hydraulique'),
+        ('electrique' , 'Electrique'),
+        ('hydraulique', 'Hydraulique'),
+        ('hybride'    , 'Hybride'),
     ], string='Energie')
     volume_tremie       = fields.Char(string='Volume trémie')
     volume_alimentateur = fields.Char(string='Volume alimentateur')

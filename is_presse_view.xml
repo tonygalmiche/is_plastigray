@@ -17,7 +17,6 @@
                 </form>
             </field>
         </record>
-
         <!-- Classe Presse Tree View -->
         <record model="ir.ui.view" id="view_is_presse_classe_tree_is_plastigray">
             <field name="name">view.is.presse.classe.tree.is.plastigray</field>
@@ -29,7 +28,6 @@
                 </tree>
             </field>
         </record>
-
         <!-- Classe Presse Action -->
         <record id="action_is_presse_classe_is_plastigray" model="ir.actions.act_window" >
             <field name="name">Classe Presse</field>
@@ -37,6 +35,44 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+
+        <!-- Puissance Presse Form View -->
+        <record model="ir.ui.view" id="view_is_presse_puissance_form_is_plastigray">
+            <field name="name">view.is.presse.puissance.form.is.plastigray</field>
+            <field name="model">is.presse.puissance</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <sheet>
+                        <group col="4" colspan="4">
+                            <field name="name" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!-- Puissance Presse Tree View -->
+        <record model="ir.ui.view" id="view_is_presse_puissance_tree_is_plastigray">
+            <field name="name">view.is.presse.puissance.tree.is.plastigray</field>
+            <field name="model">is.presse.puissance</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <!-- Puissance Presse Action -->
+        <record id="action_is_presse_puissance_is_plastigray" model="ir.actions.act_window" >
+            <field name="name">Puissance Presse</field>
+            <field name="res_model">is.presse.puissance</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
 
 
         <!-- Outillage Constructeur Form View -->

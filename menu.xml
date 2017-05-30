@@ -1523,6 +1523,15 @@
     <menuitem id="menu_is_type_controle_gabarit" sequence="20" name="Type de contrôle"       parent="menu_sub_main_outillages_table" action="is_type_controle_gabarit_action" />
     <menuitem id="menu_is_famille_instrument"    sequence="30" name="Familles d'instruments" parent="menu_sub_main_outillages_table" action="is_famille_instrument_action" />
 
+    <!-- Puissance Presse - Table sub menu - Outillages -->
+    <menuitem 
+        id="menu_is_presse_puissance_table_outillages" 
+        sequence="15"
+        name="Puissance Presse" 
+        parent="menu_sub_main_outillages_table" 
+        action="action_is_presse_puissance_is_plastigray"
+    />
+
     <!-- Classe Presse - Table sub menu - Outillages -->
     <menuitem 
         id="menu_is_presse_classe_table_outillages" 
@@ -1531,6 +1540,11 @@
         parent="menu_sub_main_outillages_table" 
         action="action_is_presse_classe_is_plastigray"
     />
+
+
+
+
+
     <!-- Constructeur - Table sub menu - Outillages -->
     <menuitem 
         id="menu_is_outillage_constructeur_table_outillages" 
