@@ -25,6 +25,7 @@
             <field name="arch" type="xml">
                 <tree string="Classe Presse">
                     <field name="name" />
+                    <field name="is_database_origine_id" />
                 </tree>
             </field>
         </record>
@@ -60,6 +61,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name" />
+                    <field name="is_database_origine_id" />
                 </tree>
             </field>
         </record>
@@ -99,6 +101,7 @@
             <field name="arch" type="xml">
                 <tree string="Outillage Constructeur">  
                     <field name="name" />
+                    <field name="is_database_origine_id" />
                 </tree>
             </field>
         </record>
@@ -227,6 +230,7 @@
                                 <field name="nb_noyau_pm"/>
                                 <field name="diametre_passage_buse"/>
                                 <field name="poids"/>
+                                <field name="site_id"/>
                             </group>
                         </group>
                     </sheet>

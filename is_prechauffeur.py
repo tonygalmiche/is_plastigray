@@ -8,7 +8,7 @@ class is_prechauffeur(models.Model):
     _name='is.prechauffeur'
 
     name              = fields.Char(string='N° du préchauffeur')
-    site_id           = fields.Many2one('is.emplacement.outillage', string='Site')
+    site_id           = fields.Many2one('is.database', string='Site')
     presse_id         = fields.Many2one('is.presse', string='Affectation sur le site')
     mold_id           = fields.Many2one('is.mold', string='Affectation moule')
     constructeur      = fields.Char(string='Constructeur')

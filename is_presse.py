@@ -114,5 +114,6 @@ class is_presse(models.Model):
     diametre_passage_buse = fields.Char(string='Ø Passage Buse')
     zone_chauffe          = fields.Char(string='Zones de chauffe')
     poids                 = fields.Char(string='Poids')
+    site_id               = fields.Many2one('is.database','Site')
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4

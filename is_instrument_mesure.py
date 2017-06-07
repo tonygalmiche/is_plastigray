@@ -34,7 +34,7 @@ class is_instrument_mesure(models.Model):
     type_boolean = fields.Boolean('Is Type?', default=False)
     etendue_boolean = fields.Boolean('Is Etendue?', default=False)
     resolution_boolean = fields.Boolean('Is Résolution?', default=False)
-    site_id = fields.Many2one("is.emplacement.outillage", "Site d'affectation")
+    site_id = fields.Many2one("is.database", "Site")
     lieu_stockage = fields.Char("Lieu de stockage")
     service_affecte = fields.Char("Personne/Service auquel est affecté l'instrument")
     

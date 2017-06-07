@@ -44,7 +44,7 @@
                                     attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"
                                 />
                             </group>
-                            <group col="4" colspan="4" groups="is_plastigray.is_resultat_du_controle_group">
+                            <group col="4" colspan="4">
                                 <field name="rapport_de_controle"/>
                             </group>
                          </group>

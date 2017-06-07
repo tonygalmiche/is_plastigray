@@ -17,7 +17,7 @@ class is_gabarit_controle(models.Model):
     indice_plan    = fields.Char("Indice plan")
     moule_ids      = fields.Many2many('is.mold','is_gabarit_mold_rel','gabarit_id','mold_id', string="Moules affectés")
     client_id      = fields.Many2one("res.partner","Client")
-    site_id        = fields.Many2one("is.emplacement.outillage","Site d'affectation")
+    site_id        = fields.Many2one('is.database', string='Site')
     lieu_stockage  = fields.Char("Lieu de stockage")
     periodicite    = fields.Integer("Périodicité ( en mois )")
     type_controle  = fields.Many2one("is.type.controle.gabarit","Type de contrôle")

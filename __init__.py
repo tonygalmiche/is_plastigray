@@ -30,7 +30,6 @@ import res_users
 import is_etuve
 import is_cde_ferme_cadencee
 import is_pic_3ans
-import is_copy_other_database
 import log
 import ir_actions_act_url
 import is_gabarit_controle
@@ -44,6 +43,7 @@ import is_facture_pk
 import is_moyen_fabrication
 import is_moyen_fabrication_autre
 
+import is_copy_other_database
 import report
 import wizard
 

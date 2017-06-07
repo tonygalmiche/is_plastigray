@@ -14,7 +14,7 @@ class is_historique_controle(models.Model):
     instrument_id = fields.Many2one('is.instrument.mesure', string='Instruments de mesure')
     gabarit_id = fields.Many2one('is.gabarit.controle', string='Gabarit de contrôle')
     date_controle = fields.Date(string='Date du contrôle', default=fields.Date.context_today, copy=False)
-    site_id = fields.Many2one('is.emplacement.outillage', string='Site')
+    site_id = fields.Many2one('is.database', string='Site')
     affectation = fields.Char(string='Affectation')
     operation = fields.Selection([
         ('C','Création'),

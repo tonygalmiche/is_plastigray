@@ -136,6 +136,7 @@
             <field name="arch" type="xml">
                 <tree string="Site d'affectation" editable="top">
                     <field name="name"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>
@@ -165,6 +166,7 @@
             <field name="arch" type="xml">
                 <tree string="Type de contrôle" editable="top">
                     <field name="name"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

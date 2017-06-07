@@ -1622,5 +1622,1408 @@ class is_escompte(models.Model):
                      }
         return is_escompte_vals
 
+    
+class is_type_controle_gabarit(models.Model):
+    _inherit = "is.type.controle.gabarit"
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_type_controle_gabarit, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_controle_gabarit()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Gabarit!'),
+                             _('(%s).') % str(e).decode('utf-8'))
 
 
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_type_controle_gabarit, self).create(vals)
+            obj.copy_other_database_controle_gabarit()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Gabarit!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_controle_gabarit(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for gabarit in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                controle_gabarit_vals = self.get_type_controle_gabarit_vals(gabarit, DB, USERID, USERPASS, sock)
+                dest_controle_gabarit_ids = sock.execute(DB, USERID, USERPASS, 'is.type.controle.gabarit', 'search', [('is_database_origine_id', '=', gabarit.id)], {})
+                if not dest_controle_gabarit_ids:
+                    dest_controle_gabarit_ids = sock.execute(DB, USERID, USERPASS, 'is.type.controle.gabarit', 'search', [('name', '=', gabarit.name)], {})
+                if dest_controle_gabarit_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.type.controle.gabarit', 'write', dest_controle_gabarit_ids, controle_gabarit_vals, {})
+                    controle_gabarit_created_id = dest_controle_gabarit_ids[0]
+                else:
+                    controle_gabarit_created_id = sock.execute(DB, USERID, USERPASS, 'is.type.controle.gabarit', 'create', controle_gabarit_vals, {})
+        return True
+
+    @api.model
+    def get_type_controle_gabarit_vals(self, gabarit, DB, USERID, USERPASS, sock):
+        controle_gabarit_vals ={
+                     'name' : tools.ustr(gabarit.name),
+                     'is_database_origine_id':gabarit.id,
+                     }
+        return controle_gabarit_vals
+    
+
+class is_presse_classe(models.Model):
+    _inherit='is.presse.classe'
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+   
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_presse_classe, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_presse_classe()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Classe!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_presse_classe, self).create(vals)
+            obj.copy_other_database_presse_classe()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Classe!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_presse_classe(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for classe in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                presse_classe_vals = self.get_presse_classe_vals(classe, DB, USERID, USERPASS, sock)
+                dest_presse_classe_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.classe', 'search', [('is_database_origine_id', '=', classe.id)], {})
+                if not dest_presse_classe_ids:
+                    dest_presse_classe_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.classe', 'search', [('name', '=', classe.name)], {})
+                if dest_presse_classe_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.presse.classe', 'write', dest_presse_classe_ids, presse_classe_vals, {})
+                    presse_classe_created_id = dest_presse_classe_ids[0]
+                else:
+                    presse_classe_created_id = sock.execute(DB, USERID, USERPASS, 'is.presse.classe', 'create', presse_classe_vals, {})
+        return True
+
+    @api.model
+    def get_presse_classe_vals(self, classe, DB, USERID, USERPASS, sock):
+        controle_gabarit_vals ={
+                     'name' : tools.ustr(classe.name),
+                     'is_database_origine_id':classe.id,
+                     }
+        return controle_gabarit_vals
+   
+    
+class is_outillage_constructeur(models.Model):
+    _inherit='is.outillage.constructeur'
+
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_outillage_constructeur, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_outillage_constructeur()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Constructeur!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_outillage_constructeur, self).create(vals)
+            obj.copy_other_database_outillage_constructeur()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Constructeur!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_outillage_constructeur(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for constructeur in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                outillage_constructeur_vals = self.get_outillage_constructeur_vals(constructeur, DB, USERID, USERPASS, sock)
+                dest_outillage_constructeur_ids = sock.execute(DB, USERID, USERPASS, 'is.outillage.constructeur', 'search', [('is_database_origine_id', '=', constructeur.id)], {})
+                if not dest_outillage_constructeur_ids:
+                    dest_outillage_constructeur_ids = sock.execute(DB, USERID, USERPASS, 'is.outillage.constructeur', 'search', [('name', '=', constructeur.name)], {})
+                if dest_outillage_constructeur_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.outillage.constructeur', 'write', dest_outillage_constructeur_ids, outillage_constructeur_vals, {})
+                    outillage_constructeur_created_id = dest_outillage_constructeur_ids[0]
+                else:
+                    outillage_constructeur_created_id = sock.execute(DB, USERID, USERPASS, 'is.outillage.constructeur', 'create', outillage_constructeur_vals, {})
+        return True
+
+    @api.model
+    def get_outillage_constructeur_vals(self, constructeur, DB, USERID, USERPASS, sock):
+        outillage_constructeur_vals ={
+                     'name' : tools.ustr(constructeur.name),
+                     'is_database_origine_id':constructeur.id,
+                     }
+        return outillage_constructeur_vals
+
+class is_famille_instrument(models.Model):
+    _inherit = 'is.famille.instrument'
+
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_famille_instrument, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_famille_instrument()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Instrument!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_famille_instrument, self).create(vals)
+            obj.copy_other_database_famille_instrument()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Instrument!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_famille_instrument(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for instrument in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                famille_instrument_vals = self.get_famille_instrument_vals(instrument, DB, USERID, USERPASS, sock)
+                dest_famille_instrument_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.instrument', 'search', [('is_database_origine_id', '=', instrument.id)], {})
+                if not dest_famille_instrument_ids:
+                    dest_famille_instrument_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.instrument', 'search', [('name', '=', instrument.name)], {})
+                if dest_famille_instrument_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.famille.instrument', 'write', dest_famille_instrument_ids, famille_instrument_vals, {})
+                    famille_instrument_created_id = dest_famille_instrument_ids[0]
+                else:
+                    famille_instrument_created_id = sock.execute(DB, USERID, USERPASS, 'is.famille.instrument', 'create', famille_instrument_vals, {})
+        return True
+
+    @api.model
+    def get_famille_instrument_vals(self, instrument, DB, USERID, USERPASS, sock):
+        famille_instrument_vals ={
+                     'name' : tools.ustr(instrument.name or ''),
+                     'intensive': tools.ustr(instrument.intensive or ''),
+                     'moyenne': tools.ustr(instrument.moyenne or ''),
+                     'faible': tools.ustr(instrument.faible or ''),
+                     'tolerance': tools.ustr(instrument.tolerance or ''),
+                     'afficher_classe':instrument.afficher_classe,
+                     'afficher_type':instrument.afficher_type,
+                     'is_database_origine_id':instrument.id,
+                     }
+        return famille_instrument_vals
+    
+    
+class is_type_equipement(models.Model):
+    _inherit='is.type.equipement'
+
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_type_equipement, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_type_equipement()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Equipement!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_type_equipement, self).create(vals)
+            obj.copy_other_database_type_equipement()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Equipement!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_type_equipement(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for equipement in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                type_equipement_vals = self.get_type_equipement_vals(equipement, DB, USERID, USERPASS, sock)
+                dest_type_equipement_ids = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'search', [('is_database_origine_id', '=', equipement.id)], {})
+                if not dest_type_equipement_ids:
+                    dest_type_equipement_ids = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'search', [('name', '=', equipement.name)], {})
+                if dest_type_equipement_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'write', dest_type_equipement_ids, type_equipement_vals, {})
+                    type_equipement_created_id = dest_type_equipement_ids[0]
+                else:
+                    type_equipement_created_id = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'create', type_equipement_vals, {})
+        return True
+
+    @api.model
+    def get_type_equipement_vals(self, equipement, DB, USERID, USERPASS, sock):
+        type_equipement_vals ={
+                     'name' : tools.ustr(equipement.name),
+                     'is_database_origine_id':equipement.id,
+                     }
+        return type_equipement_vals
+
+class is_presse_puissance(models.Model):
+    _inherit='is.presse.puissance'
+
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_presse_puissance, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_presse_puissance()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Puissance!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_presse_puissance, self).create(vals)
+            obj.copy_other_database_presse_puissance()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Puissance!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_presse_puissance(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for puissance in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                presse_puissance_vals = self.get_presse_puissance_vals(puissance, DB, USERID, USERPASS, sock)
+                dest_presse_puissance_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'search', [('is_database_origine_id', '=', puissance.id)], {})
+                if not dest_presse_puissance_ids:
+                    dest_presse_puissance_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'search', [('name', '=', puissance.name)], {})
+                if dest_presse_puissance_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'write', dest_presse_puissance_ids, presse_puissance_vals, {})
+                    presse_puissance_created_id = dest_presse_puissance_ids[0]
+                else:
+                    presse_puissance_created_id = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'create', presse_puissance_vals, {})
+        return True
+
+    @api.model
+    def get_presse_puissance_vals(self, puissance, DB, USERID, USERPASS, sock):
+        presse_puissance_vals ={
+                     'name' : tools.ustr(puissance.name),
+                     'is_database_origine_id':puissance.id,
+                     }
+        return presse_puissance_vals
+
+class is_emplacement_outillage(models.Model):
+    _inherit = "is.emplacement.outillage"
+    
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_emplacement_outillage, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_emplacement_outillage()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Outillage!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_emplacement_outillage, self).create(vals)
+            obj.copy_other_database_emplacement_outillage()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Outillage!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_emplacement_outillage(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for outillage in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                emplacement_outillage_vals = self.get_emplacement_outillage_vals(outillage, DB, USERID, USERPASS, sock)
+                dest_emplacement_outillage_ids = sock.execute(DB, USERID, USERPASS, 'is.emplacement.outillage', 'search', [('is_database_origine_id', '=', outillage.id)], {})
+                if not dest_emplacement_outillage_ids:
+                    dest_emplacement_outillage_ids = sock.execute(DB, USERID, USERPASS, 'is.emplacement.outillage', 'search', [('name', '=', outillage.name)], {})
+                if dest_emplacement_outillage_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.emplacement.outillage', 'write', dest_emplacement_outillage_ids, emplacement_outillage_vals, {})
+                    emplacement_outillage_created_id = dest_emplacement_outillage_ids[0]
+                else:
+                    emplacement_outillage_created_id = sock.execute(DB, USERID, USERPASS, 'is.emplacement.outillage', 'create', emplacement_outillage_vals, {})
+        return True
+
+    @api.model
+    def get_emplacement_outillage_vals(self, outillage, DB, USERID, USERPASS, sock):
+        emplacement_outillage_vals ={
+                     'name' : tools.ustr(outillage.name),
+                     'is_database_origine_id':outillage.id,
+                     }
+        return emplacement_outillage_vals
+
+class is_presse(models.Model):
+    _inherit='is.presse'
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_presse, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_is_presse()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Presse!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_presse, self).create(vals)
+            obj.copy_other_database_is_presse()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Presse!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_is_presse(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for presse in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                is_presse_vals = self.get_is_presse_vals(presse, DB, USERID, USERPASS, sock)
+                dest_is_presse_ids = sock.execute(DB, USERID, USERPASS, 'is.presse', 'search', [('is_database_origine_id', '=', presse.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_is_presse_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.presse', 'write', dest_is_presse_ids, is_presse_vals, {})
+                    is_presse_created_id = dest_is_presse_ids[0]
+                else:
+                    is_presse_created_id = sock.execute(DB, USERID, USERPASS, 'is.presse', 'create', is_presse_vals, {})
+        return True
+
+    @api.model
+    def get_is_presse_vals(self, presse, DB, USERID, USERPASS, sock):
+        is_presse_vals ={
+                     'name' : tools.ustr(presse.name or ''),
+                     'designation':tools.ustr(presse.designation or ''),
+                     'classe':tools.ustr(presse.classe or ''),
+                    'emplacement':self._get_emplacement(presse, DB, USERID, USERPASS, sock),
+                    'classe_commerciale':self._get_classe_commerciale(presse, DB, USERID, USERPASS, sock),
+                    'puissance' : self._get_puissance(presse, DB, USERID, USERPASS, sock),
+                     'puissance_reelle':tools.ustr(presse.puissance_reelle or ''),
+                     'type_de_presse':tools.ustr(presse.type_de_presse or ''),
+                    'constructeur': self._get_constructeur(presse, DB, USERID, USERPASS, sock),
+                     'num_construceur':tools.ustr(presse.num_construceur or ''),
+                     'type_commande':tools.ustr(presse.type_commande or ''),
+                     'annee':tools.ustr(presse.annee or ''),
+                     'energie':presse.energie,
+                     'volume_tremie':tools.ustr(presse.volume_tremie or ''),
+                     'volume_alimentateur':tools.ustr(presse.volume_alimentateur or ''),
+                     'dimension_col_h':tools.ustr(presse.dimension_col_h or ''),
+                     'dimension_col_v':tools.ustr(presse.dimension_col_v or ''),
+                     'diametre_colonne':tools.ustr(presse.diametre_colonne or ''),
+                     'epaisseur_moule':tools.ustr(presse.epaisseur_moule or ''),
+                     'faux_plateau':presse.faux_plateau,
+                     'epaisseur_faux_plateau': tools.ustr(presse.epaisseur_faux_plateau or ''),
+                     'epaisseur_moule_mini':tools.ustr(presse.epaisseur_moule_mini or ''),
+                     'epaisseur_moule_maxi':tools.ustr(presse.epaisseur_moule_maxi or ''),
+                     'dimension_plateau_h':tools.ustr(presse.dimension_plateau_h or ''),
+                     'dimension_plateau_v':tools.ustr(presse.dimension_plateau_v or ''),
+                     'dimension_hors_tout_haut':tools.ustr(presse.dimension_hors_tout_haut or ''),
+                     'dimension_hors_tout_bas':tools.ustr(presse.dimension_hors_tout_bas or ''),
+                     'coefficient_vis':tools.ustr(presse.coefficient_vis or ''),
+                     'diametre_vis':tools.ustr(presse.diametre_vis or ''),
+                     'type_clapet':tools.ustr(presse.type_clapet or ''),
+                     'volume_injectable':tools.ustr(presse.volume_injectable or ''),
+                     'presse_matiere':tools.ustr(presse.presse_matiere or ''),
+                     'course_ejection':tools.ustr(presse.course_ejection or ''),
+                     'course_ouverture':tools.ustr(presse.course_ouverture or ''),
+                     'diametre_centrage_moule':tools.ustr(presse.diametre_centrage_moule or ''),
+                     'diametre_centrage_presse':tools.ustr(presse.diametre_centrage_presse or ''),
+                     'hauteur_porte_sol':tools.ustr(presse.hauteur_porte_sol or ''),
+                     'bridage_rapide':tools.ustr(presse.bridage_rapide or ''),
+                     'diametre_bridage':tools.ustr(presse.diametre_bridage or ''),
+                     'pas_bridage':tools.ustr(presse.pas_bridage or ''),
+                     'type_huile_hydraulique':tools.ustr(presse.type_huile_hydraulique or ''),
+                     'volume_reservoir':tools.ustr(presse.volume_reservoir or ''),
+                     'longueur':presse.longueur,
+                     'largeur':presse.largeur,
+                     'hauteur':presse.hauteur,
+                     'puissance_electrique': tools.ustr(presse.puissance_electrique or ''),
+                     'type_huile_graissage':presse.type_huile_graissage,
+                     'puissance_electrique_chauffe':tools.ustr(presse.puissance_electrique_chauffe or ''),
+                     'nombre_noyau':tools.ustr(presse.nombre_noyau or ''),
+                     'compensation_cosinus': presse.compensation_cosinus,
+                     'nb_noyau_pf':tools.ustr(presse.nb_noyau_pf or ''),
+                     'nb_noyau_pm':tools.ustr(presse.nb_noyau_pm or ''),
+                     'nombre_circuit_haut':tools.ustr(presse.nombre_circuit_haut or ''),
+                     'diametre_passage_buse':tools.ustr(presse.diametre_passage_buse or ''),
+                     'zone_chauffe':tools.ustr(presse.zone_chauffe or ''),
+                     'poids':tools.ustr(presse.poids or ''),
+                     'active':presse.site_id and presse.site_id.database == DB and True or False,
+                     'is_database_origine_id':presse.id,
+                     }
+        return is_presse_vals
+    
+    @api.model
+    def _get_emplacement(self, presse, DB, USERID, USERPASS, sock):
+        if presse.emplacement:
+            emplacement_ids = sock.execute(DB, USERID, USERPASS, 'is.emplacement.outillage', 'search', [('is_database_origine_id', '=', presse.emplacement.id)], {})
+            if not emplacement_ids:
+                presse.emplacement.copy_other_database_emplacement_outillage()
+                emplacement_ids = sock.execute(DB, USERID, USERPASS, 'is.emplacement.outillage', 'search', [('is_database_origine_id', '=', presse.emplacement.id)], {})
+            if emplacement_ids:
+                return emplacement_ids[0]
+        return False
+    
+    @api.model
+    def _get_classe_commerciale(self, presse, DB, USERID, USERPASS, sock):
+        if presse.classe_commerciale:
+            classe_commerciale_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.classe', 'search', [('is_database_origine_id', '=', presse.classe_commerciale.id)], {})
+            if not classe_commerciale_ids:
+                presse.classe_commerciale.copy_other_database_presse_classe()
+                classe_commerciale_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.classe', 'search', [('is_database_origine_id', '=', presse.classe_commerciale.id)], {})
+            if classe_commerciale_ids:
+                return classe_commerciale_ids[0]
+        return False
+
+    @api.model
+    def _get_puissance(self, presse, DB, USERID, USERPASS, sock):
+        if presse.puissance:
+            puissance_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'search', [('is_database_origine_id', '=', presse.puissance.id)], {})
+            if not puissance_ids:
+                presse.puissance.copy_other_database_presse_puissance()
+                puissance_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'search', [('is_database_origine_id', '=', presse.puissance.id)], {})
+            if puissance_ids:
+                return puissance_ids[0]
+        return False
+
+    @api.model
+    def _get_constructeur(self, presse, DB, USERID, USERPASS, sock):
+        if presse.constructeur:
+            constructeur_ids = sock.execute(DB, USERID, USERPASS, 'is.outillage.constructeur', 'search', [('is_database_origine_id', '=', presse.constructeur.id)], {})
+            if not constructeur_ids:
+                presse.constructeur.copy_other_database_outillage_constructeur()
+                constructeur_ids = sock.execute(DB, USERID, USERPASS, 'is.outillage.constructeur', 'search', [('is_database_origine_id', '=', presse.constructeur.id)], {})
+            if constructeur_ids:
+                return constructeur_ids[0]
+        return False
+
+class is_prechauffeur(models.Model):
+    _inherit='is.prechauffeur'
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_prechauffeur, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_is_prechauffeur()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Prechauffeur!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_prechauffeur, self).create(vals)
+            obj.copy_other_database_is_prechauffeur()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Prechauffeur!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_is_prechauffeur(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for prechauffeur in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                is_prechauffeur_vals = self.get_is_prechauffeur_vals(prechauffeur, DB, USERID, USERPASS, sock)
+                dest_is_prechauffeur_ids = sock.execute(DB, USERID, USERPASS, 'is.prechauffeur', 'search', [('is_database_origine_id', '=', prechauffeur.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_is_prechauffeur_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.prechauffeur', 'write', dest_is_prechauffeur_ids, is_prechauffeur_vals, {})
+                    is_prechauffeur_created_id = dest_is_prechauffeur_ids[0]
+                else:
+                    is_prechauffeur_created_id = sock.execute(DB, USERID, USERPASS, 'is.prechauffeur', 'create', is_prechauffeur_vals, {})
+        return True
+
+    @api.model
+    def get_is_prechauffeur_vals(self, prechauffeur, DB, USERID, USERPASS, sock):
+        is_prechauffeur_vals ={
+                     'name' : tools.ustr(prechauffeur.name or ''),
+                    'presse_id':self._get_presse_id(prechauffeur, DB, USERID, USERPASS, sock), 
+                    'mold_id': self._get_mold_id(prechauffeur, DB, USERID, USERPASS, sock),
+                    'constructeur':tools.ustr(prechauffeur.constructeur or ''),
+                     'marque':tools.ustr(prechauffeur.marque or ''),
+                     'type_prechauffeur':tools.ustr(prechauffeur.type_prechauffeur or ''),
+                     'num_serie':tools.ustr(prechauffeur.num_serie or ''),
+                     'date_fabrication':prechauffeur.date_fabrication,
+                     'poids':prechauffeur.poids,
+                     'longueur':prechauffeur.longueur,
+                     'largeur': prechauffeur.largeur ,
+                     'hauteur':prechauffeur.hauteur,
+                     'type_fluide': prechauffeur.type_fluide ,
+                     'temperature_maxi': prechauffeur.temperature_maxi ,
+                     'puissance_installee': prechauffeur.puissance_installee ,
+                     'puissance_chauffe': prechauffeur.puissance_chauffe ,
+                     'puissance_refroidissement': prechauffeur.puissance_refroidissement ,
+                     'debit_maximum': prechauffeur.debit_maximum ,
+                     'pression_maximum':prechauffeur.pression_maximum,
+                     'commande_deportee': prechauffeur.commande_deportee ,
+                     'option_depression': prechauffeur.option_depression ,
+                     'mesure_debit': prechauffeur.mesure_debit ,
+                     
+                     'active':prechauffeur.site_id and prechauffeur.site_id.database == DB and True or False,
+                     'is_database_origine_id':prechauffeur.id,
+                     }
+        return is_prechauffeur_vals
+    
+    
+    @api.model
+    def _get_presse_id(self, prechauffeur, DB, USERID, USERPASS, sock):
+        if prechauffeur.presse_id:
+            is_presse_ids = sock.execute(DB, USERID, USERPASS, 'is.presse', 'search', [('is_database_origine_id', '=', prechauffeur.presse_id.id)], {})
+            if not is_presse_ids:
+                prechauffeur.presse_id.copy_other_database_is_presse()
+                is_presse_ids = sock.execute(DB, USERID, USERPASS, 'is.presse', 'search', [('is_database_origine_id', '=', prechauffeur.presse_id.id)], {})
+            if is_presse_ids:
+                return is_presse_ids[0]
+        return False
+    
+    @api.model
+    def _get_mold_id(self, prechauffeur, DB, USERID, USERPASS, sock):
+        if prechauffeur.mold_id:
+            is_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', prechauffeur.mold_id.id)], {})
+            if not is_mold_ids:
+                prechauffeur.mold_id.copy_other_database_mold()
+                is_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', prechauffeur.mold_id.id)], {})
+            if is_mold_ids:
+                return is_mold_ids[0]
+        return False
+    
+
+class is_gabarit_controle(models.Model):
+    _inherit='is.gabarit.controle'
+    
+    
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_gabarit_controle, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_gabarit_controle()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Controle!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_gabarit_controle, self).create(vals)
+            obj.copy_other_database_gabarit_controle()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Controle!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_gabarit_controle(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for controle in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                gabarit_controle_vals = self.get_gabarit_controle_vals(controle, DB, USERID, USERPASS, sock)
+                dest_gabarit_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'search', [('is_database_origine_id', '=', controle.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_gabarit_controle_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'write', dest_gabarit_controle_ids, gabarit_controle_vals, {})
+                    gabarit_controle_created_id = dest_gabarit_controle_ids[0]
+                else:
+                    gabarit_controle_created_id = sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'create', gabarit_controle_vals, {})
+        return True
+
+    @api.model
+    def get_gabarit_controle_vals(self, controle, DB, USERID, USERPASS, sock):
+        is_controle_vals ={
+                    'code_pg' : tools.ustr(controle.code_pg or ''),
+                    'designation':tools.ustr(controle.designation or ''),
+                    'fabriquant_id':self._get_fabriquant_id(controle, DB, USERID, USERPASS, sock),
+                    'date_reception': controle.date_reception ,
+                    'reference_plan':tools.ustr(controle.reference_plan or ''),
+                    'indice_plan':controle.indice_plan,
+                    'moule_ids': self._get_moule_ids(controle , DB, USERID, USERPASS, sock),
+                    'client_id':self._get_client_id(controle, DB, USERID, USERPASS, sock),
+                    'lieu_stockage':tools.ustr(controle.lieu_stockage or ''),
+                    'periodicite': controle.periodicite ,
+                    'type_controle':self._get_type_controle(controle, DB, USERID, USERPASS, sock),
+                    'controle': controle.controle ,
+                    'cause_arret': tools.ustr(controle.cause_arret or ''),
+                    'date_controle': controle.date_controle ,
+                    'organisme_controleur': controle.organisme_controleur ,
+                    'fournisseur_id':self._get_fournisseur_id(controle, DB, USERID, USERPASS, sock),
+                    'etat_conformite': controle.etat_conformite ,
+                    'rapport_de_controle': controle.rapport_de_controle ,
+                    'controle_ids':self._get_controle_ids(controle, DB, USERID, USERPASS, sock),
+                    
+                    'active':controle.site_id and controle.site_id.database == DB and True or False,
+                    'is_database_origine_id':controle.id,
+                     }
+        return is_controle_vals
+
+    
+    @api.model
+    def _get_fabriquant_id(self, controle, DB, USERID, USERPASS, sock):
+        if controle.fabriquant_id:
+            fabriquant_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', controle.fabriquant_id.id)], {})
+            if fabriquant_ids:
+                return fabriquant_ids[0]
+        return False
+
+    @api.model
+    def _get_moule_ids(self, controle , DB, USERID, USERPASS, sock):
+        lst_moule_ids = []
+        for moule in controle.moule_ids:
+            is_moule_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', moule.id)], {})
+            if is_moule_ids:
+                lst_moule_ids.append(is_moule_ids[0])
+        return [(6,0,lst_moule_ids)]
+    
+    @api.model
+    def _get_client_id(self, controle, DB, USERID, USERPASS, sock):
+        if controle.client_id:
+            client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', controle.client_id.id)], {})
+            if client_ids:
+                return client_ids[0]
+        return False
+
+    @api.model
+    def _get_type_controle(self, controle, DB, USERID, USERPASS, sock):
+        if controle.type_controle:
+            type_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.type.controle.gabarit', 'search', [('is_database_origine_id', '=', controle.type_controle.id)], {})
+            if not type_controle_ids:
+                controle.type_controle.copy_other_database_controle_gabarit()
+                type_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.type.controle.gabarit', 'search', [('is_database_origine_id', '=', controle.type_controle.id)], {})
+            if type_controle_ids:
+                return type_controle_ids[0]
+        return False
+
+    @api.model
+    def _get_fournisseur_id(self, controle, DB, USERID, USERPASS, sock):
+        if controle.fournisseur_id:
+            fournisseur_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', controle.fournisseur_id.id)], {})
+            if fournisseur_ids:
+                return fournisseur_ids[0]
+        return False
+    
+    @api.model
+    def _get_controle_ids(self, controle, DB, USERID, USERPASS, sock):
+        list_controle_ids =[]
+        for is_controle in controle.controle_ids:
+            is_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', is_controle.id)], {})
+            if is_controle_ids:
+                list_controle_ids.append(is_controle_ids[0])
+        
+        return [(6, 0, list_controle_ids)]
+    
+    
+class is_instrument_mesure(models.Model):
+    _inherit = 'is.instrument.mesure'
+
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_instrument_mesure, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_instrument_mesure()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Instrument!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_instrument_mesure, self).create(vals)
+            obj.copy_other_database_instrument_mesure()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Instrument!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_instrument_mesure(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for mesure in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                instrument_mesure_vals = self.get_instrument_mesure_vals(mesure, DB, USERID, USERPASS, sock)
+                dest_instrument_mesure_ids = sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'search', [('is_database_origine_id', '=', mesure.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_instrument_mesure_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'write', dest_instrument_mesure_ids, instrument_mesure_vals, {})
+                    instrument_mesure_created_id = dest_instrument_mesure_ids[0]
+                else:
+                    instrument_mesure_created_id = sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'create', instrument_mesure_vals, {})
+        return True
+
+    @api.model
+    def get_instrument_mesure_vals(self, mesure, DB, USERID, USERPASS, sock):
+        instrument_mesure_vals ={
+                    'code_pg' : tools.ustr(mesure.code_pg or ''),
+                    'designation':tools.ustr(mesure.designation or ''),
+                    'famille_id':self._get_famille_id(mesure, DB, USERID, USERPASS, sock),
+                    'fabriquant_id':self._get_fabriquant_id(mesure, DB, USERID, USERPASS, sock),
+                    'num_serie':tools.ustr(mesure.num_serie or ''),
+                    'date_reception':mesure.date_reception,
+                    'type':tools.ustr(mesure.type or ''),
+                    'etendue': tools.ustr(mesure.etendue or '') ,
+                    'resolution': tools.ustr(mesure.resolution or ''),
+                    'type_boolean': mesure.type_boolean ,
+                    'etendue_boolean': mesure.etendue_boolean ,
+                    'resolution_boolean':mesure.resolution_boolean,
+                    'lieu_stockage': tools.ustr(mesure.lieu_stockage or '') ,
+                    'service_affecte': tools.ustr(mesure.service_affecte or '') ,
+                    'frequence':mesure.frequence,
+                    'periodicite':tools.ustr(mesure.periodicite or ''),
+                    'controle': mesure.controle,
+                    'cause_arret':tools.ustr(mesure.cause_arret or ''),
+                    'commentaire':tools.ustr(mesure.commentaire or ''),
+                    'date_controle':mesure.date_controle,
+                    'organisme_controleur':mesure.organisme_controleur,
+                    'fournisseur_id':self._get_fournisseur_id(mesure, DB, USERID, USERPASS, sock),
+                    'classe':mesure.classe,
+                    'classe_boolean':mesure.classe_boolean,
+                    'etat_conformite':mesure.etat_conformite,
+                    'rapport_de_controle':mesure.rapport_de_controle,
+                    'controle_ids':self._get_controle_ids(mesure, DB, USERID, USERPASS, sock),
+                    
+                    'active':mesure.site_id and mesure.site_id.database == DB and True or False,
+                    'is_database_origine_id':mesure.id,
+                     }
+        return instrument_mesure_vals
+    
+    @api.model
+    def _get_famille_id(self, mesure, DB, USERID, USERPASS, sock):
+        if mesure.famille_id:
+            famille_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.instrument', 'search', [('is_database_origine_id', '=', mesure.famille_id.id)], {})
+            if not famille_ids:
+                mesure.famille_id.copy_other_database_famille_instrument()
+                famille_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.instrument', 'search', [('is_database_origine_id', '=', mesure.famille_id.id)], {})
+            if famille_ids:
+                return famille_ids[0]
+        return False
+    
+    @api.model
+    def _get_fabriquant_id(self, mesure, DB, USERID, USERPASS, sock):
+        if mesure.fabriquant_id:
+            fabriquant_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mesure.fabriquant_id.id)], {})
+            if fabriquant_ids:
+                return fabriquant_ids[0]
+        return False
+    
+    @api.model
+    def _get_fournisseur_id(self, mesure, DB, USERID, USERPASS, sock):
+        if mesure.fournisseur_id:
+            fournisseur_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', mesure.fournisseur_id.id)], {})
+            if fournisseur_ids:
+                return fournisseur_ids[0]
+        return False
+    
+    @api.model
+    def _get_controle_ids(self, mesure, DB, USERID, USERPASS, sock):
+        list_controle_ids =[]
+        for is_controle in mesure.controle_ids:
+            is_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', is_controle.id)], {})
+            if is_controle_ids:
+                list_controle_ids.append(is_controle_ids[0])
+        
+        return [(6, 0, list_controle_ids)]
+
+    
+class is_plaquette_etalon(models.Model):
+    _inherit='is.plaquette.etalon'
+
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_plaquette_etalon, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_plaquette_etalon()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Plaquette!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_plaquette_etalon, self).create(vals)
+            obj.copy_other_database_plaquette_etalon()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Plaquette!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_plaquette_etalon(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for etalon in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                plaquette_etalon_vals = self.get_plaquette_etalon_vals(etalon, DB, USERID, USERPASS, sock)
+                dest_plaquette_etalon_ids = sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'search', [('is_database_origine_id', '=', etalon.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_plaquette_etalon_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'write', dest_plaquette_etalon_ids, plaquette_etalon_vals, {})
+                    plaquette_etalon_created_id = dest_plaquette_etalon_ids[0]
+                else:
+                    plaquette_etalon_created_id = sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'create', plaquette_etalon_vals, {})
+        return True
+
+    @api.model
+    def get_plaquette_etalon_vals(self, etalon, DB, USERID, USERPASS, sock):
+        plaquette_etalon_vals ={
+                    'code_pg' : tools.ustr(etalon.code_pg or ''),
+                    'designation':tools.ustr(etalon.designation or ''),
+                    'fabriquant_id':self._get_fabriquant_id(etalon, DB, USERID, USERPASS, sock),
+                    'date_reception':etalon.date_reception,
+                    'lieu_stockage':tools.ustr(etalon.lieu_stockage or ''),
+                    'periodicite': etalon.periodicite ,
+                    'type_controle': tools.ustr(etalon.type_controle or ''),
+                    'controle': etalon.controle ,
+                    'cause_arret': tools.ustr(etalon.cause_arret or '') ,
+                    'commentaire': tools.ustr(etalon.commentaire or '') ,
+                    'date_controle':etalon.date_controle,
+                    'organisme_controleur': etalon.organisme_controleur,
+                    'fournisseur_id':self._get_fournisseur_id(etalon, DB, USERID, USERPASS, sock),
+                    'etat_conformite':etalon.etat_conformite,
+                    'rapport_de_controle':etalon.rapport_de_controle,
+                    'controle_ids':self._get_controle_ids(etalon, DB, USERID, USERPASS, sock),
+                    
+                    'active':etalon.site_id and etalon.site_id.database == DB and True or False,
+                    'is_database_origine_id':etalon.id,
+                     }
+        return plaquette_etalon_vals
+
+    @api.model
+    def _get_fabriquant_id(self, etalon, DB, USERID, USERPASS, sock):
+        if etalon.fabriquant_id:
+            fabriquant_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', etalon.fabriquant_id.id)], {})
+            if fabriquant_ids:
+                return fabriquant_ids[0]
+        return False
+    
+    @api.model
+    def _get_fournisseur_id(self, etalon, DB, USERID, USERPASS, sock):
+        if etalon.fournisseur_id:
+            fournisseur_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', etalon.fournisseur_id.id)], {})
+            if fournisseur_ids:
+                return fournisseur_ids[0]
+        return False
+    
+    @api.model
+    def _get_controle_ids(self, etalon, DB, USERID, USERPASS, sock):
+        list_controle_ids =[]
+        for is_controle in etalon.controle_ids:
+            is_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', is_controle.id)], {})
+            if is_controle_ids:
+                list_controle_ids.append(is_controle_ids[0])
+        
+        return [(6, 0, list_controle_ids)]
+    
+    
+class is_moyen_fabrication(models.Model):
+    _inherit='is.moyen.fabrication'
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_moyen_fabrication, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_moyen_fabrication()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Fabrication!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_moyen_fabrication, self).create(vals)
+            obj.copy_other_database_moyen_fabrication()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Fabrication!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_moyen_fabrication(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for fabrication in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                moyen_fabrication_vals = self.get_moyen_fabrication_vals(fabrication, DB, USERID, USERPASS, sock)
+                dest_moyen_fabrication_ids = sock.execute(DB, USERID, USERPASS, 'is.moyen.fabrication', 'search', [('is_database_origine_id', '=', fabrication.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_moyen_fabrication_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.moyen.fabrication', 'write', dest_moyen_fabrication_ids, moyen_fabrication_vals, {})
+                    moyen_fabrication_created_id = dest_moyen_fabrication_ids[0]
+                else:
+                    moyen_fabrication_created_id = sock.execute(DB, USERID, USERPASS, 'is.moyen.fabrication', 'create', moyen_fabrication_vals, {})
+        return True
+
+    @api.model
+    def get_moyen_fabrication_vals(self, fabrication, DB, USERID, USERPASS, sock):
+        moyen_fabrication_vals ={
+                    'name' : tools.ustr(fabrication.name or ''),
+                    'type_equipement':self._get_type_equipement(fabrication, DB, USERID, USERPASS, sock),
+                    'designation':tools.ustr(fabrication.designation or ''),
+                    'mold_ids': self._get_mold_ids(fabrication , DB, USERID, USERPASS, sock),
+                    'base_capacitaire': tools.ustr(fabrication.base_capacitaire or ''),
+                    'emplacement': tools.ustr(fabrication.emplacement or '') ,
+                    'fournisseur_id':self._get_fournisseur_id(fabrication, DB, USERID, USERPASS, sock),
+                    'ref_fournisseur':tools.ustr(fabrication.ref_fournisseur or ''),
+                    'date_creation':fabrication.date_creation,
+                    'date_fin':fabrication.date_fin,
+                    
+                    'active':fabrication.site_id and fabrication.site_id.database == DB and True or False,
+                    'is_database_origine_id':fabrication.id,
+                     }
+        return moyen_fabrication_vals
+
+    @api.model
+    def _get_type_equipement(self, fabrication, DB, USERID, USERPASS, sock):
+        if fabrication.type_equipement:
+            type_equipement_ids = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'search', [('is_database_origine_id', '=', fabrication.type_equipement.id)], {})
+            if not type_equipement_ids:
+                fabrication.type_equipement.copy_other_database_type_equipement()
+                type_equipement_ids = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'search', [('is_database_origine_id', '=', fabrication.type_equipement.id)], {})
+            if type_equipement_ids:
+                return type_equipement_ids[0]
+        return False
+    
+    @api.model
+    def _get_mold_ids(self, fabrication , DB, USERID, USERPASS, sock):
+        lst_moule_ids = []
+        for moule in fabrication.mold_ids:
+            is_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', moule.id)], {})
+            if is_mold_ids:
+                lst_moule_ids.append(is_mold_ids[0])
+        return [(6,0,lst_moule_ids)]
+
+    @api.model
+    def _get_fournisseur_id(self, fabrication, DB, USERID, USERPASS, sock):
+        if fabrication.fournisseur_id:
+            fournisseur_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', fabrication.fournisseur_id.id)], {})
+            if fournisseur_ids:
+                return fournisseur_ids[0]
+        return False
+
+class is_moyen_fabrication_autre(models.Model):
+    _inherit='is.moyen.fabrication.autre'
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_moyen_fabrication_autre, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_fabrication_autre()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Autre!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_moyen_fabrication_autre, self).create(vals)
+            obj.copy_other_database_fabrication_autre()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Autre!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_fabrication_autre(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for autre in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                fabrication_autre_vals = self.get_fabrication_autre_vals(autre, DB, USERID, USERPASS, sock)
+                dest_fabrication_autre_ids = sock.execute(DB, USERID, USERPASS, 'is.moyen.fabrication.autre', 'search', [('is_database_origine_id', '=', autre.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_fabrication_autre_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.moyen.fabrication.autre', 'write', dest_fabrication_autre_ids, fabrication_autre_vals, {})
+                    fabrication_autre_created_id = dest_fabrication_autre_ids[0]
+                else:
+                    fabrication_autre_created_id = sock.execute(DB, USERID, USERPASS, 'is.moyen.fabrication.autre', 'create', fabrication_autre_vals, {})
+        return True
+
+    @api.model
+    def get_fabrication_autre_vals(self, autre, DB, USERID, USERPASS, sock):
+        fabrication_autre_vals ={
+                    'name' : tools.ustr(autre.name or ''),
+                    'type_equipement':self._get_type_equipement(autre, DB, USERID, USERPASS, sock),
+                    'designation':tools.ustr(autre.designation or ''),
+                    'mold_id': self._get_mold_id(autre , DB, USERID, USERPASS, sock),
+                    'emplacement': tools.ustr(autre.emplacement or ''),
+                    
+                    'active':autre.site_id and autre.site_id.database == DB and True or False,
+                    'is_database_origine_id':autre.id,
+                     }
+        return fabrication_autre_vals
+    
+    @api.model
+    def _get_type_equipement(self, autre, DB, USERID, USERPASS, sock):
+        if autre.type_equipement:
+            type_equipement_ids = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'search', [('is_database_origine_id', '=', autre.type_equipement.id)], {})
+            if not type_equipement_ids:
+                autre.type_equipement.copy_other_database_type_equipement()
+                type_equipement_ids = sock.execute(DB, USERID, USERPASS, 'is.type.equipement', 'search', [('is_database_origine_id', '=', autre.type_equipement.id)], {})
+            if type_equipement_ids:
+                return type_equipement_ids[0]
+        return False
+
+    @api.model
+    def _get_mold_id(self, autre, DB, USERID, USERPASS, sock):
+        if autre.mold_id:
+            is_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', autre.mold_id.id)], {})
+            if not is_mold_ids:
+                autre.mold_id.copy_other_database_mold()
+                is_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', autre.mold_id.id)], {})
+            if is_mold_ids:
+                return is_mold_ids[0]
+        return False
+    
+class is_historique_controle(models.Model):
+    _inherit='is.historique.controle'
+    
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    active = fields.Boolean('Active', default=True)
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_historique_controle, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_historique_controle()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Historique Controle!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_historique_controle, self).create(vals)
+            obj.copy_other_database_historique_controle()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Historique Controle!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_historique_controle(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for controle in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                historique_controle_vals = self.get_historique_controle_vals(controle, DB, USERID, USERPASS, sock)
+                dest_historique_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', controle.id),
+                                                                                                '|',('active','=',True),('active','=',False)], {})
+                if dest_historique_controle_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'write', dest_historique_controle_ids, historique_controle_vals, {})
+                    historique_controle_created_id = dest_historique_controle_ids[0]
+                else:
+                    historique_controle_created_id = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'create', historique_controle_vals, {})
+        return True
+
+    @api.model
+    def get_historique_controle_vals(self, controle, DB, USERID, USERPASS, sock):
+        historique_controle_vals ={
+                    'plaquette_id':self._get_plaquette_id(controle, DB, USERID, USERPASS, sock),
+                    'instrument_id':self._get_instrument_id(controle, DB, USERID, USERPASS, sock),
+                    'gabarit_id':self._get_gabarit_id(controle, DB, USERID, USERPASS, sock),
+                    'date_controle':controle.date_controle,
+                    'affectation':tools.ustr(controle.affectation or ''),
+                    'operation':controle.operation,
+                    'organisme' : tools.ustr(controle.organisme or ''),
+                    'resultat':tools.ustr(controle.resultat or ''),
+                    'commentaire': tools.ustr(controle.commentaire or ''),
+                    'classe': tools.ustr(controle.classe or ''),
+                    
+                    'active':controle.site_id and controle.site_id.database == DB and True or False,
+                    'is_database_origine_id':controle.id,
+                     }
+        return historique_controle_vals
+    
+    @api.model
+    def _get_plaquette_id(self, controle, DB, USERID, USERPASS, sock):
+        if controle.plaquette_id:
+            is_plaquette_ids = sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'search', [('is_database_origine_id', '=', controle.plaquette_id.id)], {})
+            if not is_plaquette_ids:
+                controle.plaquette_id.copy_other_database_plaquette_etalon()
+                is_plaquette_ids = sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'search', [('is_database_origine_id', '=', controle.plaquette_id.id)], {})
+            if is_plaquette_ids:
+                return is_plaquette_ids[0]
+        return False
+
+    @api.model
+    def _get_instrument_id(self, controle, DB, USERID, USERPASS, sock):
+        if controle.instrument_id:
+            is_instrument_ids = sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'search', [('is_database_origine_id', '=', controle.instrument_id.id)], {})
+            if not is_instrument_ids:
+                controle.instrument_id.copy_other_database_instrument_mesure()
+                is_instrument_ids = sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'search', [('is_database_origine_id', '=', controle.instrument_id.id)], {})
+            if is_instrument_ids:
+                return is_instrument_ids[0]
+        return False
+    
+    @api.model
+    def _get_gabarit_id(self, controle, DB, USERID, USERPASS, sock):
+        if controle.gabarit_id:
+            is_gabarit_ids = sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'search', [('is_database_origine_id', '=', controle.gabarit_id.id)], {})
+            if not is_gabarit_ids:
+                controle.gabarit_id.copy_other_database_gabarit_controle()
+                is_gabarit_ids = sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'search', [('is_database_origine_id', '=', controle.gabarit_id.id)], {})
+            if is_gabarit_ids:
+                return is_gabarit_ids[0]
+        return False

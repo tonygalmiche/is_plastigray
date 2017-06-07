@@ -15,7 +15,7 @@ class is_plaquette_etalon(models.Model):
     designation = fields.Char("Désignation", required=True)
     fabriquant_id = fields.Many2one("res.partner","Fabricant")
     date_reception = fields.Date("Date de réception")
-    site_id = fields.Many2one("is.emplacement.outillage","Site d'affectation")
+    site_id = fields.Many2one("is.database", "Site")
     lieu_stockage = fields.Char("Lieu de stockage")
     
     periodicite = fields.Integer("Périodicité (en mois)")
