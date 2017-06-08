@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record model="ir.ui.view" id="is_piece_montabilite_form_view">
+            <field name="name">is.piece.montabilite.form.view</field>
+            <field name="model">is.piece.montabilite</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <sheet>
+                        <group col="4" colspan="4" string="Identification">
+                            <group>
+                                <field name="code_pg"/>
+                                <field name="designation"/> 
+                                <field name="fabriquant" /> 
+                                <field name="fabricant_client_id" attrs="{'invisible':[('fabriquant','!=', 'client')],'required':[('fabriquant','=', 'client')]}"/> 
+                                <field name="fabriquant_mold_id" attrs="{'invisible':[('fabriquant','!=', 'plastigray')],'required':[('fabriquant','=', 'plastigray')]}"/> 
+                                <field name="fabriquant_autre" attrs="{'invisible':[('fabriquant','!=', 'autre')],'required':[('fabriquant','=', 'autre')]}"/>
+                            </group>
+                            <group>
+                                <field name="date_reception"/>
+                                <field name="moule_ids" widget="many2many_tags" />
+                                <field name="client_id"/>
+                                <field name="site_id"/>
+                                <field name="lieu_stockage"/>
+                            </group>
+                        </group>
+                        <group col="4" colspan="4" string="Contrôle périodique">
+                            <group>
+                                <field name="periodicite"/>
+                            </group>
+                            <group>
+                                <field name="type_controle"/> 
+                            </group>
+                        </group>
+                        <group col="4" colspan="4" string="Résultat du contrôle">
+                            <group>
+                                <field name="controle"/> 
+                                <field name="cause_arret" attrs="{'invisible':[('controle','!=', 'arrêt')],'required':[('controle','=', 'arrêt')]}" /> 
+                                <field name="cause_visuel" attrs="{'invisible':[('controle','!=', 'visuel')],'required':[('controle','=', 'visuel')]}" />
+                                <field name="date_controle"/>
+                            </group>
+                            <group>
+                                <field name="organisme_controleur"/>
+                                <field name="fournisseur_id" attrs="{'invisible':[('organisme_controleur','!=', 'externe')],'required':[('organisme_controleur','=', 'externe')]}"/>
+                                <field name="etat_conformite"/>
+                                <field name="rapport_de_controle"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Historique des contrôles">
+                                <field name="piece_controle_ids" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_piece_montabilite_tree_view">
+            <field name="name">is.piece.montabilite_tree_view</field>
+            <field name="model">is.piece.montabilite</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code_pg"/> 
+                    <field name="designation"/> 
+                    <field name="fabriquant"/> 
+                    <field name="fabricant_client_id"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_piece_montabilite_search_view" >
+            <field name="name">is.piece.montabilite_search_view</field>
+            <field name="model">is.piece.montabilite</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="code_pg"/>
+                    <field name="designation"/> 
+                    <field name="fabriquant"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_piece_montabilite_action">
+            <field name="name">Pièce de montabilité</field>
+            <field name="res_model">is.piece.montabilite</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        
+        
+</data>
+</openerp>
