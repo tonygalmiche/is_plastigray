@@ -42,6 +42,7 @@ import is_demande_achat
 import is_facture_pk
 import is_moyen_fabrication
 import is_moyen_fabrication_autre
+import is_piece_montabilite
 
 import is_copy_other_database
 import report

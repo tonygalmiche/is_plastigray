@@ -1570,6 +1570,12 @@
     <!-- Autres Moyens Fabrication - Moyens Fabrication sub menu - Outillages -->
     <menuitem id="menu_autres_moyens_fabrication" sequence="10" name="Autres Moyens Fabrication" parent="menu_sub_main_moyens_fabrication_table" action="action_is_moyen_fabrication_autre_plastigray" />
 
+	<menuitem id="menu_piece_de_montabilite" 
+              sequence="34" 
+              name="Pièce de montabilité" 
+              parent="menu_sub_main_outillages" 
+              action="is_piece_montabilite_action" 
+    />
   </data>
 </openerp>
 

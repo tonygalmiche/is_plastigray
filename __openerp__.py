@@ -83,6 +83,7 @@ Module principal du projet Plastigray
         "is_facture_pk_view.xml",
         "is_moyen_fabrication_view.xml",
         "is_moyen_fabrication_autre_view.xml",
+        "is_piece_montabilite_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
