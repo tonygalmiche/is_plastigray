@@ -41,6 +41,7 @@
                                 <field name="cause_arret" attrs="{'invisible':[('controle','!=', 'arrêt')],'required':[('controle','=', 'arrêt')]}" /> 
                                 <field name="cause_visuel" attrs="{'invisible':[('controle','!=', 'visuel')],'required':[('controle','=', 'visuel')]}" />
                                 <field name="date_controle"/>
+                                <field name="date_prochain_controle"/>
                             </group>
                             <group>
                                 <field name="organisme_controleur"/>
@@ -68,6 +69,7 @@
                     <field name="designation"/> 
                     <field name="fabriquant"/> 
                     <field name="fabricant_client_id"/> 
+                    <field name="date_prochain_controle" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -79,6 +81,7 @@
                     <field name="code_pg"/>
                     <field name="designation"/> 
                     <field name="fabriquant"/> 
+                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle &lt; Today" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
         </record>
@@ -87,6 +90,7 @@
             <field name="res_model">is.piece.montabilite</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_date_prochain_controle_filter':1}</field>
         </record>
         
         

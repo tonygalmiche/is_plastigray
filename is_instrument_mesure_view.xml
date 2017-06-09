@@ -44,6 +44,7 @@
                                 <field name="controle"/>
                                 <field name="commentaire" attrs="{'invisible':[('controle','!=','visuel')],'required':[('controle','=','visuel')]}"/>
                                 <field name="date_controle"/>
+                                <field name="date_prochain_controle"/>
                                 <field name="classe" attrs="{'invisible':[('classe_boolean','!=',True)]}"/>
                                 <field name="classe_boolean" invisible="1"/>
                             </group>
@@ -115,6 +116,7 @@
                     <field name="resolution"/>
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
+                    <field name="date_prochain_controle" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -130,6 +132,7 @@
                     <field name="fabriquant_id"/>
                     <field name="site_id"/>
                     <field name="fournisseur_id"/>
+                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle &lt; Today" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
         </record>     
@@ -139,6 +142,7 @@
             <field name="res_model">is.instrument.mesure</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_date_prochain_controle_filter':1}</field>
         </record>
         
 

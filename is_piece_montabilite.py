@@ -2,6 +2,8 @@
 from openerp import models,fields,api
 import time
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 
 class is_piece_montabilite(models.Model):
     _name='is.piece.montabilite'
@@ -42,6 +44,7 @@ class is_piece_montabilite(models.Model):
     cause_arret = fields.Char("Cause arrêt")
     cause_visuel = fields.Char("Cause visuel")
     date_controle = fields.Date("Date du contrôle")
+    date_prochain_controle= fields.Date("Date prochain contrôle", compute='_compute_date_prochain_controle', readonly=True, store=True)
     organisme_controleur = fields.Selection([('interne','Interne'),
                                              ('externe','Externe'),
                                    ], string="Organisme contrôleur")
@@ -51,6 +54,18 @@ class is_piece_montabilite(models.Model):
                                    ], string="Etat de la conformité")
     rapport_de_controle = fields.Binary(string='Rapport de contrôle')
     piece_controle_ids = fields.One2many('is.historique.controle', 'piece_id', string='Historique des contrôles')
+
+
+    @api.multi
+    @api.depends('date_controle','periodicite')
+    def _compute_date_prochain_controle(self):
+        for rec in self:
+            if rec.date_controle:
+                date_controle = datetime.strptime(rec.date_controle, "%Y-%m-%d")
+                date_prochain_controle = date_controle + relativedelta(months=rec.periodicite)
+                rec.date_prochain_controle = date_prochain_controle.strftime('%Y-%m-%d')
+
+
 
 class is_historique_controle(models.Model):
     _inherit='is.historique.controle'

@@ -36,6 +36,7 @@
                             <group>
                                 <field name="controle"/>
                                 <field name="date_controle"/>
+                                <field name="date_prochain_controle"/>
                                 <field 
                                     name="fournisseur_id" 
                                     domain="[('supplier' ,'=',True),('is_company','=',True)]"
@@ -103,6 +104,7 @@
                     <field name="client_id"/>
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
+                    <field name="date_prochain_controle" invisible="1"/>
                 </tree>
             </field>
         </record>  
@@ -118,6 +120,7 @@
                     <field name="client_id"/>
                     <field name="site_id"/>
                     <field name="fournisseur_id"/>
+                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle &lt; Today" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
         </record>
@@ -127,6 +130,7 @@
             <field name="res_model">is.gabarit.controle</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_date_prochain_controle_filter':1}</field>
         </record>
         
         <record model="ir.ui.view" id="is_emplacement_outillage_tree_view">

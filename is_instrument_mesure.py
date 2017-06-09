@@ -4,6 +4,7 @@ from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class is_instrument_mesure(models.Model):
     _name = 'is.instrument.mesure'
@@ -49,6 +50,7 @@ class is_instrument_mesure(models.Model):
     cause_arret = fields.Char("Cause arrêt")
     commentaire = fields.Char("Commentaire")
     date_controle = fields.Date("Date du contrôle")
+    date_prochain_controle= fields.Date("Date prochain contrôle", compute='_compute_date_prochain_controle', readonly=True, store=True)
     organisme_controleur = fields.Selection([('interne', 'Interne'), ('externe', 'Externe')], "Organisme contrôleur")
     fournisseur_id = fields.Many2one('res.partner', 'Fournisseur')
     classe = fields.Selection([('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('na', '/NA')], "Classe")
@@ -57,6 +59,20 @@ class is_instrument_mesure(models.Model):
     rapport_de_controle = fields.Binary("Rapport de contrôle")
     controle_ids = fields.One2many('is.historique.controle', 'instrument_id', string='Historique des contrôles')
     
+    
+    @api.multi
+    @api.depends('date_controle','periodicite')
+    def _compute_date_prochain_controle(self):
+        for rec in self:
+            if rec.date_controle:
+                date_controle = datetime.strptime(rec.date_controle, "%Y-%m-%d")
+                if rec.periodicite.isdigit():
+                    periodicite = int(rec.periodicite)
+                else:periodicite = 0
+                date_prochain_controle = date_controle + relativedelta(months=periodicite)
+                rec.date_prochain_controle = date_prochain_controle.strftime('%Y-%m-%d')
+                
+                
     @api.onchange('famille_id')
     def onchange_famille_id(self):
         self.type_boolean = self.famille_id.afficher_type
