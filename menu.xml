@@ -1519,7 +1519,7 @@
     />
 
     <menuitem id="menu_sub_main_outillages_table" sequence="90" parent="menu_main_outillages" name="Tables"/>
-    <menuitem id="menu_is_emplacement_outillage" sequence="10" name="Site d'affectation"     parent="menu_sub_main_outillages_table" action="is_emplacement_outillage_action" />
+    <!--<menuitem id="menu_is_emplacement_outillage" sequence="10" name="Site d'affectation"     parent="menu_sub_main_outillages_table" action="is_emplacement_outillage_action" />-->
     <menuitem id="menu_is_type_controle_gabarit" sequence="20" name="Type de contrôle"       parent="menu_sub_main_outillages_table" action="is_type_controle_gabarit_action" />
     <menuitem id="menu_is_famille_instrument"    sequence="30" name="Familles d'instruments" parent="menu_sub_main_outillages_table" action="is_famille_instrument_action" />
 
@@ -1564,6 +1564,10 @@
 
     <menuitem id="menu_type_equipement" sequence="45" name="Type Equipement"     parent="menu_sub_main_outillages_table" action="is_type_equipement_action" />
     
+
+    <menuitem id="is_operation_controle_menu" sequence="46" name="Opération de contrôle"     parent="menu_sub_main_outillages_table" action="is_operation_controle_action" />
+
+
     <menuitem id="menu_sub_main_moyens_fabrication_table" sequence="30" parent="menu_main_outillages" name="Moyens Fabrication"/>
     <menuitem id="menu_moyens_fabrication" sequence="10" name="Moyens Fabrication"     parent="menu_sub_main_moyens_fabrication_table" action="is_moyen_fabrication_action" />
 

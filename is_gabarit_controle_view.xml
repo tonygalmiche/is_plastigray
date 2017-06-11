@@ -7,11 +7,11 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Gabarit de contrôle">  
-                    <sheet>
+                    <sheet class="oe_form_sheet_width_wider">
                         <group col="4" colspan="4" string="Identification">
                             <group>
                                 <field name="code_pg"/>
-                                <field name="fabriquant_id" domain="[('supplier' ,'=',True),('is_company','=',True)]"/>
+                                <field name="fabriquant"/>
                                 <field name="reference_plan"/>
                                 <field name="client_id"     domain="[('customer' ,'=',True),('is_company','=',True)]"/>
                                 <field name="lieu_stockage"/>
@@ -24,14 +24,12 @@
                                 <field name="moule_ids" widget="many2many_tags"/>
                             </group>
                         </group>
-                        <group col="4" colspan="4" string="Contrôle périodique">
-                            <group>
-                                <field name="periodicite"/>
-                            </group>
-                            <group>
-                                <field name="type_controle"/>
-                            </group>
+                        <group string="Contrôle périodique">
+                            <field name="periodicite"/>
+                            <field name="type_controle"/>
+                            <field name="date_prochain_controle"/>
                         </group>
+                        <!--
                         <group col="4" colspan="4" string="Résultat du contrôle">
                             <group>
                                 <field name="controle"/>
@@ -52,6 +50,7 @@
                                 <field name="rapport_de_controle"/>
                             </group>
                         </group>
+
                         <notebook>
                             <page string="Historique des contrôles">
                                 <field name="controle_ids">
@@ -84,6 +83,48 @@
                                 </field>
                             </page>
                         </notebook>
+                        -->
+
+
+                        <notebook>
+                            <page string="Historique des contrôles">
+                                <field name="controle_ids">
+                                    <form string="Historique des contrôles">  
+                                        <sheet>
+                                            <group>
+                                                <field 
+                                                    name="operation_controle_id"
+                                                    domain="[('gabarit' ,'=',True)]"
+                                                />
+                                                <field name="operation_controle_code" invisible="1"/>
+                                                <field name="cause_arret"  attrs="{'invisible':[('operation_controle_code','!=','arret')] ,'required':[('operation_controle_code','=','arret')]}"/>
+                                                <field name="date_controle" />
+                                                <field name="organisme_controleur" />
+                                                <field 
+                                                    name="fournisseur_id" 
+                                                    domain="[('supplier' ,'=',True),('is_company','=',True)]"
+                                                    attrs="{
+                                                        'invisible':[('organisme_controleur','!=','externe')],
+                                                        'required':[('organisme_controleur','=','externe')]
+                                                    }"
+                                                />
+                                                <field name="etat_conformite" />
+                                                <field name="rapport_de_controle" />
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                    <tree string="Historique des contrôles">
+                                        <field name="operation_controle_id" />
+                                        <field name="cause_arret" />
+                                        <field name="date_controle" />
+                                        <field name="organisme_controleur" />
+                                        <field name="fournisseur_id" />
+                                        <field name="etat_conformite" />
+                                        <field name="rapport_de_controle" />
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -97,14 +138,14 @@
                 <tree string="Gabarit de contrôle">
                     <field name="code_pg"/>
                     <field name="designation"/>
-                    <field name="fabriquant_id"/>
+                    <field name="fabriquant"/>
                     <field name="date_reception"/>
                     <field name="reference_plan"/>
                     <field name="indice_plan"/>
                     <field name="client_id"/>
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
-                    <field name="date_prochain_controle" invisible="1"/>
+                    <field name="date_prochain_controle"/>
                 </tree>
             </field>
         </record>  
@@ -116,11 +157,10 @@
                 <search>
                     <field name="code_pg"/>
                     <field name="designation"/>
-                    <field name="fabriquant_id"/>
+                    <field name="fabriquant"/>
                     <field name="client_id"/>
                     <field name="site_id"/>
-                    <field name="fournisseur_id"/>
-                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle &lt; Today" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle dépassée" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
         </record>

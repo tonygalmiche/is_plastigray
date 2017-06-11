@@ -2,7 +2,7 @@
 <openerp>
     <data>
 
-		<!-- Historique des contrôles Form View -->
+        <!-- Historique des contrôles Form View -->
         <record model="ir.ui.view" id="view_is_historique_controle_form_is_plastigray">
             <field name="name">view.is.historique.controle.form.is.plastigray</field>
             <field name="model">is.historique.controle</field>
@@ -12,17 +12,23 @@
                     <sheet>
                         <group col="4" colspan="4">
                             <group col="4" colspan="4">
-                                <field name="site_id" />
+                                <field name="operation_controle_id"/>
+                                <field name="cause_arret" />
+                                <field name="cause_visuel" />
                                 <field name="date_controle" />
-                                <field name="affectation" />
-                                <field name="operation" />
-                                <field name="organisme" />
-                                <field name="resultat" />
-                                <field name="commentaire" />
+                                <field name="organisme_controleur" />
+                                <field 
+                                    name="fournisseur_id" 
+                                    domain="[('supplier' ,'=',True),('is_company','=',True)]"
+                                />
                                 <field name="classe" />
+                                <field name="resultat" />
+                                <field name="etat_conformite" />
+                                <field name="rapport_de_controle" />
                                 <field name="plaquette_id"  readonly="1" />
                                 <field name="instrument_id" readonly="1" />
                                 <field name="gabarit_id"    readonly="1" />
+                                <field name="piece_id"      readonly="1" />
                             </group>
                         </group>
                     </sheet>
@@ -30,29 +36,33 @@
             </field>
         </record>
 
-		<!-- Historique des contrôles Tree View -->
+
+        <!-- Historique des contrôles Tree View -->
         <record model="ir.ui.view" id="view_is_historique_controle_tree_is_plastigray">
             <field name="name">view.is.historique.controle.tree.is.plastigray</field>
             <field name="model">is.historique.controle</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Historique des contrôles">
+                <tree string="Historique des contrôles" create="0">
+                    <field name="operation_controle_id" />
+                    <field name="cause_arret" />
+                    <field name="cause_visuel" />
                     <field name="date_controle" />
-                    <field name="site_id" />
-                    <field name="affectation" />
-                    <field name="operation" />
-                    <field name="organisme" />
-                    <field name="resultat" />
-                    <field name="commentaire" />
+                    <field name="organisme_controleur" />
+                    <field name="fournisseur_id" />
                     <field name="classe" />
-                    <field name="plaquette_id" widget="many2one_clickable" />
+                    <field name="resultat" />
+                    <field name="etat_conformite" />
+                    <field name="rapport_de_controle" />
+                    <field name="plaquette_id"  widget="many2one_clickable" />
                     <field name="instrument_id" widget="many2one_clickable" />
-                    <field name="gabarit_id" widget="many2one_clickable" />
+                    <field name="gabarit_id"    widget="many2one_clickable" />
+                    <field name="piece_id"      widget="many2one_clickable" />
                 </tree>
             </field>
         </record>
 
-		<!-- Historique des contrôles Action -->
+        <!-- Historique des contrôles Action -->
         <record id="action_is_historique_controle_is_plastigray" model="ir.actions.act_window" >
             <field name="name">Historique des contrôles</field>
             <field name="res_model">is.historique.controle</field>
@@ -60,13 +70,58 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-		<!-- Historique des contrôles Menu -->
+        <!-- Historique des contrôles Menu -->
         <menuitem id="menu_is_historique_controle_plastigray" 
               name="Historique des contrôles" 
               parent="menu_sub_main_outillages"
               sequence="4"
               action="action_is_historique_controle_is_plastigray"
-    	/>
+        />
+
+
+
+        <!-- Opération de contrôle -->
+        <record id="is_operation_controle_form_view" model="ir.ui.view" >
+            <field name="name">is_operation_controle_form_view</field>
+            <field name="model">is.operation.controle</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Opération de contrôle">
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="code" />
+                            <field name="plaquette" />
+                            <field name="instrument" />
+                            <field name="gabarit" />
+                            <field name="piece" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_operation_controle_tree_view" model="ir.ui.view" >
+            <field name="name">is_operation_controle_tree_view</field>
+            <field name="model">is.operation.controle</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Opération de contrôle">
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="plaquette" />
+                    <field name="instrument" />
+                    <field name="gabarit" />
+                    <field name="piece" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_operation_controle_action" model="ir.actions.act_window" >
+            <field name="name">Opération de contrôle</field>
+            <field name="res_model">is.operation.controle</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
 
     </data>
 </openerp>

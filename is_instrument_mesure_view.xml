@@ -7,7 +7,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Instruments de mesure">
-                    <sheet>
+                    <sheet class="oe_form_sheet_width_wider">
                         <group col="4" colspan="4" string="Identification">
                             <group>
                                 <field name="code_pg"/>
@@ -20,7 +20,7 @@
                             </group>
                             <group>
                                 <field name="designation"/>
-                                <field name="fabriquant_id" domain="[('supplier' ,'=',True),('is_company','=',True)]"/>
+                                <field name="fabriquant"/>
                                 <field name="date_reception"/>
                                 <field name="etendue" attrs="{'invisible':[('etendue_boolean','!=',True)]}"/>
                                 <field name="site_id"/>
@@ -31,14 +31,12 @@
                                 <field name="service_affecte"/>
                             </group>
                         </group>
-                        <group col="4" colspan="4" string="Contrôle périodique">
-                            <group>
-                                <field name="frequence"/>
-                            </group>
-                            <group>
-                                <field name="periodicite"/>
-                            </group>
+                        <group string="Contrôle périodique">
+                            <field name="frequence"/>
+                            <field name="periodicite"/>
+                            <field name="date_prochain_controle"/>
                         </group>
+                        <!--
                         <group col="4" colspan="4" string="Résultat du contrôle">
                             <group>
                                 <field name="controle"/>
@@ -62,34 +60,51 @@
                                 <field name="rapport_de_controle"/>
                             </group>
                         </group>
+                        -->
                         <notebook>
                             <page string="Historique des contrôles">
                                 <field name="controle_ids">
                                     <form string="Historique des contrôles">  
                                         <sheet>
-                                            <group col="4" colspan="4">
-                                                <group col="4" colspan="4">
-                                                    <field name="site_id" />
-                                                    <field name="date_controle" />
-                                                    <field name="affectation" />
-                                                    <field name="operation" />
-                                                    <field name="organisme" />
-                                                    <field name="resultat" />
-                                                    <field name="commentaire" />
-                                                    <field name="classe" />
-                                                </group>
+                                            <group>
+                                                <field 
+                                                    name="operation_controle_id"
+                                                    domain="[('instrument' ,'=',True)]"
+                                                />
+
+                                                <field name="operation_controle_code" invisible="1"/>
+                                                <field name="cause_arret"  attrs="{'invisible':[('operation_controle_code','!=','arret')] ,'required':[('operation_controle_code','=','arret')]}"/>
+                                                <field name="cause_visuel" attrs="{'invisible':[('operation_controle_code','!=','visuel')],'required':[('operation_controle_code','=','visuel')]}"/>
+                                                <field name="date_controle" />
+                                                <field name="organisme_controleur" />
+                                                <field 
+                                                    name="fournisseur_id" 
+                                                    domain="[('supplier' ,'=',True),('is_company','=',True)]"
+                                                    attrs="{
+                                                        'invisible':[('organisme_controleur','!=','externe')],
+                                                        'required':[('organisme_controleur','=','externe')]
+                                                    }"
+                                                />
+                                                <field name="instrument_id"  invisible="1"/>
+                                                <field name="classe_boolean" invisible="1"/>
+                                                <field name="classe" attrs="{'invisible':[('classe_boolean','!=',True)]}"/>
+                                                <field name="resultat" />
+                                                <field name="etat_conformite" />
+                                                <field name="rapport_de_controle" />
                                             </group>
                                         </sheet>
                                     </form>
                                     <tree string="Historique des contrôles">
+                                        <field name="operation_controle_id" />
+                                        <field name="cause_arret" />
+                                        <field name="cause_visuel" />
                                         <field name="date_controle" />
-                                        <field name="site_id" />
-                                        <field name="affectation" />
-                                        <field name="operation" />
-                                        <field name="organisme" />
-                                        <field name="resultat" />
-                                        <field name="commentaire" />
+                                        <field name="organisme_controleur" />
+                                        <field name="fournisseur_id" />
                                         <field name="classe" />
+                                        <field name="resultat" />
+                                        <field name="etat_conformite" />
+                                        <field name="rapport_de_controle" />
                                     </tree>
                                 </field>
                             </page>
@@ -108,7 +123,7 @@
                     <field name="code_pg"/>
                     <field name="designation"/>
                     <field name="famille_id"/>
-                    <field name="fabriquant_id"/>
+                    <field name="fabriquant"/>
                     <field name="num_serie"/>
                     <field name="date_reception"/>
                     <field name="type"/>
@@ -116,7 +131,7 @@
                     <field name="resolution"/>
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
-                    <field name="date_prochain_controle" invisible="1"/>
+                    <field name="date_prochain_controle"/>
                 </tree>
             </field>
         </record>
@@ -129,10 +144,9 @@
                     <field name="code_pg"/>
                     <field name="designation"/>
                     <field name="famille_id"/>
-                    <field name="fabriquant_id"/>
+                    <field name="fabriquant"/>
                     <field name="site_id"/>
-                    <field name="fournisseur_id"/>
-                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle &lt; Today" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="date_prochain_controle_filter" string="Date prochain contrôle dépassée" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
         </record>     
