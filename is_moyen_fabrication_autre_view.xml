@@ -9,7 +9,7 @@
                 <form string="Autres Moyens Fabrication">
                     <sheet>
                         <h1>
-	                        <label string="Name" class="oe_inline oe_edit_only" /><br/>
+	                        <label string="Code" class="oe_inline oe_edit_only" /><br/>
 	                        <field name="name" class="oe_inline" />
                         </h1>
                         <group>
@@ -17,6 +17,7 @@
                                 <field name="type_equipement"/>
                                 <field name="designation"/>
                                 <field name="mold_id"/>
+                                <field name="dossierf_id"/>
                             </group>
                             <group>
                                 <field name="site_id"/>
@@ -36,6 +37,7 @@
                     <field name="type_equipement"/>
                     <field name="designation"/>
                     <field name="mold_id"/>
+                    <field name="dossierf_id"/>
                     <field name="site_id"/>
                     <field name="emplacement"/>
                 </tree>

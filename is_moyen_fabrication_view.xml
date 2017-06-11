@@ -55,14 +55,15 @@
                 <form>  
                     <sheet>
                         <h1>
-                        <label string="Name" class="oe_inline oe_edit_only" /><br/>
+                        <label string="Code" class="oe_inline oe_edit_only" /><br/>
                         <field name="name" class="oe_inline" />
                         </h1>
                         <group>
                             <group>
                                 <field name="type_equipement"/> 
                                 <field name="designation"/> 
-                                <field name="mold_ids" widget="many2many_tags" /> 
+                                <field name="mold_ids"     widget="many2many_tags" /> 
+                                <field name="dossierf_ids" widget="many2many_tags" /> 
                                 <field name="base_capacitaire"/> 
                                 <field name="site_id"/> 
                             </group>
