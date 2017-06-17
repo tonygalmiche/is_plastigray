@@ -1,96 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<data>
+    <data>
+        <template id="report_is_facture_pk_style">
+            .header {
+                font-size:10pt;
+            }
+            .footer {
+                font-size:7pt;
+            }
+            .page {
+                font-size:9pt;
+            }
+            .titre {
+                font-size:11pt;
+                font-weight: bold;
+            }
+            .expediteur {
+                font-size:9pt;
+                text-align:left;
+            }
+            .destinataire {
+                text-align:left;
+                border: 1px solid black;
+                padding:5mm;
+            }
+        </template>
 
-    <template id="report_is_facture_pk">
-        <t t-call="report.html_container">
-            <t t-call="report.external_layout">
+
+        <template id="report_is_facture_pk_layout" inherit_id="web.layout" primary="True">
+            <!-- Add report attributes -->
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <!-- Add report style -->
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_is_facture_pk_style"/>
+                </style>
+            </xpath>
+            <!-- Remove conflicting style -->
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+
+        <template id="report_is_facture_pk_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_is_facture_pk_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+
+        <!-- Entête personnalisé Plastigray -->
+        <template id="report_is_facture_pk_external_layout_header">
+            <div class="header">
+            </div>
+        </template>
+
+
+        <!-- Pied de page personnalisé Plastigray -->
+        <template id="report_is_facture_pk_external_layout_footer">
+            <div class="footer">
+                <div class="text-center" style="border-top: 1px solid black">
+                    <table style="width:100%">
+                        <tr>
+                            <td class="text-left" style="width:80%">
+                                S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud - CS 10133 - 70104 GRAY Cedex<br />
+                                Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381
+                            </td>
+                            <td class="text-right">
+                                Page <span class="page" style="font-size:7pt;"/> / <span class="topage"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br />
+        </template>
+
+        <!-- Squelette de la page personnalisé pour Plastigray -->
+        <template id="report_is_facture_pk_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <t t-call="is_plastigray.report_is_facture_pk_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_is_facture_pk_external_layout_footer"/>
+        </template>
+
+
+        <template id="report_is_facture_pk_document">
+            <t t-call="is_plastigray.report_is_facture_pk_external_layout">
                 <div class="page">
-                    <div class="oe_structure"/>
-                    <t t-foreach="docs" t-as="o">
-                        <t t-if="not o or not 'company_id' in o">
-                            <t t-set="company" t-value="res_company"></t>
-                        </t>
-        
-                        <div class="header">
-                            <table class="table table-condensed" width="100%">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <div class="expediteur">
+                                <h2>PLASTI-KA SA</h2>
+                                <div>ZONE INDUSTRIELLE</div>
+                                <div>4060 KALAA KEBIRA</div>
+                                <div>Tél. : 73 342 374 ; Fax : 73 342 385</div>
+                                <div>C.D. : 814756 N / N.R. ; MF : 875565/X</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-7  text-left">
+                        </div>
+                        <div class="col-xs-5  text-left">
+                            <div class="expediteur">
+                                <div>Société PLASTIGRAY</div>
+                                <div>CS 10133-ZAC de Gray Sud</div>
+                                <div>70104 Gray Cedex France</div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
                                 <tr>
-                                    <td width="25%">
-                                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
-                                    </td>
-                                    <td class="text-center" width="50%">
-                                        <b>Fiche de vie</b>
-                                    </td>
-                                    <td class="text-center" width="25%">
-                                        
-                                    </td>
+                                    <td class="text-right"><b>Facture N°</b></td>
+                                    <td class="text-left"><span t-field="o.num_facture"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>BL N°</b></td>
+                                    <td class="text-left"><span t-field="o.num_bl"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Date</b></td>
+                                    <td class="text-left"><span t-field="o.date_facture"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Semaine</b></td>
+                                    <td class="text-left"><span t-field="o.semaine_facture"/></td>
                                 </tr>
                             </table>
                         </div>
-                        <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
-                            <tr>
-                                <td class="text-left" width="20%"><b>N de Facture</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.num_facture"/></td>
-                                <td class="text-left" width="20%"><b>Date de facture</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.date_facture"/></td>
-                            </tr>
-                            <tr>
-                                <td class="text-left" width="20%"><b>Annee de la facture</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.annee_facture"/></td>
-                                <td class="text-left" width="20%"><b>N de BL</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.num_bl"/></td>
-                            </tr>
-                        </table>
-                        <br/>
-                        <br/>
-                        <table class="table table-condensed" width="100%">
-                            <thead>
-                                <tr width="100%">
-                                    <th width="8%"><strong>Commande</strong></th>
-                                    <th width="13%"><strong>Ref PK</strong></th>
-                                    <th width="25%"><strong>Designation</strong></th>
-                                    <th width="8%"><strong>Poids</strong></th>
-                                    <th width="8%"><strong>Quantite</strong></th>
-                                    <th width="8%"><strong>P.U.M.P</strong></th>
-                                    <th width="8%"><strong>P.T.M.P</strong></th>
-                                    <th width="8%"><strong>P.U.P.F</strong></th>
-                                    <th><strong>P.Total P.F.</strong></th>
+                        <div class="col-xs-6">
+                            <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
+                                <tr>
+                                    <td class="text-right"><b>Total de la Matière première N/FACT en EURO : </b></td>
+                                    <td class="text-right"><span t-field="o.matiere_premiere"/></td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr t-foreach="o.line_ids" t-as="l">
-                                    <td><span t-field="l.commande"/> </td>
-                                    <td><span t-field="l.ref_pk"/> </td>
-                                    <td><span t-field="l.designation"/> </td>
-                                    <td><span t-field="l.poids"/></td>
-                                    <td><span t-field="l.qt"/> </td>
-                                    <td><span t-field="l.pump"/> </td>
-                                    <td><span t-field="l.ptmp"/> </td>
-                                    <td><span t-field="l.pupf"/> </td>
-                                    <td><span t-field="l.total_pf"/> </td>
+                                <tr>
+                                    <td class="text-right"><b>Total des prestations de service en € à payer : </b></td>
+                                    <td class="text-right"><span t-field="o.main_oeuvre"/></td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </t>
+                                <tr>
+                                    <td class="text-right"><b>Total des moules à taxer : </b></td>
+                                    <td class="text-right"><span t-field="o.total_moules"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>TOTAL : </b></td>
+                                    <td class="text-right"><span t-field="o.total"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>T.V.A. : </b></td>
+                                    <td class="text-left">EXON</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>NDP : </b></td>
+                                    <td class="text-left">39 269 097 998</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Incoterm : </b></td>
+                                    <td class="text-left">EX WORK</td>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
+                                <tr>
+                                    <td class="text-right"><b>Nombre de pièces : </b></td>
+                                    <td class="text-right"><span t-field="o.nb_pieces"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Nombre de cartons : </b></td>
+                                    <td class="text-right"><span t-field="o.nb_cartons"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Nombre de colis : </b></td>
+                                    <td class="text-right"><span t-field="o.nb_colis"/></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
+                                <tr>
+                                    <td class="text-right"><b>Poids NET : </b></td>
+                                    <td class="text-right"><span t-field="o.poids_net"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Poids BRUT : </b></td>
+                                    <td class="text-right"><span t-field="o.poids_brut"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Volume (M3) : </b></td>
+                                    <td class="text-right"><span t-field="o.volume"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div class="row" style="page-break-after:always;">
+                        <div class="col-xs-12 text-center">
+                            Règlement : Par virement SWIFT sur le compte n° 03 507 065 0183 022016 79
+                            Banque Nationale Agricole de Kalaa KEBIRA 4060 SOUSSE TUNISIE
+                            Code SWIFT : BNTETNTT
+                        </div>
+                    </div>
+
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table class="table table-condensed" width="100%">
+                                <thead>
+                                    <tr width="100%">
+                                        <th width="8%"><strong>Commande</strong></th>
+                                        <th width="12%"><strong>Ref PK</strong></th>
+                                        <th width="24%"><strong>Designation<br/>Origine - Nomenclature</strong></th>
+                                        <th width="8%"><strong>Poids Net</strong></th>
+                                        <th width="8%"><strong>Poids Brut</strong></th>
+                                        <th width="8%"><strong>Quantite</strong></th>
+                                        <th width="8%"><strong>P.U.M.P</strong></th>
+                                        <th width="8%"><strong>P.T.M.P</strong></th>
+                                        <th width="8%"><strong>P.U.P.F</strong></th>
+                                        <th><strong>P.Total P.F.</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.line_ids" t-as="l">
+                                        <td class="text-left">  <span t-field="l.commande"/> </td>
+                                        <td class="text-left">  <span t-field="l.ref_pk"/> </td>
+                                        <td class="text-left">
+                                            <span t-field="l.designation"/>  <br/>
+                                            <span t-field="l.product_id.is_origine_produit_id"/> - 
+                                            <span t-field="l.product_id.is_nomenclature_douaniere"/>
+                                        </td>
+                                        <td class="text-right"> <span t-field="l.poids_net"/></td>
+                                        <td class="text-right"> <span t-field="l.poids_brut"/></td>
+                                        <td class="text-right"> <span t-field="l.qt"/> </td>
+                                        <td class="text-right"> <span t-field="l.pump"/> </td>
+                                        <td class="text-right"> <span t-field="l.ptmp"/> </td>
+                                        <td class="text-right"> <span t-field="l.pupf"/> </td>
+                                        <td class="text-right"> <span t-field="l.total_pf"/> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-7">
+                        </div>
+                        <div class="col-xs-5">
+                            <table class="table table-condensed" width="50%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
+                                <tr>
+                                    <td class="text-right"><b>Poids net : </b></td>
+                                    <td class="text-right"><span t-field="o.poids_net"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Poids brut : </b></td>
+                                    <td class="text-right"><span t-field="o.poids_brut"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-right"><b>Quantité : </b></td>
+                                    <td class="text-right"><span t-field="o.nb_pieces"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Total matière première : </b></td>
+                                    <td class="text-right"><span t-field="o.matiere_premiere"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right"><b>Total main d'oeuvre : </b></td>
+                                    <td class="text-right"><span t-field="o.main_oeuvre"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <table class="table table-condensed" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th><strong>Moule à taxer</strong></th>
+                                        <th><strong>Montant à taxer</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.moule_ids" t-as="l">
+                                        <td><span t-field="l.mold_id"/> </td>
+                                        <td><span t-field="l.montant"/> </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </t>
-        </t>
-    </template>
+        </template>
 
-    <report 
-        string="Facture Pk" 
-        id="report_facture_pk" 
-        model="is.facture.pk" 
-        report_type="qweb-pdf"
-        name="is_plastigray.report_is_facture_pk" 
-        file="is_plastigray.report_is_facture_pk"
-        header="False"
-    />
 
-   <record id="report_facture_pk" model="ir.actions.report.xml">
-        <field name="paperformat_id" ref="is_plastigray.plan_de_charge_portrait_paperformat"/>
-    </record>
-
-</data>
+        <template id="report_is_facture_pk">
+            <t t-call="is_plastigray.report_is_facture_pk_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.report_is_facture_pk_document" />
+                </t>
+            </t>
+        </template>
+    </data>
 </openerp>
-

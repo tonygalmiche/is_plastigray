@@ -7,7 +7,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>  
-                    <sheet>
+                    <sheet class="oe_form_sheet_width_wider">
                         <h1>
                         <field name="num_facture" class="oe_inline" readonly="1"/>
                         </h1>
@@ -15,21 +15,51 @@
                             <group>
                                 <field name="date_facture"/> 
                                 <field name="annee_facture"/> 
+                                <field name="semaine_facture"/> 
                                 <field name="num_bl"/> 
                             </group>
+                            <group>
+                                <field name="nb_pieces"/> 
+                                <field name="nb_cartons"/> 
+                                <field name="nb_colis"/> 
+                                <field name="volume"/> 
+                            </group>
+
                         </group>
-                        <group string="Lignes" >
+                        <group>
+                            <group>
+                                <field name="matiere_premiere"/>
+                                <field name="main_oeuvre"/>
+                                <field name="total_moules"/>
+                                <field name="total"/>
+                            </group>
+                            <group>
+                                <field name="poids_net"/> 
+                                <field name="poids_brut"/> 
+                            </group>
+                        </group>
+                        <group>
                             <field name="line_ids" nolabel="1" readonly="1">
                                 <tree editable="bottom" >
                                     <field name="commande"/>
-                                    <field name="ref_pk"/>
-                                    <field name="designation"/>
-                                    <field name="poids"/>
-                                    <field name="qt"/>
+                                    <field name="product_id" widget="many2one_clickable"/>
+                                    <field name="poids_net"  sum="Total"/>
+                                    <field name="poids_brut" sum="Total"/>
+                                    <field name="qt"         sum="Total"/>
+                                    <field name="uc"/>
+                                    <field name="nb_uc"      sum="Total"/>
                                     <field name="pump"/>
-                                    <field name="ptmp"/>
+                                    <field name="ptmp"       sum="Total"/>
                                     <field name="pupf"/>
-                                    <field name="total_pf"/>
+                                    <field name="total_pf"   sum="Total"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="moule_ids" nolabel="1">
+                                <tree editable="bottom" >
+                                    <field name="mold_id"/>
+                                    <field name="montant" sum="Total"/>
                                 </tree>
                             </field>
                         </group>
@@ -46,6 +76,18 @@
                     <field name="num_facture"/> 
                     <field name="date_facture"/> 
                     <field name="annee_facture"/> 
+                    <field name="semaine_facture"/> 
+                    <field name="num_bl"/>
+                    <field name="matiere_premiere" sum="Total"/>
+                    <field name="main_oeuvre"      sum="Total"/>
+                    <field name="total_moules"     sum="Total"/>
+                    <field name="total"            sum="Total"/>
+                    <field name="nb_cartons"       sum="Total"/>
+                    <field name="nb_colis"         sum="Total"/>
+                    <field name="nb_pieces"        sum="Total"/>
+                    <field name="poids_net"        sum="Total"/>
+                    <field name="poids_brut"       sum="Total"/>
+                    <field name="volume"           sum="Total"/>
                 </tree>
             </field>
         </record>
@@ -55,7 +97,10 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="num_facture"/>
-                    <field name="date_facture"/> 
+                    <field name="date_facture"/>
+                    <field name="annee_facture"/>
+                    <field name="semaine_facture"/> 
+                    <field name="num_bl"/>
                 </search>
             </field>
         </record>
