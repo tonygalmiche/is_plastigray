@@ -39,7 +39,7 @@ class is_stock_move(models.Model):
                 select 
                         row_number() over(order by sm.id ) as id,
                         sm.id                              as move_id,
-                        sm.write_date                      as date,
+                        sm.date                            as date,
                         sm.product_id                      as product_id, 
                         ic.name                            as category,
                         COALESCE(im.name,id.name)          as mold,
