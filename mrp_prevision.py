@@ -297,6 +297,7 @@ class mrp_prevision(models.Model):
                             'type'            : 'ft',
                             'product_id'      : line['product_id'],
                             'start_date'      : row.start_date,
+                            'start_date_cq'   : row.start_date,
                             'end_date'        : row.start_date,
                             'quantity'        : line['product_qty'],
                             'quantity_origine': line['product_qty'],
@@ -373,9 +374,10 @@ class mrp_prevision(models.Model):
                     quantity=row.quantity
                     if coef!=0:
                         quantity=row.quantity_origine/coef
-                    row.quantity   = quantity
-                    row.start_date = obj.start_date
-                    row.end_date   = obj.start_date
+                    row.quantity      = quantity
+                    row.start_date    = obj.start_date
+                    row.start_date_cq = obj.start_date
+                    row.end_date      = obj.start_date
         #***********************************************************************
         return res
 
