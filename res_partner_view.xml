@@ -110,6 +110,12 @@
                                 <field name="phone"/>
                                 <field name="mobile"/>
                                 <field name="email"/>
+                                <!--
+                                <button 
+                                    string="Ecrire un mail" 
+                                    name= "action_ecrire_email" type="object" icon="terp-mail-message-new"
+                                />
+                                -->
                                 <field name="is_database_line_ids" widget="many2many_tags"/>
                                 <field name="use_parent_address" invisible="1" />
                             </tree>

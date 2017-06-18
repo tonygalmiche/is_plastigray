@@ -216,6 +216,16 @@ class res_partner(models.Model):
         return res
 
 
+#    @api.multi
+#    def action_ecrire_email(self):
+#        for obj in self:
+#            return {
+#                'type' : 'ir.actions.act_url',
+#                'url': 'mailto:'+str(obj.email),
+#                'target': 'new',
+#            }
+
+
     #TODO : Suite à l'installation du module 'project', j'ai du remettre l'ancienne api sinon plantage
     def copy(self, cr, uid, partner_id, default=None, context=None):
         if default is None:
