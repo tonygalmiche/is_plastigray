@@ -226,3 +226,14 @@ class product_pricelist(osv.osv):
 
 
 
+#class product_pricelist_item(osv.osv):
+#    _inherit = "product.pricelist.item"
+
+#    def create(self, cr, uid, vals, context=None):
+#        res=super(product_pricelist_item, self).create(cr, uid, vals, context)
+#        return res
+
+
+
+
+
