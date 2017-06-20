@@ -13,19 +13,21 @@ class is_ligne_reception(models.Model):
     picking_id         = fields.Many2one('stock.picking', 'Réception')
     num_bl             = fields.Char('N°BL fournisseur')
     order_id           = fields.Many2one('purchase.order', 'Commande')
+    order_line_id      = fields.Many2one('purchase.order.line', 'Ligne de Commande')
     partner_id         = fields.Many2one('res.partner', 'Fournisseur')
-
     is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
     is_date_confirmation = fields.Date('Date de confirmation')
     is_commentaire       = fields.Text('Commentaire')
-
     product_id         = fields.Many2one('product.template', 'Article')
+    is_facturable      = fields.Boolean('Article facturable')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     commande_ouverte   = fields.Char('Commande ouverte')
     product_uom        = fields.Many2one('product.uom', 'Unité')
+    price_unit         = fields.Float('Prix commande'        , digits=(14,4))
     qt_receptionnee    = fields.Float('Quantité réceptionnée', digits=(14,4))
     qt_facturee        = fields.Float('Quantité facturée'    , digits=(14,4))
     reste_a_facturer   = fields.Float('Reste à facturer'     , digits=(14,4))
+    montant_reception  = fields.Float('Montant réception'    , digits=(14,2))
     date_planned       = fields.Date('Date prévue')
     date_reception     = fields.Date('Date réception')
     date_mouvement     = fields.Datetime('Date mouvement')
@@ -68,11 +70,15 @@ class is_ligne_reception(models.Model):
                         sp.is_date_reception  as date_reception,
                         sm.date               as date_mouvement,
                         po.id                 as order_id,  
+                        pol.id                as order_line_id,
+                        pol.price_unit        as price_unit,
+                        pol.price_unit*sm.product_uom_qty as montant_reception,
                         sp.partner_id         as partner_id, 
                         po.is_demandeur_id       as is_demandeur_id,
                         po.is_date_confirmation  as is_date_confirmation,
                         po.is_commentaire        as is_commentaire,
                         pt.id                 as product_id, 
+                        pt.is_facturable      as is_facturable,
                         pt.is_ref_fournisseur as ref_fournisseur,
                         sm.product_uom        as product_uom,
                         sm.product_uom_qty    as qt_receptionnee,

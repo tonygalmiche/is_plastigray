@@ -12,6 +12,7 @@ class is_account_invoice_line(models.Model):
 
     partner_id              = fields.Many2one('res.partner', 'Client/Fournisseur')
     invoice_id              = fields.Many2one('account.invoice', 'Facture')
+    date_reception          = fields.Datetime("Date réception")
     date_invoice            = fields.Date("Date facture")
     internal_number         = fields.Char('N°Facture')
     date_due                = fields.Date("Date d'échéance")
@@ -38,6 +39,7 @@ class is_account_invoice_line(models.Model):
                     ail.id,
                     ai.partner_id,
                     ai.id invoice_id,
+                    sm.date date_reception,
                     ai.date_invoice,
                     ai.internal_number,
                     ai.date_due,

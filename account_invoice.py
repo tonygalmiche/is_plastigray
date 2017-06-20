@@ -298,7 +298,7 @@ class account_invoice_line(models.Model):
     _inherit = "account.invoice.line"
 
     is_section_analytique_id = fields.Many2one('is.section.analytique', 'Section analytique')
-    is_move_id               = fields.Many2one('stock.move', 'Mouvement de stock')
+    is_move_id               = fields.Many2one('stock.move', 'Mouvement de stock', select=True)
     is_document              = fields.Char("Document (N° de dossier)")
 
     @api.multi
