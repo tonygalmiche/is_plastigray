@@ -61,8 +61,11 @@ CREATE OR REPLACE view is_comparatif_tarif_cial_vente AS (
                              inner join is_category        ic on pt.is_category_id=ic.id
                              inner join product_product    pp on pp.product_tmpl_id=pt.id 
                              inner join is_product_client ipc on pt.id=ipc.product_id and itc.partner_id=ipc.client_id
-    WHERE pt.active='t' and itc.indice_prix=999 and
-          cast(abs(coalesce(is_prix_vente(pp.id),0)-itc.prix_vente) as numeric)>0
+    WHERE 
+        pt.active='t' and 
+        itc.indice_prix=999 and
+        cast(abs(coalesce(is_prix_vente(pp.id),0)-itc.prix_vente) as numeric)>0 and
+        (itc.date_fin>=CURRENT_DATE or itc.date_fin is null)
 )
 
         """)
