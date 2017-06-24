@@ -106,6 +106,10 @@
                     <page string="Les contacts" attrs="{'invisible': [('is_company','=',False), ('child_ids', '=', [])]}" autofocus="autofocus">
                         <field name="child_ids"  mode="tree" context="{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_customer': customer, 'default_use_parent_address': True}">
                             <tree editable="bottom">
+                                <button 
+                                    string="Fiche du contact" 
+                                    name= "action_view_partner" type="object" icon="gtk-zoom-in"
+                                />
                                 <field name="name"/>
                                 <field name="is_type_contact"/>
                                 <field name="phone"/>

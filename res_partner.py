@@ -217,6 +217,24 @@ class res_partner(models.Model):
         return res
 
 
+    @api.multi
+    def action_view_partner(self):
+        dummy, view_id = self.env['ir.model.data'].get_object_reference('base', 'view_partner_form')
+        for partner in self:
+            return {
+            'name':partner.name,
+            'view_mode': 'form',
+            'view_id': view_id,
+            'view_type': 'form',
+            'res_model': 'res.partner',
+            'type': 'ir.actions.act_window',
+            'res_id': partner.id,
+            'domain': '[]',
+        }
+
+
+
+
 #    @api.multi
 #    def action_ecrire_email(self):
 #        for obj in self:
