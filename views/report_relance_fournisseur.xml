@@ -218,19 +218,21 @@
                         </thead>
                         <tbody>
                             <t t-foreach="p.line_ids" t-as="l">
-                                <tr>
-                                    <t t-if="not l.purchase_order_id.is_date_confirmation">
-                                        <td class="text-center"><span t-field="l.date"/></td>
-                                        <td class="text-center"><span t-field="l.type_cde"/></td>
-                                        <td class="text-right"><span t-field="l.quantite"/></td>
-                                        <td class="text-right"><span t-field="l.quantite_rcp"/></td>
-                                        <td class="text-right"><span t-field="l.uom_id"/></td>
-                                        <t t-if="o.type_commande!='ouverte'">
-                                            <td class="text-center"><b><span t-field="l.purchase_order_id.name"/></b></td>
+                                <t t-if="l.type_cde=='ferme'">
+                                    <tr>
+                                        <t t-if="not l.purchase_order_id.is_date_confirmation">
+                                            <td class="text-center"><span t-field="l.date"/></td>
+                                            <td class="text-center"><span t-field="l.type_cde"/></td>
+                                            <td class="text-right"><span t-field="l.quantite"/></td>
+                                            <td class="text-right"><span t-field="l.quantite_rcp"/></td>
+                                            <td class="text-right"><span t-field="l.uom_id"/></td>
+                                            <t t-if="o.type_commande!='ouverte'">
+                                                <td class="text-center"><b><span t-field="l.purchase_order_id.name"/></b></td>
+                                            </t>
+                                            <td class="text-center"><b><span t-field="l.purchase_order_id.is_date_confirmation"/></b></td>
                                         </t>
-                                        <td class="text-center"><b><span t-field="l.purchase_order_id.is_date_confirmation"/></b></td>
-                                    </t>
-                                </tr>
+                                    </tr>
+                                </t>
                             </t>
                         </tbody>
                     </table>
