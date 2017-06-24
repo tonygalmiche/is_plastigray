@@ -39,19 +39,20 @@
                             </group>
                         </group>
                         <group>
-                            <field name="line_ids" nolabel="1" readonly="1">
+                            <field name="line_ids" nolabel="1" >
                                 <tree editable="bottom" >
-                                    <field name="commande"/>
-                                    <field name="product_id" widget="many2one_clickable"/>
-                                    <field name="poids_net"  sum="Total"/>
-                                    <field name="poids_brut" sum="Total"/>
-                                    <field name="qt"         sum="Total"/>
-                                    <field name="uc"/>
-                                    <field name="nb_uc"      sum="Total"/>
-                                    <field name="pump"/>
-                                    <field name="ptmp"       sum="Total"/>
-                                    <field name="pupf"/>
-                                    <field name="total_pf"   sum="Total"/>
+                                    <field name="num_colis"/>
+                                    <field name="commande"   readonly="1"/>
+                                    <field name="product_id" readonly="1" widget="many2one_clickable"/>
+                                    <field name="poids_net"  readonly="1" sum="Total"/>
+                                    <field name="poids_brut" readonly="1" sum="Total"/>
+                                    <field name="qt"         readonly="1" sum="Total"/>
+                                    <field name="uc"         readonly="1"/>
+                                    <field name="nb_uc"      readonly="1" sum="Total"/>
+                                    <field name="pump"       readonly="1"/>
+                                    <field name="ptmp"       readonly="1" sum="Total"/>
+                                    <field name="pupf"       readonly="1"/>
+                                    <field name="total_pf"   readonly="1" sum="Total"/>
                                 </tree>
                             </field>
                         </group>
