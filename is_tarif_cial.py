@@ -12,9 +12,18 @@ class is_tarif_cial(models.Model):
     _order='product_id, partner_id, indice_prix desc'
     _sql_constraints = [('is_indice_prix_uniq','UNIQUE(partner_id, product_id,indice_prix)', 'Cet indice de prix existe déja pour ce client et cet article')]
 
+
+    @api.depends('product_id')
+    def _ref_client(self):
+        for obj in self:
+            if obj.product_id:
+                obj.is_ref_client = obj.product_id.is_ref_client
+
+
     display_name        = fields.Char(string='Name', compute='_compute_display_name')
     partner_id          = fields.Many2one('res.partner', 'Client'      , required=True)
     product_id          = fields.Many2one('product.template', 'Article', required=True)
+    is_ref_client       = fields.Char("Référence client", store=True, compute='_ref_client')
     is_mold_id          = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
     indice_prix         = fields.Integer("Indice Prix"                 , required=True)
     date_debut          = fields.Date("Date de début")
