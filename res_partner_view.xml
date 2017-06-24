@@ -40,6 +40,7 @@
                     <field name="is_certificat_matiere"   attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="is_import_function"      attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="is_type_cde_fournisseur" attrs="{'invisible': [('supplier','=', False)]}" />
+                    <field name="is_livre_a_id"           attrs="{'invisible': [('supplier','=', False)]}"/>
                     <field name="is_source_location_id" />
                 </xpath>
                 <xpath expr="//field[@name='name']" position="attributes">

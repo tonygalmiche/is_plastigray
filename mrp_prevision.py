@@ -84,6 +84,7 @@ class mrp_prevision(models.Model):
             if partner.property_product_pricelist_purchase:
                 vals={
                     'partner_id'      : partner.id,
+                    'is_livre_a_id'   : partner.is_livre_a_id.id,
                     'location_id'     : partner.is_source_location_id.id,
                     'fiscal_position' : partner.property_account_position.id,
                     'payment_term_id' : partner.property_supplier_payment_term.id,

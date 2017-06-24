@@ -122,6 +122,7 @@ class res_partner(models.Model):
 
     is_transporteur_id      = fields.Many2one('res.partner', 'Transporteur')
     is_delai_transport      = fields.Integer('Delai de transport (jour)')
+    is_livre_a_id           = fields.Many2one('res.partner', 'Livrer à', help="Indiquez l'adresse de livraison si celle-ci est différente de celle de la société")
     is_certificat_matiere   = fields.Boolean(u'Certificat matière demandé')
     is_import_function      = fields.Selection(import_function, "Fonction d'importation EDI")
     is_raison_sociale2      = fields.Char('Raison sociale 2')

@@ -60,6 +60,20 @@ class purchase_order(models.Model):
 
 
     @api.multi
+    def onchange_partner_id(self, partner_id, context=None):
+        res = super(purchase_order, self).onchange_partner_id(partner_id)
+
+        if 'value' in res:
+            partner = self.env['res.partner'].browse(partner_id)
+            res['value'].update({
+                'is_livre_a_id': partner.is_livre_a_id.id
+            })
+        
+        print res
+        return res
+
+
+    @api.multi
     def actualiser_prix_commande(self):
         for obj in self:
             for line in obj.order_line:

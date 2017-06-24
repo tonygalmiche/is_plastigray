@@ -142,6 +142,7 @@ class is_cde_ouverte_fournisseur(models.Model):
 
     name                 = fields.Char("N°", readonly=True)
     partner_id           = fields.Many2one('res.partner', 'Fournisseur'        , required=True)
+    is_livre_a_id        = fields.Many2one('res.partner', 'Livrer à', related='partner_id.is_livre_a_id')
     contact_id           = fields.Many2one('res.partner', 'Contact Logistique')
     pricelist_id         = fields.Many2one('product.pricelist', 'Liste de prix', related='partner_id.property_product_pricelist_purchase', readonly=True)
     type_commande        = fields.Selection(type_commande_list, "Type de commande", required=True)

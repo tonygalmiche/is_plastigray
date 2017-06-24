@@ -32,6 +32,9 @@
                                 <field name="partner_id" domain="[('supplier' ,'=',True),('is_company','=',True)]" /> 
                                 <field name="product_id" domain="[('purchase_ok' ,'=',True)]"/> 
                             </group>
+                            <group>
+                                <field name="is_livre_a_id"  /> 
+                            </group>
                         </group>
                         <group>
                             <field name="order_ids" nolabel="1">
