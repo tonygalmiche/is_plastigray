@@ -216,7 +216,9 @@
                 </t>
                 <t t-if="test>0">
                     <t t-if="test_imprimer==1">
-                        <div>Article : <b><span t-field="p.product_id"/></b></div>
+                        <div>
+                            Article : <b><span t-field="p.product_id"/></b> / Référence fournisseur : <b><span t-field="p.product_id.is_ref_fournisseur"/></b>
+                        </div>
                         <div t-if="p.date_bl">Dernier BL : <span t-field="p.num_bl"/> du <span t-field="p.date_bl"/> (Qt=<span t-field="p.qt_bl"/> <span t-field="p.product_id.uom_po_id"/>)</div>
                         <div t-if="p.date_bl==False">Dernier BL : Aucun</div>
                         <table class="table table-condensed">
