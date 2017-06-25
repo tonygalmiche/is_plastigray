@@ -225,6 +225,14 @@ class account_invoice(models.Model):
 
 
     @api.multi
+    def action_cancel(self):
+        for obj in self:
+            for line in obj.invoice_line:
+                line.is_move_id=False
+        super(account_invoice, self).action_cancel()
+
+
+    @api.multi
     def button_reset_taxes(self):
         res=super(account_invoice, self).button_reset_taxes()
         self.escompte()
