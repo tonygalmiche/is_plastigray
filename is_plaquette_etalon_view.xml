@@ -105,7 +105,8 @@
                                                     }"
                                                 />
                                                 <field name="etat_conformite" />
-                                                <field name="rapport_de_controle" />
+                                                <!--<field name="rapport_de_controle" />-->
+                                                <field name="rapport_controle_ids" widget="many2many_binary" />
                                             </group>
                                         </sheet>
                                     </form>
@@ -117,7 +118,8 @@
                                         <field name="organisme_controleur" />
                                         <field name="fournisseur_id" />
                                         <field name="etat_conformite" />
-                                        <field name="rapport_de_controle" />
+                                        <!--<field name="rapport_de_controle" />-->
+                                        <field name="rapport_controle_ids"/>
                                     </tree>
                                 </field>
                             </page>

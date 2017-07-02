@@ -24,7 +24,8 @@
                                 <field name="classe" />
                                 <field name="resultat" />
                                 <field name="etat_conformite" />
-                                <field name="rapport_de_controle" />
+                                <!--<field name="rapport_de_controle" />-->
+                                <field name="rapport_controle_ids" widget="many2many_binary" />
                                 <field name="plaquette_id"  readonly="1" />
                                 <field name="instrument_id" readonly="1" />
                                 <field name="gabarit_id"    readonly="1" />
@@ -53,7 +54,8 @@
                     <field name="classe" />
                     <field name="resultat" />
                     <field name="etat_conformite" />
-                    <field name="rapport_de_controle" />
+                    <!--<field name="rapport_de_controle" />-->
+                    <field name="rapport_controle_ids" />
                     <field name="plaquette_id"  widget="many2one_clickable" />
                     <field name="instrument_id" widget="many2one_clickable" />
                     <field name="gabarit_id"    widget="many2one_clickable" />
