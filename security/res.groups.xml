@@ -83,6 +83,23 @@
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
+
+    <record model="res.groups" id="is_gestionnaire_presses_group" >
+        <field name="name">Gestionnaire des presses</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_gestionnaire_prechauffeurs_group" >
+        <field name="name">Gestionnaire des préchauffeurs</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_gestionnaire_moyens_production_group" >
+        <field name="name">Gestionnaire des moyens de production</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+
     <record model="res.groups" id="is_gestionnaire_tables_group" >
         <field name="name">Gestionnaire des tables, postes de charge et calcul des coûts</field>
         <field name="comment"></field>
@@ -103,6 +120,17 @@
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
+
+
+    <record model="res.groups" id="is_metrologie_group" >
+        <field name="name">Métrologie</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+
+
+
+
     <record model="res.groups" id="is_qualite_group" >
         <field name="name">Qualité</field>
         <field name="comment"></field>
@@ -124,24 +152,6 @@
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
 
-
-<!--
-        <record model="res.groups" id="group_is_bloque_lot">
-            <field name="name">Bloquer lot</field>
-        </record>
-
-        <record model="res.groups" id="group_is_debloque_lot">
-            <field name="name">Débloquer lot</field>
-        </record>
-        
-        <record model="res.groups" id="group_is_change_locations">
-            <field name="name">Changement emplacements</field>
-        </record>
-        
-        <record model="res.groups" id="group_is_rebut_lot">
-            <field name="name">Mise au rebut</field>
-        </record>
--->
 
 
 
@@ -167,10 +177,5 @@
         <field name="view_type">form</field>
         <field name="view_mode">tree,form</field>
     </record>
-
-
-
-
-
 </data>
 </openerp>
