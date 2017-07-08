@@ -94,14 +94,15 @@ class report_stock_lot_rebut(osv.osv):
                         r1.in_date as in_date,
                         'rebut' as operation
                 FROM
-                        report_stock_lot_dest_rebut r1 LEFT JOIN report_stock_lot_src_rebut r2 ON r1.location_id = r2.location_id
+                        report_stock_lot_dest_rebut r1 LEFT JOIN report_stock_lot_src_rebut r2 ON r1.location_id = r2.location_id AND r1.lot_id = r2.lot_id AND r1.product_id = r2.product_id
                                                        INNER JOIN product_product pp      ON r1.product_id = pp.id
                                                        INNER JOIN product_template pt     ON pp.product_tmpl_id = pt.id
                                                        LEFT OUTER JOIN is_mold im         ON pt.is_mold_id=im.id 
-                        AND r1.lot_id = r2.lot_id
-                        AND r1.product_id = r2.product_id) AS R
-                        WHERE R.qty > 0
+                        
+                ) AS R
+                WHERE R.qty > 0
                )
+
         """)
 
 report_stock_lot_rebut()
