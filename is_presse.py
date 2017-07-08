@@ -26,6 +26,7 @@ class is_outillage_constructeur(models.Model):
 
 class is_presse(models.Model):
     _name='is.presse'
+    _sql_constraints = [('name_uniq','UNIQUE(name)', u'Ce code existe déjà')]
 
     name        = fields.Char(string='Numéro de presse')
     designation = fields.Char(string='Désignation')

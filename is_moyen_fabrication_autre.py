@@ -4,6 +4,7 @@ from openerp import models,fields,api
 
 class is_moyen_fabrication_autre(models.Model):
     _name='is.moyen.fabrication.autre'
+    _sql_constraints = [('name_uniq','UNIQUE(name)', u'Ce code existe déjà')]
 
     name            = fields.Char(string='Code', required=True)
     type_equipement = fields.Many2one('is.type.equipement', string='Type équipement', required=True)

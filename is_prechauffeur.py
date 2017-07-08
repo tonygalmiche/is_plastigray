@@ -6,6 +6,7 @@ from openerp.tools.translate import _
 
 class is_prechauffeur(models.Model):
     _name='is.prechauffeur'
+    _sql_constraints = [('name_uniq','UNIQUE(name)', u'Ce code existe déjà')]
 
     name              = fields.Char(string='N° du préchauffeur')
     site_id           = fields.Many2one('is.database', string='Site')

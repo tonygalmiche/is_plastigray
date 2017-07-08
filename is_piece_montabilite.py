@@ -8,6 +8,7 @@ from dateutil.relativedelta import relativedelta
 class is_piece_montabilite(models.Model):
     _name='is.piece.montabilite'
     _rec_name = 'code_pg'
+    _sql_constraints = [('code_pg_uniq','UNIQUE(code_pg)', u'Ce code existe déjà')]
     
     @api.depends('moule_ids')
     def compute_client_id(self):

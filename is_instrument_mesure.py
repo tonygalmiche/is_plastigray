@@ -10,6 +10,7 @@ class is_instrument_mesure(models.Model):
     _name = 'is.instrument.mesure'
     _order = 'code_pg'
     _rec_name='code_pg'
+    _sql_constraints = [('code_pg_uniq','UNIQUE(code_pg)', u'Ce code existe déjà')]
 
     @api.depends('famille_id', 'frequence')
     def _compute_periodicite(self):

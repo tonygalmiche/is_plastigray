@@ -11,6 +11,7 @@ class is_type_equipement(models.Model):
 
 class is_moyen_fabrication(models.Model):
     _name='is.moyen.fabrication'
+    _sql_constraints = [('name_uniq','UNIQUE(name)', u'Ce code existe déjà')]
 
 
     name = fields.Char("Code", required=True)

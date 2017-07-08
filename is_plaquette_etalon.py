@@ -11,6 +11,7 @@ class is_plaquette_etalon(models.Model):
     _name='is.plaquette.etalon'
     _order='code_pg'
     _rec_name='code_pg'
+    _sql_constraints = [('code_pg_uniq','UNIQUE(code_pg)', u'Ce code existe déjà')]
 
     code_pg = fields.Char("Code PG", required=True)
     designation = fields.Char("Désignation", required=True)
