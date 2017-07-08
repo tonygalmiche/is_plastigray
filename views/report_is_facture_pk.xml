@@ -265,13 +265,17 @@
                                             <span t-field="l.product_id.is_origine_produit_id"/> - 
                                             <span t-field="l.product_id.is_nomenclature_douaniere"/>
                                         </td>
-                                        <td class="text-right"> <span t-field="l.poids_net"/></td>
-                                        <td class="text-right"> <span t-field="l.poids_brut"/></td>
-                                        <td class="text-right"> <span t-field="l.qt"/> </td>
-                                        <td class="text-right"> <span t-field="l.pump"/> </td>
-                                        <td class="text-right"> <span t-field="l.ptmp"/> </td>
-                                        <td class="text-right"> <span t-field="l.pupf"/> </td>
-                                        <td class="text-right"> <span t-field="l.total_pf"/> </td>
+                                        <td class="text-right" style="white-space: nowrap;">
+                                            <t t-esc='"{:,.1f}".format(l.poids_net).replace(","," ").replace(".",",")'/> 
+                                        </td>
+                                        <td class="text-right" style="white-space: nowrap;">
+                                            <t t-esc='"{:,.1f}".format(l.poids_brut).replace(","," ").replace(".",",")'/> 
+                                        </td>
+                                        <td class="text-right" style="white-space: nowrap;"> <span t-field="l.qt"/> </td>
+                                        <td class="text-right" style="white-space: nowrap;"> <span t-field="l.pump"/> </td>
+                                        <td class="text-right" style="white-space: nowrap;"> <span t-field="l.ptmp"/> </td>
+                                        <td class="text-right" style="white-space: nowrap;"> <span t-field="l.pupf"/> </td>
+                                        <td class="text-right" style="white-space: nowrap;"> <span t-field="l.total_pf"/> </td>
                                     </tr>
                                 </tbody>
                             </table>

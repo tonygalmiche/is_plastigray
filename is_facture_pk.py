@@ -125,10 +125,10 @@ class is_facture_pk(models.Model):
 
 class is_facture_pk_line(models.Model):
     _name='is.facture.pk.line'
-    
+    _order = 'num_colis,product_id'
     
     is_facture_id = fields.Many2one('is.facture.pk', string='Lignes')
-    num_colis     = fields.Integer('N°Colis')
+    num_colis     = fields.Char('N°Colis')
     commande      = fields.Char('Commande')
     product_id    = fields.Many2one('product.product', string='Article')
     ref_pk        = fields.Char('Réf PK')
