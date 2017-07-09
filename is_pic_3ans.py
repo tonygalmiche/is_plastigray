@@ -217,32 +217,51 @@ class is_pic_3ans_saisie(models.Model):
 
     @api.multi
     def run_cbb(self):
-        print "#### Début CBB ####"
+        cr = self._cr
+        print "#### Début du CBB ####"
 
         #** Recherche des PIC à traiter ************************************
         pic_obj = self.env['is.pic.3ans']
+
+        print 'search pics'
         pics=pic_obj.search([
             ('type_donnee','=','pic'),
         ])
         #*******************************************************************
 
         #** Suppression des données du calcul précédent ********************
-        pic_obj.search([
-            ('type_donnee','=','pdp'),
-        ]).unlink()
+        print 'unlink pics'
+#        pic_obj.search([
+#            ('type_donnee','=','pdp'),
+#        ]).unlink()
+        SQL="""
+            delete
+            from is_pic_3ans
+            where type_donnee='pdp'
+        """
+        cr.execute(SQL)
+        print 'fin unlink pics'
         #*******************************************************************
 
         #** CBB sur les PIC ************************************************
+        print "debut cbb"
         global ordre
+        nb=len(pics)
+        ct=0
         for pic in pics:
-            print pic
+            ct=ct+1
+            print ct,'/',nb, pic, pic.product_id, pic.quantite
             ordre=0
             self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
         #*******************************************************************
-        print "#### Fin CBB ####"
+        print "#### Fin du CBB ####"
 
     @api.multi
     def cbb_article(self):
+
+        #self.run_cbb()
+        #return
+
         if len(self)>1:
             raise Warning("Calcul multiple non autorisé")
         for obj in self:
@@ -258,6 +277,7 @@ class is_pic_3ans_saisie(models.Model):
 
             #** Suppression des données du calcul précédent ********************
             for pic in pics:
+                print 'unlink',pic
                 pic_obj.search([
                     ('annee'      ,'=',obj.annee),
                     ('origine_id' ,'=',pic.id),
@@ -267,7 +287,9 @@ class is_pic_3ans_saisie(models.Model):
 
             #** CBB sur les PIC ************************************************
             global ordre
+            print len(pics)
             for pic in pics:
+                print pic, pic.product_id, pic.quantite
                 ordre=0
                 self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
             #*******************************************************************
@@ -301,8 +323,8 @@ class is_pic_3ans_saisie(models.Model):
 
 class is_pic_3ans(models.Model):
     _name='is.pic.3ans'
-    _order='mois,origine_id,ordre,product_id'
-
+    #_order='mois,origine_id,ordre,product_id'
+    _order='product_id'
 
 
     @api.depends('product_id')
