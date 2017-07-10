@@ -134,8 +134,8 @@
             <field name="res_model">product.template</field>
             <field name="domain">[
                 '|',
-                '&amp;',('weight','=', 0),('segment_id.name','=','PRODUIT FINI'),
-                '&amp;',('weight','=', 0),('segment_id.name','=','SEMI-FINI')
+                '&amp;','&amp;',('weight','=', 0),('segment_id.name','=','PRODUIT FINI'),('sale_ok','=',1),
+                '&amp;','&amp;',('weight','=', 0),('segment_id.name','=','SEMI-FINI')   ,('sale_ok','=',1)
             ]</field>
             <field name="limit">200</field>
             <field name="view_id" ref="is_poids_brut_0_tree_view"/>

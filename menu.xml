@@ -1296,6 +1296,7 @@
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
+    <!--
     <record id="is_liste_of_sans_gamme_menu" model="ir.ui.menu" >
         <field name="name">OF sans gamme</field>
         <field name="sequence">30</field>
@@ -1305,6 +1306,7 @@
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
+    -->
     <record id="is_nomenclature_sans_gamme_menu" model="ir.ui.menu" >
         <field name="name">Nomenclatures sans gamme</field>
         <field name="sequence">40</field>

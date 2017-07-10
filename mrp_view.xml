@@ -149,6 +149,7 @@
             </field>
             <field name="product_tmpl_id" position="after" > 
                 <field name="segment_id" />
+                <field name="is_gestionnaire_id" />
                 <field name="is_qt_uc" />
                 <field name="is_qt_um" />
             </field>
@@ -198,6 +199,7 @@
                 <field name="product_tmpl_id"       widget="many2one_clickable"/>
                 <field name="sequence"/>
                 <field name="segment_id"/>
+                <field name="is_gestionnaire_id"/>
                 <field name="is_sous_traitance"/>
                 <field name="is_negoce"/>
                 <field name="is_inactive"/>
@@ -213,8 +215,13 @@
         <field name="arch" type="xml">
             <field name="product_tmpl_id" position="after" > 
                 <field name="segment_id" /> 
+                <field name="is_gestionnaire_id" /> 
                 <field name="routing_id" /> 
                 <field name="is_gamme_generique_id" /> 
+
+                <filter string="Gestionnaire 4"         name="gest4"      domain="[('is_gestionnaire_id','=','04')]"/>
+                <filter string="Gestionnaires 3,6,7,12" name="gest36712"  domain="[('is_gestionnaire_id','in',['03','06','07','12'])]"/>
+                <filter string="Gestionnaires 10,11,14" name="gest101114" domain="[('is_gestionnaire_id','in',['10','11','14'])]"/>
             </field>
             <field name="product_id" position="replace" /> 
         </field>

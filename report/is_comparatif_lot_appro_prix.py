@@ -46,19 +46,10 @@ class is_comparatif_lot_appro_prix(models.Model):
                     pt.uom_po_id,
                     is_unit_coef(pt.uom_id, pt.uom_po_id) coef,
                     pt.lot_mini lot_mini_product,
-                    (
-                        select ppi.min_quantity
-                        from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
-                        where 
-                            ppv.pricelist_id=get_product_pricelist_purchase(pt_tmp2.partner_id) and
-                            ppi.product_id=pp.id and 
-                            (ppv.date_end   is null or ppv.date_end   >= CURRENT_DATE) and 
-                            (ppv.date_start is null or ppv.date_start <= CURRENT_DATE) and 
-                            (ppi.date_end   is null or ppi.date_end   >= CURRENT_DATE) and 
-                            (ppi.date_start is null or ppi.date_start <= CURRENT_DATE) and 
-                            ppi.min_quantity*is_unit_coef(pt.uom_id, pt.uom_po_id)<=pt.lot_mini
-                        order by ppi.product_id, ppi.min_quantity desc limit 1
-                    )*is_unit_coef(pt.uom_id, pt.uom_po_id) min_quantity_pricelist
+
+
+                    is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id) min_quantity_pricelist
+
                 from (
                     select
                         pt_tmp1.id,
@@ -72,7 +63,13 @@ class is_comparatif_lot_appro_prix(models.Model):
                                             left outer join is_gestionnaire     ig on pt.is_gestionnaire_id=ig.id
                                             left outer join is_product_famille ipf on pt.family_id=ipf.id
                                             left outer join is_product_segment ips on pt.segment_id=ips.id
-                where pt.purchase_ok='t' and ic.name::int<70 and pt.active='t'
+                where 
+                    pt.purchase_ok='t' and 
+                    ic.name::int<70 and 
+                    pt.active='t' and
+                    is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id)) is not null and
+
+                    round(is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id))<>pt.lot_mini
             )
 
         """)
