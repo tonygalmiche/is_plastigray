@@ -16,13 +16,13 @@ class MrpProduction(models.Model):
     def _compute(self):
         package_qty = is_qt_prevue = is_qt_fabriquee = is_qt_rebut = is_qt_reste = 0
         for line in self.move_created_ids2:
-            if line.location_dest_id.scrap_location:
+            if line.location_dest_id.scrap_location and line.state=='done':
                 is_qt_rebut=is_qt_rebut+line.product_uom_qty
             else:
-                if line.location_dest_id.usage=='internal':
+                if line.location_dest_id.usage=='internal' and line.state=='done':
                     is_qt_fabriquee=is_qt_fabriquee+line.product_uom_qty
         for line in self.move_created_ids2:
-            if line.location_id.usage=='internal':
+            if line.location_id.usage=='internal' and line.state=='done':
                 is_qt_fabriquee=is_qt_fabriquee-line.product_uom_qty
 
         product_package = False
