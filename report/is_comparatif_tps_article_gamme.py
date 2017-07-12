@@ -20,6 +20,7 @@ class is_comparatif_tps_article_gamme(models.Model):
     nb_secondes_article = fields.Float('Temps de realisation Article')
     delta_nb_secondes   = fields.Float('Delta Nb secondes')
 
+
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_comparatif_tps_article_gamme')
         cr.execute("""
@@ -34,14 +35,17 @@ class is_comparatif_tps_article_gamme(models.Model):
                     mrw.workcenter_id    as workcenter_id,
                     mrw.is_nb_secondes   as nb_secondes_gamme,
                     pt.temps_realisation as nb_secondes_article,
-                    (mrw.is_nb_secondes-pt.temps_realisation) as delta_nb_secondes
+                    round(cast((mrw.is_nb_secondes-pt.temps_realisation) as numeric),2) as delta_nb_secondes
                 FROM mrp_bom mb inner join mrp_routing mr             on mb.routing_id=mr.id
                                 inner join mrp_routing_workcenter mrw on mr.id=mrw.routing_id
                                 inner join mrp_workcenter mw          on mrw.workcenter_id=mw.id
                                 inner join resource_resource rr       on mw.resource_id=rr.id
                                 inner join product_template pt        on mb.product_tmpl_id=pt.id
                                 inner join is_category ic             on pt.is_category_id=ic.id
-                WHERE rr.resource_type='material' and ic.name<'70'
+                WHERE 
+                    rr.resource_type='material' and 
+                    ic.name<'70' and
+                    round(cast((mrw.is_nb_secondes-pt.temps_realisation) as numeric),2)!=0
             )
         """)
 
