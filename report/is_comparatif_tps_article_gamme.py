@@ -30,12 +30,12 @@ class is_comparatif_tps_article_gamme(models.Model):
                     mb.product_tmpl_id   as product_id,
                     pt.is_category_id    as is_category_id,
                     mr.id                as routing_id,
-                    mrw.sequence         as sequence,
-                    mrw.name             as name,
-                    mrw.workcenter_id    as workcenter_id,
-                    mrw.is_nb_secondes   as nb_secondes_gamme,
-                    pt.temps_realisation as nb_secondes_article,
-                    round(cast((mrw.is_nb_secondes-pt.temps_realisation) as numeric),2) as delta_nb_secondes
+                    min(mrw.sequence)         as sequence,
+                    min(mrw.name)             as name,
+                    min(mrw.workcenter_id)    as workcenter_id,
+                    sum(mrw.is_nb_secondes)   as nb_secondes_gamme,
+                    min(pt.temps_realisation) as nb_secondes_article,
+                    round(cast(sum(mrw.is_nb_secondes)-min(pt.temps_realisation) as numeric),2) as delta_nb_secondes
                 FROM mrp_bom mb inner join mrp_routing mr             on mb.routing_id=mr.id
                                 inner join mrp_routing_workcenter mrw on mr.id=mrw.routing_id
                                 inner join mrp_workcenter mw          on mrw.workcenter_id=mw.id
@@ -44,8 +44,13 @@ class is_comparatif_tps_article_gamme(models.Model):
                                 inner join is_category ic             on pt.is_category_id=ic.id
                 WHERE 
                     rr.resource_type='material' and 
-                    ic.name<'70' and
-                    round(cast((mrw.is_nb_secondes-pt.temps_realisation) as numeric),2)!=0
+                    ic.name<'70'
+                GROUP BY
+                    mb.id,
+                    mb.product_tmpl_id,
+                    pt.is_category_id,
+                    mr.id
+                HAVING round(cast(sum(mrw.is_nb_secondes)-min(pt.temps_realisation) as numeric),2)<>0
             )
         """)
 
