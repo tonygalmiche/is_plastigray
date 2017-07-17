@@ -234,6 +234,8 @@ class mrp_prevision(models.Model):
         #** Quantité arrondie au lot à la création uniquement ******************
         type       = vals.get('type'      , None)
         quantity   = vals.get('quantity'  , None)
+        if quantity==None or quantity==0:
+            raise Warning(u'Quantité à 0 non autorisée !')
 
         end_date   = vals.get('end_date'  , None)
         if (type=='sa' or type=='fs') and quantity:
@@ -375,6 +377,8 @@ class mrp_prevision(models.Model):
                     quantity=row.quantity
                     if coef!=0:
                         quantity=row.quantity_origine/coef
+                    else:
+                        quantity=0
                     row.quantity      = quantity
                     row.start_date    = obj.start_date
                     row.start_date_cq = obj.start_date
