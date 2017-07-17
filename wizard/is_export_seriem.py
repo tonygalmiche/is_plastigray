@@ -189,9 +189,14 @@ class is_export_seriem(models.TransientModel):
                     TypeReglement='  '
                     if row[8]:
                         TypeReglement=(row[8]+"  ")[:2]
-                    SectionAnalytique=str(row[5] or u'    ')
                     DateFacture=str(row[1])
                     JourFacture=(u"00"+DateFacture)[-2:]
+
+                    #** Pas de section analytique pour les comptes 2xx (immo) **
+                    SectionAnalytique=str(row[5] or u'    ')
+                    if NumCompte[:1]==u'2':
+                        SectionAnalytique=u'    '
+
                     Ligne=u"L"+NumCompte+CodeFournisseur+Montant+Sens+TypeFacture+Client+NumFacture+SectionAnalytique+JourFacture+u"   00000000000   00000000000"
                     res.append(Ligne)
                     #print Ligne
