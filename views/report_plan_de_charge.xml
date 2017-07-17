@@ -177,12 +177,19 @@
                             <div class="row contenu">
                                 <div class="col-xs-12">
                                     <table style="width:100%">
-                                        <tr><th style="width:55%;border:0"></th><td><b>35 H</b></td><td><b>37,5 H</b></td><td><b>40 H</b></td></tr>
+                                        <tr>
+                                            <th style="width:55%;border:0"></th>
+                                            <th><b>35 H</b></th>
+                                            <th><b>37,5 H</b></th>
+                                            <th><b>40 H</b></th>
+                                            <th><b>48 H</b></th>
+                                        </tr>
                                         <tr t-foreach="o.mod_ids" t-as="l">
                                             <th><span t-field="l.intitule"/></th>
                                             <td><span t-field="l.semaine_35"/></td>
                                             <td><span t-field="l.semaine_37"/></td>
                                             <td><span t-field="l.semaine_40"/></td>
+                                            <td><span t-field="l.semaine_48"/></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -212,6 +219,21 @@
                                     <table style="width:100%">
                                         <tr><td style="width:40%">Nombre d'heures total dans la période </td></tr>
                                         <tr><td><b><t t-esc='"{:,.0f}".format(o.nb_heures_periode).replace(","," ").replace(".",",")'      /></b></td></tr>
+                                    </table>
+                                    <br /><br />
+                                    <table style="width:100%">
+                                        <tr><td style="width:40%">Total heures presses</td></tr>
+                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.total_presse_heure).replace(","," ").replace(".",",")'      /></b></td></tr>
+                                    </table>
+                                    <br /><br />
+                                    <table style="width:100%">
+                                        <tr><td style="width:40%">% Presse</td></tr>
+                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.presse_pourcent).replace(","," ").replace(".",",")'      /></b></td></tr>
+                                    </table>
+                                    <br /><br />
+                                    <table style="width:100%">
+                                        <tr><td style="width:40%">% presse au rendement de 85%</td></tr>
+                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.presse_pourcent85).replace(","," ").replace(".",",")'      /></b></td></tr>
                                     </table>
                                 </div>
                                 <div class="col-xs-10">

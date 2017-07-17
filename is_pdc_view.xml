@@ -62,13 +62,17 @@
                                     <field name="semaine_35"/>
                                     <field name="semaine_37"/>
                                     <field name="semaine_40"/>
+                                    <field name="semaine_48"/>
                                 </tree>
                             </field>
                         </group>
                         <group>
-                            <field name="nb_presses"        readonly="1"/> 
+                            <field name="nb_presses"         readonly="1"/> 
                             <field name="temps_ouverture"/> 
-                            <field name="nb_heures_periode" readonly="1"/> 
+                            <field name="nb_heures_periode"  readonly="1"/> 
+                            <field name="total_presse_heure" readonly="1"/> 
+                            <field name="presse_pourcent"    readonly="1"/> 
+                            <field name="presse_pourcent85"  readonly="1"/> 
                         </group>
                         <group>
                             <field name="workcenter_ids" readonly="1" nolabel="1">
@@ -79,7 +83,7 @@
                                         attrs="{'invisible':[('workcenter_id','=',False)]}"
                                     />
                                     <field name="workcenter_id"/>
-                                    <field name="presse_heure"      digits="(14, 0)" />
+                                    <field name="presse_heure"      digits="(14, 0)" sum="Total"/>
                                     <field name="presse_pourcent"   digits="(14, 0)" />
                                     <field name="presse_heure85"    digits="(14, 0)" />
                                     <field name="presse_pourcent85" digits="(14, 0)" />

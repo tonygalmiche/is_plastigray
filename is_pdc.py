@@ -36,6 +36,10 @@ class is_pdc(models.Model):
     temps_ouverture       = fields.Integer("Temps d'ouverture")
     nb_heures_periode     = fields.Integer("Nombre d'heures total dans la période")
 
+    total_presse_heure    = fields.Float('Total heures presses'          , readonly=True, store=True, compute='_compute')
+    presse_pourcent       = fields.Integer('% Presse'                    , readonly=True, store=True, compute='_compute')
+    presse_pourcent85     = fields.Integer('% presse au rendement de 85%', readonly=True, store=True, compute='_compute')
+
 
     mold_ids              = fields.One2many('is.pdc.mold'      , 'pdc_id', u'Moules')
     workcenter_ids        = fields.One2many('is.pdc.workcenter', 'pdc_id', u'Postes de charge')
@@ -46,6 +50,34 @@ class is_pdc(models.Model):
     _defaults = {
         'state': 'creation',
     }
+
+#% Presse : ( Total heures presses / ( nbre de presses * temps ouverture ) ) *100
+#% Presse au rendement de 85% : ( Total heures presses à 85% / ( nbre de presses * temps ouverture ) ) *100 
+
+#                                        <tr t-foreach="o.workcenter_ids" t-as="l">
+#                                            <t t-if="l.workcenter_id.code  &lt; '9000'"> 
+#                                                <t t-set="presse_heure" t-value="presse_heure+l.presse_heure"/>
+#                                                <td><span t-field="l.workcenter_id.code"/></td>
+
+
+
+
+
+    @api.depends('nb_heures_periode','nb_presses','temps_ouverture','workcenter_ids')
+    def _compute(self):
+        for obj in self:
+            total_presse_heure=0
+            for row in obj.workcenter_ids:
+                total_presse_heure=total_presse_heure+row.presse_heure
+            presse_pourcent=0
+            presse_pourcent85=0
+            if (obj.nb_presses*obj.temps_ouverture)!=0:
+                presse_pourcent   = 100*total_presse_heure/(obj.nb_presses*obj.temps_ouverture)
+                presse_pourcent85 = 100*total_presse_heure/(obj.nb_presses*obj.temps_ouverture)/0.85
+
+            obj.total_presse_heure = total_presse_heure
+            obj.presse_pourcent    = presse_pourcent
+            obj.presse_pourcent85  = presse_pourcent85
 
 
     @api.depends('nb_inscrits','nb_absents')
@@ -185,6 +217,7 @@ class is_pdc(models.Model):
                     'semaine_35': str(_heures_par_jour(35))+"H",
                     'semaine_37': str(_heures_par_jour(37.5))+"H",
                     'semaine_40': str(_heures_par_jour(40))+"H",
+                    'semaine_48': str(_heures_par_jour(48))+"H",
                 }
                 mod_obj.create(vals)
 
@@ -197,6 +230,7 @@ class is_pdc(models.Model):
                     'semaine_35': round(_effectif_theorique(obj, 35.0),1),
                     'semaine_37': round(_effectif_theorique(obj, 37.5),1),
                     'semaine_40': round(_effectif_theorique(obj, 40.0),1),
+                    'semaine_48': round(_effectif_theorique(obj, 48.0),1),
                 }
                 mod_obj.create(vals)
 
@@ -210,6 +244,7 @@ class is_pdc(models.Model):
                     'semaine_35': str(int(_taux_charge(obj, 35.0)))+"%",
                     'semaine_37': str(int(_taux_charge(obj, 37.5)))+"%",
                     'semaine_40': str(int(_taux_charge(obj, 40.0)))+"%",
+                    'semaine_48': str(int(_taux_charge(obj, 48.0)))+"%",
                 }
                 mod_obj.create(vals)
 
@@ -225,6 +260,7 @@ class is_pdc(models.Model):
                     'semaine_35': _nb_interim(obj, 35.0),
                     'semaine_37': _nb_interim(obj, 37.5),
                     'semaine_40': _nb_interim(obj, 40.0),
+                    'semaine_48': _nb_interim(obj, 48.0),
                 }
                 mod_obj.create(vals)
 
@@ -242,6 +278,7 @@ class is_pdc(models.Model):
                     'semaine_35': _nb_jours_chomage(obj, 35.0),
                     'semaine_37': _nb_jours_chomage(obj, 37.5),
                     'semaine_40': _nb_jours_chomage(obj, 40.0),
+                    'semaine_48': _nb_jours_chomage(obj, 48.0),
                 }
                 mod_obj.create(vals)
 
@@ -423,5 +460,6 @@ class is_pdc_mod(models.Model):
     semaine_35        = fields.Char('35H')
     semaine_37        = fields.Char('37,5H')
     semaine_40        = fields.Char('40H')
+    semaine_48        = fields.Char('48H')
 
 
