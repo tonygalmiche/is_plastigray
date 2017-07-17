@@ -2,6 +2,7 @@
 
 from openerp.exceptions import except_orm
 from openerp import models, fields, api, _
+from openerp.exceptions import Warning
 
 
 
@@ -169,29 +170,11 @@ class mrp_product_produce(models.TransientModel):
     def do_produce(self):
         cr, uid, context = self.env.args
         production_id = context.get('active_id', False)
-
-
-
-#        assert production_id, "Production Id should be specified in context as a Active ID."
+        if self.product_qty==0:
+            raise Warning(u'Quantité à 0 non autorisée !')
         mrp_product_obj = self.env['mrp.production']
-#        stock_move_obj = self.env["stock.move"]
-#        production_brw = mrp_product_obj.browse(production_id)
-#        location_dest_id=production_brw.location_dest_id.id
-#        if self.finished_products_location_id:
-#            production_brw.location_dest_id = self.finished_products_location_id
-#            move_ids = stock_move_obj.search([('production_id','=', production_id),('state','!=', 'done')])
-#            for move in move_ids:
-#                move.location_dest_id = self.finished_products_location_id
-
-#        print production_id,self.product_qty, self.mode
-
         mrp_product_obj.action_produce(production_id,self.product_qty, self.mode, self)
-#        production_brw.location_dest_id = location_dest_id
         return {}
-
-
-
-
 
 
 
