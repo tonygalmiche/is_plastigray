@@ -242,16 +242,17 @@
                             <table class="table table-condensed" width="100%">
                                 <thead>
                                     <tr width="100%">
-                                        <th width="7%"><strong>N°<br/>Colis</strong></th>
-                                        <th width="7%"><strong>Commande</strong></th>
+                                        <th width="6%"><strong>N°<br/>Colis</strong></th>
+                                        <th width="6%"><strong>Commande</strong></th>
                                         <th width="12%"><strong>Ref PK</strong></th>
                                         <th width="24%"><strong>Designation<br/>Origine - Nomenclature</strong></th>
-                                        <th width="7%"><strong>Poids Net</strong></th>
-                                        <th width="7%"><strong>Poids Brut</strong></th>
-                                        <th width="7%"><strong>Quantite</strong></th>
-                                        <th width="7%"><strong>P.U.M.P</strong></th>
-                                        <th width="7%"><strong>P.T.M.P</strong></th>
-                                        <th width="7%"><strong>P.U.P.F</strong></th>
+                                        <th width="6%"><strong>Poids Net</strong></th>
+                                        <th width="6%"><strong>Poids Brut</strong></th>
+                                        <th width="6%"><strong>Quantite</strong></th>
+                                        <th width="6%"><strong>Nb<br/>Colis</strong></th>
+                                        <th width="6%"><strong>P.U.M.P</strong></th>
+                                        <th width="8%"><strong>P.T.M.P</strong></th>
+                                        <th width="6%"><strong>P.U.P.F</strong></th>
                                         <th><strong>P.Total P.F.</strong></th>
                                     </tr>
                                 </thead>
@@ -272,6 +273,9 @@
                                             <t t-esc='"{:,.1f}".format(l.poids_brut).replace(","," ").replace(".",",")'/> 
                                         </td>
                                         <td class="text-right" style="white-space: nowrap;"> <span t-field="l.qt"/> </td>
+                                        <td class="text-right" style="white-space: nowrap;">
+                                            <t t-esc='"{:,.0f}".format(l.nb_uc).replace(","," ").replace(".",",")'/> 
+                                        </td>
                                         <td class="text-right" style="white-space: nowrap;"> <span t-field="l.pump"/> </td>
                                         <td class="text-right" style="white-space: nowrap;"> <span t-field="l.ptmp"/> </td>
                                         <td class="text-right" style="white-space: nowrap;"> <span t-field="l.pupf"/> </td>

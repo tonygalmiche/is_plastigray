@@ -15,10 +15,9 @@ class is_comparatif_uc_lot_mini(models.Model):
     uc                 = fields.Float('Conditionnement')
     lot_mini           = fields.Float("Lot d'appro")
     multiple           = fields.Float("Multiple")
-    is_stock_secu      = fields.Float("Stock de sécurité")
     test_lot_mini      = fields.Float("Test Lot d'appro")
     test_multiple      = fields.Float("Test Multiple")
-    test_is_stock_secu = fields.Float("Test Stock de sécurité")
+
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_comparatif_uc_lot_mini')
@@ -38,10 +37,8 @@ CREATE OR REPLACE view is_comparatif_uc_lot_mini AS (
         is_qt_par_uc(pt.id)     as uc,
         pt.lot_mini             as lot_mini,
         pt.multiple             as multiple,
-        pt.is_stock_secu        as is_stock_secu,
         round(cast(pt.lot_mini      / is_qt_par_uc(pt.id) as numeric),4) as test_lot_mini,
-        round(cast(pt.multiple      / is_qt_par_uc(pt.id) as numeric),4) as test_multiple,
-        round(cast(pt.is_stock_secu / is_qt_par_uc(pt.id) as numeric),4) as test_is_stock_secu
+        round(cast(pt.multiple      / is_qt_par_uc(pt.id) as numeric),4) as test_multiple
     from product_template pt 
     where 
         pt.id>0
@@ -50,27 +47,10 @@ CREATE OR REPLACE view is_comparatif_uc_lot_mini AS (
             round(cast(pt.lot_mini/is_qt_par_uc(pt.id) as numeric),0) != round(cast(pt.lot_mini/is_qt_par_uc(pt.id) as numeric),4) 
             or
             (round(cast(pt.multiple/is_qt_par_uc(pt.id) as numeric),0) != round(cast(pt.multiple/is_qt_par_uc(pt.id) as numeric),4) and multiple>1)
-            or
-            (round(cast(pt.is_stock_secu/is_qt_par_uc(pt.id) as numeric),0) != round(cast(pt.is_stock_secu/is_qt_par_uc(pt.id) as numeric),4) and is_stock_secu>1)
         )
 )
 
         """)
-
-
-#        and (
-#            round(cast(ipc.lot_livraison/is_qt_par_uc(pt.id) as numeric),0)      != round(cast(ipc.lot_livraison/is_qt_par_uc(pt.id) as numeric),4) 
-#            or
-#            round(cast(ipc.multiple_livraison/is_qt_par_uc(pt.id) as numeric),0) != round(cast(ipc.multiple_livraison/is_qt_par_uc(pt.id) as numeric),4) 
-#        )
-#    order by pt.is_code, rp.is_code
-
-
-
-
-
-
-
 
 
 
