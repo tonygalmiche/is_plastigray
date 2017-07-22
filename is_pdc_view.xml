@@ -85,7 +85,7 @@
                                     <field name="workcenter_id"/>
                                     <field name="presse_heure"      digits="(14, 0)" sum="Total"/>
                                     <field name="presse_pourcent"   digits="(14, 0)" />
-                                    <field name="presse_heure85"    digits="(14, 0)" />
+                                    <field name="presse_heure85"    digits="(14, 0)" sum="Total"/>
                                     <field name="presse_pourcent85" digits="(14, 0)" />
                                 </tree>
                             </field>

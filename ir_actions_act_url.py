@@ -18,7 +18,14 @@ class ir_actions_act_url(models.Model):
                     ip   = request.httprequest.environ['REMOTE_ADDR'] 
                     url='http://odoo/odoo-erp/planning/?soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
-        return results
 
+                if results[0]['name']==u'is_url_analyse_cbn_action':
+                    user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
+                    soc  = user.company_id.partner_id.is_code
+                    ip   = request.httprequest.environ['REMOTE_ADDR'] 
+                    url='http://odoo/odoo-erp/cbn/Sugestion_CBN.php?Soc='+str(soc)+'&uid='+str(uid)
+                    results[0].update({'url': url})
+
+        return results
 
 

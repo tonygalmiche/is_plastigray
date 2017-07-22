@@ -6,8 +6,7 @@
 
     <!-- Analyse du CBN -->
     <record model="ir.actions.act_url" id="is_url_analyse_cbn_action">
-        <field name="name">http://odoo/odoo-erp/cbn/Sugestion_CBN.php</field>
-        <field name="url">http://odoo/odoo-erp/cbn/Sugestion_CBN.php</field>
+        <field name="name">is_url_analyse_cbn_action</field>
         <field name="type">ir.actions.act_url</field>
     </record>
 
