@@ -224,6 +224,7 @@
                     <field name="client_order_ref" />
                     <field name="is_ref_client"/>
                     <field name="is_article_commande_id"/>
+                    <field name="is_type_commande" />
                 </field>
             </field>
         </record>

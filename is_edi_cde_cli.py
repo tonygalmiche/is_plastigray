@@ -225,6 +225,11 @@ class is_edi_cde_cli(models.Model):
                 #Ne pas supprimer les commandes au dela de la date limite
                 if obj.date_maxi:
                     filtre.append(('is_date_livraison', '<=', obj.date_maxi))
+                #Pour plasti-ka, supprimer toutes les commandes
+                if obj.import_function=="Plasti-ka":
+                    filtre=[
+                        ('order_id', '=', order_id),
+                    ]
                 order_line=line_obj.search(filtre)
                 for row in order_line:
                     row.unlink()
