@@ -517,6 +517,10 @@ class is_liste_servir(models.Model):
         """
         if obj.date_debut:
             SQL=SQL+" and sol.is_date_expedition>='"+str(obj.date_debut)+"' "
+
+        SQL=SQL+" order by sol.is_date_expedition, sol.is_date_livraison"
+
+
         cr.execute(SQL)
         result = cr.fetchall()
         for line in obj.line_ids:
