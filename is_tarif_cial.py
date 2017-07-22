@@ -21,11 +21,11 @@ class is_tarif_cial(models.Model):
 
 
     display_name        = fields.Char(string='Name', compute='_compute_display_name')
-    partner_id          = fields.Many2one('res.partner', 'Client'      , required=True)
-    product_id          = fields.Many2one('product.template', 'Article', required=True)
+    partner_id          = fields.Many2one('res.partner', 'Client'      , required=True, select=True)
+    product_id          = fields.Many2one('product.template', 'Article', required=True, select=True)
     is_ref_client       = fields.Char("Référence client", store=True, compute='_ref_client')
     is_mold_id          = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id', readonly=True)
-    indice_prix         = fields.Integer("Indice Prix"                 , required=True)
+    indice_prix         = fields.Integer("Indice Prix"                 , required=True, select=True)
     date_debut          = fields.Date("Date de début")
     date_fin            = fields.Date("Date de fin")
     type_evolution      = fields.Char("Type évolution")
@@ -36,7 +36,7 @@ class is_tarif_cial(models.Model):
     va_assemblage       = fields.Float("VA Assemblage"      , digits=(12, 4))
     frais_port          = fields.Float("Frais de Port"      , digits=(12, 4))
     logistique          = fields.Float("Logistique"         , digits=(12, 4))
-    amortissement_moule = fields.Float("Amortissement Moule", digits=(12, 4))
+    amortissement_moule = fields.Float("Amortissement Moule", digits=(12, 4), select=True)
     surcout_pre_serie   = fields.Float("Surcôut pré-série"  , digits=(12, 4))
     prix_vente          = fields.Float("Prix de Vente"      , digits=(12, 4))
     ecart               = fields.Float("Ecart prix de vente", digits=(12, 4), compute='_ecart')

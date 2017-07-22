@@ -17,7 +17,7 @@ class is_ligne_livraison(models.Model):
     is_category_id      = fields.Many2one('is.category', 'Catégorie')
     is_gestionnaire_id  = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     ref_client          = fields.Char('Référence client')
-    mold_id             = fields.Many2one('is.mold', 'Moule')
+    is_mold_dossierf    = fields.Char('Moule ou Dossier F')
     product_uom_qty     = fields.Float('Quantité livrée', digits=(14,2))
     qt_par_uc           = fields.Float('UC', digits=(14,0))
     nb_uc               = fields.Float('Quantité livrée (UC)', digits=(14,1))
@@ -88,7 +88,7 @@ class is_ligne_livraison(models.Model):
                         pt.segment_id           as segment_id,
                         pt.is_category_id       as is_category_id,
                         pt.is_gestionnaire_id   as is_gestionnaire_id,
-                        pt.is_mold_id           as mold_id,
+                        pt.is_mold_dossierf     as is_mold_dossierf,
                         pt.is_ref_client        as ref_client,
                         sm.product_uom_qty,
                         COALESCE(is_qt_par_uc(pt.id),1) as qt_par_uc,
