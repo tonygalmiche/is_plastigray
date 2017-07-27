@@ -18,18 +18,43 @@ class is_account_invoice_line(models.Model):
     date_due                = fields.Date("Date d'échéance")
     origin                  = fields.Char('Origine/BL')
     supplier_invoice_number = fields.Char('Numéro de facture fournisseur')
-    state                   = fields.Char('Etat facture')
-    type                    = fields.Char('Type')
     product_id              = fields.Many2one('product.product', 'Article')
+
+    segment_id              = fields.Many2one('is.product.segment', 'Segment')
+    is_category_id          = fields.Many2one('is.category', 'Catégorie')
+    is_gestionnaire_id      = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     is_ref_client           = fields.Char('Référence client')
+    is_mold_dossierf        = fields.Char('Moule ou Dossier F')
+
     description             = fields.Char('Description')
     quantity                = fields.Float('Quantité', digits=(14,2))
     uos_id                  = fields.Many2one('product.uom', 'Unité')
     price_unit              = fields.Float('Prix unitaire', digits=(14,4))
     total                   = fields.Float('Montant Total', digits=(14,2))
+
+    amortissement_moule     = fields.Float('Amortissement moule', digits=(14,4))
+    montant_amt_moule       = fields.Float('Montant amortissement moule', digits=(14,2))
+    montant_matiere         = fields.Float('Montant matière livrée', digits=(14,2))
+
     move_id                 = fields.Many2one('stock.move', 'Mouvement de stock')
     picking_id              = fields.Many2one('stock.picking', 'Livraison')
     purchase_order_id       = fields.Many2one('purchase.order', 'Commande fournisseur')
+    is_type_facture = fields.Selection([
+            ('standard', u'Standard'),
+            ('diverse', u'Diverse')
+        ], u"Type de facture", default='standard', select=True)
+    type               = fields.Selection([
+            ('in_invoice' , u'Facture fournisseur'),
+            ('in_refund'  , u'Avoir fournisseur'),
+            ('out_invoice', u'Facture client'),
+            ('out_refund' , u'Avoir client'),
+
+        ], u"Type", readonly=True, select=True)
+    state               = fields.Selection([
+            ('open'  , u'Ouverte'),
+            ('cancel', u'Annulée'),
+        ], u"État", readonly=True, select=True)
+
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_account_invoice_line')
@@ -47,19 +72,28 @@ class is_account_invoice_line(models.Model):
                     ai.supplier_invoice_number,
                     ai.state,
                     ai.type,
+                    ai.is_type_facture,
                     ail.product_id,
+                    pt.segment_id,
+                    pt.is_category_id,
+                    pt.is_gestionnaire_id,
+                    pt.is_mold_dossierf,
                     pt.is_ref_client,
                     ail.name                  description,
-                    ail.quantity,
+                    (fsens(ai.type)*ail.quantity) as quantity,
                     ail.uos_id,
                     ail.price_unit,
-                    (ail.quantity*ail.price_unit) total,
+                    (fsens(ai.type)*ail.quantity*ail.price_unit) total,
+                    get_amortissement_moule(rp.is_code, pt.id) as amortissement_moule,
+                    get_amortissement_moule(rp.is_code, pt.id)*ail.quantity as montant_amt_moule,
+                    get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
                     ail.is_move_id            move_id,
                     sm.picking_id             picking_id,
                     sp.is_purchase_order_id   purchase_order_id
                 from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
                                         inner join product_product       pp on ail.product_id=pp.id
                                         inner join product_template      pt on pp.product_tmpl_id=pt.id
+                                        inner join res_partner           rp on ai.partner_id=rp.id
                                         left outer join stock_move       sm on ail.is_move_id=sm.id
                                         left outer join stock_picking    sp on sm.picking_id=sp.id
 
