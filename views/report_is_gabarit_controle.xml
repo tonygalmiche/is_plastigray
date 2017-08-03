@@ -38,7 +38,7 @@
                             </tr>
                             <tr>
                                 <td width="20%"><b>Fabricant</b></td>
-                                <td width="30%"><span t-field="o.fabriquant_id.name"/></td>
+                                <td width="30%"><span t-field="o.fabriquant"/></td>
                                 <td width="20%"><b>Date de réception</b></td>
                                 <td width="30%"><span t-field="o.date_reception"/></td>
                             </tr>
@@ -60,6 +60,7 @@
                                 <td class="text-left" width="20%"><b>Périodicité</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.periodicite"/></td>
                             </tr>
+                            <!--
                             <tr>
                                 <td class="text-left" width="20%"><b>Type de contrôle</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.type_controle.name"/></td>
@@ -84,6 +85,7 @@
                                 <td class="text-left" width="20%"><b>Etat de la conformité</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.etat_conformite"/></td>
                             </tr>
+                            -->
                         </table>
                         <br/>
                         <table class="table table-condensed" width="100%">
@@ -102,12 +104,11 @@
                             <tbody>
                                 <tr t-foreach="o.controle_ids" t-as="l">
                                     <td><span t-field="l.date_controle"/> </td>
-                                    <td><span t-field="l.operation"/> </td>
-                                    <td><span t-field="l.affectation"/> </td>
-                                    <td><span t-field="l.organisme"/></td>
-                                    <td><span t-field="l.resultat"/> </td>
-                                    <td><span t-field="l.commentaire"/> </td>
-                                    <td><span t-field="l.classe"/> </td>
+                                    <td><span t-field="l.operation_controle_id"/> </td>
+                                    <td><span t-field="l.cause_arret"/> </td>
+                                    <td><span t-field="l.organisme_controleur"/></td>
+                                    <td><span t-field="l.fournisseur_id"/> </td>
+                                    <td><span t-field="l.etat_conformite"/> </td>
                                     <td></td>
                                 </tr>
                             </tbody>

@@ -2,35 +2,35 @@
 <openerp>
 <data>
 
-	<template id="report_is_plaquette_etalon_plastigray">
-		<t t-call="report.html_container">
-		    <t t-call="report.external_layout">
-		        <div class="page">
-		            <div class="oe_structure"/>
-		
-		            <t t-foreach="docs" t-as="o">
-		            	
-		            	<t t-if="not o or not 'company_id' in o">
-		                    <t t-set="company" t-value="res_company"></t>
-		                </t>
-		
-		                <div class="header">
-		                	<table class="table table-condensed" width="100%">
-		                		<tr>
-		                			<td width="25%">
-		                				<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
-		                			</td>
-		                			<td class="text-center" width="50%">
-		                				<b>Fiche de vie</b>
-		                			</td>
-		                			<td class="text-center" width="25%">
-		                				1111
-		                			</td>
-		                		</tr>
-		                	</table>
-		                </div>
-			            <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
-			                <tr>
+    <template id="report_is_plaquette_etalon_plastigray">
+        <t t-call="report.html_container">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+        
+                    <t t-foreach="docs" t-as="o">
+                        
+                        <t t-if="not o or not 'company_id' in o">
+                            <t t-set="company" t-value="res_company"></t>
+                        </t>
+        
+                        <div class="header">
+                            <table class="table table-condensed" width="100%">
+                                <tr>
+                                    <td width="25%">
+                                        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+                                    </td>
+                                    <td class="text-center" width="50%">
+                                        <b>Fiche de vie</b>
+                                    </td>
+                                    <td class="text-center" width="25%">
+                                        1111
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <table class="table table-condensed" width="100%" style="border:solid 0px white;margin-bottom:0px;border-bottom:none;">
+                            <tr>
                                 <td class="text-left" width="20%"><b>Code PG</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.code_pg"/></td>
                                 <td class="text-left" width="20%"><b>Désignation</b></td>
@@ -38,7 +38,7 @@
                             </tr>
                             <tr>
                                 <td class="text-left" width="20%"><b>Fabricant</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.fabriquant_id.name"/></td>
+                                <td class="text-left" width="30%"><span t-field="o.fabriquant"/></td>
                                 <td class="text-left" width="20%"><b>Date de réception</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.date_reception"/></td>
                             </tr>
@@ -54,6 +54,7 @@
                                 <td class="text-left" width="20%"><b>Type de contrôle</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.type_controle"/></td>
                             </tr>
+                            <!--
                             <tr>
                                 <td class="text-left" width="20%"><b>Contrôle</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.controle"/></td>
@@ -78,41 +79,41 @@
                                 <td class="text-left" width="20%"><b>Rapport de contrôle</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.rapport_de_controle"/></td>
                             </tr>
-			            </table>
-			            <br/>
-			            <table class="table table-condensed" width="100%">
-			                <thead>
-			                    <tr width="100%">
-			                    	<th width="7%"><strong>Date</strong></th>
-			                        <th width="23%"><strong>Opération</strong></th>
-			                        <th width="6%"><strong>Affectation</strong></th>
-			                        <th width="7%"><strong>Organisme</strong></th>
-			                        <th width="5%"><strong>Résultat</strong></th>
-			                        <th width="13%"><strong>Commentaire</strong></th>
-			                        <th width="5%"><strong>Classe</strong></th>
-			                        <th width="5%"><strong>Nom</strong></th>
-			                    </tr>
-			                </thead>
-			                <tbody>
-			                    <tr t-foreach="o.controle_ids" t-as="l">
-			                    	<td><span t-field="l.date_controle"/> </td>
-			                        <td><span t-field="l.operation"/> </td>
-			                        <td><span t-field="l.affectation"/> </td>
-			                        <td><span t-field="l.organisme"/></td>
-			                        <td><span t-field="l.resultat"/> </td>
-			                        <td><span t-field="l.commentaire"/> </td>
-			                        <td><span t-field="l.classe"/> </td>
-			                        <td></td>
-			                    </tr>
-			                </tbody>
-			            </table>
-			        </t>
-		        </div>
-		    </t>
-	    </t>
-	</template>
+                            -->
+                        </table>
+                        <br/>
+                        <table class="table table-condensed" width="100%">
+                            <thead>
+                                <tr width="100%">
+                                    <th width="7%"><strong>Date</strong></th>
+                                    <th width="23%"><strong>Opération</strong></th>
+                                    <th width="6%"><strong>Affectation</strong></th>
+                                    <th width="7%"><strong>Organisme</strong></th>
+                                    <th width="5%"><strong>Résultat</strong></th>
+                                    <th width="13%"><strong>Commentaire</strong></th>
+                                    <th width="5%"><strong>Classe</strong></th>
+                                    <th width="5%"><strong>Nom</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.controle_ids" t-as="l">
+                                    <td><span t-field="l.date_controle"/> </td>
+                                    <td><span t-field="l.operation_controle_id"/> </td>
+                                    <td><span t-field="l.cause_arret"/> </td>
+                                    <td><span t-field="l.organisme_controleur"/></td>
+                                    <td><span t-field="l.fournisseur_id"/> </td>
+                                    <td><span t-field="l.etat_conformite"/> </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
 
-	<report 
+    <report 
         string="Plaquette Etalon" 
         id="report_plaquette_etalon_plastigray" 
         model="is.plaquette.etalon" 
@@ -122,7 +123,7 @@
         header="False"
     />
 
-	<record id="report_plaquette_etalon_plastigray" model="ir.actions.report.xml">
+    <record id="report_plaquette_etalon_plastigray" model="ir.actions.report.xml">
         <field name="paperformat_id" ref="is_plastigray.plan_de_charge_portrait_paperformat"/>
     </record>
 
