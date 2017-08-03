@@ -436,7 +436,8 @@ class is_database(models.Model):
         try:
             res=super(is_database, self).write(vals)
             for obj in self:
-                obj.copy_other_database_is_database()
+                if obj.database:
+                    obj.copy_other_database_is_database()
             return res
         except Exception as e:
             raise osv.except_osv(_('database!'),
