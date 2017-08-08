@@ -23,19 +23,21 @@ class is_marge_contributive(models.Model):
     client_fac              = fields.Char('Client facturé')
     raison_sociale          = fields.Char('Raison sociale')
     designation             = fields.Char('Désignation')
-    amortissement_moule     = fields.Float('Amt Moule', digits=(14,4))
-    cout_std_matiere        = fields.Float('Coût Std Matière', digits=(14,4))
-    cout_std_machine        = fields.Float('Coût Std Machine', digits=(14,4))
-    cout_std_mo             = fields.Float('Coût Std MO'     , digits=(14,4))
-    cout_std_st             = fields.Float('Coût Std ST'     , digits=(14,4))
-    cout_act_matiere        = fields.Float('Coût Act Matière', digits=(14,4))
-    cout_act_machine        = fields.Float('Coût Act Machine', digits=(14,4))
-    cout_act_mo             = fields.Float('Coût Act MO'     , digits=(14,4))
-    cout_act_st             = fields.Float('Coût Act ST'     , digits=(14,4))
+    amortissement_moule     = fields.Float('Amt Moule'             , digits=(14,4))
+    cout_std_matiere        = fields.Float('Coût Std Matière'      , digits=(14,4))
+    cout_std_machine        = fields.Float('Coût Std Machine'      , digits=(14,4))
+    cout_std_mo             = fields.Float('Coût Std MO'           , digits=(14,4))
+    cout_std_st             = fields.Float('Coût Std ST'           , digits=(14,4))
+    cout_std_prix_vente     = fields.Float('Prix de vente standard', digits=(14,4))
+    cout_act_matiere        = fields.Float('Coût Act Matière'      , digits=(14,4))
+    cout_act_machine        = fields.Float('Coût Act Machine'      , digits=(14,4))
+    cout_act_mo             = fields.Float('Coût Act MO'           , digits=(14,4))
+    cout_act_st             = fields.Float('Coût Act ST'           , digits=(14,4))
     product_id              = fields.Many2one('product.product', 'Article')
-    quantity                = fields.Float('Quantité'          , digits=(14,4))
-    price_unit              = fields.Float('Prix unitaire'     , digits=(14,4))
-    montant                 = fields.Float('Montant'           , digits=(14,2))
+    quantity                = fields.Float('Quantité'              , digits=(14,4))
+    price_unit              = fields.Float('Prix unitaire'         , digits=(14,4))
+    montant                 = fields.Float('CA Facturé'            , digits=(14,2))
+    ca_prix_vente_std       = fields.Float('CA Prix vente standard', digits=(14,2))
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_marge_contributive')
@@ -75,18 +77,20 @@ class is_marge_contributive(models.Model):
                         where itc.product_id=pt.id and indice_prix=999
                         order by amortissement_moule desc limit 1
                     ) amortissement_moule,
-                    (select cout_std_matiere from is_cout cout where pp.id=cout.name limit 1) cout_std_matiere,
-                    (select cout_std_machine from is_cout cout where pp.id=cout.name limit 1) cout_std_machine,
-                    (select cout_std_mo      from is_cout cout where pp.id=cout.name limit 1) cout_std_mo,
-                    (select cout_std_st      from is_cout cout where pp.id=cout.name limit 1) cout_std_st,
-                    (select cout_act_matiere from is_cout cout where pp.id=cout.name limit 1) cout_act_matiere,
-                    (select cout_act_machine from is_cout cout where pp.id=cout.name limit 1) cout_act_machine,
-                    (select cout_act_mo      from is_cout cout where pp.id=cout.name limit 1) cout_act_mo,
-                    (select cout_act_st      from is_cout cout where pp.id=cout.name limit 1) cout_act_st,
+                    (select cout_std_matiere    from is_cout cout where pp.id=cout.name limit 1) cout_std_matiere,
+                    (select cout_std_machine    from is_cout cout where pp.id=cout.name limit 1) cout_std_machine,
+                    (select cout_std_mo         from is_cout cout where pp.id=cout.name limit 1) cout_std_mo,
+                    (select cout_std_st         from is_cout cout where pp.id=cout.name limit 1) cout_std_st,
+                    (select cout_std_prix_vente from is_cout cout where pp.id=cout.name limit 1) cout_std_prix_vente,
+                    (select cout_act_matiere    from is_cout cout where pp.id=cout.name limit 1) cout_act_matiere,
+                    (select cout_act_machine    from is_cout cout where pp.id=cout.name limit 1) cout_act_machine,
+                    (select cout_act_mo         from is_cout cout where pp.id=cout.name limit 1) cout_act_mo,
+                    (select cout_act_st         from is_cout cout where pp.id=cout.name limit 1) cout_act_st,
                     ail.product_id,
                     fsens(ai.type)*ail.quantity quantity,
                     ail.price_unit,
-                    fsens(ai.type)*(ail.quantity*ail.price_unit) montant
+                    fsens(ai.type)*(ail.quantity*ail.price_unit) montant,
+                    fsens(ai.type)*ail.quantity*(select cout_std_prix_vente from is_cout cout where pp.id=cout.name limit 1) ca_prix_vente_std
                 from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
                                         inner join res_partner              rp on ai.partner_id=rp.id
                                         inner join product_product          pp on ail.product_id=pp.id
