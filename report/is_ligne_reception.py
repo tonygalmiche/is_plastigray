@@ -86,7 +86,7 @@ class is_ligne_reception(models.Model):
                         round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4) as reste_a_facturer,
                         sm.state              as state,
                         sp.state              as picking_state,
-                        sp.invoice_state      as invoice_state,
+                        sm.invoice_state      as invoice_state,
                         sm.write_uid          as user_id,
                         sm.id                 as move_id,
                         (select icof.name from is_cde_ouverte_fournisseur icof where sp.partner_id=icof.partner_id limit 1) as commande_ouverte,

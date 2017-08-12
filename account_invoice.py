@@ -228,6 +228,7 @@ class account_invoice(models.Model):
     def action_cancel(self):
         for obj in self:
             for line in obj.invoice_line:
+                line.is_move_id.invoice_state='none'
                 line.is_move_id=False
         super(account_invoice, self).action_cancel()
 
