@@ -39,6 +39,9 @@ class is_account_invoice_line(models.Model):
     move_id                 = fields.Many2one('stock.move', 'Mouvement de stock')
     picking_id              = fields.Many2one('stock.picking', 'Livraison')
     purchase_order_id       = fields.Many2one('purchase.order', 'Commande fournisseur')
+    order_id                = fields.Many2one('sale.order', 'Commande Client Odoo')
+    client_order_ref        = fields.Char('Commande Client')
+    order_line_id           = fields.Many2one('sale.order.line', 'Ligne commande client')
     is_type_facture = fields.Selection([
             ('standard', u'Standard'),
             ('diverse', u'Diverse')
@@ -89,14 +92,17 @@ class is_account_invoice_line(models.Model):
                     get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
                     ail.is_move_id            move_id,
                     sm.picking_id             picking_id,
-                    sp.is_purchase_order_id   purchase_order_id
+                    sp.is_purchase_order_id   purchase_order_id,
+                    sol.order_id              order_id,
+                    sol.is_client_order_ref   client_order_ref,
+                    sol.id                    order_line_id
                 from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
                                         inner join product_product       pp on ail.product_id=pp.id
                                         inner join product_template      pt on pp.product_tmpl_id=pt.id
                                         inner join res_partner           rp on ai.partner_id=rp.id
                                         left outer join stock_move       sm on ail.is_move_id=sm.id
                                         left outer join stock_picking    sp on sm.picking_id=sp.id
-
+                                        left outer join sale_order_line sol on sm.is_sale_line_id=sol.id
                 where ai.id>0
                 order by ail.id desc
             )
