@@ -18,23 +18,14 @@ class is_facturation_fournisseur(models.Model):
     total_ht_calcule    = fields.Float("Total HT Calculé" , digits=(14,2), compute='_compute', readonly=True, store=False)
     ecart_ht            = fields.Float("Ecart HT"         , digits=(14,2), compute='_compute', readonly=True, store=False)
     ecart_ht_compte_id  = fields.Many2one('product.product', "Compte d'écart HT")
-
     total_tva           = fields.Float("Total TVA"         , digits=(14,2))
     total_tva_calcule   = fields.Float("Total TVA Calculé" , digits=(14,2), compute='_compute', readonly=True, store=False)
     ecart_tva           = fields.Float("Ecart TVA"         , digits=(14,2), compute='_compute', readonly=True, store=False)
     ecart_tva_compte_id = fields.Many2one('product.product', "Compte d'écart TVA")
-
     total_ttc_calcule   = fields.Float("Total TTC Calculé", digits=(14,2), compute='_compute', readonly=True, store=False)
     justification_id    = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
-
     bon_a_payer         = fields.Boolean("Bon à payer", compute='_compute', readonly=True, store=False)
-
-
-    #forcer_bon_a_payer  = fields.Boolean("Forcer bon à payer")
-
-    forcer_bon_a_payer = fields.Selection([('oui', u'Bon à payer = Oui'),('non', u'Bon à payer = Non')], "Forcer bon à payer")
-
-
+    forcer_bon_a_payer  = fields.Selection([('oui', u'Bon à payer = Oui'),('non', u'Bon à payer = Non')], "Forcer bon à payer")
     line_ids            = fields.One2many('is.facturation.fournisseur.line', 'facturation_id', u"Lignes")
     state               = fields.Selection([('creation', u'Création'),('termine', u'Terminé')], u"État", readonly=True, select=True)
 
@@ -62,8 +53,8 @@ class is_facturation_fournisseur(models.Model):
             ht  = round(ht,2)
             tva = round(tva,2)
             ttc = round(ttc,2)
-            ecart_ht  = obj.total_ht-ht
-            ecart_tva = obj.total_tva-tva
+            ecart_ht  = round(obj.total_ht-ht,2)
+            ecart_tva = round(obj.total_tva-tva,2)
             bon_a_payer=True
             if ecart_ht or ecart_tva:
                 bon_a_payer=False
@@ -72,6 +63,12 @@ class is_facturation_fournisseur(models.Model):
             obj.total_tva_calcule = tva
             obj.ecart_tva         = ecart_tva
             obj.total_ttc_calcule = ttc
+
+            #Si prix modifié sur les lignes, bon_a_payer=False
+            for line in obj.line_ids:
+                if line.selection:
+                    if round(line.prix,4)!=round(line.prix_origine,4):
+                        bon_a_payer=False
             obj.bon_a_payer       = bon_a_payer
 
     @api.multi
@@ -149,6 +146,7 @@ class is_facturation_fournisseur(models.Model):
                     'quantite'          : row[5],
                     'uom_id'            : row[6],
                     'prix'              : row[7],
+                    'prix_origine'      : row[7],
                     'total'             : row[5]*(row[7] or 0),
                     'taxe_ids'          : [(6,0,taxe_ids)],
                     'taxe_taux'         : taxe_taux,
@@ -164,15 +162,10 @@ class is_facturation_fournisseur(models.Model):
     def action_creer_facture(self):
         for obj in self:
             bon_a_payer=obj.bon_a_payer
-
-            #if obj.forcer_bon_a_payer:
-            #    bon_a_payer=True
-
             if obj.forcer_bon_a_payer=='oui':
                 bon_a_payer=True
             if obj.forcer_bon_a_payer=='non':
                 bon_a_payer=False
-
             date_invoice=datetime.date.today().strftime('%Y-%m-%d')
             res=self.env['account.invoice'].onchange_partner_id('in_invoice', obj.name.id, date_invoice)
             vals=res['value']
@@ -271,12 +264,6 @@ class is_facturation_fournisseur(models.Model):
             }
 
 
-
-
-
-
-
-
 class is_facturation_fournisseur_line(models.Model):
     _name='is.facturation.fournisseur.line'
     _order='id'
@@ -302,15 +289,13 @@ class is_facturation_fournisseur_line(models.Model):
     ref_fournisseur    = fields.Char('Référence fournisseur')
     quantite           = fields.Float('Reste à facturer', digits=(14,4))
     uom_id             = fields.Many2one('product.uom', 'Unité')
-    prix               = fields.Float('Prix'    , digits=(14,4))
+    prix               = fields.Float('Prix'          , digits=(14,4))
+    prix_origine       = fields.Float("Prix d'origine", digits=(14,4))
     total              = fields.Float("Total" , digits=(14,4), compute='_compute', readonly=True, store=False)
     taxe_ids           = fields.Many2many('account.tax', 'is_facturation_fournisseur_line_taxe_ids', 'facturation_id', 'taxe_id', 'Taxes')
     taxe_taux          = fields.Float('Taux', compute='_compute', readonly=True, store=False)
     selection          = fields.Boolean('Sélection', default=True)
     move_id            = fields.Many2one('stock.move', 'Mouvement de stock')
-
-
-
 
 
 class is_facturation_fournisseur_justification(models.Model):

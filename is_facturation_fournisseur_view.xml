@@ -73,6 +73,7 @@
                                     <field name="account_id"/>
                                     <field name="quantite"/>
                                     <field name="uom_id"/>
+                                    <field name="prix_origine" readonly="1"/>
                                     <field name="prix"/>
                                     <field name="total"/>
                                     <field name="taxe_ids" widget="many2many_tags"/>
