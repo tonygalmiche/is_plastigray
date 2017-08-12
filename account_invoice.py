@@ -331,7 +331,6 @@ class account_invoice_line(models.Model):
         res['value']['is_section_analytique_id']=is_section_analytique_id
 
         #** Recherche prix dans liste de prix pour la date et qt ***************
-
         pricelist = partner.property_product_pricelist.id
         if product_id:
             date = time.strftime('%Y-%m-%d',time.gmtime()) # Date du jour
@@ -345,6 +344,11 @@ class account_invoice_line(models.Model):
                         product_id, lot_livraison or 1.0, partner_id, ctx)[pricelist]
             res['value']['price_unit']=price_unit
         #***********************************************************************
+
+        #** Ajout du code_pg dans la description *******************************
+        if product_id:
+            product = self.env['product.product'].browse(product_id)
+            res['value']['name']=product.is_code+u' '+product.name
 
         return res
 
