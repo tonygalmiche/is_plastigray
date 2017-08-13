@@ -16,7 +16,7 @@ class is_moyen_fabrication(models.Model):
 
     name = fields.Char("Code", required=True)
     type_equipement = fields.Many2one('is.type.equipement', string='Type équipement', required=True)
-    designation = fields.Char("Désignation", required=True)
+    designation = fields.Char("Désignation", required=False)
     mold_ids     = fields.Many2many('is.mold'    ,'is_moyen_fabrication_id'         , 'is_mold_id_fabric'    , string='Moule')
     dossierf_ids = fields.Many2many('is.dossierf','is_moyen_fabrication_dossierf_id', 'is_dossierf_id_fabric', string='Dossier F')
     base_capacitaire = fields.Char("Base capacitaire")

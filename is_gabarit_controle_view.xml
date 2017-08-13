@@ -21,7 +21,8 @@
                                 <field name="date_reception"/>
                                 <field name="indice_plan"/>
                                 <field name="site_id"/>
-                                <field name="moule_ids" widget="many2many_tags"/>
+                                <field name="moule_ids"    widget="many2many_tags"/>
+                                <field name="dossierf_ids" widget="many2many_tags"/>
                             </group>
                         </group>
                         <group string="Contrôle périodique">
@@ -29,63 +30,6 @@
                             <field name="type_controle"/>
                             <field name="date_prochain_controle"/>
                         </group>
-                        <!--
-                        <group col="4" colspan="4" string="Résultat du contrôle">
-                            <group>
-                                <field name="controle"/>
-                                <field name="date_controle"/>
-                                <field name="date_prochain_controle"/>
-                                <field 
-                                    name="fournisseur_id" 
-                                    domain="[('supplier' ,'=',True),('is_company','=',True)]"
-                                    attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"
-                                />
-                            </group>
-                            <group>
-                                <field name="cause_arret" attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
-                                <field name="organisme_controleur"/>
-                                <field name="etat_conformite"/>
-                            </group>
-                            <group col="4" colspan="4">
-                                <field name="rapport_de_controle"/>
-                            </group>
-                        </group>
-
-                        <notebook>
-                            <page string="Historique des contrôles">
-                                <field name="controle_ids">
-                                    <form string="Historique des contrôles">  
-                                        <sheet>
-                                            <group col="4" colspan="4">
-                                                <group col="4" colspan="4">
-                                                    <field name="site_id" />
-                                                    <field name="date_controle" />
-                                                    <field name="affectation" />
-                                                    <field name="operation" />
-                                                    <field name="organisme" />
-                                                    <field name="resultat" />
-                                                    <field name="commentaire" />
-                                                    <field name="classe" />
-                                                </group>
-                                            </group>
-                                        </sheet>
-                                    </form>
-                                    <tree string="Historique des contrôles">
-                                        <field name="date_controle" />
-                                        <field name="site_id" />
-                                        <field name="affectation" />
-                                        <field name="operation" />
-                                        <field name="organisme" />
-                                        <field name="resultat" />
-                                        <field name="commentaire" />
-                                        <field name="classe" />
-                                    </tree>
-                                </field>
-                            </page>
-                        </notebook>
-                        -->
-
-
                         <notebook>
                             <page string="Historique des contrôles">
                                 <field name="controle_ids">
@@ -109,7 +53,6 @@
                                                     }"
                                                 />
                                                 <field name="etat_conformite" />
-                                                <!--<field name="rapport_de_controle" />-->
                                                 <field name="rapport_controle_ids" widget="many2many_binary" />
                                             </group>
                                         </sheet>
@@ -121,7 +64,6 @@
                                         <field name="organisme_controleur" />
                                         <field name="fournisseur_id" />
                                         <field name="etat_conformite" />
-                                        <!--<field name="rapport_de_controle" />-->
                                         <field name="rapport_controle_ids"/>
                                     </tree>
                                 </field>
@@ -162,6 +104,8 @@
                     <field name="fabriquant"/>
                     <field name="client_id"/>
                     <field name="site_id"/>
+                    <field name="moule_ids"/>
+                    <field name="dossierf_ids"/>
                     <filter name="date_prochain_controle_filter" string="Date prochain contrôle dépassée" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
