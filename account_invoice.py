@@ -322,9 +322,10 @@ class account_invoice_line(models.Model):
         is_section_analytique_id=False
         if product_id:
             product = self.env['product.product'].browse(product_id)
-            #lot_mini=product.lot_mini
-            is_section_analytique_id=product.is_section_analytique_id.id
             lot_livraison=self.env['product.template'].get_lot_livraison(product.product_tmpl_id,partner)
+            is_section_analytique_id=product.is_section_analytique_id.id
+            if type=='in_invoice':
+                is_section_analytique_id=product.is_section_analytique_ha_id.id
         #***********************************************************************
 
         res=super(account_invoice_line, self).product_id_change(product_id, uom_id, lot_livraison, name, type,
