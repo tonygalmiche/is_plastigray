@@ -37,7 +37,7 @@ class mrp_prevision(models.Model):
     start_date         = fields.Date('Date de début')
     start_date_cq      = fields.Date('Date début contrôle qualité'   , readonly=True)
     end_date           = fields.Date('Date fin contrôle qualité', required=True)
-    quantity           = fields.Float('Quantité')
+    quantity           = fields.Float('Quantité', required=True)
     quantity_ha        = fields.Float("Quantité (UA)", compute="_compute", digits=(12, 4))
     quantity_origine   = fields.Float("Quantité d'origine")
     uom_id             = fields.Many2one('product.uom', 'Unité'        , related='product_id.uom_id'   , readonly=True)
@@ -342,6 +342,9 @@ class mrp_prevision(models.Model):
             partner_id = vals.get('partner_id', obj.partner_id.id)
             quantity   = vals.get('quantity'  , obj.quantity)
             end_date   = vals.get('end_date'  , obj.end_date)
+
+            if quantity==None or quantity==0:
+                raise Warning(u'Quantité à 0 non autorisée !')
 
             if obj.type=='sa' and end_date:
                 #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
