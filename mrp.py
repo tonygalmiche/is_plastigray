@@ -185,8 +185,12 @@ class mrp_workcenter(models.Model):
 class mrp_production_workcenter_line(models.Model):
     _inherit = 'mrp.production.workcenter.line'
 
-    is_ordre       = fields.Integer("Ordre", help="Ordre sur le planning")
-    is_qt_restante = fields.Integer("Quantité restante", help="Quantité restante pour le planning")
-    is_tps_restant = fields.Float("Temps restant", help="Temps restant pour le planning")
-    is_date_tri    = fields.Datetime('Date tri', help="Date de tri du planning")
+    is_ordre         = fields.Integer("Ordre", help="Ordre sur le planning")
+    is_qt_restante   = fields.Integer("Quantité restante", help="Quantité restante pour le planning")
+    is_tps_restant   = fields.Float("Temps restant", help="Temps restant pour le planning")
+    is_date_planning = fields.Datetime('Date planning', help="Date plannifiée sur le planning")
+    is_date_tri      = fields.Datetime('Date tri', help="Date de tri du planning")
+
+
+
 

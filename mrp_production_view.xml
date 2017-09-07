@@ -86,6 +86,7 @@
                     </field>
                 </field>
                 <xpath expr="//tree[@string='Production Work Centers']/field[@name='hour']" position="after">
+                    <field name="is_date_planning"/>
                     <field name="is_date_tri"/>
                     <field name="is_ordre"/>
                     <field name="is_qt_restante"/>
