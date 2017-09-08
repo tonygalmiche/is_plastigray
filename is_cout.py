@@ -13,6 +13,8 @@ from pyPdf import PdfFileWriter, PdfFileReader
 from contextlib import closing
 import threading
 
+from decimal import Decimal
+
 
 class is_cout_calcul(models.Model):
     _name='is.cout.calcul'
@@ -217,19 +219,21 @@ class is_cout_calcul(models.Model):
 
 
                     #** Recherche du prix d'achat ******************************
-
                     date=time.strftime('%Y-%m-%d') # Date du jour
 
                     if pricelist:
                         #Convertion du lot_mini de US vers UA
                         min_quantity = product_uom_obj._compute_qty(cout.name.uom_id.id, cout.name.lot_mini, cout.name.uom_po_id.id)
+
                         #TODO : Pour contourner un bug d'arrondi (le 31/01/2017)
                         min_quantity=min_quantity+0.00000000001
+                        #TODO en utilisant la fonction repr à la place de str, cela ne tronque pas les décimales
+
                         SQL="""
                             select ppi.price_surcharge
                             from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
                             where ppv.pricelist_id="""+str(pricelist.id)+ """ 
-                                  and min_quantity<="""+str(min_quantity)+"""
+                                  and min_quantity<="""+repr(min_quantity)+"""
                                   and (ppv.date_start <= '"""+date+"""' or ppv.date_start is null)
                                   and (ppv.date_end   >= '"""+date+"""' or ppv.date_end   is null)
 
