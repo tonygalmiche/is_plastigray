@@ -23,11 +23,12 @@ class is_ligne_reception(models.Model):
     ref_fournisseur    = fields.Char('Référence fournisseur')
     commande_ouverte   = fields.Char('Commande ouverte')
     product_uom        = fields.Many2one('product.uom', 'Unité')
-    price_unit         = fields.Float('Prix commande'        , digits=(14,4))
-    qt_receptionnee    = fields.Float('Quantité réceptionnée', digits=(14,4))
-    qt_facturee        = fields.Float('Quantité facturée'    , digits=(14,4))
-    reste_a_facturer   = fields.Float('Reste à facturer'     , digits=(14,4))
-    montant_reception  = fields.Float('Montant réception'    , digits=(14,2))
+    price_unit         = fields.Float('Prix commande'             , digits=(14,4))
+    qt_receptionnee    = fields.Float('Quantité réceptionnée'     , digits=(14,4))
+    qt_facturee        = fields.Float('Quantité facturée'         , digits=(14,4))
+    reste_a_facturer   = fields.Float('Reste à facturer'          , digits=(14,4))
+    montant_reception  = fields.Float('Montant réception'         , digits=(14,2))
+    montant_reste      = fields.Float('Montant reste à facturer'  , digits=(14,2))
     date_planned       = fields.Date('Date prévue')
     date_reception     = fields.Date('Date réception')
     date_mouvement     = fields.Datetime('Date mouvement')
@@ -84,6 +85,7 @@ class is_ligne_reception(models.Model):
                         sm.product_uom_qty    as qt_receptionnee,
                         coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0) as qt_facturee,
                         round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4) as reste_a_facturer,
+                        round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4)*pol.price_unit as montant_reste,
                         sm.state              as state,
                         sp.state              as picking_state,
                         sm.invoice_state      as invoice_state,
