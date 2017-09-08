@@ -12,6 +12,8 @@ class is_comparatif_tarif_cial_vente(models.Model):
 
     tarif_cial_id  = fields.Many2one('is.tarif.cial', 'Tarif commercial')
     partner_id     = fields.Many2one('res.partner', 'Client')
+    pricelist_id   = fields.Many2one('product.pricelist', 'Liste de prix')
+    lot_livraison  = fields.Integer('Lot de livraison')
     product_id     = fields.Many2one('product.template', 'Article')
     is_code        = fields.Char('Code Article')
     is_category_id = fields.Many2one('is.category', 'Catégorie')
@@ -19,26 +21,6 @@ class is_comparatif_tarif_cial_vente(models.Model):
     tarif_cial     = fields.Float('Prix de vente tarif commercial', digits=(12, 4))
     tarif_vente    = fields.Float('Prix de vente liste de prix'   , digits=(12, 4))
     delta          = fields.Float('Delta'                         , digits=(12, 4))
-
-
-
-#CREATE OR REPLACE FUNCTION is_prix_vente(pp_id integer) RETURNS float AS $$
-#BEGIN
-#    RETURN (
-#        select price_surcharge 
-#        from product_pricelist ppl inner join product_pricelist_version ppv on ppv.pricelist_id=ppl.id 
-#                                   inner join product_pricelist_item    ppi on ppi.price_version_id=ppv.id
-#        where ppi.product_id=pp_id
-#            and ppl.type='sale' and ppl.active='t'
-#            and (ppv.date_end   is null or ppv.date_end   >= CURRENT_DATE) 
-#            and (ppv.date_start is null or ppv.date_start <= CURRENT_DATE) 
-
-#            and (ppi.date_end   is null or ppi.date_end   >= CURRENT_DATE) 
-#            and (ppi.date_start is null or ppi.date_start <= CURRENT_DATE) 
-#        order by ppi.sequence limit 1
-#    );
-#END;
-#$$ LANGUAGE plpgsql;
 
 
     def init(self, cr):
@@ -51,12 +33,14 @@ CREATE OR REPLACE view is_comparatif_tarif_cial_vente AS (
         itc.id               as tarif_cial_id,
         itc.product_id       as product_id,
         itc.partner_id       as partner_id,
+        get_product_pricelist(itc.partner_id) as pricelist_id,
+        get_lot_livraison(pt.id, itc.partner_id) as lot_livraison, 
         pt.is_code           as is_code,
         pt.is_category_id    as is_category_id,
         pt.name              as designation,
         itc.prix_vente       as tarif_cial,
-        coalesce(is_prix_vente(pp.id),0) as tarif_vente,
-        round(cast(abs(coalesce(is_prix_vente(pp.id),0)-itc.prix_vente) as numeric),4) as delta
+        coalesce(is_prix_vente(get_product_pricelist(itc.partner_id), pp.id, get_lot_livraison(pt.id, itc.partner_id), CURRENT_DATE),0) as tarif_vente,
+        round(cast(abs(coalesce(is_prix_vente(get_product_pricelist(itc.partner_id), pp.id, get_lot_livraison(pt.id, itc.partner_id), CURRENT_DATE),0)-itc.prix_vente) as numeric),4) as delta
     FROM is_tarif_cial itc   inner join product_template   pt on itc.product_id=pt.id
                              inner join is_category        ic on pt.is_category_id=ic.id
                              inner join product_product    pp on pp.product_tmpl_id=pt.id 
@@ -64,7 +48,7 @@ CREATE OR REPLACE view is_comparatif_tarif_cial_vente AS (
     WHERE 
         pt.active='t' and 
         itc.indice_prix=999 and
-        cast(abs(coalesce(is_prix_vente(pp.id),0)-itc.prix_vente) as numeric)>0 and
+        cast(abs(coalesce(is_prix_vente(get_product_pricelist(itc.partner_id), pp.id, get_lot_livraison(pt.id, itc.partner_id), CURRENT_DATE),0)-itc.prix_vente) as numeric)>0 and
         (itc.date_fin>=CURRENT_DATE or itc.date_fin is null)
 )
 
