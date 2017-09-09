@@ -621,9 +621,12 @@ class stock_move(models.Model):
                 move.product_uom_qty=move.product_uom_qty+2*product_qty
 
             #Si la quantité restante est à 0 , mettre 0.00001 pour ne pas solder le mouvement
-            if float_compare(quantity_rest_uom, 0, precision_rounding=move.product_uom.rounding) == 0:
-                quantity_rest=move.product_uom.rounding
-
+            #if float_compare(quantity_rest_uom, 0, precision_rounding=move.product_uom.rounding) == 0:
+            #    quantity_rest=move.product_uom.rounding
+            #TODO : Modif du 09/09/17 pour corriger un pb de division par 0
+            if abs(quantity_rest)<0.00001:
+                quantity_rest=0.00001
+                
             #** Invertion des emplacements pour faire un mouvement négatif
             if inverse:
                 mem_location_id           = move.location_id.id
@@ -632,6 +635,7 @@ class stock_move(models.Model):
                 move.location_id          = mem_location_dest_id
 
             #** Création d'un nouveau mouvement qui contiendra le reste à fabriquer. Le mouvement en cours contiendra la quantité déclarée
+
             new_mov = self.split(cr, uid, move, quantity_rest, context=context)
 
             if move.production_id:
