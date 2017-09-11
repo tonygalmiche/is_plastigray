@@ -155,7 +155,7 @@ access_is_moyen_fabrication,access_is_moyen_fabrication,model_is_moyen_fabricati
 access_is_moyen_fabrication_autre,access_is_moyen_fabrication_autre,model_is_moyen_fabrication_autre,base.group_user,1,0,0,0
 access_is_piece_montabilite,access_is_piece_montabilite,model_is_piece_montabilite,base.group_user,1,0,0,0
 access_is_operation_controle,access_is_operation_controle,model_is_operation_controle,base.group_user,1,0,0,0
-
+access_is_instruction_particuliere,access_is_instruction_particuliere,model_is_instruction_particuliere,base.group_user,1,0,0,0
 
 
 

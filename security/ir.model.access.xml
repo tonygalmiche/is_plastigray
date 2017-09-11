@@ -1532,17 +1532,18 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
-    <!--
-    <record id="is_stock_mise_rebut_qualite_access"  model="ir.model.access" >
-        <field name="name">is_stock_mise_rebut_qualite_access</field>
-        <field name="model_id"    eval="ref('model_is_stock_mise_rebut')"/>
+    <record id="is_instruction_particuliere_qualite_access"  model="ir.model.access" >
+        <field name="name">is_instruction_particuliere_qualite_access</field>
+        <field name="model_id"    eval="ref('model_is_instruction_particuliere')"/>
         <field name="group_id"    eval="ref('is_qualite_group')"/>
         <field name="perm_read"   eval="True"/>
         <field name="perm_write"  eval="True"/>
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
-    -->
+
+
+
 
 
     <!-- Centrale matière -->

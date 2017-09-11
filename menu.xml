@@ -908,7 +908,7 @@
     </record>
     <record id="menu_is_declaration_fabrication" model="ir.ui.menu" >
         <field name="name">Déclaration de fabrication</field>
-        <field name="sequence">15</field>
+        <field name="sequence">20</field>
         <field name="parent_id" eval="ref('menu_is_production_production')"/>
         <field name="action"    ref="is_declaration_fab_action"/>
         <field name="groups_id" eval="[(6,0,[
@@ -918,10 +918,20 @@
         ])]"/>
     </record>
 
+    <record id="is_instruction_particuliere_menu" model="ir.ui.menu" >
+        <field name="name">Instructions particulières</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('menu_is_production_production')"/>
+        <field name="action"    ref="is_instruction_particuliere_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+            ref('is_qualite_group'),
+        ])]"/>
+    </record>
 
     <record id="menu_is_planning_production" model="ir.ui.menu" >
         <field name="name">Planning</field>
-        <field name="sequence">30</field>
+        <field name="sequence">40</field>
         <field name="parent_id" eval="ref('menu_is_production_production')"/>
         <field name="action"    ref="is_url_planning_action"/>
         <field name="groups_id" eval="[(6,0,[

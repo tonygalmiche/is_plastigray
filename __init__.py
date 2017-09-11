@@ -43,6 +43,7 @@ import is_facture_pk
 import is_moyen_fabrication
 import is_moyen_fabrication_autre
 import is_piece_montabilite
+import is_instruction_particuliere
 
 import is_copy_other_database
 import report
