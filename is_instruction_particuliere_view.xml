@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Sequence --> 
+        <record id="is_instruction_particuliere_type_seq" model="ir.sequence.type">
+            <field name="name">Instruction particulière</field>
+            <field name="code">is.instruction.particuliere</field>
+        </record>
+        <record id="is_instruction_particuliere_seq" model="ir.sequence">
+            <field name="name">Instruction particulière</field>
+            <field name="code">is.instruction.particuliere</field>
+            <field name="prefix">IP-</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record model="ir.ui.view" id="is_instruction_particuliere_form_view">
+            <field name="name">is_instruction_particuliere_form_view</field>
+            <field name="model">is.instruction.particuliere</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="createur_id"/>
+                            <field name="date_creation"/>
+                            <field name="date_validite"/>
+                            <field name="mold_ids"     widget="many2many_tags"/>
+                            <field name="dossierf_ids" widget="many2many_tags"/>
+                            <field name="product_ids"  widget="many2many_tags"/>
+                            <field name="commentaire"/>
+                        </group>
+                        <group>
+                            <div style="text-align:center"> 
+                                <field 
+                                    name="contenu" widget='image' class="oe_center oe_avatar" 
+                                    options='{"preview_image": "contenu", "size": [900, 900]}'
+                                />
+                            </div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_instruction_particuliere_tree_view">
+            <field name="name">is_instruction_particuliere_tree_view</field>
+            <field name="model">is.instruction.particuliere</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="createur_id"/>
+                    <field name="date_creation"/>
+                    <field name="date_validite"/>
+                    <field name="mold_ids"/>
+                    <field name="dossierf_ids"/>
+                    <field name="product_ids"/>
+                    <field name="commentaire"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_instruction_particuliere_search_view" >
+            <field name="name">is_instruction_particuliere_search_view</field>
+            <field name="model">is.instruction.particuliere</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="mold_ids"/>
+                    <field name="dossierf_ids"/>
+                    <field name="product_ids"/>
+                    <field name="commentaire"/>
+                    <filter name="date_validite_filter" string="IP valides" domain="[('date_validite','&gt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
+                </search>
+            </field>
+        </record>     
+        <record id="is_instruction_particuliere_action" model="ir.actions.act_window" >
+            <field name="name">Instruction particulière</field>
+            <field name="res_model">is.instruction.particuliere</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_date_validite_filter':1}</field>
+        </record>
+    </data>
+</openerp>  
