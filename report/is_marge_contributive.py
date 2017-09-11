@@ -48,7 +48,7 @@ class is_marge_contributive(models.Model):
                 RETURN (
                     SELECT
                     CASE
-                    WHEN t::text = ANY (ARRAY['out_refund'::character varying::text, 'in_invoice'::character varying::text])
+                    WHEN t::text = ANY (ARRAY['out_refund'::character varying::text, 'in_refund'::character varying::text])
                         THEN -1::int
                         ELSE 1::int
                     END
