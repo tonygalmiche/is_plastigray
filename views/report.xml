@@ -263,6 +263,17 @@
         </record>
 
 
+        <report 
+            id="report_is_consigne_journalieres"
+            model="is.consigne.journaliere"
+            string="Consignes journalières"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_is_consigne_journaliere"
+            file="is_plastigray.report_is_consigne_journaliere"
+        />
+        <record id="report_is_consigne_journalieres" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.is_consigne_journaliere_paperformat"/>
+        </record>
 
 
 

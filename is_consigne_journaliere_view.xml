@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="is_consigne_journaliere_form_view" model="ir.ui.view">
+            <field name="name">is_consigne_journaliere_from_view</field>
+            <field name="model">is.consigne.journaliere</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="chef_atelier" />
+                                <field name="remarque_generale" />
+                            </group>
+                            <group>
+                                <field name="date_derniere_modif" />
+                                <field name="total_mod_inj" />
+                                <field name="total_mod_ass" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Injection">
+                                <group>
+                                    <field name="injection_ids" nolabel="1" >
+                                        <tree editable="bottom">
+                                             <field name="sequence"/>
+                                             <field name="presse"/>
+                                             <field name="numof1_id" on_change="numof1_id_change(numof1_id)" widget="many2one_clickable"/>
+                                             <field name="mod1"/>
+                                             <field name="operateur"/>
+                                             <field name="moule1"/>
+                                             <field name="matiere1"/>
+                                             <field name="tps_arret"/>
+                                             <field name="heure"/>
+                                             <field name="numof2_id" on_change="numof2_id_change(numof2_id)" widget="many2one_clickable"/>
+                                             <field name="mod2"/>
+                                             <field name="moule2"/>
+                                             <field name="matiere2"/>
+                                             <field name="remarque"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Assemblage">
+                                <group>
+                                    <field name="assemblage_ids" nolabel="1" >
+                                        <tree editable="bottom">
+                                             <field name="sequence"/>
+                                             <field name="poste"/>
+                                             <field name="priorite"/>
+                                             <field name="mod"/>
+                                             <field name="operateur"/>
+                                             <field name="of_en_cours_id" widget="many2one_clickable"/>
+                                             <field name="of_suivant_id"  widget="many2one_clickable"/>
+                                             <field name="remarque"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_consigne_journaliere_tree_view">
+            <field name="name">is_consigne_journaliere_tree_view</field>
+            <field name="model">is.consigne.journaliere</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="chef_atelier" />
+                    <field name="remarque_generale" />
+                    <field name="date_derniere_modif" />
+                    <field name="total_mod_inj" />
+                    <field name="total_mod_ass" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_consigne_journaliere_action" model="ir.actions.act_window">
+            <field name="name">Consignes journalières</field>
+            <field name="res_model">is.consigne.journaliere</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>
