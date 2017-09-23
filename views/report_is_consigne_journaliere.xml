@@ -184,7 +184,49 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div><br />
+                    </div>
+                    <t t-if="o.assemblage_ids">
+                        <div style="page-break-after:always;" />
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <table style="width:100%">
+                                    <tr><th class="text-right">Titre :                </th><td><span t-field="o.name"/></td></tr>
+                                    <tr><th class="text-right">Chef d'atelier :       </th><td><span t-field="o.chef_atelier"/></td></tr>
+                                    <tr><th class="text-right">Remarque générale :    </th><td><span t-field="o.remarque_generale"/></td></tr>
+                                    <tr><th class="text-right">Total MOD Injection :  </th><td><span t-field="o.total_mod_inj"/></td></tr>
+                                    <tr><th class="text-right">Total MOD Assemblage : </th><td><span t-field="o.total_mod_ass"/></td></tr>
+                                </table>
+                            </div>
+                        </div><br />
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr >
+                                            <th class="text-center"   style="vertical-align:top">Poste</th>
+                                            <th class="text-center"   style="vertical-align:top">Priorité</th>
+                                            <th class="text-center"   style="vertical-align:top">MOD</th>
+                                            <th class="text-center"   style="vertical-align:top">Opérateur</th>
+                                            <th class="text-center"   style="vertical-align:top">OF en cours</th>
+                                            <th class="text-center"   style="vertical-align:top">OF suivant</th>
+                                            <th class="text-center"   style="vertical-align:top">Remarques / Consignes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="o.assemblage_ids" t-as="l">
+                                            <td class="text-center">    <span t-field="l.poste"/> </td>
+                                            <td class="text-center">    <span t-field="l.priorite"/> </td>
+                                            <td class="text-center">    <span t-field="l.mod"/> </td>
+                                            <td class="text-center">    <span t-field="l.operateur"/> </td>
+                                            <td class="text-center">    <span t-field="l.of_en_cours_id.name"/> </td>
+                                            <td class="text-center">    <span t-field="l.of_suivant_id.name"/> </td>
+                                            <td class="text-center">    <span t-field="l.remarque"/> </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
                 </div>
             </t>
         </t>
