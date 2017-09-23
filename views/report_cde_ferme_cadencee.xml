@@ -88,14 +88,6 @@
                         <span t-field="o.is_livre_a_id.zip"/> <span t-field="o.is_livre_a_id.city"/><br /><br />
                     </t>
                 </div>
-                <!--
-                <div class="livraison">
-                    Adresse de livraison : <br />
-                    <span t-field="company.name"/> <span t-field="company.street"/><br />
-                    <span t-field="company.street2"/><br />
-                    <span t-field="company.zip"/> <span t-field="company.city"/><br /><br />
-                </div>
-                -->
                 <div class="facturation">
                     Adrese de facturation : PLASTIGRAY SAS <br />
                     ZAC de Gray Sud CS 10133 <br />
@@ -179,8 +171,11 @@
                         <th class="text-left"   style="vertical-align:top">Plan</th>
                         <th class="text-left"   style="vertical-align:top">TVA</th>
                         <th class="text-center" style="vertical-align:top">Date prévue</th>
-                        <th class="text-right"  style="vertical-align:top">Quantité</th>
                         <th class="text-left"   style="vertical-align:top">Unité</th>
+                        <th class="text-right"  style="vertical-align:top">Quantité commandée</th>
+                        <th class="text-right"  style="vertical-align:top">Reste à réceptionner</th>
+                        <th class="text-center"   style="vertical-align:top">Dernier BL</th>
+                        <th class="text-center"   style="vertical-align:top">Date BL</th>
                         <th class="text-right"  style="vertical-align:top">Prix d'achat<br />€ HT</th>
                         <th class="text-right"  style="vertical-align:top">Prix total<br />€ HT</th>
                     </tr>
@@ -199,8 +194,11 @@
                             <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
                             <td class="text-left">         <span t-esc="', '.join(map(lambda x: x.name, l.taxes_id))"/></td>
                             <td class="text-center">       <span t-field="l.date_planned"/>  </td>
-                            <td class="text-right nowrap"> <span t-field="l.product_qty"/>  </td>
                             <td class="text-left">         <span t-field="l.product_uom.name"/>  </td>
+                            <td class="text-right nowrap"> <span t-field="l.product_qty"/>  </td>
+                            <td class="text-right nowrap"> <span t-field="order.qt_reste"/>  </td>
+                            <td class="text-center">       <span t-field="order.num_bl"/>  </td>
+                            <td class="text-center">       <span t-field="order.date_bl"/>  </td>
                             <td class="text-right nowrap"> <span t-field="l.price_unit"/> </td>
                             <td class="text-right nowrap">
                                 <span t-esc='"{:,.2f}".format(l.product_qty*l.price_unit).replace(","," ").replace(".",",")'/>

@@ -55,7 +55,57 @@ class is_cde_ferme_cadencee(models.Model):
         #    raise Warning(u"Une commande ouverte existe déjà pour ce fournisseur !")
 
 
+    @api.multi
+    def actualiser_commandes(self):
+        cr = self._cr
+        for obj in self:
+            for order in obj.order_ids:
+                #** Recherche du dernier numéro de BL **************************
+                SQL="""
+                    select sp.is_num_bl, sp.is_date_reception, sm.product_uom_qty
+                    from stock_picking sp inner join stock_move sm on sm.picking_id=sp.id
+                    where 
+                        sm.product_id="""+str(obj.product_id.id)+""" and
+                        sp.is_date_reception is not null and
+                        sm.state='done' and
+                        sp.picking_type_id=1 and 
+                        sp.partner_id="""+str(obj.partner_id.id)+""" and
+                        sp.is_purchase_order_id="""+str(order.order_id.id)+""" 
+                    order by sp.is_date_reception desc, sm.date desc
+                    limit 1
+                """
+                cr.execute(SQL)
+                result = cr.fetchall()
+                num_bl  = False
+                date_bl = False
+                for row in result:
+                    num_bl  = row[0]
+                    date_bl = row[1]
+                #***************************************************************
 
+                #** Recherche du total réceptionné *****************************
+                SQL="""
+                    select sum(sm.product_uom_qty)
+                    from stock_picking sp inner join stock_move sm on sm.picking_id=sp.id
+                    where 
+                        sm.product_id="""+str(obj.product_id.id)+""" and
+                        sp.is_date_reception is not null and
+                        sm.state='done' and
+                        sp.picking_type_id=1 and 
+                        sp.partner_id="""+str(obj.partner_id.id)+""" and
+                        sp.is_purchase_order_id="""+str(order.order_id.id)+""" 
+                    limit 1
+                """
+                cr.execute(SQL)
+                result = cr.fetchall()
+                qt_rcp = 0
+                for row in result:
+                    qt_rcp  = row[0]
+                #***************************************************************
+                order.num_bl   = num_bl
+                order.date_bl  = date_bl
+                order.qt_rcp   = qt_rcp
+                order.qt_reste = order.product_qty-qt_rcp
 
 
 class is_cde_ferme_cadencee_order(models.Model):
@@ -74,12 +124,13 @@ class is_cde_ferme_cadencee_order(models.Model):
     cfc_id       = fields.Many2one('is.cde.ferme.cadencee', 'Commande ferme cadencée', required=True, ondelete='cascade', readonly=True)
     order_id     = fields.Many2one('purchase.order', 'Commande Fournisseur', required=True)
     date_planned = fields.Date("Date prévue"              , compute='_compute', readonly=True, store=True)
-    product_qty  = fields.Float("Quantité"                , compute='_compute', readonly=True, store=True)
     product_uom  = fields.Many2one('product.uom', 'Unité' , compute='_compute', readonly=True, store=True)
+    product_qty  = fields.Float("Quantité commandée"      , compute='_compute', readonly=True, store=True)
 
-
-
-
+    qt_rcp       = fields.Float("Quantité réceptionnée", readonly=True)
+    qt_reste     = fields.Float("Reste à réceptionner" , readonly=True)
+    num_bl       = fields.Char("Dernier BL"            , readonly=True)
+    date_bl      = fields.Date("Date BL"               , readonly=True)
 
 
 

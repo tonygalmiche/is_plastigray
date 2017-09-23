@@ -24,7 +24,14 @@
             <field name="model">is.cde.ferme.cadencee</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form string="Form">  
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="actualiser_commandes"
+                            string="Actualiser"
+                            class="oe_highlight" type="object"
+                        />
+                    </header>
                     <sheet>
                         <group>
                             <group>
@@ -48,8 +55,12 @@
                                         widget="many2one_clickable"
                                     /> 
                                     <field name="date_planned"/> 
-                                    <field name="product_qty"/> 
                                     <field name="product_uom"/> 
+                                    <field name="product_qty"/> 
+                                    <field name="qt_rcp"/> 
+                                    <field name="qt_reste"/> 
+                                    <field name="num_bl"/> 
+                                    <field name="date_bl"/> 
                                 </tree>
                             </field>
                         </group>
