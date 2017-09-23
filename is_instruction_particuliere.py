@@ -4,6 +4,7 @@ from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import datetime
+import base64
 
 
 class is_instruction_particuliere(models.Model):
@@ -28,18 +29,12 @@ class is_instruction_particuliere(models.Model):
 
     @api.model
     def create(self, vals):
-        print 'ok'
-
         data_obj = self.env['ir.model.data']
         sequence_ids = data_obj.search([('name','=','is_instruction_particuliere_seq')])
-        print 'sequence_ids=',sequence_ids
         if len(sequence_ids)>0:
             sequence_id = sequence_ids[0].res_id
             vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
-        print vals
         res = super(is_instruction_particuliere, self).create(vals)
         return res
-
-
 
 
