@@ -349,10 +349,16 @@ class is_cout_calcul(models.Model):
         type_article=self.type_article(product)
         cout_mat = 0
         cout_st  = 0
+        msg_err=''
         if type_article=='A':
             cout_mat = prix_calcule
+            if prix_calcule==0:
+                msg_err=u'Err Coût Mat'
         if type_article=='ST':
             cout_st  = prix_calcule
+            if prix_calcule==0:
+                msg_err=u'Err Coût ST'
+
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
         self.detail_nomenclature.append({
             'product_id'  : product.id,
@@ -365,6 +371,7 @@ class is_cout_calcul(models.Model):
             'total_mat'   : quantite_total*cout_mat,
             'cout_st'     : cout_st, 
             'total_st'    : quantite_total*cout_st,
+            'msg_err'     : msg_err,
         })
 
         if type_article!='A':
@@ -459,12 +466,16 @@ class is_cout_calcul(models.Model):
                         if cout.type_article=='ST':
                             cout_act_matiere = 0
                             cout_act_st      = 0
+
+                        nb_err=0
                         if cout.type_article!='A':
                             self.detail_nomenclature=[]
                             self.detail_gamme_ma=[]
                             self.detail_gamme_mo=[]
                             self.nomenclature_prix_revient(obj, 0, product, False, 1, 1, cout.prix_calcule)
                             for vals in self.detail_nomenclature:
+                                if vals['msg_err']!='':
+                                    nb_err=nb_err+1
                                 is_code=vals['is_code']
                                 if is_code[:1]=="7":
                                     cout_act_condition=cout_act_condition+vals['total_mat']
@@ -515,13 +526,13 @@ class is_cout_calcul(models.Model):
                         cout.is_mold_dossierf    = row.product_id.is_mold_dossierf
                         cout.uom_id              = row.product_id.uom_id
                         cout.lot_mini            = row.product_id.lot_mini
+                        cout.nb_err              = nb_err
                         cout.cout_act_prix_vente = cout.prix_vente-cout.amortissement_moule-cout.surcout_pre_serie
                         row.cout_act_matiere     = cout_act_matiere
                         row.cout_act_machine     = cout_act_machine
                         row.cout_act_mo          = cout_act_mo
                         row.cout_act_st          = cout_act_st
                         row.cout_act_total       = cout_act_total
-
             obj.state="termine"
 
 
@@ -598,6 +609,7 @@ class is_cout(models.Model):
     nomenclature_ids       = fields.One2many('is.cout.nomenclature', 'cout_id', u"Lignes de la nomenclature")
     gamme_ma_ids           = fields.One2many('is.cout.gamme.ma'    , 'cout_id', u"Lignes gamme machine")
     gamme_mo_ids           = fields.One2many('is.cout.gamme.mo'    , 'cout_id', u"Lignes gamme MO")
+    nb_err                 = fields.Integer('Nb Err', help=u"Nombre d'erreures détectées lors du calcul de coûts")
 
     @api.depends('name')
     def _compute(self):
@@ -757,6 +769,7 @@ class is_cout_nomenclature(models.Model):
     total_mat        = fields.Float('Total Mat' , digits=(12, 4))
     cout_st          = fields.Float('Coût ST'   , digits=(12, 4))
     total_st         = fields.Float('Total ST'  , digits=(12, 4))
+    msg_err          = fields.Char('Err')
 
 
 class is_cout_gamme_ma(models.Model):

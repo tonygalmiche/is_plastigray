@@ -145,6 +145,7 @@
                                 <field name="partner_id"/> 
                                 <field name="uom_id"/> 
                                 <field name="lot_mini"/> 
+                                <field name="nb_err"/> 
                             </group>
                             <group string="Prix"                      attrs="{'invisible': [('type_article', '=', 'F')] }">
                                 <field name="prix_tarif"/> 
@@ -198,6 +199,7 @@
                                     <field name="total_mat"/>
                                     <field name="cout_st"/>
                                     <field name="total_st"/>
+                                    <field name="msg_err"/>
                                 </tree>
                             </field>
                         </group>
