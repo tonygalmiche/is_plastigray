@@ -10,40 +10,40 @@
             <table class="table table-condensed">
                 <thead>
                     <tr>
-                        <th><strong>Inventaire</strong></th>
-                        <th><strong>Feuille</strong></th>
-                        <th><strong>Séquence</strong></th>
-                        <th><strong>Article</strong></th>
-                        <th><strong>Encours</strong></th>
-                        <th><strong>Composant</strong></th>
-                        <th><strong>UC</strong></th>
-                        <th><strong>US par UC</strong></th>
-                        <th><strong>Emplacement</strong></th>
-                        <th><strong>Qt US saisie</strong></th>
-                        <th><strong>Qt UC saisie</strong></th>
-                        <th><strong>Qt US</strong></th>
-                        <th><strong>Lieu</strong></th>
-                        <th><strong>Lot</strong></th>
-                        <th><strong>État</strong></th>
+                        <th class="text-center"><strong>Inventaire</strong></th>
+                        <th class="text-center"><strong>Feuille</strong></th>
+                        <th class="text-center"><strong>Séquence</strong></th>
+                        <th class="text-left"><strong>Article</strong></th>
+                        <th class="text-center"><strong>Encours</strong></th>
+                        <th class="text-center"><strong>Composant</strong></th>
+                        <th class="text-center"><strong>UC</strong></th>
+                        <th class="text-center"><strong>US par UC</strong></th>
+                        <th class="text-center"><strong>Emplacement</strong></th>
+                        <th class="text-right"><strong>Qt US saisie</strong></th>
+                        <th class="text-right"><strong>Qt UC saisie</strong></th>
+                        <th class="text-right"><strong>Qt US</strong></th>
+                        <th class="text-center"><strong>Lieu</strong></th>
+                        <th class="text-center"><strong>Lot</strong></th>
+                        <th class="text-center"><strong>État</strong></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr t-foreach="docs" t-as="o">
-                        <td><span t-field="o.inventaire_id.name"/> </td>
-                        <td><span t-field="o.feuille_id.name"/> </td>
-                        <td><span t-field="o.sequence"/> </td>
-                        <td><span t-field="o.product_id.name"/> </td>
-                        <td><span t-field="o.encours"/> </td>
-                        <td><span t-field="o.composant_encours"/> </td>
-                        <td><span t-field="o.uc"/> </td>
-                        <td><span t-field="o.uc_us"/> </td>
-                        <td><span t-field="o.location_id.name"/> </td>
-                        <td><span t-field="o.qt_us"/> </td>
-                        <td><span t-field="o.qt_uc"/> </td>
-                        <td><span t-field="o.qt_us_calc"/> </td>
-                        <td><span t-field="o.lieu"/> </td>
-                        <td><span t-field="o.lot_id.name"/> </td>
-                        <td><span t-field="o.state"/> </td>
+                        <td class="text-center"><span t-field="o.inventaire_id.name"/> </td>
+                        <td class="text-center"><span t-field="o.feuille_id.name"/> </td>
+                        <td class="text-center"><span t-field="o.sequence"/> </td>
+                        <td class="text-left"><span t-field="o.product_id.name"/> </td>
+                        <td class="text-center"><span t-field="o.encours"/> </td>
+                        <td class="text-center"><span t-field="o.composant_encours"/> </td>
+                        <td class="text-center"><span t-field="o.uc"/> </td>
+                        <td class="text-center"><span t-field="o.uc_us"/> </td>
+                        <td class="text-center"><span t-field="o.location_id.name"/> </td>
+                        <td class="text-right"><span style="white-space: nowrap;" t-field="o.qt_us"/> </td>
+                        <td class="text-right"><span style="white-space: nowrap;" t-field="o.qt_uc"/> </td>
+                        <td class="text-right"><span style="white-space: nowrap;" t-field="o.qt_us_calc"/> </td>
+                        <td class="text-center"><span t-field="o.lieu"/> </td>
+                        <td class="text-center"><span t-field="o.lot_id.name"/> </td>
+                        <td class="text-center"><span t-field="o.state"/> </td>
                     </tr>
                 </tbody>
             </table>
