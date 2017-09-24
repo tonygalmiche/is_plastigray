@@ -209,7 +209,7 @@
             <field name="paperformat_id" ref="is_plastigray.pricelist_version_paperformat"/>
         </record>
 
-			<report 
+            <report 
             string="Stock détaillés" 
             id="report_stock_detail_tree" 
             model="is.stock.quant" 
@@ -234,6 +234,20 @@
         <record id="report_stock_movement_tree" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="is_plastigray.document_fabrication_landscape_paperformat"/>
         </record>
+
+
+        <report 
+            string="Lignes d'inventaire" 
+            id="report_is_inventaire_line_trees" 
+            model="is.inventaire.line" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_is_inventaire_line_tree" 
+            file="is_plastigray.report_is_inventaire_line_tree" 
+        />
+        <record id="report_is_inventaire_line_trees" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.document_fabrication_landscape_paperformat"/>
+        </record>
+
 
         <report 
             string="Feuilles Inventaire" 
