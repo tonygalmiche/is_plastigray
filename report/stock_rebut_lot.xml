@@ -8,8 +8,8 @@
         <field name="model">report.stock.lot.rebut</field>
         <field name="arch" type="xml">
             <tree string="Lots au rebut" create="false">
-                <field name="product_id"/>
-                <field name="mold_id"/>
+                <field name="product_id" widget="many2one_clickable"/>
+                <field name="mold"/>
                 <field name="location_id"/>
                 <field name="lot_id" />
                 <field name="qty" sum="Total" />
@@ -31,12 +31,12 @@
         <field name="arch" type="xml">
             <search string="lot au rebut">
                 <field name="product_id" />
-                <field name="mold_id" />
+                <field name="mold" />
                 <field name="lot_id" />
                 <field name="location_id" />
                 <group expand="1" string="Group By...">
                     <filter name="group_product" string="Article" icon="terp-accessories-archiver" context="{'group_by':'product_id'}"/>
-                    <filter name="group_mold"  string="Moule  "        icon="terp-accessories-archiver" context="{'group_by':'mold_id'}"/>
+                    <filter name="group_mold"  string="Moule  "        icon="terp-accessories-archiver" context="{'group_by':'mold'}"/>
                     <filter name="group_lot" string="Lot" icon="terp-accessories-archiver" context="{'group_by':'lot_id'}"/>
                     <filter name="group_location" string="Emplacement" icon="terp-accessories-archiver" context="{'group_by':'location_id'}"/>
                 </group>

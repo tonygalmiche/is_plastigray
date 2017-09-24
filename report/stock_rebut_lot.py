@@ -11,7 +11,6 @@ class report_stock_lot_rebut(osv.osv):
     _columns = {
         'product_id': fields.many2one('product.product', 'Article'     , readonly=True),
         'mold'       : fields.char('Moule'                             , readonly=True),
-        'mold_id': fields.many2one('is.mold', 'Moule' , readonly=True),
         'location_id': fields.many2one('stock.location', 'Emplacement' , readonly=True),
         'qty': fields.float(u'Quantité', readonly=True),
         'qty_par_uc' : fields.integer(u'UC'                            , readonly=True),
@@ -88,8 +87,7 @@ class report_stock_lot_rebut(osv.osv):
                         (is_dest_src_qty(r1.qty , r2.qty ) / is_qt_par_uc2(pp.product_tmpl_id))  as qty_uc,
                         r1.lot_id as lot_id,
                         r1.product_id as product_id,
-                        im.name  as mold,
-                        pt.is_mold_id as mold_id,
+                        pt.is_mold_dossierf as mold,
                         r1.location_id as location_id,
                         r1.in_date as in_date,
                         'rebut' as operation
@@ -97,7 +95,6 @@ class report_stock_lot_rebut(osv.osv):
                         report_stock_lot_dest_rebut r1 LEFT JOIN report_stock_lot_src_rebut r2 ON r1.location_id = r2.location_id AND r1.lot_id = r2.lot_id AND r1.product_id = r2.product_id
                                                        INNER JOIN product_product pp      ON r1.product_id = pp.id
                                                        INNER JOIN product_template pt     ON pp.product_tmpl_id = pt.id
-                                                       LEFT OUTER JOIN is_mold im         ON pt.is_mold_id=im.id 
                         
                 ) AS R
                 WHERE R.qty > 0
