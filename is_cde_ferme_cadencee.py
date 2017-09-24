@@ -100,7 +100,7 @@ class is_cde_ferme_cadencee(models.Model):
                 result = cr.fetchall()
                 qt_rcp = 0
                 for row in result:
-                    qt_rcp  = row[0]
+                    qt_rcp  = row[0] or 0
                 #***************************************************************
                 order.num_bl   = num_bl
                 order.date_bl  = date_bl
