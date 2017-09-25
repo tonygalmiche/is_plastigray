@@ -48,6 +48,8 @@ class is_cout_calcul(models.Model):
         type_article=self.type_article(product)
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
         if type_article!='A' and multiniveaux==True:
+            if niveau>10:
+                raise Warning(u"Trop de niveaux (>10) dans la nomenclature du "+product.is_code)
             SQL="""
                 select mbl.product_id, mbl.id, mbl.sequence, mb.id
                 from mrp_bom mb inner join mrp_bom_line mbl on mbl.bom_id=mb.id
@@ -95,34 +97,6 @@ class is_cout_calcul(models.Model):
         return cout
 
 
-
-#    @api.multi
-#    def _merge_pdf(self, documents):
-#        """Merge PDF files into one.
-#        :param documents: list of path of pdf files
-#        :returns: path of the merged pdf
-#        """
-#        writer = PdfFileWriter()
-#        streams = []  # We have to close the streams *after* PdfFilWriter's call to write()
-#        ct=1
-#        nb=len(documents)
-#        for document in documents:
-#            print ct, nb, document
-#            ct=ct+1
-#            pdfreport = file(document, 'rb')
-#            streams.append(pdfreport)
-#            reader = PdfFileReader(pdfreport)
-#            for page in range(0, reader.getNumPages()):
-#                writer.addPage(reader.getPage(page))
-#        merged_file_fd, merged_file_path = tempfile.mkstemp(suffix='.pdf', prefix='report.merged.tmp.')
-#        with closing(os.fdopen(merged_file_fd, 'w')) as merged_file:
-#            writer.write(merged_file)
-
-#        for stream in streams:
-#            stream.close()
-#        return merged_file_path
-
-
     @api.multi
     def action_imprimer_couts(self):
         for obj in self:
@@ -133,7 +107,6 @@ class is_cout_calcul(models.Model):
             for line in obj.cout_actualise_ids:
                 couts=self.env['is.cout'].search([('name', '=', line.product_id.id)])
                 for cout in couts:
-                    print ct, nb, line.product_id
                     path=tmp+"/"+str(ct)+".pdf"
                     ct=ct+1
                     pdf = self.env['report'].get_pdf(cout, 'is_plastigray.report_is_cout')
@@ -702,7 +675,6 @@ class is_cout(models.Model):
                 code_pg=rec.name.is_code
                 result, format = self.env['report'].get_pdf(rec, report_service), 'pdf'
                 file_name = file_param + '/'+str(code_pg) +'.pdf'
-                print file_name
                 fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
                 try:
                     os.write(fd, result)
@@ -726,7 +698,6 @@ class is_cout(models.Model):
         values.update({'model': 'is.cout' }) #[optional] here is the object(like 'project.project')  to whose record id you want to post that email after sending
         msg_id = mail_pool.sudo().create(values)
         # And then call send function of the mail.mail,
-        print values, msg_id
         if msg_id:
             msg_id.send()
         return True
