@@ -44,7 +44,7 @@
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
     <record model="res.groups" id="is_chef_equipe_group" >
-        <field name="name">Chef d'équipe et régleurs</field>
+        <field name="name">Chef d'équipe et assistante logistique</field>
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>

@@ -480,12 +480,18 @@ class is_cout_calcul(models.Model):
                                 res=self.env['is.cout.gamme.mo'].create(vals)
                                 cout_act_mo = cout_act_mo+vals['cout_total']
 
-                        cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
+
 
                         #Client par défaut
                         for row in row.product_id.is_client_ids:
                             if row.client_defaut:
                                 cout.partner_id=row.client_id.id
+
+                        cout.nb_err              = nb_err
+                        if nb_err>0:
+                            cout_act_matiere=0
+
+                        cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
 
                         cout.cout_act_matiere    = cout_act_matiere
                         cout.cout_act_condition  = cout_act_condition
@@ -499,8 +505,8 @@ class is_cout_calcul(models.Model):
                         cout.is_mold_dossierf    = row.product_id.is_mold_dossierf
                         cout.uom_id              = row.product_id.uom_id
                         cout.lot_mini            = row.product_id.lot_mini
-                        cout.nb_err              = nb_err
                         cout.cout_act_prix_vente = cout.prix_vente-cout.amortissement_moule-cout.surcout_pre_serie
+
                         row.cout_act_matiere     = cout_act_matiere
                         row.cout_act_machine     = cout_act_machine
                         row.cout_act_mo          = cout_act_mo

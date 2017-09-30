@@ -924,6 +924,7 @@
         <field name="action"    ref="is_consigne_journaliere_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
+            ref('is_chef_equipe_group'),
         ])]"/>
     </record>
 

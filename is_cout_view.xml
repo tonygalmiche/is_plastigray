@@ -288,6 +288,11 @@
                         domain="[('type_article', '=', 'ST'),('cout_act_st', '=', '0')]" 
                         name="cout_act_st_0"
                     />
+                    <filter 
+                        string="Anomalies" 
+                        domain="[('nb_err', '>', 0)]" 
+                        name="anomalies"
+                    />
                     <field name="name"/>
                     <field name="type_article"/>
                     <field name="is_category_id"/> 
