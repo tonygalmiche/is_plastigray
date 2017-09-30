@@ -1468,8 +1468,8 @@
         <field name="group_id"    eval="ref('is_magasiniers_group')"/>
         <field name="perm_read"   eval="True"/>
         <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="False"/>
-        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
     </record>
     <record id="is_sale_order_magasiniers_access"  model="ir.model.access" >
         <field name="name">is_sale_order_magasiniers_access</field>
@@ -1477,8 +1477,8 @@
         <field name="group_id"    eval="ref('is_magasiniers_group')"/>
         <field name="perm_read"   eval="True"/>
         <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="False"/>
-        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
     </record>
     <record id="is_stock_production_lot_magasiniers_access"  model="ir.model.access" >
         <field name="name">is_stock_production_lot_magasiniers_access</field>
