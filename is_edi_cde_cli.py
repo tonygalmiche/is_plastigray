@@ -13,6 +13,7 @@ import base64
 import os
 import time
 from datetime import date, datetime
+from openerp.exceptions import Warning
 
 
 class is_edi_cde_cli_line(models.Model):
@@ -97,13 +98,11 @@ class is_edi_cde_cli(models.Model):
     @api.multi
     def action_analyser_fichiers(self):
         for obj in self:
-
             for row in obj.line_ids:
                 row.unlink()
 
             line_obj = self.env['is.edi.cde.cli.line']
             
-
 
             for attachment in obj.file_ids:
                 datas = self.get_data(obj.import_function, attachment)
@@ -205,6 +204,23 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             line_obj       = self.env['sale.order.line']
 
+            #** Pour PK, il faut supprimer toutes les commandes de tous les articles 
+            if obj.import_function=="Plasti-ka":
+                filtre=[
+                    ('is_type_commande'  , '=', 'ouverte'),
+                    ('state'             , '=', 'draft'),
+                    ('partner_invoice_id', '=', obj.partner_id.id),
+                ]
+                orders=self.env['sale.order'].search(filtre)
+                for order in orders:
+                    filtre=[
+                        ('order_id'        , '=', order.id),
+                        ('is_type_commande', '=', 'previsionnel'),
+                    ]
+                    line_obj.search(filtre).unlink()
+            #*******************************************************************
+
+
             #** Recherche des commandes ouvertes trouvées **********************
             order_ids={}
             for line in obj.line_ids:
@@ -225,11 +241,11 @@ class is_edi_cde_cli(models.Model):
                 #Ne pas supprimer les commandes au dela de la date limite
                 if obj.date_maxi:
                     filtre.append(('is_date_livraison', '<=', obj.date_maxi))
-                #Pour plasti-ka, supprimer toutes les commandes
-                if obj.import_function=="Plasti-ka":
-                    filtre=[
-                        ('order_id', '=', order_id),
-                    ]
+                #Pour plasti-ka, supprimer toutes les commandes => Supprimer toutes les commandes de tous les articles
+                #if obj.import_function=="Plasti-ka":
+                #    filtre=[
+                #        ('order_id', '=', order_id),
+                #    ]
                 order_line=line_obj.search(filtre)
                 for row in order_line:
                     row.unlink()
