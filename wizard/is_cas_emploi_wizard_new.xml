@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="is_cas_emploi_wizard_new_form" model="ir.ui.view">
+            <field name="name">is.cas.emploi.wizard.new.form</field>
+            <field name="model">is.cas.emploi.wizard.new</field>
+            <field name="arch" type="xml">
+                <form string="Cas d'emplois">
+                    <group>
+                        <field name="product_id"/>
+                        <label string=""/>
+                    </group>
+                    <footer>
+                        <button name="do_search_component" string="OK" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="is_cas_emploi_wizard_new_action" model="ir.actions.act_window">
+            <field name="name">Cas d'emplois</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.cas.emploi.wizard.new</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="is_cas_emploi_wizard_new_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+        <!-- is.cas.emploi.line -->
+        <record model="ir.ui.view" id="is_cas_emploi_line_form_view">
+            <field name="name">is_cas_emploi_line_form_view</field>
+            <field name="model">is.cas.emploi.line</field>
+            <field name="arch" type="xml">
+                <form create="false" editable="false">
+                    <sheet>
+                        <group>
+                            <field name="niveau" />
+                            <field name="composant_id" />
+                            <field name="ligne" />
+                            <field name="quantite" />
+                            <field name="mrp_bom_id" />
+                            <field name="segment_id" />
+                            <field name="is_categery_id" />
+                            <field name="is_gestionnaire_id" />
+                            <field name="is_mold_dossierf" />
+                            <field name="is_ref_client" />
+                            <field name="is_ref_fournisseur" />
+                            <field name="is_client_id" />
+                            <field name="is_fournisseur_id" />
+                            <field name="is_sous_traitance" />
+                            <field name="is_negoce" />
+                            <field name="is_inactive" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_cas_emploi_line_tree_view">
+            <field name="name">is_cas_emploi_line_tree_view</field>
+            <field name="model">is.cas.emploi.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="niveau" />
+                    <field name="composant_id"       widget="many2one_clickable" />
+                    <field name="ligne" />
+                    <field name="quantite" />
+                    <field name="mrp_bom_id"         widget="many2one_clickable" />
+                    <field name="segment_id" />
+                    <field name="is_categery_id" />
+                    <field name="is_gestionnaire_id" />
+                    <field name="is_mold_dossierf" />
+                    <field name="is_ref_client" />
+                    <field name="is_ref_fournisseur" />
+                    <field name="is_client_id"       widget="many2one_clickable" />
+                    <field name="is_fournisseur_id"  widget="many2one_clickable" />
+                    <field name="is_sous_traitance" />
+                    <field name="is_negoce" />
+                    <field name="is_inactive" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_cas_emploi_line_search_view" model="ir.ui.view">
+            <field name="name">is_cas_emploi_line_search_view</field>
+            <field name="model">is.cas.emploi.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="niveau" />
+                    <field name="composant_id" />
+                    <field name="ligne" />
+                    <field name="mrp_bom_id" />
+                    <field name="segment_id" />
+                    <field name="is_categery_id" />
+                    <field name="is_gestionnaire_id" />
+                    <field name="is_mold_dossierf" />
+                    <field name="is_ref_client" />
+                    <field name="is_ref_fournisseur" />
+                    <field name="is_client_id" />
+                    <field name="is_fournisseur_id" />
+                    <field name="is_sous_traitance" />
+                    <field name="is_negoce" />
+                    <field name="is_inactive" />
+                </search>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

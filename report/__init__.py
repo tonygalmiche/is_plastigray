@@ -4,7 +4,6 @@ import stock_bloquer_lot
 import stock_debloquer_lot
 import stock_change_location_lot
 import stock_rebut_lot
-
 import is_comparatif_tarif_facture
 import is_pic_3mois
 import is_comparatif_gamme_standard_generique
@@ -14,7 +13,6 @@ import is_comparatif_uc_lot
 import is_article_sans_nomenclature
 import is_article_sans_fournisseur
 import is_pricelist_item
-import is_cas_emplois
 import is_nomenclature_sans_gamme
 import is_comparatif_uc_lot_mini
 import is_comparatif_lot_prix
