@@ -23,7 +23,14 @@ class ir_actions_act_url(models.Model):
                     user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
                     soc  = user.company_id.partner_id.is_code
                     ip   = request.httprequest.environ['REMOTE_ADDR'] 
-                    url='http://odoo/odoo-erp/cbn/Sugestion_CBN.php?Soc='+str(soc)+'&uid='+str(uid)
+                    url='http://odoo/odoo-erp/cbn/Sugestion_CBN.php?Soc='+str(soc)+'&product_id=&uid='+str(uid)
+                    results[0].update({'url': url})
+
+                if results[0]['name']==u'is_url_pic_3_ans_action':
+                    user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
+                    soc  = user.company_id.partner_id.is_code
+                    ip   = request.httprequest.environ['REMOTE_ADDR'] 
+                    url='http://odoo/odoo-erp/analyses/pic-3-ans.php?Soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
 
         return results

@@ -140,7 +140,7 @@
                        <field name="date_reception"/>
                        <field name="site_id"/>
                        <field name="lieu_stockage"/>
-                       <field name="date_prochain_controle" invisible="1"/>
+                       <field name="date_prochain_controle"/>
                    </tree>
             </field>
         </record>

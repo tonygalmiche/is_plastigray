@@ -112,7 +112,7 @@
                     <field name="designation"/> 
                     <field name="fabriquant"/> 
                     <field name="fabricant_client_id"/> 
-                    <field name="date_prochain_controle" invisible="1"/>
+                    <field name="date_prochain_controle"/>
                 </tree>
             </field>
         </record>
