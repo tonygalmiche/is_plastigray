@@ -160,6 +160,8 @@ access_is_consigne_journaliere,access_is_consigne_journaliere,model_is_consigne_
 access_is_consigne_journaliere_inj,access_is_consigne_journaliere_inj,model_is_consigne_journaliere_inj,base.group_user,1,1,1,1
 access_is_consigne_journaliere_ass,access_is_consigne_journaliere_ass,model_is_consigne_journaliere_ass,base.group_user,1,1,1,1
 
+access_is_cout_gamme_ma_pk,access_is_cout_gamme_ma_pk,model_is_cout_gamme_ma_pk,base.group_user,1,1,1,1
+access_is_cout_gamme_mo_pk,access_is_cout_gamme_mo_pk,model_is_cout_gamme_mo_pk,base.group_user,1,1,1,1
 
 
 

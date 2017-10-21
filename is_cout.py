@@ -41,6 +41,10 @@ class is_cout_calcul(models.Model):
     detail_gamme_ma=[]
     detail_gamme_mo=[]
 
+    detail_gamme_ma_pk=[]
+    detail_gamme_mo_pk=[]
+
+
     @api.multi
     @api.multi
     def nomenclature(self, cout_calcul_obj, product, niveau, multiniveaux=True):
@@ -367,10 +371,7 @@ class is_cout_calcul(models.Model):
                 if routing_id:
                     routing = self.env['mrp.routing'].browse(routing_id)
                     for line in routing.workcenter_lines:
-                        # Ne pas tenir compte du temps préparation
-                        # cout_total=quantite_unitaire*(\
-                        #    line.workcenter_id.costs_hour*line.workcenter_id.time_start/lot_mini+\
-                        #    line.is_nb_secondes*line.workcenter_id.costs_hour/3600)
+
                         cout_total=quantite_unitaire*line.workcenter_id.costs_hour*round(line.is_nb_secondes/3600,4)
                         vals={
                             'composant'     : '----------'[:niveau]+product.is_code,
@@ -387,6 +388,25 @@ class is_cout_calcul(models.Model):
                             self.detail_gamme_ma.append(vals)
                         else:
                             self.detail_gamme_mo.append(vals)
+
+                        #** Cout Plasti-ka *************************************
+                        cout_total=quantite_unitaire*line.workcenter_id.is_cout_pk*round(line.is_nb_secondes/3600,4)
+                        vals={
+                            'composant'     : '----------'[:niveau]+product.is_code,
+                            'sequence'      : line.sequence,
+                            'workcenter_id' : line.workcenter_id.id,
+                            'quantite'      : quantite_unitaire,
+                            'cout_prepa'    : line.workcenter_id.is_cout_pk,
+                            'tps_prepa'     : line.workcenter_id.time_start, 
+                            'cout_fab'      : line.workcenter_id.is_cout_pk, 
+                            'tps_fab'       : line.is_nb_secondes,
+                            'cout_total'    : cout_total, 
+                        }
+                        if line.workcenter_id.resource_type=='material':
+                            self.detail_gamme_ma_pk.append(vals)
+                        else:
+                            self.detail_gamme_mo_pk.append(vals)
+                        #*******************************************************
             #*******************************************************************
 
             #** Composants de la nomenclature **********************************
@@ -420,12 +440,14 @@ class is_cout_calcul(models.Model):
                 couts=cout_obj.search([('name', '=', product.id)])
                 if len(couts):
                     for cout in couts:
-                        cout_act_matiere   = 0
-                        cout_act_st        = 0
-                        cout_act_condition = 0
-                        cout_act_machine   = 0
-                        cout_act_mo        = 0
-                        cout_act_total     = 0
+                        cout_act_matiere    = 0
+                        cout_act_st         = 0
+                        cout_act_condition  = 0
+                        cout_act_machine    = 0
+                        cout_act_machine_pk = 0
+                        cout_act_mo         = 0
+                        cout_act_mo_pk      = 0
+                        cout_act_total      = 0
 
                         for row2 in cout.nomenclature_ids:
                             row2.unlink()
@@ -433,6 +455,9 @@ class is_cout_calcul(models.Model):
                             row2.unlink()
                         for row2 in cout.gamme_mo_ids:
                             row2.unlink()
+                        cout.gamme_mo_pk_ids.unlink()
+                        cout.gamme_ma_pk_ids.unlink()
+
                         if cout.type_article=='A':
                             cout_act_matiere = cout.prix_calcule
                             cout_act_st      = 0
@@ -445,6 +470,9 @@ class is_cout_calcul(models.Model):
                             self.detail_nomenclature=[]
                             self.detail_gamme_ma=[]
                             self.detail_gamme_mo=[]
+                            self.detail_gamme_ma_pk=[]
+                            self.detail_gamme_mo_pk=[]
+
                             self.nomenclature_prix_revient(obj, 0, product, False, 1, 1, cout.prix_calcule)
                             for vals in self.detail_nomenclature:
                                 if vals['msg_err']!='':
@@ -480,6 +508,18 @@ class is_cout_calcul(models.Model):
                                 res=self.env['is.cout.gamme.mo'].create(vals)
                                 cout_act_mo = cout_act_mo+vals['cout_total']
 
+                            for vals in self.detail_gamme_ma_pk:
+                                vals['cout_id']=cout.id
+                                res=self.env['is.cout.gamme.ma.pk'].create(vals)
+                                cout_act_machine_pk = cout_act_machine_pk+vals['cout_total']
+                            for vals in self.detail_gamme_mo_pk:
+                                vals['cout_id']=cout.id
+                                res=self.env['is.cout.gamme.mo.pk'].create(vals)
+                                cout_act_mo_pk = cout_act_mo_pk+vals['cout_total']
+
+
+
+
 
 
                         #Client par défaut
@@ -497,6 +537,8 @@ class is_cout_calcul(models.Model):
                         cout.cout_act_condition  = cout_act_condition
                         cout.cout_act_machine    = cout_act_machine
                         cout.cout_act_mo         = cout_act_mo
+                        cout.cout_act_machine_pk = cout_act_machine_pk
+                        cout.cout_act_mo_pk      = cout_act_mo_pk
                         cout.cout_act_st         = cout_act_st
                         cout.cout_act_total      = cout_act_total
                         cout.is_category_id      = row.product_id.is_category_id
@@ -510,6 +552,9 @@ class is_cout_calcul(models.Model):
                         row.cout_act_matiere     = cout_act_matiere
                         row.cout_act_machine     = cout_act_machine
                         row.cout_act_mo          = cout_act_mo
+                        row.cout_act_machine_pk  = cout_act_machine_pk
+                        row.cout_act_mo_pk       = cout_act_mo_pk
+
                         row.cout_act_st          = cout_act_st
                         row.cout_act_total       = cout_act_total
             obj.state="termine"
@@ -579,6 +624,8 @@ class is_cout(models.Model):
     cout_act_condition     = fields.Float("Coût act conditionnement", digits=(12, 4))
     cout_act_machine       = fields.Float("Coût act machine"        , digits=(12, 4))
     cout_act_mo            = fields.Float("Coût act main d'oeuvre"  , digits=(12, 4))
+    cout_act_machine_pk    = fields.Float("Coût act machine PK"      , digits=(12, 4))
+    cout_act_mo_pk         = fields.Float("Coût act main d'oeuvre PK", digits=(12, 4))
     cout_act_st            = fields.Float("Coût act sous-traitance" , digits=(12, 4))
     cout_act_total         = fields.Float("Coût act Total"          , digits=(12, 4))
     cout_act_prix_vente    = fields.Float("Prix de vente actualisé" , digits=(12, 4))
@@ -588,7 +635,10 @@ class is_cout(models.Model):
     nomenclature_ids       = fields.One2many('is.cout.nomenclature', 'cout_id', u"Lignes de la nomenclature")
     gamme_ma_ids           = fields.One2many('is.cout.gamme.ma'    , 'cout_id', u"Lignes gamme machine")
     gamme_mo_ids           = fields.One2many('is.cout.gamme.mo'    , 'cout_id', u"Lignes gamme MO")
+    gamme_ma_pk_ids        = fields.One2many('is.cout.gamme.ma.pk' , 'cout_id', u"Lignes gamme machine PK")
+    gamme_mo_pk_ids        = fields.One2many('is.cout.gamme.mo.pk' , 'cout_id', u"Lignes gamme MO PK")
     nb_err                 = fields.Integer('Nb Err', help=u"Nombre d'erreures détectées lors du calcul de coûts")
+
 
     @api.depends('name')
     def _compute(self):
@@ -643,6 +693,32 @@ class is_cout(models.Model):
                 'type': 'ir.actions.act_window',
                 'res_id': obj.id,
             }
+
+
+    @api.multi
+    def action_calcul_cout_pk(self):
+        for obj in self:
+            vals={
+                'product_id'   : obj.name.id,
+                'multiniveaux' : False,
+            }
+            cout_calcul=self.env['is.cout.calcul'].create(vals)
+            cout_calcul.action_calcul_prix_achat()
+            cout_calcul.action_calcul_prix_revient()
+            dummy, view_id = self.env['ir.model.data'].get_object_reference('is_plastigray', 'is_cout_pk_form_view')
+            return {
+                'name': obj.name.name,
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'is.cout',
+                'type': 'ir.actions.act_window',
+                'view_id': view_id,
+                'res_id': obj.id,
+            }
+
+
+
+
 
 
     @api.multi
@@ -766,6 +842,36 @@ class is_cout_gamme_ma(models.Model):
 
 class is_cout_gamme_mo(models.Model):
     _name='is.cout.gamme.mo'
+
+    cout_id       = fields.Many2one('is.cout', 'Coût article', required=True, ondelete='cascade')
+    composant     = fields.Char('Composant')
+    sequence      = fields.Integer('N°')
+    workcenter_id = fields.Many2one('mrp.workcenter', 'Poste de charges')
+    quantite      = fields.Float('Quantité')
+    cout_prepa    = fields.Float('Coût Préparation'      , digits=(12, 4))
+    tps_prepa     = fields.Float('Tps Préparation (H)')
+    cout_fab      = fields.Float('Coût Fabrication'      , digits=(12, 4))
+    tps_fab       = fields.Float('Tps Fabrication (s)')
+    cout_total    = fields.Float('Coût Total'            , digits=(12, 4))
+
+
+class is_cout_gamme_ma_pl(models.Model):
+    _name='is.cout.gamme.ma.pk'
+
+    cout_id       = fields.Many2one('is.cout', 'Coût article', required=True, ondelete='cascade')
+    composant     = fields.Char('Composant')
+    sequence      = fields.Integer('N°')
+    workcenter_id = fields.Many2one('mrp.workcenter', 'Poste de charges')
+    quantite      = fields.Float('Quantité')
+    cout_prepa    = fields.Float('Coût Préparation'      , digits=(12, 4))
+    tps_prepa     = fields.Float('Tps Préparation (H)')
+    cout_fab      = fields.Float('Coût Fabrication'      , digits=(12, 4))
+    tps_fab       = fields.Float('Tps Fabrication (s)')
+    cout_total    = fields.Float('Coût Total'            , digits=(12, 4))
+
+
+class is_cout_gamme_mo_pk(models.Model):
+    _name='is.cout.gamme.mo.pk'
 
     cout_id       = fields.Many2one('is.cout', 'Coût article', required=True, ondelete='cascade')
     composant     = fields.Char('Composant')

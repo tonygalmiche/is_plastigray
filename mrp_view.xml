@@ -391,6 +391,7 @@
                         <group string="Costing Information">
                             <field name="product_id" on_change="on_change_product_cost(product_id)"  invisible="1"/>
                             <field name="costs_hour"/>
+                            <field name="is_cout_pk"/>
                             <field name="costs_hour_account_id" groups="analytic.group_analytic_accounting"  invisible="1"/>
                             <field name="costs_cycle"/>
                             <field name="costs_cycle_account_id" groups="analytic.group_analytic_accounting"  invisible="1"/>

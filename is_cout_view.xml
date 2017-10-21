@@ -119,18 +119,17 @@
 
 
 
-
-
-
         <!-- Fiche détaillée du cout article -->
         <record model="ir.ui.view" id="is_cout_form_view">
             <field name="name">is_cout_form_view</field>
             <field name="model">is.cout</field>
+            <field name="priority">1</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form>  
                     <header>
-                        <button name="action_calcul_cout"    type="object" string="Calcul du coût de cet article" />
+                        <button name="action_calcul_cout"    type="object" string="Calcul du coût" />
+                        <button name="action_calcul_cout_pk" type="object" string="Calcul du coût Plasti-ka" />
                     </header>
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
@@ -140,7 +139,6 @@
                                 <field name="type_article"/> 
                                 <field name="is_category_id"/> 
                                 <field name="is_gestionnaire_id"/> 
-                                <!--<field name="is_mold_id"/>-->
                                 <field name="is_mold_dossierf"/> 
                                 <field name="partner_id"/> 
                                 <field name="uom_id"/> 
@@ -155,7 +153,6 @@
                                 <field name="prix_force_commentaire"  attrs="{'invisible': [('prix_force', '=', 0)], 'required':  [('prix_force', '!=', 0)] }"/> 
                                 <field name="prix_sous_traitance"/> 
                             </group>
-
                             <group string="Coût standard">
                                 <field name="cout_std_matiere"/> 
                                 <field name="cout_std_condition"     attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
@@ -164,11 +161,7 @@
                                 <field name="cout_std_st"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_total"         attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1"/> 
                                 <field name="cout_std_prix_vente"    attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <!--<field name="cout_std_preserie"      attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <field name="cout_std_amtmoule"      attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <field name="cout_prix_vente"        attrs="{'invisible': [('type_article', '=', 'A')] }"/>-->
                             </group>
-
                             <group string="Coût actualisé">
                                 <field name="cout_act_matiere"/> 
                                 <field name="cout_act_condition"  attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
@@ -179,7 +172,6 @@
                                 <field name="cout_act_prix_vente" attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                             </group>
                         </group>
-
                         <group>
                             <group string="Tarif commercial" attrs="{'invisible': [('type_article', '=', 'A')] }">
                                 <field name="amortissement_moule"/> 
@@ -187,7 +179,6 @@
                                 <field name="prix_vente"         /> 
                             </group>
                         </group>
-
                         <group string="Nomenclature" attrs="{'invisible': [('type_article', '=', 'A')] }">
                             <field name="nomenclature_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
@@ -203,7 +194,6 @@
                                 </tree>
                             </field>
                         </group>
-
                         <group string="Coût machine" attrs="{'invisible': [('type_article', '=', 'A')] }">
                             <field name="gamme_ma_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
@@ -219,7 +209,6 @@
                                 </tree>
                             </field>
                         </group>
-
                         <group string="Coût main d'oeuvre" attrs="{'invisible': [('type_article', '=', 'A')] }">
                             <field name="gamme_mo_ids" nolabel="1">
                                 <tree editable="bottom"  create="true">
@@ -235,13 +224,89 @@
                                 </tree>
                             </field>
                         </group>
-
-
-
                     </sheet>
                 </form>
             </field>
         </record>
+
+
+        <!-- Fiche détaillée du cout article pour Plasti-ka -->
+        <record model="ir.ui.view" id="is_cout_pk_form_view">
+            <field name="name">is_cout_pk_form_view</field>
+            <field name="model">is.cout</field>
+            <field name="priority">2</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <header>
+                        <button name="action_calcul_cout"    type="object" string="Calcul du coût" />
+                        <button name="action_calcul_cout_pk" type="object" string="Calcul du coût Plasti-ka" />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group string="Description">
+                                <field name="name"/> 
+                                <field name="cout_calcul_id"/> 
+                                <field name="type_article"/> 
+                                <field name="is_category_id"/> 
+                                <field name="is_gestionnaire_id"/> 
+                                <field name="is_mold_dossierf"/> 
+                                <field name="partner_id"/> 
+                                <field name="uom_id"/> 
+                                <field name="lot_mini"/> 
+                                <field name="nb_err"/> 
+                            </group>
+                        </group>
+                        <group string="Coût machine Plasti-ka" attrs="{'invisible': [('type_article', '=', 'A')] }">
+                            <field name="gamme_ma_pk_ids" nolabel="1">
+                                <tree editable="bottom"  create="true">
+                                    <field name="composant" widget=""/>
+                                    <field name="sequence"/>
+                                    <field name="workcenter_id" widget="many2one_clickable"/>
+                                    <field name="quantite"/>
+                                    <field name="cout_prepa"/>
+                                    <field name="tps_prepa" widget="float_time"/>
+                                    <field name="cout_fab"/>
+                                    <field name="tps_fab"/>
+                                    <field name="cout_total"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Coût main d'oeuvre Plasti-ka" attrs="{'invisible': [('type_article', '=', 'A')] }">
+                            <field name="gamme_mo_pk_ids" nolabel="1">
+                                <tree editable="bottom"  create="true">
+                                    <field name="composant" widget=""/>
+                                    <field name="sequence"/>
+                                    <field name="workcenter_id" widget="many2one_clickable"/>
+                                    <field name="quantite"/>
+                                    <field name="cout_prepa"/>
+                                    <field name="tps_prepa" widget="float_time"/>
+                                    <field name="cout_fab"/>
+                                    <field name="tps_fab"/>
+                                    <field name="cout_total"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Nomenclature" attrs="{'invisible': [('type_article', '=', 'A')] }">
+                            <field name="nomenclature_ids" nolabel="1">
+                                <tree editable="bottom"  create="true">
+                                    <field name="composant" widget=""/>
+                                    <field name="designation"/>
+                                    <field name="unite"/>
+                                    <field name="quantite"/>
+                                    <field name="cout_mat"/>
+                                    <field name="total_mat"/>
+                                    <field name="cout_st"/>
+                                    <field name="total_st"/>
+                                    <field name="msg_err"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="is_cout_search_view" >
             <field name="name">is_cout_search_view</field>
             <field name="model">is.cout</field>
@@ -297,7 +362,6 @@
                     <field name="type_article"/>
                     <field name="is_category_id"/> 
                     <field name="is_gestionnaire_id"/> 
-                    <!--<field name="is_mold_id"/>-->
                     <field name="is_mold_dossierf"/> 
                     <field name="partner_id"/> 
                     <group expand="0" string="Regrouper par...">
