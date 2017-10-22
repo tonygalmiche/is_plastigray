@@ -94,7 +94,7 @@ class is_cas_emploi_line(models.TransientModel):
     niveau             = fields.Char('Niveau')
     composant_id       = fields.Many2one('product.product','Composant')
     ligne              = fields.Integer('Ligne')
-    quantite           = fields.Float('Quantité')
+    quantite           = fields.Float('Quantité', digits=(14,6))
     mrp_bom_id         = fields.Many2one('mrp.bom','Composé')
     segment_id         = fields.Many2one('is.product.segment','Segment')
     is_categery_id     = fields.Many2one('is.category','Catégorie')

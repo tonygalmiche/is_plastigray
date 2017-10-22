@@ -327,14 +327,15 @@ class is_cout_calcul(models.Model):
         cout_mat = 0
         cout_st  = 0
         msg_err=''
-        if type_article=='A':
-            cout_mat = prix_calcule
-            if prix_calcule==0:
-                msg_err=u'Err Coût Mat'
-        if type_article=='ST':
-            cout_st  = prix_calcule
-            if prix_calcule==0:
-                msg_err=u'Err Coût ST'
+        if product.is_category_id.name!='80':
+            if type_article=='A':
+                cout_mat = prix_calcule
+                if prix_calcule==0:
+                    msg_err=u'Err Coût Mat'
+            if type_article=='ST':
+                cout_st  = prix_calcule
+                if prix_calcule==0:
+                    msg_err=u'Err Coût ST'
 
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
         self.detail_nomenclature.append({
