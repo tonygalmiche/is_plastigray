@@ -72,13 +72,19 @@ class is_consigne_journaliere_inj(models.Model):
         if mpwl_id:
             mpwl = self.env['is.mrp.production.workcenter.line'].browse(mpwl_id)
             mod=0
+            matieres=[]
+            for line in mpwl.name.product_lines:
+                code=line.product_id.is_code
+                if code[:1]=='5':
+                    if code not in matieres:
+                        matieres.append(code)
+            matieres=u', '.join(matieres)
             for line in mpwl.name.routing_id.workcenter_lines:
                 if line.is_nb_mod:
                     mod=line.is_nb_mod
-            matiere=mpwl.name.product_id.is_couleur
             values['mod1']     = mod
             values['moule1']   = mpwl.name.product_id.is_mold_dossierf
-            values['matiere1'] = matiere
+            values['matiere1'] = matieres
         return {'value': values}
 
     @api.multi
@@ -87,13 +93,20 @@ class is_consigne_journaliere_inj(models.Model):
         if mpwl_id:
             mpwl = self.env['is.mrp.production.workcenter.line'].browse(mpwl_id)
             mod=0
+            matieres=[]
+            for line in mpwl.name.product_lines:
+                code=line.product_id.is_code
+                if code[:1]=='5':
+                    if code not in matieres:
+                        matieres.append(code)
+            matieres=u', '.join(matieres)
             for line in mpwl.name.routing_id.workcenter_lines:
                 if line.is_nb_mod:
                     mod=line.is_nb_mod
             matiere=mpwl.name.product_id.is_couleur
             values['mod2']     = mod
             values['moule2']   = mpwl.name.product_id.is_mold_dossierf
-            values['matiere2'] = matiere
+            values['matiere2'] = matieres
         return {'value': values}
 
 
