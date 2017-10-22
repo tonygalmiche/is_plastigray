@@ -25,19 +25,37 @@
                                     <field name="injection_ids" nolabel="1" >
                                         <tree editable="bottom">
                                              <field name="sequence"/>
-                                             <field name="presse"/>
-                                             <field name="numof1_id" on_change="numof1_id_change(numof1_id)" widget="many2one_clickable"/>
-                                             <field name="mod1"/>
-                                             <field name="operateur"/>
-                                             <field name="moule1"/>
-                                             <field name="matiere1"/>
-                                             <field name="tps_arret"/>
-                                             <field name="heure"/>
-                                             <field name="numof2_id" on_change="numof2_id_change(numof2_id)" widget="many2one_clickable"/>
-                                             <field name="mod2"/>
-                                             <field name="moule2"/>
-                                             <field name="matiere2"/>
-                                             <field name="remarque"/>
+                                             <field name="presse_id"/>
+                                             <field 
+                                                name="of1_id" 
+                                                on_change="of1_id_change(of1_id)" 
+                                                domain="[
+                                                    ('workcenter_id','=',presse_id),
+                                                    ('state','=','in_production'),
+                                                    ('is_date_planning','!=',False)
+                                                ]"
+                                                widget="many2one_clickable"
+                                            />
+                                            <field name="mod1"/>
+                                            <field name="operateur"/>
+                                            <field name="moule1"/>
+                                            <field name="matiere1"/>
+                                            <field name="tps_arret"/>
+                                            <field name="heure"/>
+                                            <field 
+                                                name="of2_id" 
+                                                on_change="of2_id_change(of2_id)" 
+                                                domain="[
+                                                    ('workcenter_id','=',presse_id),
+                                                    ('state','=','in_production'),
+                                                    ('is_date_planning','!=',False)
+                                                ]"
+                                                widget="many2one_clickable"
+                                            />
+                                            <field name="mod2"/>
+                                            <field name="moule2"/>
+                                            <field name="matiere2"/>
+                                            <field name="remarque"/>
                                         </tree>
                                     </field>
                                 </group>
@@ -46,14 +64,30 @@
                                 <group>
                                     <field name="assemblage_ids" nolabel="1" >
                                         <tree editable="bottom">
-                                             <field name="sequence"/>
-                                             <field name="poste"/>
-                                             <field name="priorite"/>
-                                             <field name="mod"/>
-                                             <field name="operateur"/>
-                                             <field name="of_en_cours_id" widget="many2one_clickable"/>
-                                             <field name="of_suivant_id"  widget="many2one_clickable"/>
-                                             <field name="remarque"/>
+                                            <field name="sequence"/>
+                                            <field name="poste_id"/>
+                                            <field name="priorite"/>
+                                            <field name="mod"/>
+                                            <field name="operateur"/>
+                                            <field 
+                                                name="of1_id" 
+                                                domain="[
+                                                    ('workcenter_id','=',poste_id),
+                                                    ('state','=','in_production'),
+                                                    ('is_date_planning','!=',False)
+                                                ]"
+                                                widget="many2one_clickable"
+                                            />
+                                            <field 
+                                                name="of2_id" 
+                                                domain="[
+                                                    ('workcenter_id','=',poste_id),
+                                                    ('state','=','in_production'),
+                                                    ('is_date_planning','!=',False)
+                                                ]"
+                                                widget="many2one_clickable"
+                                            />
+                                            <field name="remarque"/>
                                         </tree>
                                     </field>
                                 </group>
