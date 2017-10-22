@@ -86,6 +86,7 @@ Module principal du projet Plastigray
         "is_piece_montabilite_view.xml",
         "is_instruction_particuliere_view.xml",
         "is_consigne_journaliere_view.xml",
+        "is_demande_transport_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

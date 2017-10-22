@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Sequence is.demande.transport --> 
+        <record id="is_demande_transport_type_seq" model="ir.sequence.type">
+            <field name="name">Demande de transport</field>
+            <field name="code">is.demande.transport</field>
+        </record>
+        <record id="is_demande_transport_seq" model="ir.sequence">
+            <field name="name">Demande de transport</field>
+            <field name="code">is.demande.transport</field>
+            <field name="prefix">T-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- is.demande.transport --> 
+        <record model="ir.ui.view" id="is_demande_transport_form_view">
+            <field name="name">is_demande_transport_form_view</field>
+            <field name="model">is.demande.transport</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="vers_traite_action"
+                            string="Vers traité"
+                            attrs="{'invisible': [('state', '=', 'traite')]}"
+                            groups="is_plastigray.is_administration_vente_group"
+                            class="oe_highlight" type="object"
+                        />
+                        <button 
+                            name="vers_en_cours_action"
+                            string="Vers en cours"
+                            attrs="{'invisible': [('state', '=', 'en_cours')]}"
+                            groups="is_plastigray.is_administration_vente_group"
+                            type="object"
+                        />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="type_demande"/> 
+                                <field name="demandeur_id"/> 
+                                <field name="date_demande"/> 
+                            </group>
+                            <group>
+                                <field name="poids_net"/> 
+                                <field name="poids_brut"/> 
+                                <field name="colisage"/>
+                                <field name="date_dispo"/> 
+                                <field name="date_liv_souhaitee"/> 
+                            </group>
+                        </group>
+                        <group string="Adresse de destinataire">
+                            <field name="dest_raison_sociale"/> 
+                            <field name="dest_adresse1"/> 
+                            <field name="dest_adresse2"/> 
+                            <field name="dest_code_postal"/> 
+                            <field name="dest_ville"/> 
+                            <field name="dest_pays"/> 
+                            <field name="contact"/>
+                        </group>
+                        <group string="Adresse d'enlèvement"   attrs="{'invisible': [('type_demande', '!=', 'enlevement')]}">
+                            <field name="enlev_raison_sociale" attrs="{'required':  [('type_demande', '=' , 'enlevement')]}"/> 
+                            <field name="enlev_adresse1"/> 
+                            <field name="enlev_adresse2"/> 
+                            <field name="enlev_code_postal"/> 
+                            <field name="enlev_ville"/> 
+                            <field name="enlev_pays"/>
+                        </group>
+                        <group>
+                            <field name="infos_diverses"/> 
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_transport_tree_view">
+            <field name="name">is_demande_transport_tree_view</field>
+            <field name="model">is.demande.transport</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="gray:state=='traite'">
+                    <field name="name"/>
+                    <field name="type_demande"/> 
+                    <field name="demandeur_id"/> 
+                    <field name="date_demande"/> 
+                    <field name="dest_raison_sociale"/> 
+                    <field name="dest_ville"/> 
+                    <field name="contact"/> 
+                    <field name="poids_brut"/> 
+                    <field name="enlev_raison_sociale"/> 
+                    <field name="enlev_ville"/> 
+                    <field name="date_dispo"/> 
+                    <field name="date_liv_souhaitee"/> 
+                    <field name="state"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_transport_search_view" >
+            <field name="name">is_demande_transport_search_view</field>
+            <field name="model">is.demande.transport</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="type_demande"/> 
+                    <field name="demandeur_id"/> 
+                    <field name="dest_raison_sociale"/> 
+                    <field name="contact"/> 
+                    <field name="enlev_raison_sociale"/> 
+                    <field name="state"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_demande_transport_action">
+            <field name="name">Demande de transport</field>
+            <field name="res_model">is.demande.transport</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+  </data>
+</openerp>

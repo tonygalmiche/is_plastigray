@@ -1707,5 +1707,30 @@
 
 
 
+
+    <!-- Droits sur la demande de transport -->
+    <record id="is_demande_transport_en_cours_rule" model="ir.rule">
+        <field name="name">Accès en modification à l'état 'En cours'</field>
+        <field name="model_id" ref="model_is_demande_transport"/>
+        <field name="domain_force">[('state','=','en_cours')]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field eval="0" name="perm_unlink"/>
+        <field eval="1" name="perm_write"/>
+        <field eval="1" name="perm_read"/>
+        <field eval="1" name="perm_create"/>
+    </record>
+    <record id="is_demande_transport_traite_rule" model="ir.rule">
+        <field name="name">Droit de lire uniquement à l'état 'Traité'</field>
+        <field name="model_id" ref="model_is_demande_transport"/>
+        <field name="domain_force">[('state','=','traite')]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field eval="0" name="perm_unlink"/>
+        <field eval="0" name="perm_write"/>
+        <field eval="1" name="perm_read"/>
+        <field eval="1" name="perm_create"/>
+    </record>
+
+
+
 </data>
 </openerp>

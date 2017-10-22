@@ -631,6 +631,27 @@
     </record>
     <menuitem id="menu_is_ventes_bon_transfert_10"  sequence="10" name="Bon de transfert" parent="menu_is_ventes_bon_transfert" action="is_bon_transfert_action" />
 
+
+    <!-- BL Manuel / Demande de transport-->
+    <record id="is_bl_manuel_demande_transport_menu" model="ir.ui.menu">
+        <field name="name">BL Manuel / Transport</field>
+        <field name="sequence">37</field>
+        <field name="parent_id" eval="ref('menu_is_ventes')"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_employes_hors_production_group'),
+        ])]"/>
+    </record>
+    <record id="is_demande_transport_menu" model="ir.ui.menu">
+        <field name="name">Demande de transport</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_bl_manuel_demande_transport_menu')"/>
+        <field name="action"    ref="is_demande_transport_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_employes_hors_production_group'),
+        ])]"/>
+    </record>
+
+
     <menuitem id="menu_is_ventes_liv"      sequence="40" name="Livraisons"            parent="menu_is_ventes" groups="is_employes_hors_production_group" />
     <record id="is_livraisons_a_traiter_menu" model="ir.ui.menu" >
         <field name="name">Livraisons à traiter</field>

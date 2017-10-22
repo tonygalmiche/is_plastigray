@@ -161,6 +161,7 @@ access_is_consigne_journaliere_ass,access_is_consigne_journaliere_ass,model_is_c
 access_is_cout_gamme_ma_pk,access_is_cout_gamme_ma_pk,model_is_cout_gamme_ma_pk,base.group_user,1,1,1,1
 access_is_cout_gamme_mo_pk,access_is_cout_gamme_mo_pk,model_is_cout_gamme_mo_pk,base.group_user,1,1,1,1
 access_is_mrp_production_workcenter_line,access_is_mrp_production_workcenter_line,model_is_mrp_production_workcenter_line,base.group_user,1,0,0,0
+access_is_demande_transport,access_is_demande_transport,model_is_demande_transport,base.group_user,1,1,1,0
 
 
 

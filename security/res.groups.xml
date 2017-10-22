@@ -153,7 +153,11 @@
     </record>
 
 
-
+    <record model="res.groups" id="is_administration_vente_group" >
+        <field name="name">ADV - Expéditions</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
 
 
 
