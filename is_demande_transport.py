@@ -18,7 +18,7 @@ class is_demande_transport(models.Model):
     dest_adresse2        = fields.Char("Ligne adresse 2")
     dest_code_postal     = fields.Char("Code postal")
     dest_ville           = fields.Char("Ville")
-    dest_pays            = fields.Char("Pays")
+    dest_pays_id         = fields.Many2one('res.country', 'Pays')
     contact              = fields.Char("Contact")
     poids_net            = fields.Float("Poids net")
     poids_brut           = fields.Float("Poids brut")
@@ -28,11 +28,12 @@ class is_demande_transport(models.Model):
     enlev_adresse2       = fields.Char("Ligne adresse 2")
     enlev_code_postal    = fields.Char("Code postal")
     enlev_ville          = fields.Char("Ville")
-    enlev_pays           = fields.Char("Pays")
-    date_dispo           = fields.Datetime("Date-heure de disponibilité", required=True)
-    date_liv_souhaitee   = fields.Datetime("Date-heure de livraison souhaitée", required=True)
+    enlev_pays_id        = fields.Many2one('res.country', 'Pays')
+    date_dispo           = fields.Datetime("Date-heure de disponibilité", required=False)
+    date_liv_souhaitee   = fields.Datetime("Date-heure de livraison souhaitée", required=False)
     infos_diverses       = fields.Text("Informations diverses ")
     state                = fields.Selection([('en_cours', 'En cours'),('traite', 'Traité')], "Etat")
+    bl_id                = fields.Many2one('is.bl.manuel', 'BL manuel', readonly=True)
 
 
     _defaults = {

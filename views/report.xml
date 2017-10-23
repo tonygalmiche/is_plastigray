@@ -291,5 +291,19 @@
 
 
 
+        <report 
+            id="report_is_bl_manuels"
+            model="is.bl.manuel"
+            string="BL manuel"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_is_bl_manuel"
+            file="is_plastigray.report_is_bl_manuel"
+        />
+        <record id="report_is_bl_manuels" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.is_bl_manuel_paperformat"/>
+        </record>
+
+
+
     </data>
 </openerp>

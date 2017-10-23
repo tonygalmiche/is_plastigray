@@ -162,7 +162,8 @@ access_is_cout_gamme_ma_pk,access_is_cout_gamme_ma_pk,model_is_cout_gamme_ma_pk,
 access_is_cout_gamme_mo_pk,access_is_cout_gamme_mo_pk,model_is_cout_gamme_mo_pk,base.group_user,1,1,1,1
 access_is_mrp_production_workcenter_line,access_is_mrp_production_workcenter_line,model_is_mrp_production_workcenter_line,base.group_user,1,0,0,0
 access_is_demande_transport,access_is_demande_transport,model_is_demande_transport,base.group_user,1,1,1,0
-
+access_is_bl_manuel,access_is_bl_manuel,model_is_bl_manuel,base.group_user,1,1,1,0
+access_is_bl_manuel_line,access_is_bl_manuel_line,model_is_bl_manuel_line,base.group_user,1,1,1,1
 
 
 

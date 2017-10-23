@@ -64,7 +64,7 @@
                             <field name="dest_adresse2"/> 
                             <field name="dest_code_postal"/> 
                             <field name="dest_ville"/> 
-                            <field name="dest_pays"/> 
+                            <field name="dest_pays_id"/> 
                             <field name="contact"/>
                         </group>
                         <group string="Adresse d'enlèvement"   attrs="{'invisible': [('type_demande', '!=', 'enlevement')]}">
@@ -73,10 +73,14 @@
                             <field name="enlev_adresse2"/> 
                             <field name="enlev_code_postal"/> 
                             <field name="enlev_ville"/> 
-                            <field name="enlev_pays"/>
+                            <field name="enlev_pays_id"/>
                         </group>
                         <group>
                             <field name="infos_diverses"/> 
+                            <field 
+                                name="bl_id" 
+                                attrs="{'invisible': [('bl_id', '=', False)]}"
+                            />
                         </group>
                     </sheet>
                 </form>
@@ -100,6 +104,7 @@
                     <field name="enlev_ville"/> 
                     <field name="date_dispo"/> 
                     <field name="date_liv_souhaitee"/> 
+                    <field name="bl_id" widget="many2one_clickable"/> 
                     <field name="state"/> 
                 </tree>
             </field>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Sequence is.bl.manuel --> 
+        <record id="is_bl_manuel_type_seq" model="ir.sequence.type">
+            <field name="name">BL manuel</field>
+            <field name="code">is.bl.manuel</field>
+        </record>
+        <record id="is_bl_manuel_seq" model="ir.sequence">
+            <field name="name">BL manuel</field>
+            <field name="code">is.bl.manuel</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- is.bl.manuel --> 
+        <record model="ir.ui.view" id="is_bl_manuel_form_view">
+            <field name="name">is_bl_manuel_form_view</field>
+            <field name="model">is.bl.manuel</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="vers_brouillon_action"
+                            string="Vers brouillon"
+                            attrs="{'invisible': [('state', '!=', 'a_traiter')]}"
+                            type="object"
+                        />
+                        <button 
+                            name="vers_a_traiter_action"
+                            string="Vers à traiter"
+                            attrs="{'invisible': [('state', '!=', 'brouillon')]}"
+                            class="oe_highlight" type="object"
+                        />
+                        <button 
+                            name="vers_traite_action"
+                            string="Vers traité"
+                            attrs="{'invisible': [('state', '!=', 'a_traiter')]}"
+                            type="object"
+                        />
+
+                        <button 
+                            name="creation_demande_transport_action"
+                            string="Créer la demande de transport"
+                            attrs="{'invisible': ['|',('state', '!=', 'a_traiter'),('demande_transport_id', '!=', False)]}"
+                            type="object"
+                        />
+
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group string="Identification">
+                                <field name="name"/>
+                                <field name="emetteur_id"/>
+                                <field name="initiales"/> 
+                                <field name="date_bl"/>
+                                <field name="incoterm_id"/> 
+                                <field name="colisage"/>
+                                <field name="motif_expedition"/>
+                            </group>
+                            <group string="Adresse de destinataire">
+                                <field 
+                                    name="destinataire_id" 
+                                    on_change="destinataire_id_change(destinataire_id)" 
+                                />
+                                <field name="raison_sociale"/> 
+                                <field name="adresse1"/> 
+                                <field name="adresse2"/> 
+                                <field name="code_postal"/> 
+                                <field name="ville"/> 
+                                <field name="pays_id"/> 
+                                <field name="contact"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="sequence" />
+                                    <field name="num_commande" />
+                                    <field 
+                                        name="product_id" 
+                                        on_change="product_id_change(product_id)" 
+                                    />
+                                    <field name="description" />
+                                    <field name="ref_client" />
+                                    <field name="origine_id" />
+                                    <field name="nomenclature_douaniere" />
+                                    <field 
+                                        name="qt_livree" sum="Total" 
+                                        on_change="qt_change(product_id,qt_livree,qt_par_colis)" 
+                                    />
+                                    <field 
+                                        name="qt_par_colis" 
+                                        on_change="qt_change(product_id,qt_livree,qt_par_colis)" 
+                                    />
+                                    <field name="nb_colis"   sum="Total"/>
+                                    <field name="poids_net"  sum="Total"/>
+                                    <field name="poids_brut" sum="Total"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="transporteur_id" attrs="{'invisible': [('state', '=', 'brouillon')]}"/>
+                            <field 
+                                name="demande_transport_id" 
+                                attrs="{'invisible': [('demande_transport_id', '=', False)]}"
+                            />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_bl_manuel_tree_view">
+            <field name="name">is_bl_manuel_tree_view</field>
+            <field name="model">is.bl.manuel</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="gray:state=='traite';red:state=='a_traiter'">
+                    <field name="name"/>
+                    <field name="emetteur_id"/> 
+                    <field name="date_bl"/> 
+                    <field name="incoterm_id"/> 
+                    <field name="transporteur_id"/> 
+                    <field name="colisage"/> 
+                    <field name="motif_expedition"/>
+                    <field name="raison_sociale"/> 
+                    <field name="ville"/>
+                    <field name="demande_transport_id" widget="many2one_clickable"/> 
+                    <field name="state"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_bl_manuel_search_view" >
+            <field name="name">is_bl_manuel_search_view</field>
+            <field name="model">is.bl.manuel</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="emetteur_id"/> 
+                    <field name="transporteur_id"/> 
+                    <field name="motif_expedition"/>
+                    <field name="raison_sociale"/> 
+                    <field name="ville"/> 
+                    <field name="state"/> 
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_bl_manuel_action">
+            <field name="name">BL manuel</field>
+            <field name="res_model">is.bl.manuel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+  </data>
+</openerp>
