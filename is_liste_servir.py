@@ -174,7 +174,8 @@ class is_liste_servir(models.Model):
             message=""
             r=self.env['is.liste.servir.message'].search([['name', '=', partner_id]])
             for l in r:
-                message=message+l.message+'\n'
+                if l.message:
+                    message=message+l.message+'\n'
 
             partner=self.env['res.partner'].browse(partner_id)
             if partner.is_certificat_matiere:
