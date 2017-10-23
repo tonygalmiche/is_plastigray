@@ -13,7 +13,7 @@ class is_cde_ferme_cadencee(models.Model):
     partner_id    = fields.Many2one('res.partner'    , 'Fournisseur', required=True)
     is_livre_a_id = fields.Many2one('res.partner', 'Livrer à', related='partner_id.is_livre_a_id')
     product_id    = fields.Many2one('product.product', u"Article"   , required=True)
-
+    demandeur_id  = fields.Many2one('res.users', 'Demandeur', readonly=True)
     order_ids     = fields.One2many('is.cde.ferme.cadencee.order', 'cfc_id', u"Commandes")
 
     @api.model
@@ -57,8 +57,9 @@ class is_cde_ferme_cadencee(models.Model):
 
     @api.multi
     def actualiser_commandes(self):
-        cr = self._cr
+        cr , uid, context = self.env.args
         for obj in self:
+            obj.demandeur_id=uid
             for order in obj.order_ids:
                 #** Recherche du dernier numéro de BL **************************
                 SQL="""

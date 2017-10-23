@@ -151,6 +151,7 @@ class is_cde_ouverte_fournisseur(models.Model):
     commentaire          = fields.Text("Commentaire")
     product_ids          = fields.One2many('is.cde.ouverte.fournisseur.product', 'order_id', u"Articles")
     tarif_ids            = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
+    demandeur_id         = fields.Many2one('res.users', 'Demandeur', readonly=True)
     historique_ids       = fields.One2many('is.cde.ouverte.fournisseur.histo'  , 'order_id', u"Historique")
 
 
@@ -549,8 +550,9 @@ class is_cde_ouverte_fournisseur(models.Model):
 
     @api.multi
     def integrer_commandes(self):
-        cr = self._cr
+        cr , uid, context = self.env.args
         for obj in self:
+            obj.demandeur_id=uid
             self.set_histo(obj.id, u'Intégration des commandes et SA')
             for product in obj.product_ids:
                 product.imprimer=False

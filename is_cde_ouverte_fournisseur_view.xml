@@ -116,6 +116,7 @@
                                 <field name="sans_commande"  /> 
                             </group>
                             <group>
+                                <field name="demandeur_id"/> 
                                 <field name="attente_confirmation"/> 
                                 <field name="is_livre_a_id"  /> 
                             </group>

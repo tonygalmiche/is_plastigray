@@ -40,7 +40,8 @@
                                 <field name="product_id" domain="[('purchase_ok' ,'=',True)]"/> 
                             </group>
                             <group>
-                                <field name="is_livre_a_id"  /> 
+                                <field name="demandeur_id"/> 
+                                <field name="is_livre_a_id"/> 
                             </group>
                         </group>
                         <group>
