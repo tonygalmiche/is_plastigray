@@ -31,7 +31,7 @@ class is_facturation_fournisseur(models.Model):
 
     def _date():
         now  = datetime.date.today()               # Date du jour
-        date = now + datetime.timedelta(days=-1)   # Date -1
+        date = now + datetime.timedelta(days=0)    # Date +0
         return date.strftime('%Y-%m-%d')           # Formatage
 
     _defaults = {
