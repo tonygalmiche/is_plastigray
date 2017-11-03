@@ -593,6 +593,7 @@ class is_cout_calcul_actualise(models.Model):
 class is_cout(models.Model):
     _name='is.cout'
     _order='name'
+    _sql_constraints = [('name_uniq', 'unique(name)', u"Ce code existe déja !")]
 
     name                   = fields.Many2one('product.product', 'Article', required=True, readonly=False, select=True)
     code_pg                = fields.Char('Code PG'    , related='name.product_tmpl_id.is_code', readonly=True)
