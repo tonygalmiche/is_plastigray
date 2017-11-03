@@ -36,7 +36,7 @@ class is_bl_manuel(models.Model):
     transporteur_id      = fields.Many2one('res.partner', 'Transporteur', domain=[('is_company','=',True),('supplier','=',True)])
     demande_transport_id = fields.Many2one('is.demande.transport', 'Demande de transport', readonly=True)
     colisage             = fields.Char("Colisage (dimensions)")
-    state                = fields.Selection([('brouillon', 'Brouillon'),('a_traiter', 'A traiter'),('traite', 'Traité')], "Etat")
+    state                = fields.Selection([('brouillon', 'Brouillon'),('termine', 'Terminé')], "Etat")
     line_ids             = fields.One2many('is.bl.manuel.line'  , 'bl_id', u"Lignes")
 
     _defaults = {
@@ -77,15 +77,9 @@ class is_bl_manuel(models.Model):
 
 
     @api.multi
-    def vers_a_traiter_action(self):
+    def vers_termine_action(self):
         for obj in self:
-            obj.state="a_traiter"
-
-
-    @api.multi
-    def vers_traite_action(self):
-        for obj in self:
-            obj.sudo().state="traite"
+            obj.state="termine"
 
 
     @api.multi

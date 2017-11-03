@@ -27,18 +27,24 @@
                 <form string="Form">
                     <header>
                         <button 
-                            name="vers_traite_action"
-                            string="Vers traité"
-                            attrs="{'invisible': [('state', '=', 'traite')]}"
-                            groups="is_plastigray.is_administration_vente_group"
+                            name="vers_a_traiter_action"
+                            string="Vers à traiter"
+                            attrs="{'invisible': [('state', '!=', 'brouillon')]}"
                             class="oe_highlight" type="object"
                         />
                         <button 
-                            name="vers_en_cours_action"
-                            string="Vers en cours"
-                            attrs="{'invisible': [('state', '=', 'en_cours')]}"
+                            name="vers_brouillon_action"
+                            string="Vers brouillon"
+                            attrs="{'invisible': [('state', '=', 'brouillon')]}"
                             groups="is_plastigray.is_administration_vente_group"
                             type="object"
+                        />
+                        <button 
+                            name="vers_termine_action"
+                            string="Vers terminé"
+                            attrs="{'invisible': [('state', '=', 'termine')]}"
+                            groups="is_plastigray.is_administration_vente_group"
+                            class="oe_highlight" type="object"
                         />
                         <field name="state" widget="statusbar"/>
                     </header>

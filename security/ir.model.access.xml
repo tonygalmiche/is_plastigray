@@ -1709,20 +1709,30 @@
 
 
     <!-- Droits sur la demande de transport -->
-    <record id="is_demande_transport_en_cours_rule" model="ir.rule">
-        <field name="name">Accès en modification à l'état 'En cours'</field>
+    <record id="is_demande_transport_brouillon_rule" model="ir.rule">
+        <field name="name">Accès en modification à l'état 'Brouillon'</field>
         <field name="model_id" ref="model_is_demande_transport"/>
-        <field name="domain_force">[('state','=','en_cours')]</field>
+        <field name="domain_force">[('state','=','brouillon')]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
         <field eval="0" name="perm_unlink"/>
         <field eval="1" name="perm_write"/>
         <field eval="1" name="perm_read"/>
         <field eval="1" name="perm_create"/>
     </record>
-    <record id="is_demande_transport_traite_rule" model="ir.rule">
-        <field name="name">Droit de lire uniquement à l'état 'Traité'</field>
+    <record id="is_demande_transport_a_traiter_rule" model="ir.rule">
+        <field name="name">Accès en modification à l'état 'A traiter'</field>
         <field name="model_id" ref="model_is_demande_transport"/>
-        <field name="domain_force">[('state','=','traite')]</field>
+        <field name="domain_force">[('state','=','a_traiter')]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field eval="0" name="perm_unlink"/>
+        <field eval="1" name="perm_write"/>
+        <field eval="1" name="perm_read"/>
+        <field eval="1" name="perm_create"/>
+    </record>
+    <record id="is_demande_transport_termine_rule" model="ir.rule">
+        <field name="name">Droit de lire uniquement à l'état 'Terminé'</field>
+        <field name="model_id" ref="model_is_demande_transport"/>
+        <field name="domain_force">[('state','=','termine')]</field>
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
         <field eval="0" name="perm_unlink"/>
         <field eval="0" name="perm_write"/>

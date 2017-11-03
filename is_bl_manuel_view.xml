@@ -29,26 +29,19 @@
                         <button 
                             name="vers_brouillon_action"
                             string="Vers brouillon"
-                            attrs="{'invisible': [('state', '!=', 'a_traiter')]}"
+                            attrs="{'invisible': [('state', '!=', 'termine')]}"
                             type="object"
                         />
                         <button 
-                            name="vers_a_traiter_action"
-                            string="Vers à traiter"
+                            name="vers_termine_action"
+                            string="Vers terminé"
                             attrs="{'invisible': [('state', '!=', 'brouillon')]}"
                             class="oe_highlight" type="object"
                         />
                         <button 
-                            name="vers_traite_action"
-                            string="Vers traité"
-                            attrs="{'invisible': [('state', '!=', 'a_traiter')]}"
-                            type="object"
-                        />
-
-                        <button 
                             name="creation_demande_transport_action"
                             string="Créer la demande de transport"
-                            attrs="{'invisible': ['|',('state', '!=', 'a_traiter'),('demande_transport_id', '!=', False)]}"
+                            attrs="{'invisible': ['|',('state', '!=', 'termine'),('demande_transport_id', '!=', False)]}"
                             type="object"
                         />
 

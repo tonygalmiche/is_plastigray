@@ -32,7 +32,7 @@ class is_demande_transport(models.Model):
     date_dispo           = fields.Datetime("Date-heure de disponibilité", required=False)
     date_liv_souhaitee   = fields.Datetime("Date-heure de livraison souhaitée", required=False)
     infos_diverses       = fields.Text("Informations diverses ")
-    state                = fields.Selection([('en_cours', 'En cours'),('traite', 'Traité')], "Etat")
+    state                = fields.Selection([('brouillon', 'Brouillon'),('a_traiter', 'A traiter'),('termine', 'Terminé')], "Etat")
     bl_id                = fields.Many2one('is.bl.manuel', 'BL manuel', readonly=True)
 
 
@@ -40,7 +40,7 @@ class is_demande_transport(models.Model):
         'type_demande': 'transport',
         'date_demande': lambda *a: fields.datetime.now(),
         'demandeur_id': lambda obj, cr, uid, context: uid,
-        'state'       : 'en_cours',
+        'state'       : 'brouillon',
     }
 
 
@@ -56,16 +56,19 @@ class is_demande_transport(models.Model):
 
 
     @api.multi
-    def vers_traite_action(self):
+    def vers_a_traiter_action(self):
         for obj in self:
-            obj.state="traite"
-
+            obj.state="a_traiter"
 
     @api.multi
-    def vers_en_cours_action(self):
+    def vers_brouillon_action(self):
         for obj in self:
-            obj.sudo().state="en_cours"
+            obj.sudo().state="brouillon"
 
+    @api.multi
+    def vers_termine_action(self):
+        for obj in self:
+            obj.state="termine"
 
 
 
