@@ -359,7 +359,7 @@ class is_cout_calcul(models.Model):
 
             #** Recherche de la gamme ******************************************
             SQL="""
-                select mb.routing_id
+                select mb.routing_id, mb.is_gamme_generique_id
                 from mrp_bom mb inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
                 where pp.id="""+str(product.id)+ """ 
                       and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
@@ -372,7 +372,6 @@ class is_cout_calcul(models.Model):
                 if routing_id:
                     routing = self.env['mrp.routing'].browse(routing_id)
                     for line in routing.workcenter_lines:
-
                         cout_total=quantite_unitaire*line.workcenter_id.costs_hour*round(line.is_nb_secondes/3600,4)
                         vals={
                             'composant'     : '----------'[:niveau]+product.is_code,
@@ -390,7 +389,11 @@ class is_cout_calcul(models.Model):
                         else:
                             self.detail_gamme_mo.append(vals)
 
-                        #** Cout Plasti-ka *************************************
+                #** Cout Plasti-ka *********************************************
+                routing_id = row2[1]
+                if routing_id:
+                    routing = self.env['mrp.routing'].browse(routing_id)
+                    for line in routing.workcenter_lines:
                         cout_total=quantite_unitaire*line.workcenter_id.is_cout_pk*round(line.is_nb_secondes/3600,4)
                         vals={
                             'composant'     : '----------'[:niveau]+product.is_code,
@@ -407,7 +410,7 @@ class is_cout_calcul(models.Model):
                             self.detail_gamme_ma_pk.append(vals)
                         else:
                             self.detail_gamme_mo_pk.append(vals)
-                        #*******************************************************
+                #***************************************************************
             #*******************************************************************
 
             #** Composants de la nomenclature **********************************
