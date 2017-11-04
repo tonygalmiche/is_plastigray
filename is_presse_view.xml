@@ -260,47 +260,48 @@
                     <field name="energie" invisible="context.get('caracteristigues',True)"/>
                     <field name="volume_tremie" invisible="context.get('caracteristigues',True)"/>
                     <field name="volume_alimentateur" invisible="context.get('caracteristigues',True)"/>
-                       <field name="dimension_col_h" invisible="context.get('capacite_moule',True)"/>
-                       <field name="diametre_colonne" invisible="context.get('capacite_moule',True)"/>
-                       <field name="faux_plateau" invisible="context.get('capacite_moule',True)"/>
-                       <field name="epaisseur_moule_mini" invisible="context.get('capacite_moule',True)"/>
-                       <field name="dimension_plateau_h" invisible="context.get('capacite_moule',True)"/>
-                       <field name="dimension_hors_tout_haut" invisible="context.get('capacite_moule',True)"/>
-                       <field name="dimension_col_v" invisible="context.get('capacite_moule',True)"/>
-                       <field name="epaisseur_moule" invisible="context.get('capacite_moule',True)"/>
-                       <field name="epaisseur_faux_plateau" invisible="context.get('capacite_moule',True)"/>
-                       <field name="epaisseur_moule_maxi" invisible="context.get('capacite_moule',True)"/>
-                       <field name="dimension_plateau_v" invisible="context.get('capacite_moule',True)"/>
-                       <field name="dimension_hors_tout_bas" invisible="context.get('capacite_moule',True)"/>
-                       <field name="coefficient_vis" invisible="context.get('capacite_injection',True)"/>
-                       <field name="type_clapet" invisible="context.get('capacite_injection',True)"/>
-                       <field name="presse_matiere" invisible="context.get('capacite_injection',True)"/>
-                       <field name="diametre_vis" invisible="context.get('capacite_injection',True)"/>
-                       <field name="volume_injectable" invisible="context.get('capacite_injection',True)"/>
+                    <field name="dimension_col_h" invisible="context.get('capacite_moule',True)"/>
+                    <field name="diametre_colonne" invisible="context.get('capacite_moule',True)"/>
+                    <field name="faux_plateau" invisible="context.get('capacite_moule',True)"/>
+                    <field name="epaisseur_moule_mini" invisible="context.get('capacite_moule',True)"/>
+                    <field name="dimension_plateau_h" invisible="context.get('capacite_moule',True)"/>
+                    <field name="dimension_hors_tout_haut" invisible="context.get('capacite_moule',True)"/>
+                    <field name="dimension_col_v" invisible="context.get('capacite_moule',True)"/>
+                    <field name="epaisseur_moule" invisible="context.get('capacite_moule',True)"/>
+                    <field name="epaisseur_faux_plateau" invisible="context.get('capacite_moule',True)"/>
+                    <field name="epaisseur_moule_maxi" invisible="context.get('capacite_moule',True)"/>
+                    <field name="dimension_plateau_v" invisible="context.get('capacite_moule',True)"/>
+                    <field name="dimension_hors_tout_bas" invisible="context.get('capacite_moule',True)"/>
+                    <field name="coefficient_vis" invisible="context.get('capacite_injection',True)"/>
+                    <field name="type_clapet" invisible="context.get('capacite_injection',True)"/>
+                    <field name="presse_matiere" invisible="context.get('capacite_injection',True)"/>
+                    <field name="diametre_vis" invisible="context.get('capacite_injection',True)"/>
+                    <field name="volume_injectable" invisible="context.get('capacite_injection',True)"/>
                     <field name="course_ejection" invisible="context.get('course',True)"/>
                     <field name="course_ouverture" invisible="context.get('course',True)"/>
                     <field name="diametre_centrage_moule" invisible="context.get('centrage',True)"/>
                     <field name="diametre_centrage_presse" invisible="context.get('centrage',True)"/>
                     <field name="hauteur_porte_sol" invisible="context.get('hauteur',True)"/>
-                       <field name="bridage_rapide" invisible="context.get('bridage',True)"/>
-                       <field name="pas_bridage" invisible="context.get('bridage',True)"/>
-                       <field name="diametre_bridage" invisible="context.get('bridage',True)"/>
-                       <field name="type_huile_hydraulique" invisible="context.get('huile',True)"/>
-                       <field name="volume_reservoir" invisible="context.get('huile',True)"/>
-                       <field name="longueur" invisible="context.get('autres',True)"/>
-                       <field name="largeur" invisible="context.get('autres',True)"/>
-                       <field name="hauteur" invisible="context.get('autres',True)"/>
-                       <field name="type_huile_graissage" invisible="context.get('autres',True)"/>
-                       <field name="nombre_noyau" invisible="context.get('autres',True)"/>
-                       <field name="nb_noyau_pf" invisible="context.get('autres',True)"/>
-                       <field name="nombre_circuit_haut" invisible="context.get('autres',True)"/>
-                       <field name="zone_chauffe" invisible="context.get('autres',True)"/>
-                       <field name="puissance_electrique" invisible="context.get('autres',True)"/>
-                       <field name="puissance_electrique_chauffe" invisible="context.get('autres',True)"/>
-                       <field name="compensation_cosinus" invisible="context.get('autres',True)"/>
-                       <field name="nb_noyau_pm" invisible="context.get('autres',True)"/>
-                       <field name="diametre_passage_buse" invisible="context.get('autres',True)"/>
-                       <field name="poids" invisible="context.get('autres',True)"/>
+                    <field name="bridage_rapide" invisible="context.get('bridage',True)"/>
+                    <field name="pas_bridage" invisible="context.get('bridage',True)"/>
+                    <field name="diametre_bridage" invisible="context.get('bridage',True)"/>
+                    <field name="type_huile_hydraulique" invisible="context.get('huile',True)"/>
+                    <field name="volume_reservoir" invisible="context.get('huile',True)"/>
+                    <field name="longueur" invisible="context.get('autres',True)"/>
+                    <field name="largeur" invisible="context.get('autres',True)"/>
+                    <field name="hauteur" invisible="context.get('autres',True)"/>
+                    <field name="type_huile_graissage" invisible="context.get('autres',True)"/>
+                    <field name="nombre_noyau" invisible="context.get('autres',True)"/>
+                    <field name="nb_noyau_pf" invisible="context.get('autres',True)"/>
+                    <field name="nombre_circuit_haut" invisible="context.get('autres',True)"/>
+                    <field name="zone_chauffe" invisible="context.get('autres',True)"/>
+                    <field name="puissance_electrique" invisible="context.get('autres',True)"/>
+                    <field name="puissance_electrique_chauffe" invisible="context.get('autres',True)"/>
+                    <field name="compensation_cosinus" invisible="context.get('autres',True)"/>
+                    <field name="nb_noyau_pm" invisible="context.get('autres',True)"/>
+                    <field name="diametre_passage_buse" invisible="context.get('autres',True)"/>
+                    <field name="poids" invisible="context.get('autres',True)"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

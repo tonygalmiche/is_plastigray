@@ -86,6 +86,7 @@
                     <field name="commande_deportee" invisible="context.get('caracteristiques_techniques',True)"/>
                     <field name="option_depression" invisible="context.get('caracteristiques_techniques',True)"/>
                     <field name="mesure_debit" invisible="context.get('caracteristiques_techniques',True)"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

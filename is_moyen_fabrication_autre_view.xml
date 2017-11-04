@@ -40,6 +40,7 @@
                     <field name="dossierf_id"/>
                     <field name="site_id"/>
                     <field name="emplacement"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

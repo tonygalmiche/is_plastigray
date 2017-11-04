@@ -89,6 +89,7 @@
                     <field name="type_equipement"/> 
                     <field name="designation"/> 
                     <field name="date_creation"/> 
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

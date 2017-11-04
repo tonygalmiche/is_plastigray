@@ -134,6 +134,7 @@
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
                     <field name="date_prochain_controle"/>
+                    <field name="is_database_origine_id"/>
                 </tree>
             </field>
         </record>

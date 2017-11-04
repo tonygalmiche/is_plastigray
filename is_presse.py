@@ -1,31 +1,100 @@
 # -*- coding: utf-8 -*-
-
-from openerp import models,fields,api
+from openerp import models,fields,api,tools,SUPERUSER_ID
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 from datetime import datetime
+from openerp.osv import osv
+import xmlrpclib
+
 
 class is_presse_classe(models.Model):
     _name='is.presse.classe'
+    _order='name'
 
     name = fields.Char(string='Classe commerciale')
 
 
 class is_presse_puissance(models.Model):
     _name='is.presse.puissance'
+    _order='name'
 
-    name = fields.Char(string='Puissance')
+    name                   = fields.Char(string='Puissance')
+    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    
+    
+    @api.multi
+    def write(self, vals):
+        try:
+            res=super(is_presse_puissance, self).write(vals)
+            for obj in self:
+                obj.copy_other_database_presse_puissance()
+            return res
+        except Exception as e:
+            raise osv.except_osv(_('Puissance!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+
+    @api.model
+    def create(self, vals):
+        try:
+            obj=super(is_presse_puissance, self).create(vals)
+            obj.copy_other_database_presse_puissance()
+            return obj
+        except Exception as e:
+            raise osv.except_osv(_('Puissance!'),
+                             _('(%s).') % str(e).decode('utf-8'))
+            
+    @api.multi
+    def copy_other_database_presse_puissance(self):
+        cr , uid, context = self.env.args
+        context = dict(context)
+        database_obj = self.env['is.database']
+        database_lines = database_obj.search([])
+        for puissance in self:
+            for database in database_lines:
+                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
+                    continue
+                DB = database.database
+                USERID = SUPERUSER_ID
+                DBLOGIN = database.login
+                USERPASS = database.password
+                DB_SERVER = database.ip_server
+                DB_PORT = database.port_server
+                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
+                presse_puissance_vals = self.get_presse_puissance_vals(puissance, DB, USERID, USERPASS, sock)
+                dest_presse_puissance_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'search', [('is_database_origine_id', '=', puissance.id)], {})
+                if not dest_presse_puissance_ids:
+                    dest_presse_puissance_ids = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'search', [('name', '=', puissance.name)], {})
+                if dest_presse_puissance_ids:
+                    sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'write', dest_presse_puissance_ids, presse_puissance_vals, {})
+                    presse_puissance_created_id = dest_presse_puissance_ids[0]
+                else:
+                    presse_puissance_created_id = sock.execute(DB, USERID, USERPASS, 'is.presse.puissance', 'create', presse_puissance_vals, {})
+        return True
+
+    @api.model
+    def get_presse_puissance_vals(self, puissance, DB, USERID, USERPASS, sock):
+        presse_puissance_vals ={
+                     'name' : tools.ustr(puissance.name),
+                     'is_database_origine_id':puissance.id,
+                     }
+        return presse_puissance_vals
+
+
+
+
 
 
 
 class is_outillage_constructeur(models.Model):
     _name='is.outillage.constructeur'
+    _order='name'
 
     name = fields.Char(string='Name')
 
 
 class is_presse(models.Model):
     _name='is.presse'
+    _order='name'
     _sql_constraints = [('name_uniq','UNIQUE(name)', u'Ce code existe déjà')]
 
     name        = fields.Char(string='Numéro de presse')

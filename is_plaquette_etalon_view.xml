@@ -135,13 +135,14 @@
             <field name="arch" type="xml">
                 <tree string="Plaquette étalon">
                     <field name="code_pg"/>
-                       <field name="designation"/>
-                       <field name="fabriquant"/>
-                       <field name="date_reception"/>
-                       <field name="site_id"/>
-                       <field name="lieu_stockage"/>
-                       <field name="date_prochain_controle"/>
-                   </tree>
+                    <field name="designation"/>
+                    <field name="fabriquant"/>
+                    <field name="date_reception"/>
+                    <field name="site_id"/>
+                    <field name="lieu_stockage"/>
+                    <field name="date_prochain_controle"/>
+                    <field name="is_database_origine_id"/>
+                </tree>
             </field>
         </record>
         
