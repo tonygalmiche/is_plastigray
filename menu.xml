@@ -232,7 +232,18 @@
 
 
     <!-- Achats / Demandes d'achats -->
-    <menuitem id="menu_demandes_achats" sequence="25" name="Demandes d'achats"  parent="menu_is_achats" />
+    <menuitem id="is_demande_achat_main_menu" sequence="25" name="Demandes d'achats"  parent="menu_is_achats" />
+    <record id="is_demande_achat_serie_menu" model="ir.ui.menu">
+        <field name="name">DA Série</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_demande_achat_main_menu')"/>
+        <field name="action"    ref="is_demande_achat_serie_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('base.group_user'),
+        ])]"/>
+    </record>
+
+    <!--
     <record id="is_mes_demande_achat_menu" model="ir.ui.menu">
         <field name="name">Mes demandes d'achat</field>
         <field name="sequence">10</field>
@@ -251,6 +262,7 @@
             ref('is_rsp_achats_group'),
         ])]"/>
     </record>
+    -->
 
 
     <!-- Achats / Commandes -->

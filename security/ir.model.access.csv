@@ -164,6 +164,11 @@ access_is_mrp_production_workcenter_line,access_is_mrp_production_workcenter_lin
 access_is_demande_transport,access_is_demande_transport,model_is_demande_transport,base.group_user,1,1,1,0
 access_is_bl_manuel,access_is_bl_manuel,model_is_bl_manuel,base.group_user,1,1,1,0
 access_is_bl_manuel_line,access_is_bl_manuel_line,model_is_bl_manuel_line,base.group_user,1,1,1,1
+access_is_demande_achat_serie,access_is_demande_achat_serie,model_is_demande_achat_serie,base.group_user,1,1,1,0
+access_is_demande_achat_serie_line,access_is_demande_achat_serie_line,model_is_demande_achat_serie_line,base.group_user,1,1,1,1
+
+
+
 
 
 

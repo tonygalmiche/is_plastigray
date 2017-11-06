@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Sequence is.demande.achat.serie --> 
+        <!--
+        <record id="is_demande_achat_serie_type_seq" model="ir.sequence.type">
+            <field name="name">Demande d'achat série</field>
+            <field name="code">is.demande.achat.serie</field>
+        </record>
+        -->
+        <record id="is_demande_achat_serie_seq" model="ir.sequence">
+            <field name="name">Demande d'achat série</field>
+            <field name="code">is.demande.achat.serie</field>
+            <field name="prefix">DAS-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- is.demande.achat.serie --> 
+        <record model="ir.ui.view" id="is_demande_achat_serie_form_view">
+            <field name="name">is_demande_achat_serie_form_view</field>
+            <field name="model">is.demande.achat.serie</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="vers_brouillon_action"
+                            string="Vers brouillon"
+                            attrs="{'invisible': [('state', '=', 'brouillon')]}"
+                            type="object"
+                        />
+                        <button 
+                            name="vers_transmis_achat_action"
+                            string="Vers transmis achat"
+                            attrs="{'invisible': [('state', '!=', 'brouillon')]}"
+                            class="oe_highlight" type="object"
+                        />
+                        <button 
+                            name="vers_solde_action"
+                            string="Générer la commande et solder cette DA"
+                            attrs="{'invisible': [('state', '!=', 'transmis_achat')]}"
+                            class="oe_highlight" type="object"
+                        />
+                        <button 
+                            name="vers_annule_action"
+                            string="Vers annulé"
+                            attrs="{'invisible': ['|',('state', '=', 'annule'),('state', '=', 'solde')]}"
+                            type="object"
+                        />
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group string="Identification">
+                                <field name="name"/>
+                                <field name="createur_id"/>
+                                <field name="date_creation"/>
+                                <field name="acheteur_id"/>
+                            </group>
+                            <group string="Adresse de destinataire">
+                                <field name="fournisseur_id"/>
+                                <field name="delai_livraison"/>
+                                <field name="lieu_livraison_id"/>
+                                <field name="motif"/>
+                                <field name="commentaire"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="sequence" />
+                                    <field 
+                                        name="product_id" 
+                                        on_change="product_id_on_change(parent,product_id)" 
+                                        widget="many2one_clickable"
+                                    />
+                                    <field name="uom_id" />
+                                    <field name="quantite" />
+                                    <field name="prix" />
+                                    <field name="montant" sum="Total" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_achat_serie_tree_view">
+            <field name="name">is_demande_achat_serie_tree_view</field>
+            <field name="model">is.demande.achat.serie</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="gray:state=='solde';gray:state=='annule';red:state=='transmis_achat'">
+                    <field name="name"/>
+                    <field name="createur_id"/>
+                    <field name="date_creation"/>
+                    <field name="acheteur_id"/>
+                    <field name="fournisseur_id"  widget="many2one_clickable"/>
+                    <field name="delai_livraison"/>
+                    <field name="lieu_livraison_id"/>
+                    <field name="motif"/>
+                    <field name="commentaire"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_achat_serie_search_view" >
+            <field name="name">is_demande_achat_serie_search_view</field>
+            <field name="model">is.demande.achat.serie</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="createur_id"/>
+                    <field name="acheteur_id"/>
+                    <field name="fournisseur_id"/>
+                    <field name="lieu_livraison_id"/>
+                    <field name="motif"/>
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_demande_achat_serie_action">
+            <field name="name">Demande d'achat série</field>
+            <field name="res_model">is.demande.achat.serie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+  </data>
+</openerp>
