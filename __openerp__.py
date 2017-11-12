@@ -80,6 +80,7 @@ Module principal du projet Plastigray
         "is_prechauffeur_view.xml",
         "is_demande_achat_view.xml",
         "is_demande_achat_serie_view.xml",
+        "is_demande_achat_fg_view.xml",
         "email_template.xml",
         "is_facture_pk_view.xml",
         "is_moyen_fabrication_view.xml",

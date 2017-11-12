@@ -5,46 +5,69 @@ from openerp.exceptions import Warning
 
 
 #TODO : 
-# - Revoir le CBN pour qu'il génére une DAS à la place des devis pour les anomalies => Plus tard après les premiers tests
 
 
-class is_demande_achat_serie(models.Model):
-    _name='is.demande.achat.serie'
+
+class is_demande_achat_fg(models.Model):
+    _name='is.demande.achat.fg'
     _order='name desc'
 
-
-    @api.depends('line_ids')
     def _compute(self):
+        uid=self._uid
         for obj in self:
-            nb_lignes=len(obj.line_ids)
-            if nb_lignes>1:
-                raise Warning('Une seule ligne autorisée !')
-            obj.nb_lignes=nb_lignes
+            vsb=False
+            if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
+                vsb=True
+            obj.vers_brouillon_vsb=vsb
+            vsb=False
+            if obj.state=='brouillon' and uid==obj.createur_id.id:
+                vsb=True
+            obj.vers_validation_rsp_vsb=vsb
+            vsb=False
+            if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
+                vsb=True
+            obj.vers_transmis_achat_vsb=vsb
+            vsb=False
+            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
+                vsb=True
+            obj.vers_solde_vsb=vsb
+            vsb=False
+            if obj.state=='brouillon' and uid==obj.createur_id.id:
+                vsb=True
+            if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
+                vsb=True
+            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
+                vsb=True
+            obj.vers_annule_vsb=vsb
 
 
-    name                 = fields.Char("N° demande achat série", readonly=True)
+    name                 = fields.Char("N°DA FG", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
+    chef_service_id      = fields.Many2one('res.users', 'Chef de service', required=True)
     date_creation        = fields.Date("Date de création", required=True)
     acheteur_id          = fields.Many2one('res.users', 'Acheteur', required=True)
-    fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur', domain=[('is_company','=',True),('supplier','=',True)], required=True)
+    fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur', domain=[('is_company','=',True),('supplier','=',True),('is_segment_achat.name','=',u'Frais généraux')])
+    fournisseur_autre    = fields.Char("Fournisseur autre")
     delai_livraison      = fields.Date("Délai de livraison", required=True)
     lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True),('customer','=',True)], required=True)
-    motif                = fields.Selection([
-        ('pas_tarif'    , "Pas de tarif de créé"),
-        ('fin_vie'      , "Produit en fin de vie (Lot trop important)"),
-        ('inf_lot_appro', "Besoin inférieur au lot d'appro"),
-        ('gest_18'      , "Gest 18 = Achat réalisé par le service achat"),
-    ], "Motif")
+    num_devis            = fields.Char("N° du devis")
+    date_devis           = fields.Date("Date du devis")
     commentaire          = fields.Text("Commentaire")
     state                = fields.Selection([
         ('brouillon'     , 'Brouillon'),
+        ('validation_rsp', 'Validation responsable'),
         ('transmis_achat', 'Transmis achat'),
         ('solde'         , 'Soldé'),
         ('annule'        , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes")
-    nb_lignes            = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
+    line_ids             = fields.One2many('is.demande.achat.fg.line'  , 'da_id', u"Lignes")
     order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True)
+
+    vers_brouillon_vsb      = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_validation_rsp_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_transmis_achat_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_solde_vsb          = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_annule_vsb         = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
 
 
     @api.multi
@@ -65,19 +88,38 @@ class is_demande_achat_serie(models.Model):
     @api.model
     def create(self, vals):
         data_obj = self.env['ir.model.data']
-        sequence_ids = data_obj.search([('name','=','is_demande_achat_serie_seq')])
+        sequence_ids = data_obj.search([('name','=','is_demande_achat_fg_seq')])
         if sequence_ids:
             sequence_id = data_obj.browse(sequence_ids[0].id).res_id
             vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
-        obj = super(is_demande_achat_serie, self).create(vals)
+        obj = super(is_demande_achat_fg, self).create(vals)
         return obj
 
 
     @api.multi
     def vers_brouillon_action(self):
         for obj in self:
-            if obj.acheteur_id.id==self._uid:
-                obj.sudo().state="brouillon"
+            #if obj.acheteur_id.id==self._uid or obj.chef_service_id.id==self._uid:
+            obj.sudo().state="brouillon"
+
+
+    @api.multi
+    def vers_validation_rsp_action(self):
+        for obj in self:
+            subject=u'['+obj.name+u'] Validation responsable'
+            email_to=obj.chef_service_id.email
+            user  = self.env['res.users'].browse(self._uid)
+            email_from = user.email
+            nom   = user.name
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.fg'
+            body_html=u"""
+                <p>Bonjour,</p>
+                <p>"""+nom+""" vient de passer la demande d'achat de frais généraux <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Validation responsable'.</p>
+                <p>Merci d'en prendre connaissance.</p>
+            """
+            self.envoi_mail(email_from,email_to,subject,body_html)
+            obj.state="validation_rsp"
 
 
     @api.multi
@@ -89,10 +131,10 @@ class is_demande_achat_serie(models.Model):
             email_from = user.email
             nom   = user.name
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-            url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.serie'
+            url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.fg'
             body_html=u"""
                 <p>Bonjour,</p>
-                <p>"""+nom+""" vient de passer la demande d'achat série <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Transmis achat'.</p>
+                <p>"""+nom+""" vient de passer la demande d'achat de frais généraux <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Transmis achat'.</p>
                 <p>Merci d'en prendre connaissance.</p>
             """
             self.envoi_mail(email_from,email_to,subject,body_html)
@@ -118,13 +160,9 @@ class is_demande_achat_serie(models.Model):
                 }
                 order=order_obj.create(vals)
                 obj.order_id=order.id
-                line=False
-                if len(obj.line_ids)==1:
-                    line=obj.line_ids[0]
-                test=True
-                if order and line:
-                    vals={}
-                    try:
+                if order:
+                    for line in obj.line_ids:
+                        vals={}
                         res=order_line_obj.onchange_product_id(
                             order.pricelist_id.id, 
                             line.product_id.id, 
@@ -135,26 +173,29 @@ class is_demande_achat_serie(models.Model):
                             fiscal_position_id = partner.property_account_position.id, 
                             date_planned       = False, 
                             name               = False, 
-                            price_unit         = False, 
+                            price_unit         = line.prix, 
                             state              = 'draft'
                         )
                         vals=res['value']
-                    except:
-                        test=False
-                    vals['order_id']=order.id
-                    vals['product_id']=line.product_id.id
-                    if 'taxes_id' in vals:
-                        vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
-                    try:
+                        vals['order_id']=order.id
+                        vals['product_id']=line.product_id.id
+
+                        name=[]
+                        if line.product_id.id:
+                            name.append(line.product_id.is_code+u' - '+line.product_id.name)
+                        if line.designation1:
+                            name.append(line.designation1)
+                        if line.designation2:
+                            name.append(line.designation2)
+                        vals['name']='\n'.join(name)
+                        if 'taxes_id' in vals:
+                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
                         order_line=order_line_obj.create(vals)
                         order.wkf_bid_received() 
-                        order.wkf_confirm_order()
+                        res=order.wkf_confirm_order()
                         order.action_picking_create() 
                         order.wkf_approve_order()
-                    except:
-                        test=False
-                    if test:
-                        obj.state="solde"
+                        obj.sudo().state="solde"
 
 
 
@@ -180,8 +221,8 @@ class is_demande_achat_serie(models.Model):
                 self.env['mail.mail'].send(email)
 
 
-class is_demande_achat_serie_line(models.Model):
-    _name='is.demande.achat.serie.line'
+class is_demande_achat_fg_line(models.Model):
+    _name='is.demande.achat.fg.line'
     _order='da_id,sequence'
 
 
@@ -192,10 +233,12 @@ class is_demande_achat_serie_line(models.Model):
                 obj.uom_id=obj.product_id.uom_po_id
             obj.montant=obj.quantite*obj.prix
 
-    da_id                  = fields.Many2one('is.demande.achat.serie', "Demande d'achat", required=True, ondelete='cascade', readonly=True)
+    da_id                  = fields.Many2one('is.demande.achat.fg', "Demande d'achat", required=True, ondelete='cascade', readonly=True)
     sequence               = fields.Integer('Ordre')
-    product_id             = fields.Many2one('product.product', 'Article', domain=[('is_category_id.name','<','62')], required=True)
-    uom_id                 = fields.Many2one('product.uom', "Unité d'achat", compute='_compute', readonly=True, store=True)
+    product_id             = fields.Many2one('product.product', 'Article', domain=[('is_category_id.name','=','72')])
+    designation1           = fields.Char("Désignation 1")
+    designation2           = fields.Char("Désignation 2")
+    uom_id                 = fields.Many2one('product.uom', "Unité d'achat")
     quantite               = fields.Float("Quantité", digits=(14,4), required=True)
     prix                   = fields.Float("Prix"    , digits=(14,4))
     montant                = fields.Float("Montant", compute='_compute', readonly=True, store=True)

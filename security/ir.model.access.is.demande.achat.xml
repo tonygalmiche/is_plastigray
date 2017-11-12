@@ -13,7 +13,6 @@
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
-
         <record id="is_demande_achat_serie_transmis_achat_rule" model="ir.rule">
             <field name="name">Accès en modification à l'état 'Transmis achat' par l'acheteur</field>
             <field name="model_id" ref="model_is_demande_achat_serie"/>
@@ -24,7 +23,6 @@
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
-
         <record id="is_demande_achat_serie_transmis_achat_createur_rule" model="ir.rule">
             <field name="name">Accès en lecture seule à l'état 'Transmis achat' par le créateur</field>
             <field name="model_id" ref="model_is_demande_achat_serie"/>
@@ -35,7 +33,6 @@
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
-
         <record id="is_demande_achat_serie_solde_rule" model="ir.rule">
             <field name="name">Accès en lecture seule à l'état 'Soldé' pour tout le monde</field>
             <field name="model_id" ref="model_is_demande_achat_serie"/>
@@ -46,7 +43,6 @@
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
-
         <record id="is_demande_achat_serie_annule_rule" model="ir.rule">
             <field name="name">Accès en lecture seule à l'état 'Annulé' pour tout le monde</field>
             <field name="model_id" ref="model_is_demande_achat_serie"/>
@@ -59,12 +55,67 @@
         </record>
 
 
-<!--
-        ('brouillon'     , 'Brouillon'),
-        ('transmis_achat', 'Transmis achat'),
-        ('solde'         , 'Soldé'),
-        ('annule'        , 'Annulé'),
--->
+        <!-- is.demande.achat.fg -->
+        <record id="is_demande_achat_fg_brouillon_rule" model="ir.rule">
+            <field name="name">Accès en modification à l'état 'Brouillon' par le demandeur</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[('state','=','brouillon'),('createur_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_fg_validation_rsp_rule" model="ir.rule">
+            <field name="name">Accès en modification à l'état 'Validation responsable' par le chef de service</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[('state','=','validation_rsp'),('chef_service_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_fg_transmis_achat_rule" model="ir.rule">
+            <field name="name">Accès en modification à l'état 'Transmis achat' par l'acheteur</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[('state','=','transmis_achat'),('acheteur_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_fg_transmis_achat_createur_rule" model="ir.rule">
+            <field name="name">Accès en lecture seule à l'état 'Transmis achat' par le créateur</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[('state','=','transmis_achat'),('createur_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="0" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_fg_solde_rule" model="ir.rule">
+            <field name="name">Accès en lecture seule à l'état 'Soldé' pour tout le monde</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[('state','=','solde')]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="0" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_fg_annule_rule" model="ir.rule">
+            <field name="name">Accès en lecture seule à l'état 'Annulé' pour tout le monde</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[('state','=','annule')]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="0" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
 
     </data>
 </openerp>
