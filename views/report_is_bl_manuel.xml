@@ -75,7 +75,8 @@
                             N°Identification T.V.A. FR 65 377 846 381 <br />
                             <span t-if="o.destinataire_id.lang != 'en_US'">Fournisseur N°</span>
                             <span t-if="o.destinataire_id.lang == 'en_US'">Supplier N°</span>
-                            <span t-field="o.destinataire_id.is_cofor"/>
+                            <span t-field="o.destinataire_id.is_cofor"/><br />
+                            <span>Émetteur : <b><span t-field="o.emetteur_id.name"/></b></span>
                         </div>
                     </div>
                     <div class="col-xs-1" />
@@ -163,6 +164,9 @@
                                 <span t-field="line.num_commande"/>
                             </td>
                             <td>
+                                <t t-if="line.product_id">
+                                    <span t-field="line.product_id.is_code"/> - 
+                                </t>
                                 <span t-field="line.description"/>
                                 <br />
                                 <span t-field="line.ref_client"/>

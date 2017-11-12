@@ -707,6 +707,8 @@
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
             ref('is_commerciaux_group'),
+            ref('is_qualite_group'),
+            ref('is_chef_projet_group'),
         ])]"/>
     </record>
 
@@ -1009,6 +1011,7 @@
             ref('is_magasiniers_group'),
             ref('is_centrale_matiere_group'),
             ref('is_chef_equipe_group'),
+            ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
 
