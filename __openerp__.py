@@ -33,12 +33,12 @@ Module principal du projet Plastigray
     ], 
     "data" : [
         "security/res.groups.xml",
-        "security/ir.model.access.csv", # Permet de définir rapidement les accès de base en CSV
-        "security/ir.model.access.xml", # Permet de définit plus précisement les accès complèmenaires en XML pour mettre des commentaires
+        "security/ir.model.access.csv",
+        "security/ir.model.access.xml", 
+        "security/ir.model.access.is.demande.achat.xml", 
         "security/res.groups.csv",
-
-        "res_partner_view.xml",  # Vue partenaire modifiée
-        "assets.xml",            # Permet d'ajouter des css et des js
+        "res_partner_view.xml",
+        "assets.xml",
         "sale_view.xml",
         "account_invoice_view.xml",
         "sale_picking_view.xml",

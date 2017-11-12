@@ -5,19 +5,21 @@ from openerp.exceptions import Warning
 
 
 #TODO : 
-# - Prix en automatique (mais modifiable ?) lors du changement de la quantité ou de l'article
-# - Envoi d'un mail à l'acheteur lors du transmis achat
-# - Droits à mettre en place en fonction de l'état de la demande
-# - Bloquer si plusieurs lignes (sur le onchange de l'article) ou dés l'ajout d'une ligne si possible
-# -> TODO : Test avec on_change sur l'article et avec un champ calculé sur le nombre de lignes mais sans succès
-# -> TODO : A revoir ultéreurement
-# - Bouton pour générer la commande et solder la DA
-# - Revoir le CBN pour qu'il génére une DAS à la place des devis pour les anomalies
+# - Revoir le CBN pour qu'il génére une DAS à la place des devis pour les anomalies => Plus tard après les premiers tests
 
 
 class is_demande_achat_serie(models.Model):
     _name='is.demande.achat.serie'
     _order='name desc'
+
+
+    @api.depends('line_ids')
+    def _compute(self):
+        for obj in self:
+            nb_lignes=len(obj.line_ids)
+            if nb_lignes>1:
+                raise Warning('Une seule ligne autorisée !')
+            obj.nb_lignes=nb_lignes
 
 
     name                 = fields.Char("N° demande achat série", readonly=True)
@@ -41,6 +43,8 @@ class is_demande_achat_serie(models.Model):
         ('annule'        , 'Annulé'),
     ], "Etat")
     line_ids             = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes")
+    nb_lignes            = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
+    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True)
 
 
     @api.multi
@@ -72,25 +76,108 @@ class is_demande_achat_serie(models.Model):
     @api.multi
     def vers_brouillon_action(self):
         for obj in self:
-            obj.state="brouillon"
+            if obj.acheteur_id.id==self._uid:
+                obj.sudo().state="brouillon"
 
 
     @api.multi
     def vers_transmis_achat_action(self):
         for obj in self:
+            subject=u'['+obj.name+u'] Transmis achat'
+            email_to=obj.acheteur_id.email
+            user  = self.env['res.users'].browse(self._uid)
+            email_from = user.email
+            nom   = user.name
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.serie'
+            body_html=u"""
+                <p>Bonjour,</p>
+                <p>"""+nom+""" vient de passer la demande d'achat série <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Transmis achat'.</p>
+                <p>Merci d'en prendre connaissance.</p>
+            """
+            self.envoi_mail(email_from,email_to,subject,body_html)
             obj.state="transmis_achat"
 
 
     @api.multi
     def vers_solde_action(self):
         for obj in self:
-            obj.state="solde"
+            order_obj      = self.env['purchase.order']
+            order_line_obj = self.env['purchase.order.line']
+            partner=obj.fournisseur_id
+            if partner.property_product_pricelist_purchase:
+                vals={
+                    'partner_id'      : partner.id,
+                    'is_livre_a_id'   : partner.is_livre_a_id.id,
+                    'location_id'     : partner.is_source_location_id.id,
+                    'fiscal_position' : partner.property_account_position.id,
+                    'payment_term_id' : partner.property_supplier_payment_term.id,
+                    'pricelist_id'    : partner.property_product_pricelist_purchase.id,
+                    'is_num_da'       : obj.name,
+                    'is_demandeur_id' : obj.createur_id.id,
+                }
+                order=order_obj.create(vals)
+                obj.order_id=order.id
+                line=False
+                if len(obj.line_ids)==1:
+                    line=obj.line_ids[0]
+                test=True
+                if order and line:
+                    vals={}
+                    try:
+                        res=order_line_obj.onchange_product_id(
+                            order.pricelist_id.id, 
+                            line.product_id.id, 
+                            line.quantite, 
+                            line.uom_id.id, 
+                            partner.id, 
+                            date_order         = False, 
+                            fiscal_position_id = partner.property_account_position.id, 
+                            date_planned       = False, 
+                            name               = False, 
+                            price_unit         = False, 
+                            state              = 'draft'
+                        )
+                        vals=res['value']
+                    except:
+                        test=False
+                    vals['order_id']=order.id
+                    vals['product_id']=line.product_id.id
+                    if 'taxes_id' in vals:
+                        vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
+                    try:
+                        order_line=order_line_obj.create(vals)
+                        order.wkf_bid_received() 
+                        order.wkf_confirm_order()
+                        order.action_picking_create() 
+                        order.wkf_approve_order()
+                    except:
+                        test=False
+                    if test:
+                        obj.state="solde"
+
 
 
     @api.multi
     def vers_annule_action(self):
         for obj in self:
-            obj.state="annule"
+            if obj.createur_id.id==self._uid or obj.acheteur_id.id==self._uid:
+                obj.sudo().state="annule"
+
+
+    @api.multi
+    def envoi_mail(self, email_from,email_to,subject,body_html):
+        for obj in self:
+            vals={
+                'email_from'    : email_from, 
+                'email_to'      : email_to, 
+                'email_cc'      : email_from,
+                'subject'       : subject,
+                'body_html'     : body_html, 
+            }
+            email=self.env['mail.mail'].create(vals)
+            if email:
+                self.env['mail.mail'].send(email)
 
 
 class is_demande_achat_serie_line(models.Model):
@@ -115,38 +202,27 @@ class is_demande_achat_serie_line(models.Model):
 
 
     @api.multi
-    def product_id_on_change(self,parent,product_id):
-        #nb=len(line_ids)
-        print 'parent=',parent, len(parent.line_ids)
-        #if nb>1:
-        #    raise Warning('Une seule ligne autorisée !')
-
-
-#    @api.multi
-#    def product_id_change(self, product_id):
-#        values = {}
-#        if product_id:
-#            product = self.env['product.product'].browse(product_id)
-#            values['description']            = product.name
-#            values['ref_client']             = product.is_ref_client
-#            values['origine_id']             = product.is_origine_produit_id.id
-#            values['nomenclature_douaniere'] = product.is_nomenclature_douaniere
-#            values['qt_par_colis']           = product.is_uc_qt
-#        return {'value': values}
-
-
-#    @api.multi
-#    def qt_change(self, product_id,qt_livree,qt_par_colis):
-#        values = {}
-#        if product_id:
-#            product = self.env['product.product'].browse(product_id)
-#            values['poids_net']  = product.weight_net*qt_livree
-#            values['poids_brut'] = product.weight*qt_livree
-#        nb_colis=0
-#        if qt_par_colis>0:
-#            nb_colis=qt_livree/qt_par_colis
-#        values['nb_colis'] = nb_colis
-#        return {'value': values}
-
+    def product_id_on_change(self,parent,product_id,quantite):
+        cr=self._cr
+        res={}
+        fournisseur_id=parent.fournisseur_id
+        if fournisseur_id:
+            partner = self.env['res.partner'].browse(fournisseur_id)
+            pricelist_id=partner.property_product_pricelist_purchase.id
+            if product_id:
+                res['value']={}
+                product = self.env['product.product'].browse(product_id)
+                sql="""
+                    select 
+                        is_prix_achat("""+str(pricelist_id)+""", """+str(product_id)+""", """+str(quantite)+""", '2017-11-12') 
+                    from product_product
+                    where id="""+str(product_id)+"""
+                """
+                cr.execute(sql)
+                prix=0
+                for row in cr.fetchall():
+                    prix=row[0]
+                res['value']['prix']=prix
+        return res
 
 

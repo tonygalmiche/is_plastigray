@@ -75,15 +75,22 @@
                                     <field name="sequence" />
                                     <field 
                                         name="product_id" 
-                                        on_change="product_id_on_change(parent,product_id)" 
+                                        on_change="product_id_on_change(parent,product_id,quantite)" 
                                         widget="many2one_clickable"
                                     />
                                     <field name="uom_id" />
-                                    <field name="quantite" />
+                                    <field 
+                                        name="quantite" 
+                                        on_change="product_id_on_change(parent,product_id,quantite)" 
+                                    />
                                     <field name="prix" />
                                     <field name="montant" sum="Total" />
                                 </tree>
                             </field>
+                        </group>
+                        <group>
+                            <field name="nb_lignes"/>
+                            <field name="order_id"/>
                         </group>
                     </sheet>
                 </form>
