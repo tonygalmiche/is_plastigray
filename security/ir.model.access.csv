@@ -170,6 +170,10 @@ access_is_demande_achat_serie_line,access_is_demande_achat_serie_line,model_is_d
 access_is_demande_achat_fg,access_is_demande_achat_fg,model_is_demande_achat_fg,base.group_user,1,1,1,1
 access_is_demande_achat_fg_line,access_is_demande_achat_fg_line,model_is_demande_achat_fg_line,base.group_user,1,1,1,1
 
+access_is_demande_achat_invest,access_is_demande_achat_invest,model_is_demande_achat_invest,base.group_user,1,1,1,1
+access_is_demande_achat_invest_line,access_is_demande_achat_invest_line,model_is_demande_achat_invest_line,base.group_user,1,1,1,1
+
+
 
 
 

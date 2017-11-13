@@ -76,7 +76,7 @@
                             <span t-if="o.destinataire_id.lang != 'en_US'">Fournisseur N°</span>
                             <span t-if="o.destinataire_id.lang == 'en_US'">Supplier N°</span>
                             <span t-field="o.destinataire_id.is_cofor"/><br />
-                            <span>Émetteur : <b><span t-field="o.emetteur_id.name"/></b></span>
+                            <!--<span>Émetteur : <b><span t-field="o.emetteur_id.name"/></b></span>-->
                         </div>
                     </div>
                     <div class="col-xs-1" />
@@ -90,10 +90,11 @@
                         <div t-if="o.destinataire_id.lang != 'en_US'">Destinataire : </div>
                         <div t-if="o.destinataire_id.lang == 'en_US'">Addressee : </div>
                         <div class="destinataire">
-                            <b><span t-field="o.raison_sociale"/></b><t t-if="o.destinataire_id">(<span t-field="o.destinataire_id.is_code"/>/<span t-field="o.destinataire_id.is_adr_code"/>)</t>
+                            <b><span t-field="o.raison_sociale"/></b><t t-if="o.destinataire_id"> (<span t-field="o.destinataire_id.is_code"/>/<span t-field="o.destinataire_id.is_adr_code"/>)</t>
+                            <div t-field="o.contact"/>
                             <div t-field="o.adresse1"/>
                             <div t-field="o.adresse2"/>
-                            <div t-field="o.code_postal"/> - <div t-field="o.ville"/>
+                            <div><span t-field="o.code_postal"/> - <span t-field="o.ville"/></div>
                             <div t-field="o.pays_id.name"/>
                             <div t-if="o.destinataire_id.vat">VAT : <span t-field="o.destinataire_id.vat"/></div>
                         </div>
