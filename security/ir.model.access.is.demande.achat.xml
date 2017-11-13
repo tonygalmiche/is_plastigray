@@ -172,58 +172,54 @@
             <field eval="1" name="perm_create"/>
         </record>
 
-        <!--
-        <record id="is_demande_achat_invest_validation_rsp_lecture_rule" model="ir.rule">
-            <field name="name">Accès en lecture seule à l'état 'Validation responsable' pour tout le monde</field>
-            <field name="model_id" ref="model_is_demande_achat_invest"/>
-            <field name="domain_force">[('state','=','validation_rsp')]</field>
+
+
+
+        <!-- is.demande.achat.moule -->
+        <record id="is_demande_achat_moule_brouillon_rule" model="ir.rule">
+            <field name="name">Accès en modification à l'état 'Brouillon' par le demandeur</field>
+            <field name="model_id" ref="model_is_demande_achat_moule"/>
+            <field name="domain_force">[('state','=','brouillon'),('createur_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_moule_validation_rsp_rule" model="ir.rule">
+            <field name="name">Accès en modification à l'état 'Validation responsable' par le chef de service</field>
+            <field name="model_id" ref="model_is_demande_achat_moule"/>
+            <field name="domain_force">[('state','=','validation_rsp'),('chef_service_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_moule_transmis_achat_rule" model="ir.rule">
+            <field name="name">Accès en modification à l'état 'Transmis achat' par l'acheteur</field>
+            <field name="model_id" ref="model_is_demande_achat_moule"/>
+            <field name="domain_force">[('state','=','transmis_achat'),('acheteur_id','=',user.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+        <record id="is_demande_achat_moule_lecture_rule" model="ir.rule">
+            <field name="name">Accès en lecture seule pour tous les états pour tout le monde</field>
+            <field name="model_id" ref="model_is_demande_achat_moule"/>
+            <field name="domain_force">[]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
             <field eval="0" name="perm_unlink"/>
             <field eval="0" name="perm_write"/>
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
-        <record id="is_demande_achat_invest_validation_direction_lecture_rule" model="ir.rule">
-            <field name="name">Accès en lecture seule à l'état 'Validation direction' pour tout le monde</field>
-            <field name="model_id" ref="model_is_demande_achat_invest"/>
-            <field name="domain_force">[('state','=','validation_direction')]</field>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
-            <field eval="0" name="perm_write"/>
-            <field eval="1" name="perm_read"/>
-            <field eval="1" name="perm_create"/>
-        </record>
-        <record id="is_demande_achat_invest_transmis_achat_lecture_rule" model="ir.rule">
-            <field name="name">Accès en lecture seule à l'état 'Transmis achat' pour tout le monde</field>
-            <field name="model_id" ref="model_is_demande_achat_invest"/>
-            <field name="domain_force">[('state','=','transmis_achat')]</field>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
-            <field eval="0" name="perm_write"/>
-            <field eval="1" name="perm_read"/>
-            <field eval="1" name="perm_create"/>
-        </record>
-        <record id="is_demande_achat_invest_solde_rule" model="ir.rule">
-            <field name="name">Accès en lecture seule à l'état 'Soldé' pour tout le monde</field>
-            <field name="model_id" ref="model_is_demande_achat_invest"/>
-            <field name="domain_force">[('state','=','solde')]</field>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
-            <field eval="0" name="perm_write"/>
-            <field eval="1" name="perm_read"/>
-            <field eval="1" name="perm_create"/>
-        </record>
-        <record id="is_demande_achat_invest_annule_rule" model="ir.rule">
-            <field name="name">Accès en lecture seule à l'état 'Annulé' pour tout le monde</field>
-            <field name="model_id" ref="model_is_demande_achat_invest"/>
-            <field name="domain_force">[('state','=','annule')]</field>
-            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
-            <field eval="0" name="perm_write"/>
-            <field eval="1" name="perm_read"/>
-            <field eval="1" name="perm_create"/>
-        </record>
-        -->
+
+
+
+
 
     </data>
 </openerp>

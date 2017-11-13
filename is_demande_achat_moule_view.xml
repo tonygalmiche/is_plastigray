@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="is_demande_achat_moule_type_seq" model="ir.sequence.type">
+            <field name="name">Demande d'achat Moule</field>
+            <field name="code">is.demande.achat.moule</field>
+        </record>
+        <record id="is_demande_achat_moule_seq" model="ir.sequence">
+            <field name="name">Demande d'achat Moule</field>
+            <field name="code">is.demande.achat.moule</field>
+            <field name="prefix">DAM-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record model="ir.ui.view" id="is_demande_achat_moule_form_view">
+            <field name="name">is_demande_achat_moule_form_view</field>
+            <field name="model">is.demande.achat.moule</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <field name="vers_brouillon_vsb" invisible="1"/>
+                        <button 
+                            name="vers_brouillon_action"
+                            string="Vers brouillon"
+                            attrs="{'invisible': [('vers_brouillon_vsb', '!=', True)]}"
+                            type="object"
+                        />
+
+                        <field name="vers_validation_rsp_vsb" invisible="1"/>
+                        <button 
+                            name="vers_validation_rsp_action"
+                            string="Vers validation responsable"
+                            attrs="{'invisible': [('vers_validation_rsp_vsb', '!=', True)]}"
+                            class="oe_highlight" type="object"
+                        />
+
+                        <field name="vers_transmis_achat_vsb" invisible="1"/>
+                        <button 
+                            name="vers_transmis_achat_action"
+                            string="Vers transmis achat"
+                            attrs="{'invisible': [('vers_transmis_achat_vsb', '!=', True)]}"
+                            class="oe_highlight" type="object"
+                        />
+
+                        <field name="vers_solde_vsb" invisible="1"/>
+                        <button 
+                            name="vers_solde_action"
+                            string="Générer la commande et solder cette DA"
+                            attrs="{'invisible': [('vers_solde_vsb', '!=', True)]}"
+                            class="oe_highlight" type="object"
+                        />
+
+                        <field name="vers_annule_vsb" invisible="1"/>
+                        <button 
+                            name="vers_annule_action"
+                            string="Vers annulé"
+                            attrs="{'invisible': [('vers_annule_vsb', '!=', True)]}"
+                            type="object"
+                        />
+                        <field 
+                            name="state" 
+                            widget="statusbar" 
+                            statusbar_visible="brouillon,validation_rsp,transmis_achat,solde" 
+                            statusbar_colors='{"annule":"red"}'
+                        />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group string="Identification">
+                                <field name="name"/>
+                                <field name="createur_id"/>
+                                <field name="date_creation"/>
+                                <field name="chef_service_id"/>
+                                <field name="acheteur_id"/>
+                                <field name="num_devis"/>
+                                <field name="date_devis"/>
+                            </group>
+                            <group string="Adresse de destinataire">
+                                <field name="fournisseur_id"/>
+                                <field name="fournisseur_autre"/>
+                                <field name="delai_livraison"/>
+                                <field name="lieu_livraison_id"/>
+                                <field name="lieu_autre"/>
+                                <field name="commentaire"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="sequence" />
+                                    <field 
+                                        name="product_id" 
+                                        on_change="product_id_on_change(parent,product_id,quantite)" 
+                                        widget="many2one_clickable"
+                                    />
+                                    <field name="designation1" />
+                                    <field name="designation2" />
+                                    <field name="uom_id" />
+                                    <field 
+                                        name="quantite" 
+                                        on_change="product_id_on_change(parent,product_id,quantite)" 
+                                    />
+                                    <field name="prix" />
+                                    <field name="montant" sum="Total" />
+                                    <field name="num_chantier" />
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="order_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_achat_moule_tree_view">
+            <field name="name">is_demande_achat_moule_tree_view</field>
+            <field name="model">is.demande.achat.moule</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="gray:state=='solde';gray:state=='annule';red:state=='transmis_achat'">
+                    <field name="name"/>
+                    <field name="createur_id"/>
+                    <field name="date_creation"/>
+                    <field name="chef_service_id"/>
+                    <field name="acheteur_id"/>
+                    <field name="fournisseur_id"  widget="many2one_clickable"/>
+                    <field name="delai_livraison"/>
+                    <field name="lieu_livraison_id"/>
+                    <field name="num_devis"/>
+                    <field name="date_devis"/>
+                    <field name="commentaire"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_demande_achat_moule_search_view" >
+            <field name="name">is_demande_achat_moule_search_view</field>
+            <field name="model">is.demande.achat.moule</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="createur_id"/>
+                    <field name="chef_service_id"/>
+                    <field name="acheteur_id"/>
+                    <field name="fournisseur_id"/>
+                    <field name="lieu_livraison_id"/>
+                    <field name="num_devis"/>
+                    <field name="state"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_demande_achat_moule_action">
+            <field name="name">Demande d'achat Moule</field>
+            <field name="res_model">is.demande.achat.moule</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+    </data>
+</openerp>
