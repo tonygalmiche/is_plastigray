@@ -809,69 +809,9 @@
         <field name="perm_create" eval="True"/>
     </record>
 
-    <record id="is_liste_servir_client_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_client_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir_client')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_liste_servir_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_liste_servir_line_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_line_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir_line')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_liste_servir_uc_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_uc_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir_uc')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_liste_servir_um_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_um_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir_um')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_liste_servir_message_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_message_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_liste_servir_message_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_liste_servir_message_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
+
+
+
     <record id="is_mrp_production_rsp_production_access"  model="ir.model.access" >
         <field name="name">is_mrp_production_rsp_production_access</field>
         <field name="model_id"    eval="ref('mrp.model_mrp_production')"/>
@@ -899,26 +839,8 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
-    <!--
-    <record id="is_mrp_routing_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_mrp_routing_rsp_production_access</field>
-        <field name="model_id"    eval="ref('mrp.model_mrp_routing')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_mrp_routing_workcenter_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_mrp_routing_workcenter_rsp_production_access</field>
-        <field name="model_id"    eval="ref('mrp.model_mrp_routing_workcenter')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    -->
+
+
     <record id="is_stock_production_lot_rsp_production_access"  model="ir.model.access" >
         <field name="name">is_stock_production_lot_rsp_production_access</field>
         <field name="model_id"    eval="ref('stock.model_stock_production_lot')"/>
@@ -928,28 +850,6 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
-    <!--
-    <record id="is_gestion_lot_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_gestion_lot_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_gestion_lot')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    -->
-    <!--
-    <record id="is_stock_mise_rebut_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_stock_mise_rebut_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_stock_mise_rebut')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    -->
     <record id="is_inventaire_rsp_production_access"  model="ir.model.access" >
         <field name="name">is_inventaire_rsp_production_access</field>
         <field name="model_id"    eval="ref('model_is_inventaire')"/>
@@ -1443,6 +1343,11 @@
 
 
 
+
+
+
+
+
     <!-- Magasiners -->
     <record id="is_stock_picking_magasiniers_access"  model="ir.model.access" >
         <field name="name">is_stock_picking_magasiniers_access</field>
@@ -1507,6 +1412,9 @@
         <field name="perm_unlink" eval="False"/>
         <field name="perm_create" eval="False"/>
     </record>
+
+
+
 
 
 
@@ -1595,17 +1503,6 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
-    <!--
-    <record id="is_mrp_production_homme_flux_access"  model="ir.model.access" >
-        <field name="name">is_mrp_production_homme_flux_access</field>
-        <field name="model_id"    eval="ref('mrp.model_mrp_production')"/>
-        <field name="group_id"    eval="ref('is_homme_flux_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="False"/>
-        <field name="perm_create" eval="False"/>
-    </record>
-    -->
 
 
 

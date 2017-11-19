@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+
+
+    <!-- Accès is_rsp_production_group -->
+    <record id="is_liste_servir_client_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_client_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_client')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_message_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_message_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+    <!-- Accès is_magasiniers_group -->
+    <record id="is_liste_servir_client_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_client_magasiniers_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_client')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_magasiniers_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_message_magasiniers_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_message_magasiniers_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
+        <field name="group_id"    eval="ref('is_magasiniers_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <!-- Accès base.group_user -->
+    <record id="is_liste_servir_line_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_line_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_line')"/>
+        <field name="group_id"    eval="ref('base.group_user')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_uc_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_uc_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_uc')"/>
+        <field name="group_id"    eval="ref('base.group_user')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_liste_servir_um_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_um_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_um')"/>
+        <field name="group_id"    eval="ref('base.group_user')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    </data>
+</openerp>
