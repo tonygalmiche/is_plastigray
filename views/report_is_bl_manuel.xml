@@ -151,6 +151,7 @@
                             <th t-if="o.destinataire_id.lang != 'en_US'">Commande N°</th> <th t-if="o.destinataire_id.lang == 'en_US'">Order N°</th>
                             <th t-if="o.destinataire_id.lang != 'en_US'">Désignation</th> <th t-if="o.destinataire_id.lang == 'en_US'">Description</th>
                             <th class="text-right" t-if="o.destinataire_id.lang != 'en_US'">Quantité</th>    <th class="text-right" t-if="o.destinataire_id.lang == 'en_US'">Quantity</th>
+                            <th class="text-left">Unité</th>
                             <th class="text-right">Nb Colis</th>
                             <th class="text-left">Poids</th>
                         </tr>
@@ -181,6 +182,9 @@
                             </td>
                             <td class="text-right">
                                 <t t-esc='"{:,.0f}".format(line.qt_livree).replace(","," ").replace(".",",")'/> 
+                            </td>
+                            <td class="text-left">
+                                <span t-field="line.uom_id"/>
                             </td>
                             <td class="text-right">
                                 <t t-esc='"{:,.1f}".format(line.nb_colis).replace(","," ").replace(".",",")'/>

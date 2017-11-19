@@ -139,6 +139,7 @@ class is_bl_manuel_line(models.Model):
     origine_id             = fields.Many2one('res.country', 'Origine')
     nomenclature_douaniere = fields.Char("Nomenclature douanière")
     qt_livree              = fields.Float("Quantité livrée")
+    uom_id                 = fields.Many2one('product.uom', 'Unité')
     qt_par_colis           = fields.Integer("Qt/Colis")
     nb_colis               = fields.Float("Nb Colis")
     poids_net              = fields.Float("Poids net")
@@ -155,6 +156,7 @@ class is_bl_manuel_line(models.Model):
             values['origine_id']             = product.is_origine_produit_id.id
             values['nomenclature_douaniere'] = product.is_nomenclature_douaniere
             values['qt_par_colis']           = product.is_uc_qt
+            values['uom_id']                 = product.uom_id.id
         return {'value': values}
 
 

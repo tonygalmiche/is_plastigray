@@ -89,6 +89,7 @@
                                         name="qt_livree" sum="Total" 
                                         on_change="qt_change(product_id,qt_livree,qt_par_colis)" 
                                     />
+                                    <field name="uom_id" />
                                     <field 
                                         name="qt_par_colis" 
                                         on_change="qt_change(product_id,qt_livree,qt_par_colis)" 
