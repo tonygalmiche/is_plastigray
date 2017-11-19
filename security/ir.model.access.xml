@@ -1315,9 +1315,43 @@
     </record>
 
 
-
-
-
+    <!-- ADV - Expéditions -->
+    <record id="is_sale_order_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_sale_order')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_sale_order_line_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_line_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_sale_order_line')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_edi_cde_cli_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_edi_cde_cli_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_is_edi_cde_cli')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_edi_cde_cli_line_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_edi_cde_cli_line_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_is_edi_cde_cli_line')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
 
 
     <!-- Responsable des ventes -->
