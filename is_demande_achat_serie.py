@@ -76,7 +76,7 @@ class is_demande_achat_serie(models.Model):
     @api.multi
     def vers_brouillon_action(self):
         for obj in self:
-            if obj.acheteur_id.id==self._uid:
+            if obj.acheteur_id.id==self._uid or self._uid==1:
                 obj.sudo().state="brouillon"
 
 
@@ -141,21 +141,18 @@ class is_demande_achat_serie(models.Model):
                         vals=res['value']
                     except:
                         test=False
+                    vals['product_qty'] = line.quantite
+                    vals['price_unit']  = line.prix
                     vals['order_id']=order.id
                     vals['product_id']=line.product_id.id
                     if 'taxes_id' in vals:
                         vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
-                    try:
-                        order_line=order_line_obj.create(vals)
-                        order.wkf_bid_received() 
-                        order.wkf_confirm_order()
-                        order.action_picking_create() 
-                        order.wkf_approve_order()
-                    except:
-                        test=False
-                    if test:
-                        obj.state="solde"
-
+                    order_line=order_line_obj.create(vals)
+                    order.wkf_bid_received() 
+                    order.wkf_confirm_order()
+                    order.action_picking_create() 
+                    order.wkf_approve_order()
+                    obj.state="solde"
 
 
     @api.multi
