@@ -4,10 +4,6 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 
 
-#TODO : 
-
-
-
 class is_demande_achat_fg(models.Model):
     _name='is.demande.achat.fg'
     _order='name desc'
@@ -46,7 +42,7 @@ class is_demande_achat_fg(models.Model):
     chef_service_id      = fields.Many2one('res.users', 'Chef de service', required=True)
     date_creation        = fields.Date("Date de création", required=True)
     acheteur_id          = fields.Many2one('res.users', 'Acheteur', required=True)
-    fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur', domain=[('is_company','=',True),('supplier','=',True),('is_segment_achat.name','=',u'Frais généraux')])
+    fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur', domain=[('is_company','=',True),('supplier','=',True),('is_segment_achat.name','=',u'Fournisseurs de Frais généraux')])
     fournisseur_autre    = fields.Char("Fournisseur autre")
     delai_livraison      = fields.Date("Délai de livraison", required=True)
     lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True),('customer','=',True)], required=True)
