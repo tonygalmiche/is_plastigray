@@ -214,10 +214,14 @@ class sale_order_line(models.Model):
     _inherit = "sale.order.line"
     _order = 'order_id desc, sequence, is_date_livraison, id'
 
+
+    #TODO : J'ai du surcharger ce champ pour ajouter un index (select=true)
+    product_id            = fields.Many2one('product.product', 'Product', domain=[('sale_ok', '=', True)], change_default=True, readonly=True, states={'draft': [('readonly', False)]}, ondelete='restrict',select=True)
+
     is_justification      = fields.Char("Justification", help="Ce champ est obligatoire si l'article n'est pas renseigné ou le prix à 0")
-    is_date_livraison     = fields.Date("Date de livraison")
-    is_date_expedition    = fields.Date("Date d'expédition", store=True, compute='_date_expedition')
-    is_type_commande      = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
+    is_date_livraison     = fields.Date("Date de livraison",select=True)
+    is_date_expedition    = fields.Date("Date d'expédition", store=True, compute='_date_expedition',select=True)
+    is_type_commande      = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type",select=True)
     is_client_order_ref   = fields.Char("Commande client")
     is_ref_client         = fields.Char('Référence client', related='product_id.is_ref_client', readonly=True)
     is_date_confirmation  = fields.Date("Date de confirmation")

@@ -172,6 +172,8 @@ access_is_demande_achat_invest,access_is_demande_achat_invest,model_is_demande_a
 access_is_demande_achat_invest_line,access_is_demande_achat_invest_line,model_is_demande_achat_invest_line,base.group_user,1,1,1,1
 access_is_demande_achat_moule,access_is_demande_achat_moule,model_is_demande_achat_moule,base.group_user,1,1,1,1
 access_is_demande_achat_moule_line,access_is_demande_achat_moule_line,model_is_demande_achat_moule_line,base.group_user,1,1,1,1
+access_is_taux_rotation_stock,access_is_taux_rotation_stock,model_is_taux_rotation_stock,base.group_user,1,0,0,0
+
 
 
 
