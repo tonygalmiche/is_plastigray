@@ -1494,6 +1494,7 @@
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
+    <!--
     <record id="is_taux_rotation_stock_menu" model="ir.ui.menu" >
         <field name="name">Taux rotation stocks</field>
         <field name="sequence">50</field>
@@ -1504,7 +1505,7 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
-
+    -->
 
 
     <menuitem id="is_analyse_fournisseur_menu" sequence="50" name="Analyses Fournisseurs" parent="menu_is_analyse"/>
