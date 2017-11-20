@@ -177,7 +177,7 @@ Module principal du projet Plastigray
         "report/is_sale_order_line.xml",
         "report/is_product_packaging.xml",
         "report/is_mrp_production_workcenter_line.xml",
-        "report/is_taux_rotation_stock.xml",
+        #"report/is_taux_rotation_stock.xml",
         "menu.xml",
     ], 
     "installable": True,
