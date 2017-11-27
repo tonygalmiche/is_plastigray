@@ -4,8 +4,44 @@ from openerp import tools
 from openerp import models,fields,api
 
 
-class is_taux_rotation_stock(models.Model):
-    _name='is.taux.rotation.stock'
+class is_taux_rotation_stock_new(models.Model):
+    _name='is.taux.rotation.stock.new'
+    _order='product_id'
+
+    product_id      = fields.Many2one('product.template', 'Article')
+    cat             = fields.Char('Cat')
+    gest            = fields.Char('Gest')
+    cout_act        = fields.Float('Coût actualisé'      , digits=(14,2))
+    stock           = fields.Float('Stock'               , digits=(14,0))
+    pic_12mois      = fields.Float('PIC 12 Mois'         , digits=(14,0))
+    pic_3mois_ferme = fields.Float('PIC 3 mois ferme'    , digits=(14,0))
+    pic_3mois_prev  = fields.Float('PIC 3 mois prev'     , digits=(14,0))
+    fm_3mois        = fields.Float('FM 3 mois'           , digits=(14,0))
+    ft_3mois        = fields.Float('FT 3 mois'           , digits=(14,0))
+    besoin_total    = fields.Float('Besoins Total 3 mois', digits=(14,0))
+    nb_sem          = fields.Float('Nb Sem'              , digits=(14,0))
+    stock_valorise  = fields.Float('Stock valorisé'      , digits=(14,0))
+
+    def run_is_taux_rotation_stock_new_scheduler_action(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
+        self.run_is_taux_rotation_stock_new(cr, uid, context)
+
+    @api.multi
+    def run_is_taux_rotation_stock_new(self):
+        cr = self._cr
+        print '#### Début : run_is_taux_rotation_stock_new ####'
+        sql="""
+            delete from is_taux_rotation_stock_new;
+
+            INSERT INTO is_taux_rotation_stock_new (id,product_id,cat,gest,cout_act,stock,pic_12mois,pic_3mois_ferme,pic_3mois_prev,fm_3mois,ft_3mois,besoin_total,nb_sem,stock_valorise)
+            SELECT id,product_id,cat,gest,cout_act,stock,pic_12mois,pic_3mois_ferme,pic_3mois_prev,fm_3mois,ft_3mois,besoin_total,nb_sem,stock_valorise
+            FROM is_taux_rotation_stock_view;
+        """
+        cr.execute(sql)
+        print '#### Fin : run_is_taux_rotation_stock_new ####'
+
+
+class is_taux_rotation_stock_view(models.Model):
+    _name='is.taux.rotation.stock.view'
     _order='product_id'
     _auto = False
 
@@ -24,18 +60,10 @@ class is_taux_rotation_stock(models.Model):
     stock_valorise  = fields.Float('Stock valorisé'      , digits=(14,0))
 
 
-    def run_is_taux_rotation_stock_scheduler_action(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
-        self.run_is_taux_rotation_stock(cr, uid, context)
-
-
-    @api.multi
-    def run_is_taux_rotation_stock(self):
-        cr = self._cr
-        cr.execute("REFRESH MATERIALIZED VIEW is_taux_rotation_stock")
 
 
     def init(self, cr):
-        #tools.drop_view_if_exists(cr, 'is_taux_rotation_stock')
+        tools.drop_view_if_exists(cr, 'is_taux_rotation_stock_view')
         cr.execute("""
 
 CREATE OR REPLACE FUNCTION get_cout_act_total(pp_id  integer) RETURNS float AS $$
@@ -134,10 +162,10 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-DROP MATERIALIZED VIEW IF EXISTS is_taux_rotation_stock;
+-- DROP MATERIALIZED VIEW IF EXISTS is_taux_rotation_stock;
+-- CREATE MATERIALIZED VIEW is_taux_rotation_stock AS (
 
-CREATE MATERIALIZED VIEW is_taux_rotation_stock AS (
-
+CREATE OR REPLACE VIEW is_taux_rotation_stock_view AS (
     select 
         pt.id                               id,
         pt.id                               product_id,

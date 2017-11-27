@@ -29,12 +29,12 @@ class mrp_prevision(models.Model):
         ('fs', u"FS"),
         ('ft', u"FT"),
         ('sa', "SA")
-    ], "Type", required=True, select=False)
-    product_id         = fields.Many2one('product.product', 'Article', required=True, select=False)
+    ], "Type", required=True, select=True)
+    product_id         = fields.Many2one('product.product', 'Article', required=True, select=True)
     is_category_id     = fields.Many2one('is.category', 'Catégorie', readonly=True)
     is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire', readonly=True)
     partner_id         = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
-    start_date         = fields.Date('Date de début', select=False)
+    start_date         = fields.Date('Date de début', select=True)
     start_date_cq      = fields.Date('Date début contrôle qualité'   , readonly=True)
     end_date           = fields.Date('Date fin contrôle qualité', required=True)
     quantity           = fields.Float('Quantité', required=True)
