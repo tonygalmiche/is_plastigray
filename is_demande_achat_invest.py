@@ -86,6 +86,8 @@ class is_demande_achat_invest(models.Model):
 
     @api.multi
     def _dirigeant_id(self):
+        if self._uid==1:
+            return 1
         user = self.env['res.users'].search([('login','=','eg')])
         return user.id
 
@@ -188,7 +190,12 @@ class is_demande_achat_invest(models.Model):
                 else:
                     if len(line.num_chantier)!=5:
                         raise Warning('N° du chantier sur 5 chiffres obligatoire sur toutes les lignes de la commande !')
-            if partner.property_product_pricelist_purchase:
+            if partner.property_product_pricelist_purchase.id == False:
+                raise Warning('Liste de prix non renseignée pour ce fournisseur')
+            else:
+                is_document=False
+                for line in obj.line_ids:
+                    is_document=u'M0000/'+line.num_chantier
                 vals={
                     'partner_id'      : partner.id,
                     'is_livre_a_id'   : partner.is_livre_a_id.id,
@@ -197,13 +204,11 @@ class is_demande_achat_invest(models.Model):
                     'payment_term_id' : partner.property_supplier_payment_term.id,
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
                     'is_num_da'       : obj.name,
+                    'is_document'     : is_document,
                     'is_demandeur_id' : obj.createur_id.id,
                 }
                 order=order_obj.create(vals)
                 obj.order_id=order.id
-
-                print 'order=',order
-
                 if order:
                     for line in obj.line_ids:
                         vals={}

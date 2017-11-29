@@ -80,6 +80,14 @@
                                 </tree>
                             </field>
                         </group>
+                        <group string="Logs" >
+                            <field name="log_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="date"/>
+                                    <field name="operation"/>
+                                </tree>
+                            </field>
+                        </group>
                     </sheet>
                 </form>
             </field>

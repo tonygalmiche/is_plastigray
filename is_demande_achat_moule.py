@@ -156,17 +156,23 @@ class is_demande_achat_moule(models.Model):
                 if line.num_chantier==False:
                     raise Warning('N° du chantier obligatoire sur toutes les lignes de la commande !')
                 else:
-                    if len(line.num_chantier)!=5:
-                        raise Warning('N° du chantier sur 5 chiffres obligatoire sur toutes les lignes de la commande !')
-            if partner.property_product_pricelist_purchase:
+                    if len(line.num_chantier)!=11:
+                        raise Warning('Le numéro du chantier doit-être sur 11 caractères (ex : M0000/12345)')
+            if partner.property_product_pricelist_purchase.id == False:
+                raise Warning('Liste de prix non renseignée pour ce fournisseur')
+            else:
+                is_document=False
+                for line in obj.line_ids:
+                    is_document=line.num_chantier
                 vals={
                     'partner_id'      : partner.id,
+                    'pricelist_id'    : partner.property_product_pricelist_purchase.id,
                     'is_livre_a_id'   : partner.is_livre_a_id.id,
                     'location_id'     : partner.is_source_location_id.id,
                     'fiscal_position' : partner.property_account_position.id,
                     'payment_term_id' : partner.property_supplier_payment_term.id,
-                    'pricelist_id'    : partner.property_product_pricelist_purchase.id,
                     'is_num_da'       : obj.name,
+                    'is_document'     : is_document,
                     'is_demandeur_id' : obj.createur_id.id,
                 }
                 order=order_obj.create(vals)
@@ -251,7 +257,7 @@ class is_demande_achat_moule_line(models.Model):
     quantite               = fields.Float("Quantité", digits=(14,4), required=True)
     prix                   = fields.Float("Prix"    , digits=(14,4))
     montant                = fields.Float("Montant", compute='_compute', readonly=True, store=True)
-    num_chantier           = fields.Char("N° du chantier sur 5 chiffres", required=True, help="N° du chantier (M0000/xxxxx)")
+    num_chantier           = fields.Char("N° du chantier", required=True, help="N° du chantier (M0000/xxxxx)")
 
 
     @api.multi
@@ -296,9 +302,8 @@ class is_demande_achat_moule_line(models.Model):
     def _test_num_chantier(self,vals):
         if 'num_chantier' in vals:
             num_chantier=vals.get('num_chantier')
-            print num_chantier,len(num_chantier)
-            if len(num_chantier)!=5:
-                raise Warning('Le numéro du chantier doit-être un nombre à 5 chiffres')
+            if len(num_chantier)!=11:
+                raise Warning('Le numéro du chantier doit-être sur 11 caractères (ex : M0000/12345)')
 
 
     @api.model

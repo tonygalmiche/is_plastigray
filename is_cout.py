@@ -5,6 +5,7 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import datetime
 import time
+import pytz
 
 import base64
 import tempfile
@@ -14,6 +15,20 @@ from contextlib import closing
 import threading
 
 from decimal import Decimal
+
+
+
+def duree(debut):
+    dt = datetime.datetime.now() - debut
+    ms = (dt.days * 24 * 60 * 60 + dt.seconds) * 1000 + dt.microseconds / 1000.0
+    ms=int(ms)
+    return ms
+
+
+def _now(debut):
+    return datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S') + ' : '+ str(int(duree(debut)/100.0)/10.0)+"s"
+
+
 
 
 class is_cout_calcul(models.Model):
@@ -28,6 +43,7 @@ class is_cout_calcul(models.Model):
     is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     multiniveaux       = fields.Boolean('Calcul des coûts multi-niveaux')
     cout_actualise_ids = fields.One2many('is.cout.calcul.actualise', 'cout_calcul_id', u"Historique des côuts actualisés")
+    log_ids            = fields.One2many('is.cout.calcul.log', 'cout_calcul_id', u"Logs")
     state              = fields.Selection([('creation',u'Création'), ('prix_achat', u"Calcul des prix d'achat"),('termine', u"Terminé")], u"État", readonly=True, select=True)
 
     _defaults = {
@@ -158,19 +174,65 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
+    def _log(self,operation):
+        for obj in self:
+            vals={
+                'cout_calcul_id': obj.id,
+                'date'          : datetime.datetime.now(),
+                'operation'     : operation,
+            }
+            res=self.env['is.cout.calcul.log'].create(vals)
+
+
+
+
+    @api.multi
     def action_calcul_prix_achat(self):
         cr = self._cr
         for obj in self:
+            obj.log_ids.unlink()
+            self._log("## DEBUT Calcul des prix d'achat")
+            self._log('début unlink')
             for row in obj.cout_actualise_ids:
                 row.unlink()
+            self._log('fin unlink')
             calcul_actualise_obj = self.env['is.cout.calcul.actualise']
+            self._log("début get_products")
             products=self.get_products(obj)
+            self._log("fin get_products : nb="+str(len(products)))
+
+
+
+            #TODO : 0.07s par article (88s pour 1233 articles)
+            ct=1
+            nb=len(products)
+            #print _now(debut), "## début boucle products : nb=",nb
+
+            self._log("début boucle products : nb="+str(nb))
+
             for product in products:
+                #print _now(debut), product,ct,'/',nb
+                #ct+=1
                 self.nomenclature(obj,product,0, obj.multiniveaux)
             couts=self.env['is.cout'].search([('cout_calcul_id', '=', obj.id)])
             product_uom_obj = self.env['product.uom']
+            #print _now(debut), "## fin boucle products"
+            self._log("fin boucle products")
+
+
+
+
+            ct=1
+            nb=len(couts)
+            #print _now(debut), "## début boucle couts : nb=",nb
+            self._log("début boucle couts : nb="+str(nb))
             for cout in couts:
                 product=cout.name
+
+                #print _now(debut), product.is_code,ct,'/',nb
+                #ct+=1
+
+
                 prix_tarif    = 0
                 prix_commande = 0
                 prix_facture  = 0
@@ -298,6 +360,10 @@ class is_cout_calcul(models.Model):
 
             obj.state="prix_achat"
 
+
+        #print _now(debut), "## FIN"
+        self._log("début boucle couts")
+        self._log("## FIN Calcul des prix d'achat")
 
     @api.multi
     def get_products(self,obj):
@@ -438,6 +504,9 @@ class is_cout_calcul(models.Model):
     @api.multi
     def action_calcul_prix_revient(self):
         for obj in self:
+            self._log("## DEBUT Calcul des prix de revient")
+
+
             cout_obj = self.env['is.cout']
             for row in obj.cout_actualise_ids:
                 product=row.product_id
@@ -563,6 +632,16 @@ class is_cout_calcul(models.Model):
                         row.cout_act_total       = cout_act_total
             obj.state="termine"
 
+            self._log("## FIN Calcul des prix de revient")
+
+
+class is_cout_calcul_log(models.Model):
+    _name='is.cout.calcul.log'
+    _order='date'
+
+    cout_calcul_id = fields.Many2one('is.cout.calcul'  , 'Coût Calcul', required=True, ondelete='cascade')
+    date           = fields.Datetime('Date', required=True)
+    operation      = fields.Char('Opération')
 
 
 class is_cout_calcul_actualise(models.Model):
