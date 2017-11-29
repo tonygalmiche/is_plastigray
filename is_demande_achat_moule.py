@@ -194,8 +194,9 @@ class is_demande_achat_moule(models.Model):
                             state              = 'draft'
                         )
                         vals=res['value']
-                        vals['order_id']=order.id
-                        vals['product_id']=line.product_id.id
+                        vals['order_id']     = order.id
+                        vals['date_planned'] = obj.delai_livraison
+                        vals['product_id']   = line.product_id.id
                         name=[]
                         if line.product_id.id:
                             name.append(line.product_id.is_code+u' - '+line.product_id.name)
