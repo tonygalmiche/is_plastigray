@@ -64,6 +64,19 @@
     </record>
 
 
+    <!-- Accès is_administration_vente_group -->
+    <record id="is_liste_servir_message_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_liste_servir_message_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_is_liste_servir_message')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
     <!-- Accès base.group_user -->
     <record id="is_liste_servir_line_access"  model="ir.model.access" >
         <field name="name">is_liste_servir_line_access</field>

@@ -296,7 +296,7 @@ class is_demande_achat_invest_line(models.Model):
         if fournisseur_id:
             partner = self.env['res.partner'].browse(fournisseur_id)
             pricelist_id=partner.property_product_pricelist_purchase.id
-            if product_id:
+            if product_id and pricelist_id:
                 res['value']={}
                 product = self.env['product.product'].browse(product_id)
                 sql="""
@@ -309,7 +309,8 @@ class is_demande_achat_invest_line(models.Model):
                 prix=0
                 for row in cr.fetchall():
                     prix=row[0]
-                res['value']['prix']=prix
+                if prix>0:
+                    res['value']['prix']=prix
         return res
 
 

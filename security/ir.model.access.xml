@@ -1352,6 +1352,28 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+    <record id="is_bon_transfert_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_bon_transfert_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_is_bon_transfert')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_bon_transfert_line_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_bon_transfert_line_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_is_bon_transfert_line')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
 
 
     <!-- Responsable des ventes -->

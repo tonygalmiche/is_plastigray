@@ -141,10 +141,11 @@ class is_demande_achat_serie(models.Model):
                         vals=res['value']
                     except:
                         test=False
-                    vals['product_qty'] = line.quantite
-                    vals['price_unit']  = line.prix
-                    vals['order_id']=order.id
-                    vals['product_id']=line.product_id.id
+                    vals['product_qty']  = line.quantite
+                    vals['price_unit']   = line.prix
+                    vals['order_id']     = order.id
+                    vals['date_planned'] = obj.delai_livraison
+                    vals['product_id']   = line.product_id.id
                     if 'taxes_id' in vals:
                         vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
                     order_line=order_line_obj.create(vals)

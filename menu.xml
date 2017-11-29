@@ -616,6 +616,7 @@
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <menuitem id="menu_is_ventes_liste_servir_10"  sequence="10" name="Clients à livrer"        parent="menu_is_ventes_liste_servir" action="is_liste_servir_wizard_action" />
@@ -629,8 +630,6 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
-
-
     <record id="menu_is_message_liste_servir" model="ir.ui.menu">
         <field name="name">Message liste à service</field>
         <field name="sequence">90</field>
@@ -638,6 +637,7 @@
         <field name="action"    ref="is_liste_servir_message_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
 
@@ -650,6 +650,7 @@
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <menuitem id="menu_is_ventes_bon_transfert_10"  sequence="10" name="Bon de transfert" parent="menu_is_ventes_bon_transfert" action="is_bon_transfert_action" />
