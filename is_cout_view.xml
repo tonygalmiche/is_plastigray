@@ -167,7 +167,7 @@
                                 <field name="cout_std_machine"       attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_mo"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_st"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <field name="cout_std_total"         attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1"/> 
+                                <field name="cout_std_total"         attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1" sum="Total"/> 
                                 <field name="cout_std_prix_vente"    attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                             </group>
                             <group string="Coût actualisé">
@@ -176,7 +176,7 @@
                                 <field name="cout_act_machine"    attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_act_mo"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_act_st"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
-                                <field name="cout_act_total"      attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1"/> 
+                                <field name="cout_act_total"      attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1" sum="Total"/> 
                                 <field name="cout_act_prix_vente" attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                             </group>
                         </group>
@@ -195,9 +195,9 @@
                                     <field name="unite"/>
                                     <field name="quantite"/>
                                     <field name="cout_mat"/>
-                                    <field name="total_mat"/>
+                                    <field name="total_mat" sum="Total"/>
                                     <field name="cout_st"/>
-                                    <field name="total_st"/>
+                                    <field name="total_st" sum="Total"/>
                                     <field name="msg_err"/>
                                 </tree>
                             </field>
@@ -213,7 +213,7 @@
                                     <field name="tps_prepa" widget="float_time"/>
                                     <field name="cout_fab"/>
                                     <field name="tps_fab"/>
-                                    <field name="cout_total"/>
+                                    <field name="cout_total" sum="Total"/>
                                 </tree>
                             </field>
                         </group>
@@ -228,7 +228,7 @@
                                     <field name="tps_prepa" widget="float_time"/>
                                     <field name="cout_fab"/>
                                     <field name="tps_fab"/>
-                                    <field name="cout_total"/>
+                                    <field name="cout_total" sum="Total"/>
                                 </tree>
                             </field>
                         </group>
@@ -276,7 +276,7 @@
                                     <field name="tps_prepa" widget="float_time"/>
                                     <field name="cout_fab"/>
                                     <field name="tps_fab"/>
-                                    <field name="cout_total"/>
+                                    <field name="cout_total" sum="Total"/>
                                 </tree>
                             </field>
                         </group>
@@ -291,7 +291,7 @@
                                     <field name="tps_prepa" widget="float_time"/>
                                     <field name="cout_fab"/>
                                     <field name="tps_fab"/>
-                                    <field name="cout_total"/>
+                                    <field name="cout_total" sum="Total"/>
                                 </tree>
                             </field>
                         </group>
@@ -303,9 +303,9 @@
                                     <field name="unite"/>
                                     <field name="quantite"/>
                                     <field name="cout_mat"/>
-                                    <field name="total_mat"/>
+                                    <field name="total_mat" sum="Total"/>
                                     <field name="cout_st"/>
-                                    <field name="total_st"/>
+                                    <field name="total_st" sum="Total"/>
                                     <field name="msg_err"/>
                                 </tree>
                             </field>
