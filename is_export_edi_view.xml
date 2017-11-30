@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Sequence is.export.edi --> 
+        <record id="is_export_edi_type_seq" model="ir.sequence.type">
+            <field name="name">Export EDI</field>
+            <field name="code">is.export.edi</field>
+        </record>
+        <record id="is_export_edi_seq" model="ir.sequence">
+            <field name="name">Export EDI</field>
+            <field name="code">is.export.edi</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- is.export.edi --> 
+        <record model="ir.ui.view" id="is_export_edi_form_view">
+            <field name="name">is_export_edi_form_view</field>
+            <field name="model">is.export.edi</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="creer_fichier_edi_action"
+                            string="Créer le fichier d'EDI"
+                            type="object"
+                        />
+                        <button 
+                            name="envoyer_par_mail_action"
+                            string="Envoyer par mail au contact logistique"
+                            type="object"
+                        />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group string="Identification">
+                                <field name="name"/>
+                                <field 
+                                    name="code" 
+                                    on_change="code_on_change(code)" 
+                                />
+                                <field name="code_adr"/>
+                                <field name="partner_id"/>
+                                <field name="contact_id" domain="[('parent_id','=',partner_id)]" />
+                                <field name="date_fin"/>
+                            </group>
+                        </group>
+                        <group> 
+                            <field name="historique_ids" nolabel="1" readonly="1">
+                                <tree>
+                                    <field name="name" /> 
+                                    <field name="user_id" /> 
+                                    <field name="description" /> 
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_export_edi_tree_view">
+            <field name="name">is_export_edi_tree_view</field>
+            <field name="model">is.export.edi</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="code_adr"/>
+                    <field name="partner_id"/>
+                    <field name="contact_id"/>
+                    <field name="date_fin"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_export_edi_search_view" >
+            <field name="name">is_export_edi_search_view</field>
+            <field name="model">is.export.edi</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="code_adr"/>
+                    <field name="partner_id"/>
+                    <field name="contact_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_export_edi_action">
+            <field name="name">Export EDI</field>
+            <field name="res_model">is.export.edi</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+  </data>
+</openerp>

@@ -52,6 +52,7 @@ import is_consigne_journaliere
 import is_demande_transport
 import is_bl_manuel
 import is_taux_rotation_stock
+import is_export_edi
 
 import is_copy_other_database
 import report

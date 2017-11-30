@@ -175,10 +175,8 @@ access_is_demande_achat_moule_line,access_is_demande_achat_moule_line,model_is_d
 access_is_taux_rotation_stock_view,access_is_taux_rotation_stock_view,model_is_taux_rotation_stock_view,base.group_user,1,0,0,0
 access_is_taux_rotation_stock_new,access_is_taux_rotation_stock_new,model_is_taux_rotation_stock_new,base.group_user,1,0,0,0
 access_is_cout_calcul_log,access_is_cout_calcul_log,model_is_cout_calcul_log,base.group_user,1,1,1,1
-
-
-
-
+access_is_export_edi,access_is_export_edi,model_is_export_edi,base.group_user,1,1,1,1
+access_is_export_edi_histo,access_is_export_edi_histo,model_is_export_edi_histo,base.group_user,1,1,1,1
 
 
 

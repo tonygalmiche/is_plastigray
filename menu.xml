@@ -305,6 +305,16 @@
     <menuitem id="menu_is_achats_cde_ouverte_10"  sequence="10" name="Cde prévisionnelles"   parent="menu_is_achats_cde_ouverte" action="is_cde_ouverte_fournisseur_action" />
     <menuitem id="menu_is_achats_cde_ouverte_20"  sequence="20" name="Lignes"                parent="menu_is_achats_cde_ouverte" action="is_cde_ouverte_fournisseur_product_action" />
     <menuitem id="is_cde_ferme_cadencee_menu"     sequence="30" name="Cde fermes cadencées"  parent="menu_is_achats_cde_ouverte" action="is_cde_ferme_cadencee_action" />
+    <record id="is_export_edi_menu" model="ir.ui.menu">
+        <field name="name">Export EDI</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('menu_is_achats_cde_ouverte')"/>
+        <field name="action"    ref="is_export_edi_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_achats_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
 
 
     <!-- Achats / Réceptions -->

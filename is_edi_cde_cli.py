@@ -171,7 +171,6 @@ class is_edi_cde_cli(models.Model):
 
                             #** Vérification de la date de livraison livraison *
                             check_date = self.env['sale.order.line'].check_date_livraison(ligne["date_livraison"], partner_id)
-                            #print ligne["date_livraison"], check_date
                             if not check_date:
                                 anomalie2.append("Date de livraison pendant la fermeture du client")
                             #***************************************************
@@ -285,16 +284,15 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_eCar(attachment)
         if import_function=="902810":
             datas=self.get_data_902810(attachment)
-
         if import_function=="903410":
             datas=self.get_data_903410(attachment)
-
         if import_function=="GXS":
             datas=self.get_data_GXS(attachment)
         if import_function=="Plasti-ka":
             datas=self.get_data_plastika(attachment)
+        if import_function=="Odoo":
+            datas=self.get_data_Odoo(attachment)
         return datas
-
 
 
     @api.multi
@@ -513,6 +511,74 @@ class is_edi_cde_cli(models.Model):
                             val.update({'lignes':[ligne]})
                             res.append(val)
         return res
+
+
+
+
+
+
+
+
+
+
+    @api.multi
+    def get_data_Odoo(self, attachment):
+        res = []
+        for obj in self:
+            csvfile=base64.decodestring(attachment.datas)
+            csvfile=csvfile.split("\n")
+            tab=[]
+            ct=0
+            for row in csvfile:
+                ct=ct+1
+                lig=row.split("\t")
+                if len(lig)==7:
+                    # Recherche article
+                    product=self.env['product.product'].search([
+                        ('is_code'   , '=', lig[3]),
+                    ])
+                    anomalie=False
+                    if len(product)==0:
+                        anomalie=u'Article '+lig[3]+u' non trouvé'
+                    # Recherche commande ouverte
+                    order=self.env['sale.order'].search([
+                        ('partner_id.is_code'    , '=', obj.partner_id.is_code),
+                        ('is_article_commande_id', '=', product.id),
+                        ('is_type_commande'      , '=', 'ouverte'),
+                        ('state'                 , '=', 'draft'),
+                    ])
+                    if len(order)==0:
+                        anomalie=u"Commande non trouvée pour l'article "+lig[3]
+                    ref_article_client  = product.is_ref_client
+                    num_commande_client = order.client_order_ref
+                    val={
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    type_commande="ferme"
+                    if lig[5]=='prev':
+                        type_commande="previsionnel"
+                    date_livraison=lig[4].strip()
+                    d=datetime.strptime(date_livraison, '%Y-%m-%d')
+                    date_livraison=d.strftime('%Y-%m-%d')
+                    quantite=str(lig[6])
+                    qt=0
+                    try:
+                        qt=float(quantite)
+                    except ValueError:
+                        print '## ValueError', ref_article_client, date_livraison, lig[6]
+                    if qt!=0:
+                        ligne = {
+                            'quantite'      : qt,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                            'anomalie'      : anomalie
+                        }
+                        val.update({'lignes':[ligne]})
+                        res.append(val)
+        return res
+
+
 
 
 
