@@ -12,12 +12,14 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # ** Fonctions d'importation EDI ***********************************************
 import_function=[
-    ('eCar'     , 'eCar'),
-    ('902810'   , '902810'),
-    ('903410'   , '903410'),
-    ('GXS'      , 'GXS'),
-    ('Plasti-ka', 'Plasti-ka'),
-    ('Odoo'     , 'Odoo'),
+    ('902810'    , '902810'),
+    ('903410'    , '903410'),
+    ('eCar'      , 'eCar'),
+    ('GXS'       , 'GXS'),
+    ('John-Deere', 'John-Deere'),
+    ('Motus'     , 'Motus'),
+    ('Odoo'      , 'Odoo'),
+    ('Plasti-ka' , 'Plasti-ka'),
 ]
 # ******************************************************************************
 
