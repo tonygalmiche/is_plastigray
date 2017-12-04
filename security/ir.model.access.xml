@@ -1648,8 +1648,8 @@
 
 
     <!-- Chef d'équipe et assistante logistique -->
-    <record id="is_consigne_journaliere_access"  model="ir.model.access" >
-        <field name="name">is_consigne_journaliere_access</field>
+    <record id="is_consigne_journaliere_chef_equipe_access"  model="ir.model.access" >
+        <field name="name">is_consigne_journaliere_chef_equipe_access</field>
         <field name="model_id"    eval="ref('model_is_consigne_journaliere')"/>
         <field name="group_id"    eval="ref('is_chef_equipe_group')"/>
         <field name="perm_read"   eval="True"/>
@@ -1657,6 +1657,47 @@
         <field name="perm_unlink" eval="False"/>
         <field name="perm_create" eval="True"/>
     </record>
+    <record id="is_mrp_production_chef_equipe_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_chef_equipe_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production')"/>
+        <field name="group_id"    eval="ref('is_chef_equipe_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_production_product_line_chef_equipe_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_product_line_chef_equipe_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production_product_line')"/>
+        <field name="group_id"    eval="ref('is_chef_equipe_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_mrp_production_workcenter_line_chef_equipe_access"  model="ir.model.access" >
+        <field name="name">is_mrp_production_workcenter_line_chef_equipe_access</field>
+        <field name="model_id"    eval="ref('mrp.model_mrp_production_workcenter_line')"/>
+        <field name="group_id"    eval="ref('is_chef_equipe_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_move_chef_equipe_access"  model="ir.model.access" >
+        <field name="name">is_stock_move_chef_equipe_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_move')"/>
+        <field name="group_id"    eval="ref('is_chef_equipe_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+
+
+
 
 
 

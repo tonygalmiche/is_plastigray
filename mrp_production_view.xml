@@ -47,7 +47,7 @@
                     <button 
                         name="action_done" type="object" string="Solder cet OF"
                         states="draft,ready,in_production,confirmed" 
-                        groups="is_plastigray.is_rsp_production_group,is_plastigray.is_magasiniers_group"
+                        groups="is_plastigray.is_rsp_production_group,is_plastigray.is_magasiniers_group,is_plastigray.is_chef_equipe_group"
                         confirm="Voulez-vous vraiment solder cet OF ?" />
                 </xpath>
                 <xpath expr="//group/group[@string='Consumed Products']" position="replace">

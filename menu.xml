@@ -328,6 +328,7 @@
             ref('is_rsp_achats_group'),
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
+            ref('is_chef_equipe_group'),
         ])]"/>
     </record>
     <record id="is_ligne_reception_a_traiter_menu" model="ir.ui.menu">
@@ -340,6 +341,7 @@
             ref('is_rsp_achats_group'),
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
+            ref('is_chef_equipe_group'),
         ])]"/>
     </record>
     <record id="is_ligne_reception_terminee_menu" model="ir.ui.menu">
@@ -975,6 +977,7 @@
         <field name="action"    ref="mrp.mrp_production_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
+            ref('is_chef_equipe_group'),
         ])]"/>
     </record>
     <record id="menu_is_declaration_fabrication" model="ir.ui.menu" >
@@ -986,6 +989,7 @@
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
             ref('is_magasiniers_group'),
+            ref('is_chef_equipe_group'),
         ])]"/>
     </record>
 
@@ -1005,11 +1009,9 @@
         <field name="parent_id" eval="ref('menu_is_production_production')"/>
         <field name="action"    ref="is_consigne_journaliere_action"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_rsp_production_group'),
-            ref('is_chef_equipe_group'),
+            ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
-
 
     <record id="is_instruction_particuliere_menu" model="ir.ui.menu" >
         <field name="name">Instructions particulières</field>
