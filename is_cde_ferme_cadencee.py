@@ -103,10 +103,11 @@ class is_cde_ferme_cadencee(models.Model):
                 for row in result:
                     qt_rcp  = row[0] or 0
                 #***************************************************************
-                order.num_bl   = num_bl
-                order.date_bl  = date_bl
-                order.qt_rcp   = qt_rcp
-                order.qt_reste = order.product_qty-qt_rcp
+                order.num_bl       = num_bl
+                order.date_bl      = date_bl
+                order.qt_rcp       = qt_rcp
+                order.qt_reste     = order.product_qty-qt_rcp
+                order.date_planned = order.order_id.minimum_planned_date
 
 
 class is_cde_ferme_cadencee_order(models.Model):
