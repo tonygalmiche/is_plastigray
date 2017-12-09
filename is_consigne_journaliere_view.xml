@@ -103,6 +103,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree>
+                    <field name="create_date" string="Date de création" />
                     <field name="name" />
                     <field name="chef_atelier" />
                     <field name="remarque_generale" />

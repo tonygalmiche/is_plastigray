@@ -9,7 +9,7 @@ import datetime
 class is_consigne_journaliere(models.Model):
     _name = "is.consigne.journaliere"
     _description = "Consignes journalieres"
-    _order='name desc'
+    _order='create_date desc'
 
     name                = fields.Char('Titre')
     chef_atelier        = fields.Char("Chef d'atelier")
@@ -17,8 +17,8 @@ class is_consigne_journaliere(models.Model):
     date_derniere_modif = fields.Datetime("Date dernière modification", readonly=True)
     total_mod_inj       = fields.Float('Total MOD Injection' , readonly=True, compute='_compute', store=True)
     total_mod_ass       = fields.Float('Total MOD Assemblage', readonly=True, compute='_compute', store=True)
-    injection_ids       = fields.One2many('is.consigne.journaliere.inj'  , 'consigne_id', u"Injection")
-    assemblage_ids      = fields.One2many('is.consigne.journaliere.ass'  , 'consigne_id', u"Assemblage")
+    injection_ids       = fields.One2many('is.consigne.journaliere.inj'  , 'consigne_id', u"Injection" , copy=True)
+    assemblage_ids      = fields.One2many('is.consigne.journaliere.ass'  , 'consigne_id', u"Assemblage", copy=True)
 
 
     @api.depends('injection_ids','assemblage_ids')
