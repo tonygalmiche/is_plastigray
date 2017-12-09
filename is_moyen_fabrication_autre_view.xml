@@ -50,6 +50,12 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
+                    <field name="type_equipement"/>
+                    <field name="designation"/>
+                    <field name="mold_id"/>
+                    <field name="dossierf_id"/>
+                    <field name="site_id"/>
+                    <field name="emplacement"/>
                 </search>
             </field>
         </record>
