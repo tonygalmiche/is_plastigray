@@ -126,7 +126,8 @@
                             <group>
                                 <field name="name"/>
                                 <field name="designation"/>
-                                <field name="emplacement"/>
+                                <!--<field name="emplacement"/>-->
+                                <field name="site_id"/>
                                 <field name="puissance"/>
                                 <field name="type_de_presse"/>
                                 <field name="num_construceur"/>
@@ -230,7 +231,7 @@
                                 <field name="nb_noyau_pm"/>
                                 <field name="diametre_passage_buse"/>
                                 <field name="poids"/>
-                                <field name="site_id"/>
+
                             </group>
                         </group>
                     </sheet>
@@ -248,7 +249,8 @@
                     <field name="name"        invisible="context.get('caracteristigues',True)"/>
                     <field name="designation" invisible="context.get('caracteristigues',True)"/>
                     <field name="classe"      invisible="context.get('caracteristigues',True)"/>
-                    <field name="emplacement" invisible="context.get('caracteristigues',True)"/>
+                    <!--<field name="emplacement" invisible="context.get('caracteristigues',True)"/>-->
+                    <field name="site_id"     invisible="context.get('caracteristigues',True)"/>
                     <field name="classe_commerciale" invisible="context.get('caracteristigues',True)"/>
                     <field name="puissance" invisible="context.get('caracteristigues',True)"/>
                     <field name="puissance_reelle" invisible="context.get('caracteristigues',True)"/>
@@ -315,7 +317,8 @@
                     <field name="name"/>
                     <field name="designation"/>
                     <field name="classe"/>
-                    <field name="emplacement"/>
+                    <!--<field name="emplacement"/>-->
+                    <field name="site_id"/>
                     <field name="classe_commerciale"/>
                     <filter name="caracteristigues_filter" filter_domain="[]" context="{'caracteristigues':False}" string="Caractéristiques"/>
                     <filter name="capacite moule_filter" filter_domain="[]" context="{'capacite_moule':False}" string="Capacité moule"/>
