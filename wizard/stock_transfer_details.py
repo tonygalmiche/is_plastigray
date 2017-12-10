@@ -85,24 +85,45 @@ class stock_transfer_details(models.TransientModel):
         #***********************************************************************
 
 
-        #** Permet de créer un lot avec le même numéro que la réception ********
+#        #** Permet de créer un lot avec le même numéro que la réception ********
+#        if picking.is_purchase_order_id:
+#            res.update({'is_purchase_order_id': picking.is_purchase_order_id.id})
+#            item_data = res.get('item_ids',[])
+#            for item in item_data:
+#                if item.get('lot_id', False) == False:
+#                    lot_id = stock_product_lot_obj.search(cr, uid, [('name','=', picking.name),('product_id','=', item.get('product_id'))], context=context)
+#                    if lot_id: lot_id = lot_id[0]
+#                    else:
+#                        lot_id = stock_product_lot_obj.create(cr, uid, {
+#                                'name': picking.name,
+#                                'product_id': item.get('product_id'),
+#                        }, context=context)
+#                    if lot_id:
+#                        item['lot_id']=lot_id
+#        #***********************************************************************
+
+
+
+        #** Créer lot avec le même numéro que la réception et la date devant ***
         if picking.is_purchase_order_id:
             res.update({'is_purchase_order_id': picking.is_purchase_order_id.id})
             item_data = res.get('item_ids',[])
             for item in item_data:
                 if item.get('lot_id', False) == False:
-                    lot_id = stock_product_lot_obj.search(cr, uid, [('name','=', picking.name),('product_id','=', item.get('product_id'))], context=context)
+                    numlot=datetime.date.today().strftime('%y%m%d')+picking.name
+                    lot_id = stock_product_lot_obj.search(cr, uid, [
+                            ('name','=', numlot),
+                            ('product_id','=', item.get('product_id'))
+                        ], context=context)
                     if lot_id: lot_id = lot_id[0]
                     else:
                         lot_id = stock_product_lot_obj.create(cr, uid, {
-                                'name': picking.name,
+                                'name': numlot,
                                 'product_id': item.get('product_id'),
                         }, context=context)
                     if lot_id:
                         item['lot_id']=lot_id
         #***********************************************************************
-
-
 
         return res
         
