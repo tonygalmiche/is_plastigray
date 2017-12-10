@@ -26,6 +26,7 @@ class product_pricelist_item(models.Model):
     date_end          = fields.Date('Date de fin de validité')
     product_uom_id    = fields.Many2one('product.uom', 'Unité'        , related='product_id.uom_id'   , readonly=True)
     product_po_uom_id = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
+    is_ref_client     = fields.Char("Référence client", related='product_id.is_ref_client', readonly=True)
     min_quantity      = fields.Float('Quantité minimum', required=True)
 
     @api.multi
