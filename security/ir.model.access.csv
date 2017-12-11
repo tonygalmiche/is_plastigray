@@ -177,8 +177,7 @@ access_is_taux_rotation_stock_new,access_is_taux_rotation_stock_new,model_is_tau
 access_is_cout_calcul_log,access_is_cout_calcul_log,model_is_cout_calcul_log,base.group_user,1,1,1,1
 access_is_export_edi,access_is_export_edi,model_is_export_edi,base.group_user,1,1,1,1
 access_is_export_edi_histo,access_is_export_edi_histo,model_is_export_edi_histo,base.group_user,1,1,1,1
-
-
+access_is_cde_ferme_cadencee_histo,access_is_cde_ferme_cadencee_histo,model_is_cde_ferme_cadencee_histo,base.group_user,1,1,1,1
 
 
 
