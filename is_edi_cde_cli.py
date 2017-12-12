@@ -674,10 +674,6 @@ class is_edi_cde_cli(models.Model):
                                                     num_commande_client=n5.text.strip()
                                                 if col==5:
                                                     ref_article_client=n5.text.strip()
-                                                if col==11:
-                                                    date_livraison=n5.text[:10]
-                                                    d=datetime.strptime(date_livraison, '%Y-%m-%d')
-                                                    date_livraison=d.strftime('%Y-%m-%d')
                                                 if col==12:
                                                     type_commande=n5.text
                                                     if type_commande=='Firmed':
@@ -690,10 +686,11 @@ class is_edi_cde_cli(models.Model):
                                                         qt=float(quantite)
                                                     except ValueError:
                                                         qt=0
+                                                if col==17:
+                                                    date_livraison=n5.text[:10]
+                                                    d=datetime.strptime(date_livraison, '%Y-%m-%d')
+                                                    date_livraison=d.strftime('%Y-%m-%d')
 
-
-                                    #if ref_article_client=='2829117-0000-3':
-                                    #    print num_commande_client,ref_article_client,date_livraison,type_commande,qt
                                     val={
                                         'num_commande_client' : num_commande_client,
                                         'ref_article_client'  : ref_article_client,
