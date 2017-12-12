@@ -340,7 +340,6 @@ class is_edi_cde_cli(models.Model):
                     quantite = lig[col_qn].decode('utf8').strip()
                     quantite = quantite.replace(u'\xa0', '')
                     quantite = quantite.replace(',', '.')
-                    print(quantite, val)
                     try:
                         qt = float(quantite)
                     except ValueError:
@@ -353,8 +352,6 @@ class is_edi_cde_cli(models.Model):
                             type_commande = "previsionnel"
                         else:
                             type_commande = "ferme"
-
-                    print(lig, lig[col_date].strip())
                     date_livraison = lig[col_date].strip()
                     d = datetime.strptime(date_livraison, '%d/%m/%Y')
                     date_livraison = d.strftime('%Y-%m-%d')
@@ -695,8 +692,8 @@ class is_edi_cde_cli(models.Model):
                                                         qt=0
 
 
-                                    if ref_article_client=='2829117-0000-3':
-                                        print num_commande_client,ref_article_client,date_livraison,type_commande,qt
+                                    #if ref_article_client=='2829117-0000-3':
+                                    #    print num_commande_client,ref_article_client,date_livraison,type_commande,qt
                                     val={
                                         'num_commande_client' : num_commande_client,
                                         'ref_article_client'  : ref_article_client,
