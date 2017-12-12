@@ -31,7 +31,6 @@
                     <field name='port_server' />
                     <field name='database' />
                     <field name='login' />
-                    <field name='password' />
                     <field name='is_database_origine_id' />
                 </tree>
             </field>
