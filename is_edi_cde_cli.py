@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import csv
-import numpy as np
-import xlrd
+import csv, cStringIO
 
 from openerp.tools.translate import _
 from openerp import netsvc
@@ -301,11 +299,73 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_Odoo(attachment)
         if import_function=="Plasti-ka":
             datas=self.get_data_plastika(attachment)
+        if import_function == 'Lacroix':
+            datas = self.get_data_lacroix(attachment)
         return datas
 
 
+    @api.multi
+    def get_data_lacroix(self, attachment):
+        nb_cols = 20
+        col_ref = 2
+        col_qn = 14
+        col_type = None
+        col_date = 17
+        data_previsionnel = 'P'
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile)
 
+            tab=[]
+            for ct, lig in enumerate(csvfile):
+                # Header CSV
+                if ct == 0:
+                    continue
+                if len(lig) == nb_cols:
+                    ref_article_client = lig[col_ref].strip()
+                    order = self.env['sale.order'].search([
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                        ('is_ref_client', '=', ref_article_client)]
+                    )
+                    num_commande_client = "??"
+                    if len(order):
+                        num_commande_client = order[0].client_order_ref
+                    val = {
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    # '1\xc2\xa0456,000' => 1456.00
+                    quantite = lig[col_qn].decode('utf8').strip()
+                    quantite = quantite.replace(u'\xa0', '')
+                    quantite = quantite.replace(',', '.')
+                    print(quantite, val)
+                    try:
+                        qt = float(quantite)
+                    except ValueError:
+                        continue
+                    if col_type is None:
+                        type_commande="previsionnel"
+                    else:
+                        type_commande = lig[col_type].strip()
+                        if type_commande == data_previsionnel:
+                            type_commande = "previsionnel"
+                        else:
+                            type_commande = "ferme"
 
+                    print(lig, lig[col_date].strip())
+                    date_livraison = lig[col_date].strip()
+                    d = datetime.strptime(date_livraison, '%d/%m/%Y')
+                    date_livraison = d.strftime('%Y-%m-%d')
+                    ligne = {
+                        'quantite'      : qt,
+                        'type_commande' : type_commande,
+                        'date_livraison': date_livraison,
+                    }
+                    val.update({'lignes': [ligne]})
+                    res.append(val)
+        return res
 
 
 

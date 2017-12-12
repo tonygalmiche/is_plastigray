@@ -17,6 +17,7 @@ import_function=[
     ('eCar'      , 'eCar'),
     ('GXS'       , 'GXS'),
     ('John-Deere', 'John-Deere'),
+    ('Lacroix'   , 'Lacroix'),
     ('Motus'     , 'Motus'),
     ('Odoo'      , 'Odoo'),
     ('Plasti-ka' , 'Plasti-ka'),
