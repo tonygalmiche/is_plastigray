@@ -315,9 +315,8 @@
                     <field name="is_code"/>
                     <field name="is_adr_code"/>
                     <field name="is_segment_achat"/>
-                    <field name="phone"/>
-                    <field name="email"/>
                     <field name="city"/>
+                    <field name="zip"/>
                     <field name="is_type_cde_fournisseur"/>
                     <field name="property_product_pricelist_purchase"/>
                     <field name="is_database_origine_id"/>
