@@ -217,6 +217,41 @@
             <field eval="'(True,)'" name="args"/>
         </record>
 
-
+        <record model='ir.ui.view' id='is_pic_3ans_desactive_tree_view'>
+            <field name="name">is_pic_3ans_desactive_tree_view</field>
+            <field name="model">is.pic.3ans.desactive</field>
+            <field name="arch" type="xml">
+               <tree>
+                  <field name="product_id" widget="many2one_clickable"/>
+                  <field name="name"/>
+                  <field name="gest"/>
+                  <field name="qt"/>
+               </tree>
+            </field>
+        </record>
+     
+        <record model='ir.ui.view' id='is_pic_3ans_desactive_form_view'>
+           <field name="name">is_pic_3ans_desactive_form_view</field>
+           <field name="model">is.pic.3ans.desactive</field>
+           <field name="arch" type="xml">
+              <form>
+                 <sheet>
+                     <group>
+                         <field name="product_id" widget="many2one_clickable"/>
+                         <field name="name"/>
+                         <field name="gest"/>
+                         <field name="qt"/>
+                     </group>
+                 </sheet>
+              </form>
+           </field>
+        </record>
+     
+        <record id="is_pic_3ans_desactive_action" model="ir.actions.act_window">
+            <field name="name">PIC 3 ans désactivé</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.pic.3ans.desactive</field>
+            <field name="view_mode">tree,form</field>
+        </record>
     </data>
 </openerp>

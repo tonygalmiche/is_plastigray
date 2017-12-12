@@ -928,6 +928,15 @@
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
+    <record id="is_pic_3ans_desactive_menu" model="ir.ui.menu" >
+        <field name="name">PIC à 3 ans désactivé</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_pic_3ans_main_menu')"/>
+        <field name="action"    ref="is_pic_3ans_desactive_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
 
 
 

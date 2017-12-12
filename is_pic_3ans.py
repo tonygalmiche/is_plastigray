@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models,fields,api
+from openerp import models,fields,api,tools
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 from datetime import datetime
@@ -366,4 +366,31 @@ class is_pic_3ans(models.Model):
             res.append((obj.id, name))
         return res
 
+
+class is_pic_3ans_desactive(models.Model):
+    _name='is.pic.3ans.desactive'
+    _order = "product_id"
+    _auto = False
+
+    product_id = fields.Many2one('product.template', 'Article')
+    name       = fields.Char('Nom')
+    gest       = fields.Char('Gestionnaire')
+    qt         = fields.Integer('Quantité')
+
+    def init(self, cr):
+        tools.drop_view_if_exists(cr, 'is_pic_3ans_desactive')
+        cr.execute("""CREATE OR REPLACE VIEW is_pic_3ans_desactive AS (
+            SELECT
+                pt.id             as id,
+                pt.id             as product_id,
+                pt.name           as name,
+                ig.name           as gest,
+                SUM(pic.quantite) as qt
+            FROM product_template pt INNER JOIN product_product pp ON pp.product_tmpl_id=pt.id
+                                     INNER JOIN is_pic_3ans pic ON pic.product_id=pp.id
+                                     INNER JOIN is_gestionnaire ig ON pt.is_gestionnaire_id=ig.id
+            WHERE ig.name IN ('04', '12', '14')
+            GROUP BY pt.id, pt.name, ig.name
+        )
+        """)
 
