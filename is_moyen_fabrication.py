@@ -21,6 +21,8 @@ class is_moyen_fabrication(models.Model):
 
     name                   = fields.Char("Code", required=True)
     type_equipement        = fields.Many2one('is.type.equipement', string='Type équipement', required=True)
+    type_equipement_name   = fields.Char('Type équipement name' , related='type_equipement.name', readonly=True)
+    lieu_changement        = fields.Selection([('presse', 'sur presse'), ('mecanique', 'en mécanique')], "Lieu changement")
     designation            = fields.Char("Désignation", required=False)
     mold_ids               = fields.Many2many('is.mold'    ,'is_moyen_fabrication_id'         , 'is_mold_id_fabric'    , string='Moule')
     dossierf_ids           = fields.Many2many('is.dossierf','is_moyen_fabrication_dossierf_id', 'is_dossierf_id_fabric', string='Dossier F')
@@ -89,6 +91,7 @@ class is_moyen_fabrication(models.Model):
         moyen_fabrication_vals ={
             'name'                  : tools.ustr(fabrication.name or ''),
             'type_equipement'       : self._get_type_equipement(fabrication, DB, USERID, USERPASS, sock),
+            'lieu_changement'       : tools.ustr(fabrication.lieu_changement or ''),
             'designation'           : tools.ustr(fabrication.designation or ''),
             'mold_ids'              : self._get_mold_ids(fabrication , DB, USERID, USERPASS, sock),
             'dossierf_ids'          : self._get_dossierf_ids(fabrication , DB, USERID, USERPASS, sock),
