@@ -87,6 +87,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='number']" position="replace" >
                     <field name="internal_number"/> 
+                    <field name="type"/> 
                 </xpath>
                 <xpath expr="//field[@name='state']" position="after" >
                     <field name="is_date_envoi_mail"/> 
@@ -198,7 +199,7 @@
             <field name="name">Factures à valider</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.invoice</field>
-            <field name="domain">[('state','=', 'draft'),('type','=', 'out_invoice')]</field>
+            <field name="domain">[('state','=', 'draft'),'|',('type','=', 'out_invoice'),('type','=', 'out_refund')]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -222,7 +223,7 @@
             <field name="name">Factures à imprimer = Factures à comptabiliser</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.invoice</field>
-            <field name="domain">[('is_folio_id','=', False),('state','=', 'open'),('type','=', 'out_invoice')]</field>
+            <field name="domain">[('is_folio_id','=', False),('state','=', 'open'),'|',('type','=', 'out_invoice'),('type','=', 'out_refund')]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -246,7 +247,12 @@
             <field name="name">Factures à envoyer par mail</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.invoice</field>
-            <field name="domain">[('is_mode_envoi_facture','like','mail'),('type','=','out_invoice'),('is_date_envoi_mail','=',False),('state','=','open')]</field>
+            <field name="domain">[
+                ('is_mode_envoi_facture','like','mail'),
+                ('is_date_envoi_mail','=',False),
+                ('state','=','open'),
+                '|',('type','=','out_invoice'),('type','=','out_refund')
+            ]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

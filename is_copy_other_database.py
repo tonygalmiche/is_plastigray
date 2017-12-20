@@ -398,7 +398,7 @@ class is_database(models.Model):
             'property_payment_term'          : partner.property_payment_term.id,
             'property_supplier_payment_term' : partner.property_supplier_payment_term.id,
             'is_escompte'                    : partner.is_escompte.id,
-            'is_type_reglement'              : partner.is_type_reglement.id,
+            #'is_type_reglement'              : partner.is_type_reglement.id,
             'is_rib_id'                      : partner.is_rib_id and self.get_is_rib_id(partner, DB, USERID, USERPASS, sock) or False,
             'user_id'                        : partner.user_id and self.get_user_id(partner, DB, USERID, USERPASS, sock) or False,
 
