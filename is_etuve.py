@@ -96,6 +96,16 @@ class is_etuve_saisie(models.Model):
     _order='name desc'
 
 
+    @api.multi
+    def _string2float(self,val):
+        val=str(val)
+        print 'val=',val,type(val),str(val)
+        res=0
+        if val!='None':
+            res=float(val.replace(',','.'))
+        return res
+
+
     @api.depends('matiere_id','of_ids')
     def _compute(self):
         cr, uid, context = self.env.args
@@ -118,9 +128,9 @@ class is_etuve_saisie(models.Model):
 
             tmp_etuvage=tps_etuvage=densite=dessication_matiere=False
             for row in result:
-                tmp_etuvage         = float(row[2].replace(',','.'))
-                tps_etuvage         = float(row[3].replace(',','.'))
-                densite             = float(row[4].replace(',','.'))
+                tmp_etuvage         = self._string2float(row[2])
+                tps_etuvage         = self._string2float(row[3])
+                densite             = self._string2float(row[4])
                 dessication_matiere = row[5]
             obj.tmp_etuvage   = tmp_etuvage
             obj.tps_etuvage   = tps_etuvage
