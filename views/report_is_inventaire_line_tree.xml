@@ -13,7 +13,8 @@
                         <th class="text-center"><strong>Inventaire</strong></th>
                         <th class="text-center"><strong>Feuille</strong></th>
                         <th class="text-center"><strong>Séquence</strong></th>
-                        <th class="text-left"><strong>Article</strong></th>
+                        <th class="text-left"><strong>Code</strong></th>
+                        <th class="text-left"><strong>Désignation</strong></th>
                         <th class="text-center"><strong>Encours</strong></th>
                         <th class="text-center"><strong>Composant</strong></th>
                         <th class="text-center"><strong>UC</strong></th>
@@ -32,6 +33,7 @@
                         <td class="text-center"><span t-field="o.inventaire_id.name"/> </td>
                         <td class="text-center"><span t-field="o.feuille_id.name"/> </td>
                         <td class="text-center"><span t-field="o.sequence"/> </td>
+                        <td class="text-left"><span t-field="o.product_id.is_code"/> </td>
                         <td class="text-left"><span t-field="o.product_id.name"/> </td>
                         <td class="text-center"><span t-field="o.encours"/> </td>
                         <td class="text-center"><span t-field="o.composant_encours"/> </td>
