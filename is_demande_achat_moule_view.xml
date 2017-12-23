@@ -81,6 +81,7 @@
                             </group>
                             <group string="Adresse de destinataire">
                                 <field name="fournisseur_id"/>
+                                <field name="pricelist_id"/>
                                 <field name="fournisseur_autre"/>
                                 <field name="delai_livraison"/>
                                 <field name="lieu_livraison_id"/>

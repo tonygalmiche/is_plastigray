@@ -110,44 +110,50 @@ class mrp_prevision(models.Model):
                             state              = 'draft'
                         )
                         vals=res['value']
-#                        vals['order_id']=order.id
-#                        vals['product_id']=obj.product_id.id
-#                        if 'taxes_id' in vals:
-#                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
-#                        order_line=order_line_obj.create(vals)
-#                        order.wkf_bid_received() 
-#                        order.wkf_confirm_order()
-#                        order.action_picking_create() 
-#                        order.wkf_approve_order()
                     except:
                         unlink=False
                         note='\n'.join(sys.exc_info()[1])
-                    if vals==False:
+                    if vals and vals['price_unit']:
+                        #** Création d'une commande ****************************
+                        vals['order_id']=order.id
+                        vals['product_id']=obj.product_id.id
+                        if 'taxes_id' in vals:
+                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
+                        try:
+                            order_line=order_line_obj.create(vals)
+                            order.wkf_bid_received() 
+                            order.wkf_confirm_order()
+                            order.action_picking_create() 
+                            order.wkf_approve_order()
+                        except:
+                            unlink=False
+                            if note==False:
+                                note='\n'.join(sys.exc_info()[1])
+                            else:
+                                note=note+'\n'+'\n'.join(sys.exc_info()[1])
+                        obj.note=unicode(note)
+                    else:
+                        #** Création d'une demande d'achat série ***************
+                        order.unlink()
+                        #TODO : Voir comment gérer l'acheteur pour ne pas le mettre en dur ici
+                        acheteur_id=self.env['res.users'].search([('login','=','cc')])[0].id
                         vals={
-                            'name'        : obj.product_id.name, 
-                            'product_uom' : obj.uom_po_id.id, 
-                            'product_qty' : obj.quantity_ha, 
-                            'price_unit'  : False, 
-                            'date_planned': obj.start_date_cq, 
-                            'taxes_id'    : False
+                            'acheteur_id'    : acheteur_id, 
+                            'fournisseur_id' : partner.id, 
+                            'delai_livraison': obj.start_date_cq, 
+                            'motif'          : 'pas_tarif', 
                         }
-                    vals['order_id']=order.id
-                    vals['product_id']=obj.product_id.id
-                    if 'taxes_id' in vals:
-                        vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
-                    try:
-                        order_line=order_line_obj.create(vals)
-                        order.wkf_bid_received() 
-                        order.wkf_confirm_order()
-                        order.action_picking_create() 
-                        order.wkf_approve_order()
-                    except:
-                        unlink=False
-                        if note==False:
-                            note='\n'.join(sys.exc_info()[1])
-                        else:
-                            note=note+'\n'+'\n'.join(sys.exc_info()[1])
-                    obj.note=unicode(note)
+                        da=self.env['is.demande.achat.serie'].create(vals)
+                        print 'Création DA : da=',da,da.name
+                        vals={
+                            'da_id'     : da.id, 
+                            'sequence'  : 10, 
+                            'product_id': obj.product_id.id, 
+                            'uom_id'    : obj.uom_po_id.id, 
+                            'quantite'  : obj.quantity_ha, 
+                        }
+                        line=self.env['is.demande.achat.serie.line'].create(vals)
+                        da.vers_transmis_achat_action()
                     if unlink:
                         obj.unlink()
 
