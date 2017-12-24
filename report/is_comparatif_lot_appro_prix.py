@@ -19,6 +19,7 @@ class is_comparatif_lot_appro_prix(models.Model):
     coef                   = fields.Float('US/UA')
     lot_mini_product       = fields.Float("Lot d'appro.")
     min_quantity_pricelist = fields.Float("Mini liste de prix")
+    prix_lot               = fields.Float("Prix d'achat pour le lot")
 
 
     def init(self, cr):
@@ -46,10 +47,8 @@ class is_comparatif_lot_appro_prix(models.Model):
                     pt.uom_po_id,
                     is_unit_coef(pt.uom_id, pt.uom_po_id) coef,
                     pt.lot_mini lot_mini_product,
-
-
-                    is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id) min_quantity_pricelist
-
+                    is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id) min_quantity_pricelist,
+                    is_prix_achat(get_product_pricelist_purchase(pt_tmp2.partner_id),pp.id, pt.lot_mini,CURRENT_DATE) prix_lot
                 from (
                     select
                         pt_tmp1.id,
@@ -67,12 +66,17 @@ class is_comparatif_lot_appro_prix(models.Model):
                     pt.purchase_ok='t' and 
                     ic.name::int<70 and 
                     pt.active='t' and
-                    is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id)) is not null and
-
-                    round(is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id))<>pt.lot_mini
+                    is_prix_achat(get_product_pricelist_purchase(pt_tmp2.partner_id),pp.id, pt.lot_mini,CURRENT_DATE) is null
             )
 
         """)
+
+
+#                    round(is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id))<>pt.lot_mini
+#                    is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id)) is not null and
+
+
+
 
 
 
