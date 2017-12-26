@@ -659,8 +659,10 @@ class stock_move(models.Model):
         # Original moves will be the quantities consumed, so they need to be done
         self.action_done(cr, uid, ids2, context=context)
 
-        if res:
-            self.action_assign(cr, uid, res, context=context)
+
+        #TODO : J'ai commenté ces lignes le 26/12/2017 pour ne pas réserver le stock sur les OF
+        #if res:
+        #    self.action_assign(cr, uid, res, context=context)
 
 
         #TODO : J'ai désactivé ce code car cela bloquait les homes flux
