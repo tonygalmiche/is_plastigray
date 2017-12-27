@@ -12,6 +12,16 @@ class product_template(models.Model):
     _inherit = "product.template"
 
 
+    @api.depends('weight','weight_net')
+    def _compute(self):
+        for obj in self:
+            delta=obj.weight-obj.weight_net
+            obj.is_weight_delta=delta
+
+
+    is_weight_delta = fields.Float("Ecart entre poids brut et poids net", compute='_compute', readonly=True, store=True,digits=(12,4))
+
+
     @api.multi
     def copy(self,vals):
         for obj in self:
