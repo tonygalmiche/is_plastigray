@@ -26,7 +26,13 @@ class sale_order(models.Model):
             obj.is_nb_lignes=len(obj.order_line)
 
 
-    is_type_commande       = fields.Selection([('standard', 'Ferme'),('ouverte', 'Ouverte'),('cadence', 'Cadencé'),('ls', 'Liste à servir')], "Type de commande")
+    is_type_commande       = fields.Selection([
+        ('standard', 'Ferme'),
+        ('ouverte' , 'Ouverte'),
+        ('cadence' , 'Cadencé'),
+        ('ls'      , 'Liste à servir'),
+        ('proforma', 'PROFORMA'),
+    ], "Type de commande")
     is_article_commande_id = fields.Many2one('product.product', 'Article de la commande', help="Article pour les commandes ouvertes")
     is_ref_client          = fields.Char("Référence client", store=True, compute='_ref_client')
     is_source_location_id  = fields.Many2one('stock.location', 'Source Location', default=_get_default_location) 

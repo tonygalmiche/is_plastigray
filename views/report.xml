@@ -14,6 +14,19 @@
             <field name="paperformat_id" ref="is_plastigray.liste_servir_paperformat"/>
         </record>
 
+        <report 
+            id="report_proformas"
+            model="sale.order"
+            string="PROFORMA"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_proforma"
+            file="is_plastigray.report_proforma"
+        />
+        <record id="report_proformas" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.proforma_paperformat"/>
+        </record>
+
+
 
         <report 
             id="report_inventaires"

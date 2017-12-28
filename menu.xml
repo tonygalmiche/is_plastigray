@@ -630,6 +630,17 @@
             ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
+    <record id="is_sale_order_proforma_menu" model="ir.ui.menu" >
+        <field name="name">Factures Proforma</field>
+        <field name="sequence">50</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_cde')"/>
+        <field name="action"    ref="is_sale_order_proforma_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+            ref('is_administration_vente_group'),
+            ref('is_comptable_group'),
+        ])]"/>
+    </record>
 
 
 
