@@ -13,13 +13,13 @@ class product_template(models.Model):
 
 
     @api.depends('weight','weight_net')
-    def _compute(self):
+    def _compute_weight_delta(self):
         for obj in self:
             delta=obj.weight-obj.weight_net
             obj.is_weight_delta=delta
 
 
-    is_weight_delta = fields.Float("Ecart entre poids brut et poids net", compute='_compute', readonly=True, store=True,digits=(12,4))
+    is_weight_delta = fields.Float("Ecart entre poids brut et poids net", compute='_compute_weight_delta', readonly=True, store=True,digits=(12,4))
 
 
     @api.multi
