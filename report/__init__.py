@@ -41,5 +41,6 @@ import is_sale_order_line
 import is_product_packaging
 import bom_structure
 import is_mrp_production_workcenter_line
+import is_livraison_gefco
 
 
