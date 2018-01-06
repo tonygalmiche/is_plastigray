@@ -78,10 +78,52 @@ class is_certifications_qualite(models.Model):
     _description = u'Certifications qualité'
     
     is_norme           = fields.Many2one('is.norme.certificats', u'Norme Certificat qualité', required=True)
-    is_date_validation = fields.Date('Date de validation du certificat', required=True)
+    is_date_validation = fields.Date(u'Date de validité du certificat', required=True)
     is_certificat      = fields.Binary('Certificat qualité')
     is_certificat_ids  = fields.Many2many('ir.attachment', 'is_certificat_attachment_rel', 'certificat_id', 'attachment_id', u'Pièces jointes')
     partner_id         = fields.Many2one('res.partner', 'Client/Fournisseur')
+
+
+    # La fonction name_get est une fonction standard d'Odoo permettant de définir le nom des fiches (dans les relations x2x)
+    # La fonction name_search permet de définir les résultats des recherches dans les relations x2x. En général, elle appelle la fonction name_get
+    @api.multi
+    def name_get(self):
+        res=[]
+        for obj in self:
+            res.append((obj.id, obj.is_norme.name))
+        return res
+
+
+#        context=self._context
+#        if not len(self.ids):
+#            return []
+#        res = []
+#        if context is None:
+#            context = {}
+#        for record in self:
+#            name = record.name
+#            if record.parent_id and not record.is_company:
+#                name =  "%s, %s" % (record.parent_id.name, name)
+#            if record.is_company:
+#                if record.is_code and record.is_adr_code:
+#                    name =  "%s (%s/%s)" % (name, record.is_code, record.is_adr_code)
+#                if record.is_code and not record.is_adr_code:
+#                    name =  "%s (%s)" % (name, record.is_code)
+#            if context.get('show_address_only'):
+#                name = self._display_address(record, without_company=True, context=context)
+#            #Affiche l'adresse complète (ex dans les commandes)
+#            if context.get('show_address'):
+#                name = name + "\n" + self._display_address(record, without_company=True, context=context)
+#            name = name.replace('\n\n','\n')
+#            name = name.replace('\n\n','\n')
+#            if context.get('show_email') and record.email:
+#                name = "%s <%s>" % (name, record.email)
+#            res.append((record.id, name))
+#        return res
+
+
+
+
 
 
 class is_secteur_activite(models.Model):

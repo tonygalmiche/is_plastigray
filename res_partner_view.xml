@@ -315,11 +315,19 @@
                     <field name="is_code"/>
                     <field name="is_adr_code"/>
                     <field name="is_segment_achat"/>
+                    <field name="is_famille_achat_ids"/>
                     <field name="city"/>
                     <field name="zip"/>
                     <field name="is_type_cde_fournisseur"/>
-                    <field name="property_product_pricelist_purchase"/>
-                    <field name="is_database_origine_id"/>
+                    <field 
+                        name="property_product_pricelist_purchase"  
+                        widget="many2one_clickable"
+                        groups="is_plastigray.is_gestionnaire_donnees_techniques_group"
+                    />
+                    <field 
+                        name="is_database_origine_id" 
+                        groups="is_plastigray.is_gestionnaire_donnees_techniques_group"
+                    />
                 </tree>
             </field>
         </record>

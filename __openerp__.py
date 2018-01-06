@@ -181,6 +181,7 @@ Module principal du projet Plastigray
         "report/is_product_packaging.xml",
         "report/is_mrp_production_workcenter_line.xml",
         "report/is_livraison_gefco.xml",
+        "report/is_certifications_qualite_suivi.xml",
         "menu.xml",
     ], 
     "installable": True,
