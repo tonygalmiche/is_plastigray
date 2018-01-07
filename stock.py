@@ -60,12 +60,6 @@ class stock_picking(models.Model):
         cr = self._cr
         for obj in self:
 
-
-
-
-
-
-
             #** Recherche s'il existe une réception pour cette commande ********
             order_id=obj.is_purchase_order_id.id
             pickings = self.env['stock.picking'].search([('is_purchase_order_id','=',order_id),('state','=','assigned')])
@@ -86,11 +80,18 @@ class stock_picking(models.Model):
 
             #** Création des mouvements inverses pour annuler la réception *****
             for move in obj.move_lines:
-                name=move.picking_id.name
-                lots = self.env['stock.production.lot'].search([('product_id','=',move.product_id.id),('name','=',name)])
+                #** Recherche du lot de la réception à annuler *****************
                 lot_id=False
-                for lot in lots:
-                    lot_id=lot.id
+                for quant in move.quant_ids:
+                    lot_id=quant.lot_id.id
+#                name=move.picking_id.name
+#                lots = self.env['stock.production.lot'].search([('product_id','=',move.product_id.id),('name','=',name)])
+#                print 'lots=',lots
+#                lot_id=False
+#                for lot in lots:
+#                    lot_id=lot.id
+#                    print lot.name
+                #***************************************************************
                 copy=move.copy()
                 copy.location_id      = move.location_dest_id.id
                 copy.location_dest_id = move.location_id.id
