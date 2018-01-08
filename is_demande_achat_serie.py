@@ -114,6 +114,7 @@ class is_demande_achat_serie(models.Model):
                     'fiscal_position' : partner.property_account_position.id,
                     'payment_term_id' : partner.property_supplier_payment_term.id,
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
+                    'currency_id'     : partner.property_product_pricelist_purchase.currency_id.id,
                     'is_num_da'       : obj.name,
                     'is_demandeur_id' : obj.createur_id.id,
                 }

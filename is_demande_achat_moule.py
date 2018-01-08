@@ -168,6 +168,7 @@ class is_demande_achat_moule(models.Model):
                 vals={
                     'partner_id'      : partner.id,
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
+                    'currency_id'     : partner.property_product_pricelist_purchase.currency_id.id,
                     'is_livre_a_id'   : partner.is_livre_a_id.id,
                     'location_id'     : partner.is_source_location_id.id,
                     'fiscal_position' : partner.property_account_position.id,
