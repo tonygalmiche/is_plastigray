@@ -86,6 +86,18 @@
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
+        <record id="is_demande_achat_fg_rule" model="ir.rule">
+            <field name="name">Accès en lecture seule pour tout le monde</field>
+            <field name="model_id" ref="model_is_demande_achat_fg"/>
+            <field name="domain_force">[]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field eval="0" name="perm_unlink"/>
+            <field eval="0" name="perm_write"/>
+            <field eval="1" name="perm_read"/>
+            <field eval="1" name="perm_create"/>
+        </record>
+
+        <!--
         <record id="is_demande_achat_fg_transmis_achat_createur_rule" model="ir.rule">
             <field name="name">Accès en lecture seule à l'état 'Transmis achat' par le créateur</field>
             <field name="model_id" ref="model_is_demande_achat_fg"/>
@@ -116,6 +128,7 @@
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
         </record>
+        -->
 
 
 
