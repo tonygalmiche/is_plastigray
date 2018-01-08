@@ -479,40 +479,46 @@ class is_edi_cde_cli(models.Model):
             temp.write((base64.decodestring(attachment.datas))) 
             temp.close()
             tree = etree.parse(filename)
-
             for partie_citee in tree.xpath("/DELINS/PARTIE_CITEE"):
-                if  partie_citee.xpath("ARTICLE_PROGRAMME"):
+                for article_programme in partie_citee.xpath("ARTICLE_PROGRAMME"):
+                    ref_article_client=""
+                    for NumeroArticleClient in article_programme.xpath("NumeroArticleClient"):
+                        ref_article_client=NumeroArticleClient.text
+                    num_commande_client=""
+                    for NumeroArticleClient in article_programme.xpath("NumeroCommande"):
+                        num_commande_client=NumeroArticleClient.text
                     val = {
-                        'ref_article_client': partie_citee.xpath("ARTICLE_PROGRAMME/NumeroArticleClient")[0].text,
-                        'num_commande_client': partie_citee.xpath("ARTICLE_PROGRAMME/NumeroCommande")[0].text,
+                        'ref_article_client' : ref_article_client,
+                        'num_commande_client': num_commande_client,
                         'lignes': []
                     }
                     res1 = []
-                    for detail_programme in partie_citee.xpath("ARTICLE_PROGRAMME/DETAIL_PROGRAMME"):
-                        type_commande=detail_programme.xpath("CodeStatutProgramme")[0].text
+                    for detail_programme in article_programme.xpath("DETAIL_PROGRAMME"):
+                        type_commande=""
+                        for CodeStatutProgramme in detail_programme.xpath("CodeStatutProgramme"):
+                            type_commande=CodeStatutProgramme.text
                         if type_commande=="4":
                             type_commande="previsionnel"
                         else:
                             type_commande="ferme"
-
-
-                        date_livraison=detail_programme.xpath("DateHeureLivraisonAuPlusTot")[0].text[:8]
-                        d=datetime.strptime(date_livraison, '%Y%m%d')
-                        date_livraison=d.strftime('%Y-%m-%d')
-
-
-
+                        date_livraison=""
+                        for DateHeureLivraisonAuPlusTot in detail_programme.xpath("DateHeureLivraisonAuPlusTot"):
+                            date_livraison=DateHeureLivraisonAuPlusTot.text[:8]
+                        if date_livraison!="":
+                            d=datetime.strptime(date_livraison, '%Y%m%d')
+                            date_livraison=d.strftime('%Y-%m-%d')
+                        quantite=""
+                        for QuantiteALivrer in detail_programme.xpath("QuantiteALivrer"):
+                            quantite=QuantiteALivrer.text
                         ligne = {
-                            'quantite'      : detail_programme.xpath("QuantiteALivrer")[0].text,
+                            'quantite'      : quantite,
                             'type_commande' : type_commande,
                             'date_livraison': date_livraison,
                         }
                         res1.append(ligne)
-                    
                     val.update({'lignes':res1})
                     res.append(val)
-                else:
-                    continue
+
 
             for partie_citee in tree.xpath("/CALDEL/SEQUENCE_PRODUCTION"):
                 if  partie_citee.xpath("ARTICLE_PROGRAMME"):
