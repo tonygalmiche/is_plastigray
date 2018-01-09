@@ -136,7 +136,7 @@ class mrp_prevision(models.Model):
                         #** Création d'une demande d'achat série ***************
                         order.unlink()
                         #TODO : Voir comment gérer l'acheteur pour ne pas le mettre en dur ici
-                        acheteur_id=self.env['res.users'].search([('login','=','cc')])[0].id
+                        acheteur_id=self.env['res.users'].search([('login','=','jl2')])[0].id
                         vals={
                             'acheteur_id'    : acheteur_id, 
                             'fournisseur_id' : partner.id, 
