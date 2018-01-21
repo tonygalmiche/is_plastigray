@@ -88,7 +88,7 @@
                                 et des jours d'ouverture de la société<br /> <br /> 
                                 Pour une SA : <br /> 
                                 - Date fin contrôle qualité = Date du besoin (positionné au lundi) <br /> 
-                                - Date début contrôle qualité = Date fin contrôle qualité - Délai CQ - 2. <br /> 
+                                - Date début contrôle qualité = Date fin contrôle qualité - Délai CQ. <br /> 
                                 Ce délai est calculé en jours ouvrés pour Plastigray. <br /> 
                                 Ensuite, il faut rechercher le premier jour ouvré du fournisseur pour fixer la date de réception par fourniseur <br /> 
                                 - Date de début = Date début contrôle qualité - Délai fourniseur en jours calendaires.<br /> 

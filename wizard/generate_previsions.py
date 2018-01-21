@@ -109,10 +109,11 @@ class mrp_generate_previsions(models.TransientModel):
     def _stocks(self,articles):
         cr=self._cr
         res={}
+        # TODO : Modif stock du 21/01/2018 => Avant, c'était : where sl.name in ('01','05','MA') 
         sql="""
             select sq.product_id, sum(sq.qty) 
             from stock_quant sq inner join stock_location sl on sq.location_id=sl.id
-            where sl.name in ('01','05','MA') 
+            where sl.usage='internal' and sl.active='t' and sl.control_quality='f'
             group by sq.product_id"""
         cr.execute(sql)
         for row in cr.fetchall():

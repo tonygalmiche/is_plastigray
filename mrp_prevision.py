@@ -407,8 +407,9 @@ class mrp_prevision(models.Model):
         for product in product_obj.browse(self._cr, self._uid, [product_id], context=self._context):
             delai_cq = ceil(product.delai_cq)
             #TODO : Le 09/04/2017 : Ajout de 2 jours en dur au délai CQ pour les SA
-            if type_od=='sa':
-                delai_cq=delai_cq+2
+            #TODO : Le 21/01/2018 : Suppression de ce délai de 2 jours en dur
+            #if type_od=='sa':
+            #    delai_cq=delai_cq+2
             start_date_cq = partner_obj.get_date_debut(company.partner_id, end_date, delai_cq)
             #La date d'arrivée (= start_date_cq) doit tomber sur un jour d'ouverture du fournisseur pour fixer la date de réception par fournisseur
             if type_od=='sa' and partner_id:
