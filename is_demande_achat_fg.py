@@ -57,8 +57,8 @@ class is_demande_achat_fg(models.Model):
         ('solde'         , 'Soldé'),
         ('annule'        , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.fg.line'  , 'da_id', u"Lignes")
-    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True)
+    line_ids             = fields.One2many('is.demande.achat.fg.line'  , 'da_id', u"Lignes"   , copy=True)
+    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
 
     vers_brouillon_vsb      = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_rsp_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
@@ -191,10 +191,10 @@ class is_demande_achat_fg(models.Model):
                             vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
                         order_line=order_line_obj.create(vals)
                         order.wkf_bid_received() 
-                        res=order.wkf_confirm_order()
-                        order.action_picking_create() 
-                        order.wkf_approve_order()
-                        obj.sudo().state="solde"
+                    res=order.wkf_confirm_order()
+                    order.action_picking_create() 
+                    order.wkf_approve_order()
+                    obj.sudo().state="solde"
 
 
 

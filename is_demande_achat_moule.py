@@ -58,8 +58,8 @@ class is_demande_achat_moule(models.Model):
         ('solde'               , 'Soldé'),
         ('annule'              , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.moule.line'  , 'da_id', u"Lignes")
-    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True)
+    line_ids             = fields.One2many('is.demande.achat.moule.line'  , 'da_id', u"Lignes", copy=True)
+    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
 
     vers_brouillon_vsb            = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_rsp_vsb       = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)

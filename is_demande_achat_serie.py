@@ -43,9 +43,9 @@ class is_demande_achat_serie(models.Model):
         ('solde'         , 'Soldé'),
         ('annule'        , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes")
+    line_ids             = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes", copy=True)
+    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
     nb_lignes            = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
-    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True)
 
 
     @api.multi
