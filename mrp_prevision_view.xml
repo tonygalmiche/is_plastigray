@@ -141,6 +141,7 @@
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="mrp_prevision_tree"/>
             <field name="search_view_id" ref="mrp_prevision_search_view"/>
+            <field name="domain">[('is_category_id.name','!=','80')]</field>
         </record>
         
         <menuitem name="Previsions" id="menu_mrp_prevision" parent="base.menu_mrp_root" sequence="1"/>
