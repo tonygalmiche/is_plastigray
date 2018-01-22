@@ -690,7 +690,7 @@ class is_edi_cde_cli(models.Model):
                                                         type_commande='ferme'
                                                     else:
                                                         type_commande='previsionnel'
-                                                if col==13:
+                                                if col==15:
                                                     quantite=n5.text
                                                     try:
                                                         qt=float(quantite)
