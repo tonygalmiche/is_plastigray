@@ -80,7 +80,10 @@
                                 <field name="date_devis"/>
                             </group>
                             <group string="Adresse de destinataire">
-                                <field name="fournisseur_id"/>
+                                <field 
+                                    name="fournisseur_id"
+                                    on_change="fournisseur_id_on_change(fournisseur_id)" 
+                                />
                                 <field name="pricelist_id"/>
                                 <field name="fournisseur_autre"/>
                                 <field name="delai_livraison"/>

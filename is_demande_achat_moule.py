@@ -89,6 +89,18 @@ class is_demande_achat_moule(models.Model):
     }
 
 
+    @api.multi
+    def fournisseur_id_on_change(self,fournisseur_id):
+        res={}
+        if fournisseur_id:
+            res['value']={}
+            partner = self.env['res.partner'].browse(fournisseur_id)
+            lieu_livraison_id=partner.is_livre_a_id.id
+            if lieu_livraison_id:
+                res['value']['lieu_livraison_id']=lieu_livraison_id
+        return res
+
+
     @api.model
     def create(self, vals):
         data_obj = self.env['ir.model.data']

@@ -60,7 +60,10 @@
                                 <field name="acheteur_id"/>
                             </group>
                             <group string="Adresse de destinataire">
-                                <field name="fournisseur_id"/>
+                                <field 
+                                    name="fournisseur_id"
+                                    on_change="fournisseur_id_on_change(fournisseur_id)" 
+                                />
                                 <field name="pricelist_id"/>
                                 <field name="delai_livraison"/>
                                 <field name="lieu_livraison_id"/>

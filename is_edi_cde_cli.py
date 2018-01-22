@@ -111,15 +111,19 @@ class is_edi_cde_cli(models.Model):
                 for row in datas:
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
-                    order=self.env['sale.order'].search([
-                        ('partner_id.is_code', '=', obj.partner_id.is_code),
-                        ('is_ref_client'     , '=', ref_article_client),
-                        ('client_order_ref'  , '=', num_commande_client),
-                        ('is_type_commande'  , '=', 'ouverte'),
-                        ('state'             , '=', 'draft'),
-                    ])
-                    order_id   = False
 
+                    order_id = False
+                    if 'order_id' in row:
+                        order_id=row['order_id']
+                        order=self.env['sale.order'].search([('id', '=', order_id)])
+                    else:
+                        order=self.env['sale.order'].search([
+                            ('partner_id.is_code', '=', obj.partner_id.is_code),
+                            ('is_ref_client'     , '=', ref_article_client),
+                            ('client_order_ref'  , '=', num_commande_client),
+                            ('is_type_commande'  , '=', 'ouverte'),
+                            ('state'             , '=', 'draft'),
+                        ])
                     anomalie1   = "Cde non trouvée"
                     if len(order):
                         anomalie1=False
@@ -747,6 +751,7 @@ class is_edi_cde_cli(models.Model):
                     val={
                         'num_commande_client' : num_commande_client,
                         'ref_article_client'  : ref_article_client,
+                        'order_id'            : order.id,
                     }
                     type_commande="ferme"
                     if lig[5]=='prev':
