@@ -2,18 +2,16 @@
 import time
 import datetime
 import pytz
-#from pytz import timezone
-
-#from openerp.osv import fields, osv
 from openerp import models,fields,api
-
-
 from openerp.tools.translate import _
 from openerp import netsvc
 
+import logging
+_logger = logging.getLogger(__name__)
+
 
 #TODO : Permet d'indiquer l'id du produit à analyser
-#product_id_test=374
+#product_id_test=3838
 product_id_test=False
 
 #TODO : 
@@ -31,7 +29,7 @@ def duree(debut):
 
 
 def _now(debut):
-    return datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S') + ' : '+ str(int(duree(debut)/1000))+"s"
+    return datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S') + ' : '+ str(int(duree(debut)/1000))+"s "
 
 
 class mrp_generate_previsions(models.TransientModel):
@@ -39,8 +37,12 @@ class mrp_generate_previsions(models.TransientModel):
     _name = "mrp.previsions.generate"
     _description = "Generate previsions"
 
-    max_date   = fields.Date('Date limite', required=True)
-    company_id = fields.Many2one('res.company', 'Société', required=True)
+    max_date     = fields.Date('Date limite', required=True)
+    company_id   = fields.Many2one('res.company', 'Société', required=True)
+    regroupement = fields.Selection([('jour','Jour'),('semaine','Semaine')], string='Regroupement', default="jour")
+
+
+
 
     @api.multi
     def _check_date_max(self):
@@ -66,32 +68,35 @@ class mrp_generate_previsions(models.TransientModel):
 
     #** Liste des dates à traiter **********************************************
     @api.multi
-    def _dates(self, date_max):
+    def _dates(self, date_max, nb_jours):
         now     = datetime.datetime.now()               # Date de jour
-        weekday = now.weekday()                         # Jour dans la semaine
-        date   = now - datetime.timedelta(days=weekday) # Date du lundi précédent
+        if nb_jours==7:
+            weekday = now.weekday()                         # Jour dans la semaine
+            date = now - datetime.timedelta(days=weekday) # Date du lundi précédent
+        else:
+            date = now
         dates = []
         while(date.strftime('%Y-%m-%d')<=date_max):
             dates.append(date.strftime('%Y-%m-%d'))
-            date = date + datetime.timedelta(days=7)    # Lundi suivant
+            date = date + datetime.timedelta(days=nb_jours)
         return dates
 
 
 
     #** Ajouter 7 jours à la date indiquée *************************************
     @api.multi
-    def _date_fin(self, date):
+    def _date_fin(self, date, nb_jours):
         date_fin = datetime.datetime.strptime(date, '%Y-%m-%d')
-        date_fin = date_fin + datetime.timedelta(days=7)
+        date_fin = date_fin + datetime.timedelta(days=nb_jours)
         date_fin = date_fin.strftime('%Y-%m-%d')
         return date_fin
 
 
     #** Enlever 7 jours à la date indiquée *************************************
     @api.multi
-    def _date_debut(self, date):
+    def _date_debut(self, date, nb_jours):
         date_debut = datetime.datetime.strptime(date, '%Y-%m-%d')
-        date_debut = date_debut - datetime.timedelta(days=7)
+        date_debut = date_debut - datetime.timedelta(days=nb_jours)
         date_debut = date_debut.strftime('%Y-%m-%d')
         return date_debut
 
@@ -99,7 +104,9 @@ class mrp_generate_previsions(models.TransientModel):
     @api.multi
     def _articles(self):
         articles=[]
-        for product in self.env['product.product'].search([]):
+        #filtre=[('is_code','like','26160')]
+        filtre=[]
+        for product in self.env['product.product'].search(filtre):
             articles.append(product)
         articles.sort()
         return articles
@@ -234,7 +241,9 @@ class mrp_generate_previsions(models.TransientModel):
 
 
     @api.multi
-    def _creer_suggestion(self, product, quantity, date):
+    def _creer_suggestion(self, product, quantity, date, nb_jours):
+
+
         type="fs"
         if product.route_ids:
 #            route=product.route_ids[0].name
@@ -256,7 +265,7 @@ class mrp_generate_previsions(models.TransientModel):
         if type=='fs':
             obj = self.env['mrp.prevision']
             end_date   = date
-            start_date = self._date_debut(date)
+            start_date = self._date_debut(date, nb_jours)
             now=datetime.datetime.now().strftime('%Y-%m-%d')
             if start_date<=now:
                 start_date="2000-01-01"
@@ -294,7 +303,7 @@ class mrp_generate_previsions(models.TransientModel):
     def generate_previsions(self):
         cr=self._cr
         debut=datetime.datetime.now()
-        print _now(debut), "## DEBUT"
+        _logger.info(_now(debut) + "## DEBUT")
 
         #TODO : Mettre en place une liste d'étapes pour gérer les différentes phases du CBN 
         #=> calcul brut => Regroupement des suggestions => Suggestions multiples du lot
@@ -306,12 +315,17 @@ class mrp_generate_previsions(models.TransientModel):
         states=["cbb"]
 
         for obj in self:
+            nb_jours=1
+            if obj.regroupement=='semaine':
+                nb_jours=7
+
+            _logger.info(_now(debut) + '## Regroupement = ' + str(obj.regroupement))
             prevision_obj = self.env['mrp.prevision']
             bom_line_obj  = self.env['mrp.bom.line']
             company_obj   = self.env['res.company']
             partner_obj   = self.env['res.partner']
             company       = obj.company_id
-            dates         = self._dates(obj.max_date)
+            dates         = self._dates(obj.max_date,nb_jours)
 
             #** supprimer les previsions existantes ****************************
             prevision_ids = prevision_obj.search([]).unlink()
@@ -326,14 +340,12 @@ class mrp_generate_previsions(models.TransientModel):
             state=states[niveau]
             while True:
                 nb=0
-                print _now(debut), "## Début Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)
+                _logger.info(_now(debut) + "## Début Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb))
                 for date in dates:
+                    _logger.info(_now(debut) + '- ' + str(date))
                     date_debut  = date
-                    date_fin    = self._date_fin(date)
+                    date_fin    = self._date_fin(date,nb_jours)
                     cde_cli     = self._cde_cli(date_debut, date_fin)
-
-                    #print cde_cli, date_debut, date_fin
-
                     cde_fou     = self._cde_fou(date_debut, date_fin)
                     fs          = self._suggestions(date_debut, date_fin, 'fs')
                     sa          = self._suggestions(date_debut, date_fin, 'sa')
@@ -373,7 +385,7 @@ class mrp_generate_previsions(models.TransientModel):
 
                         #** Création des suggestions *******************************
                         if stock_theorique[product.id]<0:
-                            qt=self._creer_suggestion(product, -stock_theorique[product.id], date)
+                            qt=self._creer_suggestion(product, -stock_theorique[product.id], date, nb_jours)
                             stock_theorique[product.id]=stock_theorique[product.id]+qt
                             #if product.id==product_id_test:
                             #    print "Création qt=",qt,stock_theorique[product.id]
@@ -383,8 +395,7 @@ class mrp_generate_previsions(models.TransientModel):
                         #    print "stock_theorique=",stock_theorique[product.id]
                         #***********************************************************
 
-                print _now(debut), "## Fin Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb)
-
+                _logger.info(_now(debut)+"## Fin Boucle state="+str(state)+" : "+str(compteur)+" : nb="+str(nb))
                 if nb==0:
                     niveau=niveau+1
                     if niveau>=len(states):
@@ -397,13 +408,17 @@ class mrp_generate_previsions(models.TransientModel):
                     break
 
 
-            print _now(debut), "## Fin du CBN"
+            _logger.info(_now(debut) + "## Fin du CBN")
+
 
 
             ##** Regroupement des FS et SA par semaine *************************
+            _logger.info(_now(debut) + "## Debut du regroupement des SA et FS par semaine")
+            dates = self._dates(obj.max_date, 7)
             for date in dates:
+                _logger.info(_now(debut) + '- ' + str(date))
                 date_debut  = date
-                date_fin    = self._date_fin(date)
+                date_fin    = self._date_fin(date,nb_jours)
                 now=datetime.datetime.now().strftime('%Y-%m-%d')
                 if date_debut<=now:
                     date_debut="2000-01-01"
@@ -431,15 +446,10 @@ class mrp_generate_previsions(models.TransientModel):
                         else:
                             prevision.unlink()
                         ct=ct+1
-            print _now(debut), "## Fin du regroupement des SA et FS par semaine"
+            _logger.info(_now(debut) + "## Fin du regroupement des SA et FS par semaine")
             #*******************************************************************
 
-
-
-
-
-
-        print _now(debut), "## FIN"
+        _logger.info(_now(debut) + "## FIN")
 
         #** Action pour retourner à la liste des prévisions ********************
         action =  {

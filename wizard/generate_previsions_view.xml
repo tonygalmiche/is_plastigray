@@ -8,8 +8,9 @@
             <field name="arch" type="xml">
                 <form string="Generer les previsions" version="7.0">
                     <group>
-                        <field name="company_id" invisible="1" />
-                        <field name="max_date" />
+                        <field name="regroupement"/>
+                        <field name="max_date"/>
+                        <field name="company_id" invisible="1"/>
                     </group>
                     <footer>
                         <button string='Generer les previsions' name="generate_previsions" type="object" class="oe_highlight"/>
