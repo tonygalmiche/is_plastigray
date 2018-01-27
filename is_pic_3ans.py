@@ -5,6 +5,8 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import logging
+_logger = logging.getLogger(__name__)
 
 
 def num(s):
@@ -218,43 +220,39 @@ class is_pic_3ans_saisie(models.Model):
     @api.multi
     def run_cbb(self):
         cr = self._cr
-        print "#### Début du CBB ####"
+        _logger.info("#### Début du CBB ####")
 
         #** Recherche des PIC à traiter ************************************
         pic_obj = self.env['is.pic.3ans']
-
-        print 'search pics'
+        _logger.info("search pics")
         pics=pic_obj.search([
             ('type_donnee','=','pic'),
         ])
         #*******************************************************************
 
         #** Suppression des données du calcul précédent ********************
-        print 'unlink pics'
-#        pic_obj.search([
-#            ('type_donnee','=','pdp'),
-#        ]).unlink()
+        _logger.info("unlink pics")
         SQL="""
             delete
             from is_pic_3ans
             where type_donnee='pdp'
         """
         cr.execute(SQL)
-        print 'fin unlink pics'
+        _logger.info("fin unlink pics")
         #*******************************************************************
 
         #** CBB sur les PIC ************************************************
-        print "debut cbb"
+        _logger.info("debut cbb")
         global ordre
         nb=len(pics)
         ct=0
         for pic in pics:
             ct=ct+1
-            print ct,'/',nb, pic, pic.product_id, pic.quantite
+            _logger.info(str(ct)+'/'+str(nb)+' : '+str(pic.product_id.is_code) + ' : '+str(pic.quantite))
             ordre=0
             self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
         #*******************************************************************
-        print "#### Fin du CBB ####"
+        _logger.info("#### Fin du CBB ####")
 
     @api.multi
     def cbb_article(self):
@@ -277,7 +275,7 @@ class is_pic_3ans_saisie(models.Model):
 
             #** Suppression des données du calcul précédent ********************
             for pic in pics:
-                print 'unlink',pic
+                _logger.info('unlink ' + str(pic))
                 pic_obj.search([
                     ('annee'      ,'=',obj.annee),
                     ('origine_id' ,'=',pic.id),
@@ -287,9 +285,10 @@ class is_pic_3ans_saisie(models.Model):
 
             #** CBB sur les PIC ************************************************
             global ordre
-            print len(pics)
+            print 
+            _logger.info(str(len(pics)))
             for pic in pics:
-                print pic, pic.product_id, pic.quantite
+                _logger.info(str(pic.product_id.is_code) + ' : ' + str(pic.quantite))
                 ordre=0
                 self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
             #*******************************************************************
