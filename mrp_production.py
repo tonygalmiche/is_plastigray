@@ -6,6 +6,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.tools import float_compare, float_is_zero
 from openerp import tools, SUPERUSER_ID
 import openerp.addons.decimal_precision as dp
+from openerp.exceptions import Warning
 
 
 class MrpProduction(models.Model):
@@ -134,13 +135,19 @@ class MrpProduction(models.Model):
         #** Traitement des composants ******************************************
         if production_mode in ['consume', 'consume_produce']:
             sequence=0
+            nb=len(wiz.consume_lines)
+            ct=0
             for move in production.move_lines:
                 sequence=sequence+1
                 for wiz_line in wiz.consume_lines:
                     if move.product_id==wiz_line.product_id and wiz_line.is_sequence==sequence:
+                        ct=ct+1
                         consumed_qty = wiz_line.product_qty
                         lot_id       = wiz_line.lot_id.id
                         move.action_consume(consumed_qty, move.location_id.id, restrict_lot_id=lot_id, consumed_for=main_production_move)
+            # TODO : Ajout d'un blocage le 27/01/2018 pour empècher les problèmes de déclarations sur les OF
+            if nb!=ct:
+                raise Warning("Problème de synchronisation de nomenclature. Il faut modifier la quantité de cet OF pour resynchroniser la nomenclature")
             return
         #***********************************************************************
 

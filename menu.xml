@@ -1568,6 +1568,17 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
+    <record id="is_anomalie_declar_prod_menu" model="ir.ui.menu" >
+        <field name="name">Anomalies de production</field>
+        <field name="sequence">60</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_anomalie_declar_prod_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+
 
 
     <menuitem id="is_analyse_fournisseur_menu" sequence="50" name="Analyses Fournisseurs" parent="menu_is_analyse"/>

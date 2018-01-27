@@ -43,5 +43,6 @@ import bom_structure
 import is_mrp_production_workcenter_line
 import is_livraison_gefco
 import is_certifications_qualite_suivi
+import is_anomalie_declar_prod
 
 
