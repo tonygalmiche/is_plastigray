@@ -6,16 +6,15 @@ from openerp.exceptions import Warning
 import datetime
 import time
 import pytz
-
 import base64
 import tempfile
 import os
 from pyPdf import PdfFileWriter, PdfFileReader
 from contextlib import closing
 import threading
-
 from decimal import Decimal
-
+import logging
+_logger = logging.getLogger(__name__)
 
 
 def duree(debut):
@@ -848,8 +847,14 @@ class is_cout(models.Model):
             file_param  = self.env['ir.config_parameter'].get_param('path_report_pdf')
             if not os.path.exists(file_param):
                 os.makedirs(file_param)
-            for rec in self.search([], order="name",limit=10000):
+            recs=self.search([], order="name",limit=20000)
+            nb=len(recs)
+            _logger.info("#### Début sauvegarde Coûts ####")
+            ct=0
+            for rec in recs:
+                ct=ct+1
                 code_pg=rec.name.is_code
+                _logger.info('- '+str(ct)+'/'+str(nb)+' : '+str(code_pg))
                 result, format = self.env['report'].get_pdf(rec, report_service), 'pdf'
                 file_name = file_param + '/'+str(code_pg) +'.pdf'
                 fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
@@ -859,7 +864,7 @@ class is_cout(models.Model):
                     os.close(fd)
             self.send_mail_notyfy_user()
             new_cr.close()
-            
+            _logger.info("#### Fin sauvegarde Coûts ####")
             return {}
 
     def send_mail_notyfy_user(self):
