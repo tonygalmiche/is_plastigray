@@ -101,17 +101,12 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             for row in obj.line_ids:
                 row.unlink()
-
             line_obj = self.env['is.edi.cde.cli.line']
-            
-
             for attachment in obj.file_ids:
                 datas = self.get_data(obj.import_function, attachment)
-
                 for row in datas:
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
-
                     order_id = False
                     if 'order_id' in row:
                         order_id=row['order_id']
@@ -132,7 +127,6 @@ class is_edi_cde_cli(models.Model):
                         pricelist_id = order[0].pricelist_id.id
 
                     for ligne in row["lignes"]:
-
                         product_id = False
                         prix       = 0;
                         anomalie2  = []
@@ -175,9 +169,14 @@ class is_edi_cde_cli(models.Model):
                             #***************************************************
 
                             #** Vérification de la date de livraison livraison *
-                            check_date = self.env['sale.order.line'].check_date_livraison(ligne["date_livraison"], partner_id)
-                            if not check_date:
-                                anomalie2.append("Date de livraison pendant la fermeture du client")
+                            date_livraison=ligne["date_livraison"]
+                            if date_livraison:
+                                check_date = self.env['sale.order.line'].check_date_livraison(ligne["date_livraison"], partner_id)
+                                if not check_date:
+                                    anomalie2.append("Date de livraison pendant la fermeture du client")
+                            else:
+                                anomalie2.append("Date de livraison non trouvee")
+                                date_livraison=False
                             #***************************************************
 
                         if anomalie1:
@@ -185,15 +184,13 @@ class is_edi_cde_cli(models.Model):
                         anomalie=''
                         if len(anomalie2)>0:
                             anomalie='\n'.join(anomalie2)
-
-
                         vals={
                             'edi_cde_cli_id'     : obj.id,
                             'num_commande_client': num_commande_client,
                             'ref_article_client' : ref_article_client,
                             'product_id'         : product_id,
                             'quantite'           : ligne["quantite"],
-                            'date_livraison'     : ligne["date_livraison"],
+                            'date_livraison'     : date_livraison,
                             'type_commande'      : ligne["type_commande"],
                             'prix'               : prix,
                             'order_id'           : order_id,
