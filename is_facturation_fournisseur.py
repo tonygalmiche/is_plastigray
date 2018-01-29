@@ -199,13 +199,18 @@ class is_facturation_fournisseur(models.Model):
                         invoice_line_tax_id=False
                     res=self.env['account.invoice.line'].product_id_change(product_id, uom_id, quantite, name, invoice_type, partner_id, fiscal_position)
                     v=res['value']
+
+                    is_document=line.move_id.purchase_line_id.is_num_chantier
+                    if is_document==False:
+                        is_document=line.move_id.purchase_line_id.order_id.is_document
+
                     v.update({
                         'product_id'          : product_id,
                         'name'                : description,
                         'quantity'            : quantite,
                         'price_unit'          : line.prix,
                         'invoice_line_tax_id' : [(6,0,invoice_line_tax_id)],
-                        'is_document'         : line.move_id.purchase_line_id.order_id.is_document,
+                        'is_document'         : is_document,
                         'is_move_id'          : line.move_id.id,
                     })
                     lines.append([0,False,v]) 

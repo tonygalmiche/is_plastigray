@@ -26,6 +26,7 @@ class is_purchase_order_line(models.Model):
     is_justification     = fields.Char('Justifcation')
     is_num_da            = fields.Char("N°Demande d'achat")
     is_document          = fields.Char("Document (N° de dossier)")
+    is_num_chantier      = fields.Char("N° du chantier")
     is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
 
     uom_po_id            = fields.Many2one('product.uom', "Unité d'achat")
@@ -48,6 +49,7 @@ class is_purchase_order_line(models.Model):
                         po.is_commentaire,
                         po.is_num_da            as is_num_da,
                         po.is_document          as is_document,
+                        pol.is_num_chantier     as is_num_chantier,
                         po.is_demandeur_id      as is_demandeur_id,
                         pt.id                   as product_id, 
                         pt.is_ref_fournisseur   as is_ref_fournisseur,

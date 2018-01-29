@@ -12,7 +12,8 @@ from openerp.addons.purchase import purchase
 class purchase_order_line(models.Model):
     _inherit = "purchase.order.line"
 
-    is_justification = fields.Char("Justification", help="Ce champ est obligatoire si l'article n'est pas renseigné ou le prix à 0")
+    is_justification = fields.Char("Justification" , help="Ce champ est obligatoire si l'article n'est pas renseigné ou le prix à 0")
+    is_num_chantier  = fields.Char("N° du chantier", help="Champ utilisé pour la gestion des investissements sous la forme Mxxxx/xxxxx")
 
 
     @api.multi

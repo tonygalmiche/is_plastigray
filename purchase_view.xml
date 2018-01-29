@@ -73,6 +73,7 @@
 
                 <xpath expr="/form/sheet/notebook/page[@string='Products']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field name="is_justification" />
+                    <field name="is_num_chantier" />
                 </xpath>
                 <field name="partner_ref" position="attributes">
                     <attribute name="invisible">1</attribute>
@@ -108,42 +109,17 @@
             </field>
         </record>
 
-        <!--
-        <record id="purchase_demande_achat" model="ir.actions.act_window">
-            <field name="name">Quotation</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">purchase.order</field>
-            <field name="context">{}</field>
-            <field name="domain">[('state','in',('demande_achat',))]</field>
-            <field name="view_mode">tree,form,graph,calendar</field>
-            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
-        </record>
-        -->
-        <!--
-        <menuitem id="menu_is_achats_cde_11" sequence="11" name="Demandes d'achats" parent="menu_is_achats_cde" action="purchase_demande_achat" />
-        -->
-
-        <!--
-        <record id="purchase_order_tree" model="ir.ui.view">
-            <field name="name">purchase.order.tree</field>
-            <field name="model">purchase.order</field>
+        <record id="is_purchase_order_line_form" model="ir.ui.view">
+            <field name="name">is_purchase_order_line_form</field>
+            <field name="model">purchase.order.line</field>
+            <field name="inherit_id" ref="purchase.purchase_order_line_form"/>
             <field name="arch" type="xml">
-                <tree fonts="bold:message_unread==True" colors="grey:state=='cancel';blue:state in ('wait','confirmed');red:state in ('except_invoice','except_picking')" string="Purchase Order">
-                    <field name="message_unread" invisible="1"/>
-                    <field name="name" string="Reference"/>
-                    <field name="date_order" />
-                    <field name="partner_id"/>
-                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-                    <field name="minimum_planned_date" invisible="context.get('quotation_only', False)"/>
-                    <field name="origin"/>
-                    <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed"/>
-                    <field name="amount_total" sum="Total amount"/>
-                    <field name="state"/>
-                </tree>
+                <field name="price_unit" position="after">
+                    <field name="is_justification" />
+                    <field name="is_num_chantier" />
+                </field>
             </field>
         </record>
-        -->
-
 
     </data>
 </openerp>

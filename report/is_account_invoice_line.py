@@ -27,6 +27,7 @@ class is_account_invoice_line(models.Model):
     is_mold_dossierf        = fields.Char('Moule ou Dossier F')
 
     description             = fields.Char('Description')
+    is_document             = fields.Char("N° du chantier")
     quantity                = fields.Float('Quantité', digits=(14,2))
     uos_id                  = fields.Many2one('product.uom', 'Unité')
     price_unit              = fields.Float('Prix unitaire', digits=(14,4))
@@ -83,6 +84,7 @@ class is_account_invoice_line(models.Model):
                     pt.is_mold_dossierf,
                     pt.is_ref_client,
                     ail.name                  description,
+                    ail.is_document           is_document,
                     (fsens(ai.type)*ail.quantity) as quantity,
                     ail.uos_id,
                     ail.price_unit,

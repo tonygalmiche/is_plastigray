@@ -155,6 +155,7 @@
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/field[@name='invoice_line']/tree/field[@name='account_id']" position="after">
                     <field name="is_section_analytique_id"/>
+                    <field name="is_document"/>
                 </xpath>
                 <xpath expr="//field[@name='fiscal_position']" position="after">
                     <field name="is_document"/>

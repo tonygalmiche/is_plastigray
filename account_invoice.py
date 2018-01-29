@@ -309,7 +309,7 @@ class account_invoice_line(models.Model):
 
     is_section_analytique_id = fields.Many2one('is.section.analytique', 'Section analytique')
     is_move_id               = fields.Many2one('stock.move', 'Mouvement de stock', select=True)
-    is_document              = fields.Char("Document (N° de dossier)")
+    is_document              = fields.Char("N° du chantier")
 
     @api.multi
     def product_id_change(self, product_id, uom_id, qty=0, name='', type='out_invoice',

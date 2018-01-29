@@ -174,9 +174,9 @@ class is_demande_achat_moule(models.Model):
             if partner.property_product_pricelist_purchase.id == False:
                 raise Warning('Liste de prix non renseignée pour ce fournisseur')
             else:
-                is_document=False
-                for line in obj.line_ids:
-                    is_document=line.num_chantier
+                #is_document=False
+                #for line in obj.line_ids:
+                #    is_document=line.num_chantier
                 vals={
                     'partner_id'      : partner.id,
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
@@ -186,7 +186,7 @@ class is_demande_achat_moule(models.Model):
                     'fiscal_position' : partner.property_account_position.id,
                     'payment_term_id' : partner.property_supplier_payment_term.id,
                     'is_num_da'       : obj.name,
-                    'is_document'     : is_document,
+                    #'is_document'     : is_document,
                     'is_demandeur_id' : obj.createur_id.id,
                 }
                 order=order_obj.create(vals)
@@ -208,9 +208,10 @@ class is_demande_achat_moule(models.Model):
                             state              = 'draft'
                         )
                         vals=res['value']
-                        vals['order_id']     = order.id
-                        vals['date_planned'] = obj.delai_livraison
-                        vals['product_id']   = line.product_id.id
+                        vals['order_id']        = order.id
+                        vals['date_planned']    = obj.delai_livraison
+                        vals['product_id']      = line.product_id.id
+                        vals['is_num_chantier'] = line.num_chantier
                         name=[]
                         if line.product_id.id:
                             name.append(line.product_id.is_code+u' - '+line.product_id.name)

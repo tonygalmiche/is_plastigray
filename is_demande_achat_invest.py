@@ -218,7 +218,7 @@ class is_demande_achat_invest(models.Model):
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
                     'currency_id'     : partner.property_product_pricelist_purchase.currency_id.id,
                     'is_num_da'       : obj.name,
-                    'is_document'     : is_document,
+                    #'is_document'     : is_document,
                     'is_demandeur_id' : obj.createur_id.id,
                 }
                 order=order_obj.create(vals)
@@ -240,9 +240,10 @@ class is_demande_achat_invest(models.Model):
                             state              = 'draft'
                         )
                         vals=res['value']
-                        vals['order_id']     = order.id
-                        vals['date_planned'] = obj.delai_livraison
-                        vals['product_id']   = line.product_id.id
+                        vals['order_id']        = order.id
+                        vals['date_planned']    = obj.delai_livraison
+                        vals['product_id']      = line.product_id.id
+                        vals['is_num_chantier'] = line.num_chantier
 
                         name=[]
                         if line.product_id.id:
