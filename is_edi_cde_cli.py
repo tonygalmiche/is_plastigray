@@ -683,7 +683,7 @@ class is_edi_cde_cli(models.Model):
                                                     ref_article_client=n5.text.strip()
                                                 if col==12:
                                                     type_commande=n5.text
-                                                    if type_commande=='Firmed':
+                                                    if type_commande=='Firmed' or type_commande=='Partial':
                                                         type_commande='ferme'
                                                     else:
                                                         type_commande='previsionnel'
