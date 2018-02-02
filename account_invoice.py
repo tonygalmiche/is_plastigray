@@ -227,10 +227,11 @@ class account_invoice(models.Model):
     @api.multi
     def action_cancel(self):
         for obj in self:
-            for line in obj.invoice_line:
-                if line.is_move_id:
-                    line.is_move_id.invoice_state='none'
-                line.is_move_id=False
+            if obj.type=='in_invoice':
+                for line in obj.invoice_line:
+                    if line.is_move_id:
+                        line.is_move_id.invoice_state='none'
+                    line.is_move_id=False
         super(account_invoice, self).action_cancel()
 
 

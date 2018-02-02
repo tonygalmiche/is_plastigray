@@ -329,6 +329,22 @@
 
 
 
+
+        <record id="is_view_invoice_line_form" model="ir.ui.view">
+            <field name="name">is_view_invoice_line_form</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_form"/>
+            <field name="arch" type="xml">
+                <field name="invoice_line_tax_id" position="after">
+                    <field name="is_move_id"/>
+                </field>
+            </field>
+        </record>
+
+
+
+
+
         <!-- Rapprochement ligne facture fournisseur et mouvement de stock -->
         <!--
         <record id="initialisation_mouvement_stock_action_server" model="ir.actions.server">

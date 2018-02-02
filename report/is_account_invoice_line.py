@@ -37,6 +37,7 @@ class is_account_invoice_line(models.Model):
     montant_amt_moule       = fields.Float('Montant amortissement moule', digits=(14,2))
     montant_matiere         = fields.Float('Montant matière livrée', digits=(14,2))
 
+    invoice_line_id         = fields.Many2one('account.invoice.line', 'Ligne de facture')
     move_id                 = fields.Many2one('stock.move', 'Mouvement de stock')
     picking_id              = fields.Many2one('stock.picking', 'Livraison')
     purchase_order_id       = fields.Many2one('purchase.order', 'Commande fournisseur')
@@ -66,6 +67,7 @@ class is_account_invoice_line(models.Model):
             CREATE OR REPLACE view is_account_invoice_line AS (
                 select 
                     ail.id,
+                    ail.id invoice_line_id,
                     ai.partner_id,
                     ai.id invoice_id,
                     sm.date date_reception,

@@ -442,6 +442,42 @@ class stock_move(models.Model):
     _order   = "date desc, id"
 
 
+    @api.multi
+    def name_get(self):
+        res=[]
+        for obj in self:
+            name=obj.product_id.is_code+u' / '+ u'qt='+str(obj.product_uom_qty) 
+            if obj.picking_id:
+                name=name + u' / bl='+str(obj.picking_id.name)
+            if obj.origin:
+                name=name + u' / '+str(obj.origin)
+            name=name+u' / id='+str(obj.id)
+            res.append((obj.id, name))
+        return res
+
+
+    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if name:
+            try:
+                id = int(name)
+            except ValueError:
+                id = 0
+            if id>0:
+                filtre=['|','|','|',('product_id.is_code','ilike', name),('picking_id.name','ilike', name),('origin','ilike', name),('id','=', name)]
+            else:
+                filtre=['|','|',('product_id.is_code','ilike', name),('picking_id.name','ilike', name),('origin','ilike', name)]
+            ids = self.search(cr, user, filtre, limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        result = self.name_get(cr, user, ids, context=context)
+        return result
+
+
+
+
+
     @api.model
     def create(self, vals):
         obj = super(stock_move, self).create(vals)
