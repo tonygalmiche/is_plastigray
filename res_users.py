@@ -40,7 +40,7 @@ class res_users(models.Model):
                 VALUES ("""+str(user_id)+""", now() at time zone 'UTC', '"""+str(ip)+"""')
             """
             res=cr.execute(SQL)
-            res=cr.execute("UPDATE res_users SET is_adresse_ip='"+str(ip)+"' WHERE id="+str(user_id))
+            #res=cr.execute("UPDATE res_users SET is_adresse_ip='"+str(ip)+"' WHERE id="+str(user_id))
             cr.close()
         return user_id
 
