@@ -68,5 +68,59 @@
         </record>
 
 
+        <!-- Historique de connexion -->
+        <record id="is_res_users_tree_view" model="ir.ui.view">
+            <field name="name">is_res_users_tree_view</field>
+            <field name="model">is.res.users</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="heure_connexion" />
+                    <field name="user_id" />
+                    <field name="adresse_ip" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_res_users_form_view" model="ir.ui.view">
+            <field name="name">is_res_users_form_view</field>
+            <field name="model">is.res.users</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="heure_connexion" />
+                            <field name="user_id" />
+                            <field name="adresse_ip" />
+                         </group> 
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_res_users_search_view" model="ir.ui.view">
+            <field name="name">is_res_users_search_view</field>
+            <field name="model">is.res.users</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="user_id" />
+                    <field name="adresse_ip"/>
+                    <group expand="1" string="Regrouper par">
+                        <filter string="Utilisateur" context="{'group_by':'user_id'}"/>
+                        <filter string="Adresse IP"  context="{'group_by':'adresse_ip'}"/>
+                        <filter string="Jour"        context="{'group_by':'heure_connexion:day'}"/>
+                        <filter string="Semaine"     context="{'group_by':'heure_connexion:week'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="is_res_users_action" model="ir.actions.act_window">
+            <field name="name">Historique de connexion</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.res.users</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
     </data>
 </openerp>

@@ -1646,10 +1646,11 @@
 
 
     <!-- Gestion des utilisateurs -->
-    <menuitem id="is_service_menu"            sequence="90" name="Services"              parent="base.menu_users" action="is_service_action" />
-    <menuitem id="is_users_groups_menu"       sequence="91" name="Utilisateurs / Groupe" parent="base.menu_users" action="is_users_groups_action" />
-    <menuitem id="is_model_groups_menu"       sequence="92" name="Modèles / Groupe"      parent="base.menu_users" action="is_model_groups_action" />
-    <menuitem id="is_ir_module_category_menu" sequence="93" name="Applications"          parent="base.menu_users" action="is_ir_module_category_action" />
+    <menuitem id="is_service_menu"            sequence="90" name="Services"                parent="base.menu_users" action="is_service_action" />
+    <menuitem id="is_users_groups_menu"       sequence="91" name="Utilisateurs / Groupe"   parent="base.menu_users" action="is_users_groups_action" />
+    <menuitem id="is_model_groups_menu"       sequence="92" name="Modèles / Groupe"        parent="base.menu_users" action="is_model_groups_action" />
+    <menuitem id="is_ir_module_category_menu" sequence="93" name="Applications"            parent="base.menu_users" action="is_ir_module_category_action" />
+    <menuitem id="is_res_users_menu"          sequence="94" name="Historique de connexion" parent="base.menu_users" action="is_res_users_action" />
 
 
     <!--     Outillages -->
