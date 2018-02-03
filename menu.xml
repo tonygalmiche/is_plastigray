@@ -1000,29 +1000,10 @@
     </record>
 
 
-    <!-- Production / Stock -->
-    <menuitem id="menu_is_production_stock"    sequence="10" name="Stock"                    parent="menu_is_production"  />
-    <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="is_stock_quant_action"/>
-    <menuitem id="menu_is_production_stock_20" sequence="20" name="Mouvements de stock"      parent="menu_is_production_stock"  action="is_stock_move_action" />
-    <!--<menuitem id="menu_is_production_stock_30" sequence="30" name="Lots"                     parent="menu_is_production_stock"  action="stock.action_production_lot_form" />-->
-
-    <!--
-    <menuitem id="menu_is_production_stock_40" sequence="40" name="Mouvements terminés"      parent="menu_is_production_stock"  action="is_mouvements_termines_action" />
-    <record id="is_mouvements_tous_menu" model="ir.ui.menu" >
-        <field name="name">Tous les mouvements</field>
-        <field name="sequence">50</field>
-        <field name="parent_id" eval="ref('menu_is_production_stock')"/>
-        <field name="action"    ref="is_mouvements_tous_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('base.group_system'),
-        ])]"/>
-    </record>
-    <menuitem id="menu_is_production_stock_60" sequence="60" name="Mouvements avec lot"      parent="menu_is_production_stock"  action="is_mouvement_stock_action" />
-    -->
 
 
     <!-- Production / Production -->
-    <menuitem id="menu_is_production_production" sequence="20" name="Production"                 parent="menu_is_production"/>
+    <menuitem id="menu_is_production_production" sequence="10" name="Production"                 parent="menu_is_production"/>
     <record id="menu_is_ordre_fabrication" model="ir.ui.menu" >
         <field name="name">Ordres de fabrication</field>
         <field name="sequence">10</field>
@@ -1091,6 +1072,13 @@
             ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
+
+
+    <!-- Production / Stock -->
+    <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"  />
+    <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="is_stock_quant_action"/>
+    <menuitem id="menu_is_production_stock_20" sequence="20" name="Mouvements de stock"      parent="menu_is_production_stock"  action="is_stock_move_action" />
+
 
 
 
