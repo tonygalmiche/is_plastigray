@@ -82,12 +82,18 @@ class is_edi_cde_cli(models.Model):
     state           = fields.Selection([('analyse', u'Analyse'),('traite', u'Traité')], u"État", readonly=True, select=True)
     line_ids        = fields.One2many('is.edi.cde.cli.line', 'edi_cde_cli_id', u"Commandes a importer")
     nb_lignes       = fields.Integer("Nombre de lignes"  , compute='_compute', readonly=True, store=False)
+    nb_fichiers      = fields.Integer("Nombre de fichier"  , compute='_compute_nb_file', readonly=True)
     nb_anomalies    = fields.Integer("Nombre d'anomalies", compute='_compute', readonly=True, store=False)
 
     _defaults = {
         'name' : fields.Datetime.now,
         'state': 'analyse',
     }
+
+    @api.depends('partner_id')
+    def _compute_nb_file(self):
+        for obj in self:
+            obj.nb_fichiers = len(obj.file_ids)
 
     @api.depends('partner_id')
     def _import_function(self):

@@ -102,6 +102,7 @@
                             <field name="import_function"/>
                             <field name="file_ids" widget="many2many_binary" />
                             <field name="nb_lignes"/>
+                            <field name="nb_fichiers"/>
                             <field style="background:orange" name="nb_anomalies" readonly="1" attrs="{'invisible':[('nb_anomalies','=',0)]}"/>
                         </group>
                     </sheet>
@@ -118,6 +119,7 @@
                     <field name="date_maxi"/>
                     <field name="import_function"/>
                     <field name="nb_lignes"/>
+                    <field name="nb_fichiers"/>
                     <field name="nb_anomalies"/>
                     <field name="state"/>
                </tree>
