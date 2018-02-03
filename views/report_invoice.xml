@@ -236,7 +236,17 @@
                                 <span t-field="o.is_num_cde_client"/>
                             </t>
                         </td>
-                        <td><span t-field="l.name"/></td>
+                        <td>
+                            <span t-field="l.name"/>
+                            <t t-if="l.product_id.is_origine_produit_id">
+                                <br />
+                                <i>Origine : <span t-field="l.product_id.is_origine_produit_id.name"/></i>
+                             </t>
+                            <t t-if="l.product_id.is_nomenclature_douaniere">
+                                <br />
+                                <i>Nomenclature douanière : <span t-field="l.product_id.is_nomenclature_douaniere"/></i>
+                            </t>
+                        </td>
                         <td><span t-field="l.product_id.is_ref_client"/></td>
                         <td class="text-right"><span style="white-space: nowrap;" t-field="l.price_unit"/></td>
                         <td class="text-right"><span t-esc="int(l.quantity)"/></td>
