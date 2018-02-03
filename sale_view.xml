@@ -287,7 +287,7 @@
 
 
         <record model="ir.actions.act_window" id="is_order_line_tree_action">
-            <field name="name">Lignes de commandes</field>
+            <field name="name">Lignes commandes vente</field>
             <field name="res_model">sale.order.line</field>
             <field name="view_type">form</field>
             <field name="view_id" ref="is_order_line_tree_view"/>

@@ -2,10 +2,7 @@
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
-
-
-#TODO : 
-# - Revoir le CBN pour qu'il génére une DAS à la place des devis pour les anomalies => Plus tard après les premiers tests
+import datetime
 
 
 class is_demande_achat_serie(models.Model):
@@ -224,9 +221,10 @@ class is_demande_achat_serie_line(models.Model):
             if product_id:
                 res['value']={}
                 product = self.env['product.product'].browse(product_id)
+                now=datetime.datetime.now().strftime('%Y-%m-%d')
                 sql="""
                     select 
-                        is_prix_achat("""+str(pricelist_id)+""", """+str(product_id)+""", """+str(quantite)+""", '2017-11-12') 
+                        is_prix_achat("""+str(pricelist_id)+""", """+str(product_id)+""", """+str(quantite)+""", '"""+now+"""') 
                     from product_product
                     where id="""+str(product_id)+"""
                 """

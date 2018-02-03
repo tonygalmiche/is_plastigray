@@ -2,6 +2,7 @@
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
+import datetime
 
 
 class is_demande_achat_moule(models.Model):
@@ -299,9 +300,10 @@ class is_demande_achat_moule_line(models.Model):
             if product_id and pricelist_id:
                 res['value']={}
                 product = self.env['product.product'].browse(product_id)
+                now=datetime.datetime.now().strftime('%Y-%m-%d')
                 sql="""
                     select 
-                        is_prix_achat("""+str(pricelist_id)+""", """+str(product_id)+""", """+str(quantite)+""", '2017-11-12') 
+                        is_prix_achat("""+str(pricelist_id)+""", """+str(product_id)+""", """+str(quantite)+""", '"""+now+"""') 
                     from product_product
                     where id="""+str(product_id)+"""
                 """
