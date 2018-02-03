@@ -81,7 +81,7 @@ class is_export_edi(models.Model):
                     pt.is_code,
                     l.date,
                     l.type_cde,
-                    l.quantite*is_unit_coef(pt.uom_id, l.uom_id)
+                    (l.quantite-coalesce(l.quantite_rcp,0))*is_unit_coef(pt.uom_id, l.uom_id)
                 from is_cde_ouverte_fournisseur_line l inner join is_cde_ouverte_fournisseur_product p on l.product_id=p.id
                                                        inner join product_product  pp on p.product_id=pp.id
                                                        inner join product_template pt on pp.product_tmpl_id=pt.id
