@@ -130,10 +130,8 @@
             <t t-call="is_plastigray.report_is_consigne_journaliere_external_layout">
                 <div class="page">
                     <div class="row">
-                        <div class="col-xs-4">
+                        <div class="col-xs-12">
                             <table style="width:100%">
-                                <tr><th class="text-right">Titre                </th><td><span t-field="o.name"/></td></tr>
-                                <tr><th class="text-right">Chef d'atelier       </th><td><span t-field="o.chef_atelier"/></td></tr>
                                 <tr><th class="text-right">Remarque générale    </th><td><span t-field="o.remarque_generale"/></td></tr>
                                 <tr><th class="text-right">Total MOD Injection  </th><td><span t-field="o.total_mod_inj"/></td></tr>
                                 <tr><th class="text-right">Total MOD Assemblage </th><td><span t-field="o.total_mod_ass"/></td></tr>
@@ -162,7 +160,7 @@
                                 </thead>
                                 <tbody>
                                     <tr t-foreach="o.injection_ids" t-as="l">
-                                        <td class="text-center">    <span t-field="l.presse_id"/> </td>
+                                        <td class="text-center">    <span t-field="l.presse_id.code"/> </td>
                                         <td class="text-center">    <span t-field="l.of1_id.name"/> </td>
                                         <td class="text-center">    <span t-field="l.mod1"/> </td>
                                         <td class="text-center">    <span t-field="l.operateur"/> </td>
@@ -188,10 +186,8 @@
                     <t t-if="o.assemblage_ids">
                         <div style="page-break-after:always;" />
                         <div class="row">
-                            <div class="col-xs-4">
+                            <div class="col-xs-12">
                                 <table style="width:100%">
-                                    <tr><th class="text-right">Titre                </th><td><span t-field="o.name"/></td></tr>
-                                    <tr><th class="text-right">Chef d'atelier       </th><td><span t-field="o.chef_atelier"/></td></tr>
                                     <tr><th class="text-right">Remarque générale    </th><td><span t-field="o.remarque_generale"/></td></tr>
                                     <tr><th class="text-right">Total MOD Injection  </th><td><span t-field="o.total_mod_inj"/></td></tr>
                                     <tr><th class="text-right">Total MOD Assemblage </th><td><span t-field="o.total_mod_ass"/></td></tr>
@@ -214,7 +210,7 @@
                                     </thead>
                                     <tbody>
                                         <tr t-foreach="o.assemblage_ids" t-as="l">
-                                            <td class="text-center">    <span t-field="l.poste_id"/> </td>
+                                            <td class="text-center">    <span t-field="l.poste_id.code"/> </td>
                                             <td class="text-center">    <span t-field="l.priorite"/> </td>
                                             <td class="text-center">    <span t-field="l.mod"/> </td>
                                             <td class="text-center">    <span t-field="l.operateur"/> </td>
