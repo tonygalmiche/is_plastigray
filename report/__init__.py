@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import is_create_postgres_function
 import stock_bloquer_lot
 import stock_debloquer_lot
 import stock_change_location_lot
