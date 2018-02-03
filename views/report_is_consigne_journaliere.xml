@@ -161,14 +161,14 @@
                                 <tbody>
                                     <tr t-foreach="o.injection_ids" t-as="l">
                                         <td class="text-center">    <span t-field="l.presse_id.code"/> </td>
-                                        <td class="text-center">    <span t-field="l.of1_id.name"/> </td>
+                                        <td class="text-center">    <span t-field="l.of1_id.name.name"/> </td>
                                         <td class="text-center">    <span t-field="l.mod1"/> </td>
                                         <td class="text-center">    <span t-field="l.operateur"/> </td>
                                         <td class="text-center">    <span t-field="l.moule1"/> </td>
                                         <td class="text-center">    <span t-field="l.matiere1"/> </td>
                                         <td class="text-center">    <span t-field="l.tps_arret"/> </td>
                                         <td class="text-center">    <span t-field="l.heure"/> </td>
-                                        <td class="text-center">    <span t-field="l.of2_id.name"/> </td>
+                                        <td class="text-center">    <span t-field="l.of2_id.name.name"/> </td>
                                         <td class="text-center">    <span t-field="l.mod2"/> </td>
                                         <td class="text-center">    <span t-field="l.moule2"/> </td>
                                         <td class="text-center">    <span t-field="l.matiere2"/> </td>
@@ -214,8 +214,8 @@
                                             <td class="text-center">    <span t-field="l.priorite"/> </td>
                                             <td class="text-center">    <span t-field="l.mod"/> </td>
                                             <td class="text-center">    <span t-field="l.operateur"/> </td>
-                                            <td class="text-center">    <span t-field="l.of1_id.name"/> </td>
-                                            <td class="text-center">    <span t-field="l.of2_id.name"/> </td>
+                                            <td class="text-center">    <span t-field="l.of1_id.name.name"/> </td>
+                                            <td class="text-center">    <span t-field="l.of2_id.name.name"/> </td>
                                             <td class="text-center">    <span t-field="l.remarque"/> </td>
                                         </tr>
                                     </tbody>
