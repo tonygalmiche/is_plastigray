@@ -47,6 +47,9 @@ class is_database(models.Model):
             class_name=obj.__class__.__name__
             database_lines = self.env['is.database'].search([])
             for database in database_lines:
+                _logger.info(u'copy_other_database : database='+str(database))
+
+
                 if database.database:
                     if class_name=='res.partner':
                         #test_recursive=test_recursive+1
