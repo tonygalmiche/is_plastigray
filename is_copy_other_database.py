@@ -37,8 +37,6 @@ class is_database(models.Model):
     is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
 
 
-
-
     @api.multi
     def copy_other_database(self, obj):
         #global test_recursive 
@@ -47,24 +45,11 @@ class is_database(models.Model):
             class_name=obj.__class__.__name__
             database_lines = self.env['is.database'].search([])
             for database in database_lines:
-                _logger.info(u'copy_other_database : database='+str(database))
-
-
                 if database.database:
+                    _logger.info(u'database='+str(database.database))
                     if class_name=='res.partner':
-                        #test_recursive=test_recursive+1
-                        #print obj.id, obj.is_adr_facturation
-
                         if obj.id==obj.is_adr_facturation.id:
                             raise osv.except_osv('Client recursif 2 !','')
-
-                        #if test_recursive>10:
-                        #    test_recursive=0
-                        #    raise osv.except_osv('Client recursif !','')
-
-
-                    #print database.database, obj, test_recursive
-
                     DB = database.database
                     USERID = SUPERUSER_ID
                     DBLOGIN = database.login
@@ -242,17 +227,14 @@ class is_database(models.Model):
         return False
 
     def get_is_type_reglement(self, obj , DB, USERID, USERPASS, sock):
-        res = sock.execute(DB, USERID, USERPASS, 'account.journal', 'search', [('code', '=', obj.code)], {})
-
-        _logger.info(u'get_is_type_reglement : code='+str(obj.code)+u' : res='+str(res))
-
+        _logger.info(u'get_is_type_reglement : code='+str(obj.is_type_reglement.code))
+        res = sock.execute(DB, USERID, USERPASS, 'account.journal', 'search', [('code', '=', obj.is_type_reglement.code)], {})
         if res:
             return res[0]
         return False
 
     def get_user_id(self, obj , DB, USERID, USERPASS, sock):
         user_id = sock.execute(DB, USERID, USERPASS, 'res.users', 'search', [('login', '=', obj.user_id.login)], {})
-        print user_id
         if user_id:
             return user_id[0]
         return False
@@ -436,15 +418,6 @@ class is_database(models.Model):
         if partner.is_company:
             partner_vals.update({'child_ids':partner.child_ids and self._get_child_ids(partner.child_ids, DB, USERID, USERPASS, sock) or [] })
         return partner_vals
-
-
-
-
-
-
-
-
-
 
 
 
