@@ -394,6 +394,7 @@ class is_database(models.Model):
             #'is_type_cde_fournisseur': partner.is_type_cde_fournisseur,
             'is_database_line_ids'   : self.get_is_database_line_ids(partner, DB, USERID, USERPASS, sock) or False,
 
+            'vat'                            : partner.vat,
             'property_account_position'      : partner.property_account_position.id,
             'property_payment_term'          : partner.property_payment_term.id,
             'property_supplier_payment_term' : partner.property_supplier_payment_term.id,
