@@ -9,6 +9,8 @@ from openerp import SUPERUSER_ID
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
+
+import logging
 _logger = logging.getLogger(__name__)
 
 
