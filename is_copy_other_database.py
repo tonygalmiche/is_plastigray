@@ -9,6 +9,7 @@ from openerp import SUPERUSER_ID
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
+_logger = logging.getLogger(__name__)
 
 
 #TODO
@@ -238,7 +239,7 @@ class is_database(models.Model):
     def get_is_type_reglement(self, obj , DB, USERID, USERPASS, sock):
         res = sock.execute(DB, USERID, USERPASS, 'account.journal', 'search', [('code', '=', obj.code)], {})
 
-        print "## TEST ## : ",code,obj.code,res
+        _logger.info(u'get_is_type_reglement : code='+str(obj.code)+u' : res='+str(res))
 
         if res:
             return res[0]
