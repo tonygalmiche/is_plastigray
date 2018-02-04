@@ -235,6 +235,11 @@ class is_database(models.Model):
             return is_rib_id[0]
         return False
 
+    def get_is_type_reglement(self, obj , DB, USERID, USERPASS, sock):
+        res = sock.execute(DB, USERID, USERPASS, 'account.journal', 'search', [('code', '=', obj.code)], {})
+        if res:
+            return res[0]
+        return False
 
     def get_user_id(self, obj , DB, USERID, USERPASS, sock):
         user_id = sock.execute(DB, USERID, USERPASS, 'res.users', 'search', [('login', '=', obj.user_id.login)], {})
@@ -399,7 +404,9 @@ class is_database(models.Model):
             'property_payment_term'          : partner.property_payment_term.id,
             'property_supplier_payment_term' : partner.property_supplier_payment_term.id,
             'is_escompte'                    : partner.is_escompte.id,
-            #'is_type_reglement'              : partner.is_type_reglement.id,
+
+            'is_type_reglement'              : partner.is_type_reglement and self.get_is_type_reglement(partner, DB, USERID, USERPASS, sock) or False,
+
             'is_rib_id'                      : partner.is_rib_id and self.get_is_rib_id(partner, DB, USERID, USERPASS, sock) or False,
             'user_id'                        : partner.user_id and self.get_user_id(partner, DB, USERID, USERPASS, sock) or False,
 
