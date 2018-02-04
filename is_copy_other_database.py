@@ -509,6 +509,7 @@ class res_partner(models.Model):
     @api.multi
     def write(self, vals):
         for obj in self:
+            _logger.info(u'write : partner='+str(obj.is_code)+u'/'+str(obj.is_adr_code))
             if 'is_adr_facturation' in vals:
                 if vals['is_adr_facturation']==obj.id:
                     vals['is_adr_facturation']=False
