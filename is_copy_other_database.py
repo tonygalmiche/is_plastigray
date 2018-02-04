@@ -237,6 +237,9 @@ class is_database(models.Model):
 
     def get_is_type_reglement(self, obj , DB, USERID, USERPASS, sock):
         res = sock.execute(DB, USERID, USERPASS, 'account.journal', 'search', [('code', '=', obj.code)], {})
+
+        print "## TEST ## : ",code,obj.code,res
+
         if res:
             return res[0]
         return False
