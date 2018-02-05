@@ -16,7 +16,6 @@ class is_stock_quant(models.Model):
     gestionnaire_id    = fields.Many2one('is.gestionnaire' , 'Gestionnaire')
     category_id        = fields.Many2one('is.category'     , 'Catégorie')
     moule              = fields.Char('Moule')
-    dossierf           = fields.Char('Dossier F')
     client_id          = fields.Many2one('res.partner', 'Client')
     ref_client         = fields.Char('Référence Client')
     ref_fournisseur    = fields.Char('Référence Fournisseur')
@@ -42,7 +41,6 @@ class is_stock_quant(models.Model):
                     isq.gestionnaire_id,
                     isq.category_id,
                     isq.moule,
-                    isq.dossierf,
                     isq.ref_client,
                     isq.ref_fournisseur,
                     isq.location_id,
@@ -62,8 +60,7 @@ class is_stock_quant(models.Model):
                         pt.name                designation,
                         pt.is_gestionnaire_id  gestionnaire_id,
                         pt.is_category_id      category_id,
-                        im.name                moule,
-                        id.name                dossierf,
+                        pt.is_mold_dossierf    moule,
                         pt.is_ref_client       ref_client,
                         pt.is_ref_fournisseur  ref_fournisseur,
                         sq.location_id         location_id,
@@ -73,19 +70,13 @@ class is_stock_quant(models.Model):
                         sq.qty                 quantite, 
                         pt.uom_id              uom_id,
                         in_date                date_entree,
-                        (   select client_id 
-                            from is_product_client ipc
-                            where ipc.product_id=pt.id and ipc.client_defaut='t' limit 1) client_id
+                        pt.is_client_id        client_id
                     from stock_quant sq inner join product_product            pp on sq.product_id=pp.id
                                         inner join product_template           pt on pp.product_tmpl_id=pt.id
                                         inner join stock_location             sl on sq.location_id=sl.id
                                         left outer join stock_production_lot spl on sq.lot_id=spl.id
-                                        left outer join is_mold               im on pt.is_mold_id=im.id
-                                        left outer join is_dossierf           id on pt.is_dossierf_id=id.id
                     where sl.usage='internal'
                 ) isq
-
-
                 group by
                     isq.product_id, 
                     isq.code_pg,
@@ -93,7 +84,6 @@ class is_stock_quant(models.Model):
                     isq.gestionnaire_id,
                     isq.category_id,
                     isq.moule,
-                    isq.dossierf,
                     isq.ref_client,
                     isq.ref_fournisseur,
                     isq.location_id,
