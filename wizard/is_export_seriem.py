@@ -204,12 +204,10 @@ class is_export_seriem(models.TransientModel):
                                 Intitule=NumFacFournisseur+u' '+DossierModif+u' '+Fournisseur
                             else:
                                 if NumCompte[:1]=='2':
-                                    Intitule=(DossierModif+u'    ')[:5]+u' '+Fournisseur
+                                    Intitule=(Affaire[-5:]+u'    ')[:5]+u' '+NumFacFournisseur+u' '+Fournisseur
                                 else:
                                     Intitule=NumFacFournisseur+u' '+(Fournisseur+u'               ')[:15]+DossierModif
                                     Moule=(Affaire[-5:]+u'    ')[:5]
-
-
 
                         Intitule=(Intitule+u"                                ")[:26]
 
