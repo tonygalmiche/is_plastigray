@@ -103,17 +103,24 @@ class is_export_seriem(models.TransientModel):
                 """
 
 
-                #TODO is_document
+
+                # Recherche des affaires par facture pour les mettre sur le compte 401000
+                cr.execute(sql)
+                Affaires={}
+                for row in cr.fetchall():
+                    NumFacture = str(row[0])
+                    Affaire    = str(row[15])
+                    if Affaire!='None':
+                        Affaires[NumFacture]=Affaire
+
 
                 cr.execute(sql)
                 for row in cr.fetchall():
-                    #print row
-
                     CodeAuxiliaire = (u"000000"+str(row[2]))[-6:]
                     ClientGroupe   = str(row[14])
-                    Document       = str(row[15])
-
-                    #print "TEST 1", CodeAuxiliaire, ClientGroupe
+                    Affaire        = str(row[15])
+                    if Affaire=='None':
+                        Affaire=''
 
                     #Test si client ou fournisseur
                     if row[11]:
@@ -122,12 +129,6 @@ class is_export_seriem(models.TransientModel):
                         CompteCollectif = u'411000'
                         if ClientGroupe!='None':
                             CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
-
-
-                    #print "TEST 2", CodeAuxiliaire, ClientGroupe
-
-                    #raise Warning('test tony')
-
 
 
                     NumCompte         = row[4]
@@ -169,18 +170,55 @@ class is_export_seriem(models.TransientModel):
                         TypeFacture=u'F'  # Facture
                     if obj.type_interface=='achats' and not BonAPayer:
                         TypeFacture=u'L'  # Facture fournisseur en litige
-                    Client=(row[3]+u"                                ")[:26]
+
+
+                    #Intitule=
+
+
+
+
+                    Intitule=(row[3]+u"                                ")[:26]
+                    Moule=''
 
                     if Journal=="AC":
+                        # Intitule SERIE-M : 10car dans Ref Fac + 16car dans Libelle
+                        # Si Affaire n'existe pas               -> Intitule = N°Fac fournisseur sur 5car + Fournisseur
+                        # Si Compte == 401000 et Affaire existe -> Intitule = N°Fac fournisseur + Affaire + Fournisseur
+                        # Si Compte != 401000 et Affaire existe 
+                        #       et si Compte == '2xx'           -> Intitule = Affaire sur 5car + Fournisseur
+                        #       et si Compte != '2xx'           -> Intitule = Fournisseur sur 15car + Affaire complète
+                        Fournisseur       = row[3]
+                        NumFacFournisseur = (NumFacFournisseur+u'    ')[:5]
 
-                        #print "NumFacFournisseur=",NumFacFournisseur
 
-                        #** Pour les investissements, remplacer la numéro de facture fournisseur par le numéro de document
-                        if Document!='None' and NumCompte[:1]=='2':
-                            NumFacFournisseur=(Document[-5:]+u'    ')[:5]
+                        if NumCompte=='401000':
+                            if row[0] in Affaires:
+                                Affaire=Affaires[row[0]]
+                        DossierModif=Affaire
+                        if Affaire[:5]=='M0000':
+                            DossierModif=u'M'+Affaire[-4:]
+                        if Affaire=='':
+                            Intitule=NumFacFournisseur+u' '+Fournisseur
                         else:
-                            NumFacFournisseur=(NumFacFournisseur+u'    ')[:5]
-                        Client=(NumFacFournisseur+u' '+Client)[:26]
+                            if NumCompte=='401000':
+                                Intitule=NumFacFournisseur+u' '+DossierModif+u' '+Fournisseur
+                            else:
+                                if NumCompte[:1]=='2':
+                                    Intitule=(DossierModif+u'    ')[:5]+Fournisseur
+                                else:
+                                    Intitule=NumFacFournisseur+u' '+(Fournisseur+u'               ')[:15]+DossierModif
+                                    Moule=(Affaire[-5:]+u'    ')[:5]
+
+
+
+                        Intitule=(Intitule+u"                                ")[:26]
+
+                        #** Pour les investissements, remplacer la numéro de facture fournisseur par le numéro d'affaire
+                        #if Affaire!='' and NumCompte[:1]=='2':
+                        #    NumFacFournisseur=(Affaire[-5:]+u'    ')[:5]
+                        #else:
+                        #    NumFacFournisseur=(NumFacFournisseur+u'    ')[:5]
+                        #Intitule=(NumFacFournisseur+u' '+Intitule)[:26]
 
                     NumFacture=(u"000000"+str(row[0]))[-6:]
                     DateEcheance=row[7]
@@ -197,7 +235,22 @@ class is_export_seriem(models.TransientModel):
                     if NumCompte[:1]==u'2':
                         SectionAnalytique=u'    '
 
-                    Ligne=u"L"+NumCompte+CodeFournisseur+Montant+Sens+TypeFacture+Client+NumFacture+SectionAnalytique+JourFacture+u"   00000000000   00000000000"
+
+
+
+
+                    Ligne=u"L" + \
+                        NumCompte + \
+                        CodeFournisseur + \
+                        Montant + \
+                        Sens + \
+                        TypeFacture + \
+                        Intitule + \
+                        NumFacture + \
+                        SectionAnalytique + \
+                        JourFacture + \
+                        u"   00000000000   00000000000" + \
+                        Moule
                     res.append(Ligne)
                     #print Ligne
 
@@ -207,6 +260,8 @@ class is_export_seriem(models.TransientModel):
                 Ligne=u'H'+Soc+CompteCollectif+CodeAuxiliaire+NumFacture+u'01'+TotalTTC+u' '+DateEcheance+TypeReglement+'  0000000 1'
                 res.append(Ligne)
                 #*******************************************************************
+
+
 
             # Enregistrement du fichier ****************************************
             os.chdir('/tmp')
