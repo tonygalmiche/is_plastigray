@@ -233,6 +233,15 @@ class is_export_seriem(models.TransientModel):
                     if NumCompte[:1]==u'2':
                         SectionAnalytique=u'    '
 
+                    if Journal=="VE":
+                        if Affaire!='':
+                            Intitule=(Affaire[-5:]+u'    ')[:5]+u' '+row[3]
+                            Moule=(Affaire[-5:]+u'    ')[:5]
+                        else:
+                            Intitule=row[3]
+                        Intitule=(Intitule+u"                                ")[:26]
+                        if Affaire!='' and NumCompte[:3]=='707':
+                            Moule=(Affaire[-5:]+u'    ')[:5]
 
 
 
