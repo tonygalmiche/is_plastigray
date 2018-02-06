@@ -235,7 +235,7 @@ class is_export_seriem(models.TransientModel):
 
                     if Journal=="VE":
                         if Affaire!='':
-                            Intitule=(Affaire[-5:]+u'    ')[:5]+u' '+row[3]
+                            Intitule=Affaire+u' '+row[3]
                             Moule=(Affaire[-5:]+u'    ')[:5]
                         else:
                             Intitule=row[3]
