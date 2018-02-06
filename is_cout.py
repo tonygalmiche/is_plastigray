@@ -518,8 +518,13 @@ class is_cout_calcul(models.Model):
 
 
             cout_obj = self.env['is.cout']
+
+            nb=len(obj.cout_actualise_ids)
+            ct=0
             for row in obj.cout_actualise_ids:
                 product=row.product_id
+                ct=ct+1
+                _logger.info(str(ct)+'/'+str(nb)+' : '+str(product.is_code))
                 couts=cout_obj.search([('name', '=', product.id)])
                 if len(couts):
                     for cout in couts:

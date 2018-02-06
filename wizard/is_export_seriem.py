@@ -196,7 +196,7 @@ class is_export_seriem(models.TransientModel):
                                 Affaire=Affaires[row[0]]
                         DossierModif=Affaire
                         if Affaire[:5]=='M0000':
-                            DossierModif=u'M'+Affaire[-4:]
+                            DossierModif=u'M'+Affaire[-5:]
                         if Affaire=='':
                             Intitule=NumFacFournisseur+u' '+Fournisseur
                         else:
@@ -204,7 +204,7 @@ class is_export_seriem(models.TransientModel):
                                 Intitule=NumFacFournisseur+u' '+DossierModif+u' '+Fournisseur
                             else:
                                 if NumCompte[:1]=='2':
-                                    Intitule=(DossierModif+u'    ')[:5]+Fournisseur
+                                    Intitule=(DossierModif+u'    ')[:5]+u' '+Fournisseur
                                 else:
                                     Intitule=NumFacFournisseur+u' '+(Fournisseur+u'               ')[:15]+DossierModif
                                     Moule=(Affaire[-5:]+u'    ')[:5]
