@@ -146,6 +146,7 @@ class is_pic_3ans_saisie(models.Model):
                     from is_pic_3ans
                     where 
                         product_id="""+str(product_id)+""" and
+                        type_donnee='pic' and
                         mois='"""+date_debut.strftime('%Y-%m')+"""' 
                 """
                 cr.execute(SQL)
