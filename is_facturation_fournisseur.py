@@ -8,7 +8,9 @@ from openerp.exceptions import Warning
 class is_facturation_fournisseur(models.Model):
     _name = "is.facturation.fournisseur"
     _description = "Facturation fournisseur"
+    _order='id desc'
 
+    afficher_lignes     = fields.Selection([('oui', u'Oui'),('non', u'Non')], u"Afficher les lignes")
     name                = fields.Many2one('res.partner', 'Fournisseur à facturer', required=True)
     partner_ids         = fields.Many2many('res.partner', id1='facturation_id', id2='partner_id', string='Autres fournisseurs')
     date_fin            = fields.Date('Date de fin'                      , required=True)
@@ -26,6 +28,10 @@ class is_facturation_fournisseur(models.Model):
     justification_id    = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
     bon_a_payer         = fields.Boolean("Bon à payer", compute='_compute', readonly=True, store=False)
     forcer_bon_a_payer  = fields.Selection([('oui', u'Bon à payer = Oui'),('non', u'Bon à payer = Non')], "Forcer bon à payer")
+
+
+
+
     line_ids            = fields.One2many('is.facturation.fournisseur.line', 'facturation_id', u"Lignes")
     state               = fields.Selection([('creation', u'Création'),('termine', u'Terminé')], u"État", readonly=True, select=True)
 
@@ -35,8 +41,9 @@ class is_facturation_fournisseur(models.Model):
         return date.strftime('%Y-%m-%d')           # Formatage
 
     _defaults = {
-        'date_fin':  _date(),
-        'state'   : 'creation',
+        'afficher_lignes': 'oui',
+        'date_fin'       :  _date(),
+        'state'          : 'creation',
     }
 
 
@@ -156,6 +163,24 @@ class is_facturation_fournisseur(models.Model):
                 lines.append(vals)
         value.update({'line_ids': lines})
         return {'value': value}
+
+
+    @api.multi
+    def action_afficher_lignes(self):
+        for obj in self:
+            view_id=self.env.ref('is_plastigray.is_facturation_fournisseur_line_tree_view')
+            return {
+                'name': u'Lignes',
+                'view_mode': 'tree',
+                'view_type': 'form',
+                'view_id': view_id.id,
+                'res_model': 'is.facturation.fournisseur.line',
+                'domain': [
+                    ('facturation_id','=',obj.id),
+                ],
+                'type': 'ir.actions.act_window',
+                'limit': 1000,
+            }
 
 
     @api.multi
@@ -301,6 +326,19 @@ class is_facturation_fournisseur_line(models.Model):
     taxe_taux          = fields.Float('Taux', compute='_compute', readonly=True, store=False)
     selection          = fields.Boolean('Sélection', default=True)
     move_id            = fields.Many2one('stock.move', 'Mouvement de stock')
+
+
+    @api.multi
+    def action_cocher_lignes(self):
+        for obj in self:
+            obj.selection=True
+
+
+    @api.multi
+    def action_decocher_lignes(self):
+        for obj in self:
+            obj.selection=False
+
 
 
 class is_facturation_fournisseur_justification(models.Model):

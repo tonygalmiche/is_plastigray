@@ -6,7 +6,14 @@
             <field name="model">is.facture.pk</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <form>  
+                <form>
+                    <header>
+                        <button 
+                            name="afficher_lignes"
+                            string="Afficher les lignes"
+                            type="object"
+                        />
+                    </header>
                     <sheet class="oe_form_sheet_width_wider">
                         <h1>
                         <field name="num_facture" class="oe_inline" readonly="1"/>
@@ -111,6 +118,80 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        
+
+
+        <record model="ir.ui.view" id="is_facture_pk_line_form_view">
+            <field name="name">is.facture.pk.line.form.view</field>
+            <field name="model">is.facture.pk.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="num_colis"/> 
+                            <field name="commande"/> 
+                            <field name="ref_pk"/> 
+                            <field name="designation"/> 
+                            <field name="poids_net"/> 
+                            <field name="poids_brut"/> 
+                            <field name="qt"/> 
+                            <field name="uc"/> 
+                            <field name="nb_uc"/> 
+                            <field name="pump"/> 
+                            <field name="ptmp"/> 
+                            <field name="pupf"/> 
+                            <field name="total_pf"/> 
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_facture_pk_line_tree_view">
+            <field name="name">is.facture.pk.line.form.view</field>
+            <field name="model">is.facture.pk.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="is_facture_id"/> 
+                    <field name="num_colis"/> 
+                    <field name="commande"/> 
+                    <field name="ref_pk"/> 
+                    <field name="designation"/> 
+                    <field name="poids_net"/> 
+                    <field name="poids_brut"/> 
+                    <field name="qt"/> 
+                    <field name="uc"/> 
+                    <field name="nb_uc"/> 
+                    <field name="pump"/> 
+                    <field name="ptmp"/> 
+                    <field name="pupf"/> 
+                    <field name="total_pf"/>
+                    <field name="id"/> 
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_facture_pk_line_search_view" >
+            <field name="name">is.facture.pk_line_search_view</field>
+            <field name="model">is.facture.pk.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="num_colis"/> 
+                    <field name="commande"/> 
+                    <field name="ref_pk"/> 
+                    <field name="designation"/> 
+                </search>
+            </field>
+        </record>
+        <!--
+        <record model="ir.actions.act_window" id="is_facture_pk_line_action">
+            <field name="name">Lignes Facture PK</field>
+            <field name="res_model">is.facture.pk.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="is_facture_pk_line_tree_view"/>
+        </record>
+        -->
+
+
 </data>
 </openerp>

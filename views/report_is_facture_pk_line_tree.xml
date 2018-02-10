@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_is_facture_pk_line_tree">
+            <t t-call="report.html_container">
+            <t t-call="report.internal_layout">
+                <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>Lignes Facture PK</h2>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th><strong>Facture</strong></th>
+                                <th><strong>N°Colis</strong></th>
+                                <th><strong>Commande</strong></th>
+                                <th><strong>Réf PK</strong></th>
+                                <th><strong>Désignation</strong></th>
+                                <th class="text-right"><strong>Quantité</strong></th>
+                                <th class="text-right"><strong>P.U.M.P €</strong></th>
+                                <th class="text-right"><strong>P.T.M.P €</strong></th>
+                                <th class="text-right"><strong>P.U.P.F €</strong></th>
+                                <th class="text-right"><strong>P.Total P.F. €</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="o">
+                                <td><span t-field="o.is_facture_id"/> </td>
+                                <td><span t-field="o.num_colis"/> </td>
+                                <td><span t-field="o.commande"/> </td>
+                                <td><span t-field="o.ref_pk"/> </td>
+                                <td><span t-field="o.designation"/> </td>
+                                <td class="text-right"><span t-field="o.qt"/> </td>
+                                <td class="text-right"><span t-field="o.pump"/> </td>
+                                <td class="text-right"><span t-field="o.ptmp"/> </td>
+                                <td class="text-right"><span t-field="o.pupf"/> </td>
+                                <td class="text-right"><span t-field="o.total_pf"/> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+            </t>
+        </template>
+    </data>
+</openerp>

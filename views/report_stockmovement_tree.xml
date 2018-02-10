@@ -17,7 +17,6 @@
                         <th><strong>Gestionnaire</strong></th>
                         <th><strong>Catégorie</strong></th>
                         <th><strong>Moule</strong></th>
-                        <th><strong>Dossier F</strong></th>
                         <th><strong>Client</strong></th>
                         <th><strong>Référence Client</strong></th>
                         <th><strong>Référence Fournisseur</strong></th>
@@ -36,17 +35,13 @@
                         <td><span t-field="o.gestionnaire_id.name"/></td>
                         <td><span t-field="o.category_id.name"/> </td>
                         <td><span t-field="o.moule"/> </td>
-                        <td><span t-field="o.dossierf"/> </td>
                         <td><span t-field="o.client_id.name"/> </td>
                         <td><span t-field="o.ref_client"/> </td>
                         <td><span t-field="o.ref_fournisseur"/> </td>
                         <td><span t-field="o.emplacement"/> </td>
                         <td><span t-field="o.lot"/> </td>
                         <td><span t-field="o.lot_fournisseur"/> </td>
-
-                        <!--<td class="text-right"><span t-field="o.quantite"/> </td>-->
                         <td class="text-right"><span style="white-space: nowrap;" t-field="o.quantite"/></td>
-
                         <td><span t-field="o.uom_id.name"/> </td>
                         <td><span t-field="o.date_entree"/> </td>
                     </tr>

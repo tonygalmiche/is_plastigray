@@ -123,6 +123,26 @@ class is_facture_pk(models.Model):
         return res
 
 
+
+    @api.multi
+    def afficher_lignes(self):
+        for obj in self:
+            view_id=self.env.ref('is_plastigray.is_facture_pk_line_tree_view')
+            return {
+                'name': u'Lignes '+obj.num_facture,
+                'view_mode': 'tree',
+                'view_type': 'form',
+                'view_id': view_id.id,
+                'res_model': 'is.facture.pk.line',
+                'domain': [
+                    ('is_facture_id','=',obj.id),
+                ],
+                'type': 'ir.actions.act_window',
+            }
+
+
+
+
 class is_facture_pk_line(models.Model):
     _name='is.facture.pk.line'
     _order = 'num_colis,product_id'
