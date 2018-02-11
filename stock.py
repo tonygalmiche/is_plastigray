@@ -181,11 +181,11 @@ class stock_picking(models.Model):
         location_id = None
         for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
 
-            #TODO : Le 11/02/2018 : Les articles bloqués sont réceptionnés en Q0
+            #TODO : Le 11/02/2018 : Les articles bloqués sont réceptionnés en Q2
             if picking.is_purchase_order_id:
                 if move.product_id.is_ctrl_rcp=='bloque':
                     res = self.pool.get('stock.location').search(cr, uid, [
-                            ('name','=', 'Q0'),
+                            ('name','=', 'Q2'),
                         ], context=context)
                     if res:
                         move.location_dest_id=res[0]
