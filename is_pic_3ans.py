@@ -9,6 +9,10 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+#TODO : Année de début du CBB du PIC à changer chaque année
+annee_debut_pic=2018
+
+
 def num(s):
     """ Permet de convertir une chaine en entier en évitant les exeptions"""
     try:
@@ -222,13 +226,15 @@ class is_pic_3ans_saisie(models.Model):
     def run_cbb(self):
         cr = self._cr
         _logger.info("#### Début du CBB ####")
+        _logger.info("Année de début du PIC = "+str(annee_debut_pic))
 
         #** Recherche des PIC à traiter ************************************
         pic_obj = self.env['is.pic.3ans']
         _logger.info("search pics")
         pics=pic_obj.search([
-            ('type_donnee','=','pic'),
-        ])
+            ('type_donnee','=' ,'pic'),
+            ('annee'      ,'>=', str(annee_debut_pic)),
+        ],order='product_id,mois')
         #*******************************************************************
 
         #** Suppression des données du calcul précédent ********************
@@ -249,11 +255,13 @@ class is_pic_3ans_saisie(models.Model):
         ct=0
         for pic in pics:
             ct=ct+1
-            _logger.info(str(ct)+'/'+str(nb)+' : '+str(pic.product_id.is_code) + ' : '+str(pic.quantite))
+            _logger.info(str(ct)+'/'+str(nb)+' : '+str(pic.product_id.is_code) + ' : '+str(pic.mois)+ ' : '+str(pic.quantite))
             ordre=0
             self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
         #*******************************************************************
         _logger.info("#### Fin du CBB ####")
+
+
 
     @api.multi
     def cbb_article(self):
@@ -286,7 +294,6 @@ class is_pic_3ans_saisie(models.Model):
 
             #** CBB sur les PIC ************************************************
             global ordre
-            print 
             _logger.info(str(len(pics)))
             for pic in pics:
                 _logger.info(str(pic.product_id.is_code) + ' : ' + str(pic.quantite))
@@ -301,24 +308,26 @@ class is_pic_3ans_saisie(models.Model):
         bom_obj = self.env['mrp.bom']
         bom_id = bom_obj._bom_find(product.product_tmpl_id.id, properties=None)
         bom = bom_obj.browse(bom_id)
-        res= bom_obj._bom_explode(bom, product, 1)
-        pic_obj = self.env['is.pic.3ans']
-        for line in res[0]:
-            ordre=ordre+1
-            line_product  = self.env['product.product'].browse(line['product_id'])
-            line_quantite = quantite*line['product_qty']
-            vals={
-                'type_donnee': 'pdp',
-                'annee'      : pic.annee,
-                'mois'       : pic.mois,
-                'product_id' : line_product.id,
-                'quantite'   : line_quantite,
-                'origine_id' : pic.id,
-                'niveau'     : niveau,
-                'ordre'      : ordre,
-            }
-            pdp=pic_obj.create(vals)
-            self.cbb_multi_niveaux(pic, line_product, line_quantite, niveau+1)
+
+        if bom and bom.is_sous_traitance!=True and bom.is_negoce!=True:
+            res= bom_obj._bom_explode(bom, product, 1)
+            pic_obj = self.env['is.pic.3ans']
+            for line in res[0]:
+                ordre=ordre+1
+                line_product  = self.env['product.product'].browse(line['product_id'])
+                line_quantite = quantite*line['product_qty']
+                vals={
+                    'type_donnee': 'pdp',
+                    'annee'      : pic.annee,
+                    'mois'       : pic.mois,
+                    'product_id' : line_product.id,
+                    'quantite'   : line_quantite,
+                    'origine_id' : pic.id,
+                    'niveau'     : niveau,
+                    'ordre'      : ordre,
+                }
+                pdp=pic_obj.create(vals)
+                self.cbb_multi_niveaux(pic, line_product, line_quantite, niveau+1)
 
 
 class is_pic_3ans(models.Model):
