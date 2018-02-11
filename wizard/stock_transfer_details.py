@@ -28,6 +28,9 @@ class stock_transfer_details(models.TransientModel):
 
     @api.one
     def do_detailed_transfer(self):
+
+
+
         res = super(stock_transfer_details, self).do_detailed_transfer()
         for obj in self:
             obj.picking_id.is_num_bl         = obj.is_num_bl
@@ -40,6 +43,10 @@ class stock_transfer_details(models.TransientModel):
 
 
     def default_get(self, cr, uid, fields, context=None):
+
+
+
+
         if context is None: context = {}
         picking_ids = context.get('active_ids', [])
         picking_id, = picking_ids

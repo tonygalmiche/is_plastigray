@@ -180,10 +180,21 @@ class stock_picking(models.Model):
         location_dest_id = None
         location_id = None
         for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
+
+            #TODO : Le 11/02/2018 : Les articles bloqués sont réceptionnés en Q0
+            if picking.is_purchase_order_id:
+                if move.product_id.is_ctrl_rcp=='bloque':
+                    res = self.pool.get('stock.location').search(cr, uid, [
+                            ('name','=', 'Q0'),
+                        ], context=context)
+                    if res:
+                        move.location_dest_id=res[0]
+
             if not product_uom.get(move.product_id.id):
                 product_uom[move.product_id.id] = move.product_id.uom_id
             if move.product_uom.id != move.product_id.uom_id.id and move.product_uom.factor > product_uom[move.product_id.id].factor:
                 product_uom[move.product_id.id] = move.product_uom
+
             if not move.scrapped:
                 if location_dest_id and move.location_dest_id.id != location_dest_id:
                     raise Warning(_('The destination location must be the same for all the moves of the picking.'))
@@ -191,6 +202,9 @@ class stock_picking(models.Model):
                 if location_id and move.location_id.id != location_id:
                     raise Warning(_('The source location must be the same for all the moves of the picking.'))
                 location_id = move.location_id.id
+
+
+
 
         pack_obj = self.pool.get("stock.quant.package")
         quant_obj = self.pool.get("stock.quant")
