@@ -117,7 +117,8 @@
             <field name="res_model">is.gabarit.controle</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_date_prochain_controle_filter':1}</field>
+            <!--<field name="context">{'search_default_date_prochain_controle_filter':1}</field>-->
+            <field name="context">{}</field>
         </record>
         
         <record model="ir.ui.view" id="is_emplacement_outillage_tree_view">

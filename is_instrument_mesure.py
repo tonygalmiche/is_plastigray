@@ -58,22 +58,25 @@ class is_instrument_mesure(models.Model):
     @api.depends('controle_ids','periodicite')
     def _compute_date_prochain_controle(self):
         for rec in self:
+            date_prochain_controle=False
             if rec.controle_ids:
                 for row in rec.controle_ids:
-                    if row.operation_controle_id.code!='arret':
+                    if row.operation_controle_id.code!='arret' and row.operation_controle_id.code!='maintenance':
                         date_controle=row.date_controle
                         if date_controle:
                             date_controle = datetime.strptime(date_controle, "%Y-%m-%d")
+                            periodicite=0
                             if rec.periodicite:
-                                periodicite = int(rec.periodicite)
-                            else:periodicite = 0
+                                try:
+                                    periodicite = int(rec.periodicite)
+                                except ValueError:
+                                    continue
                             date_prochain_controle = date_controle + relativedelta(months=periodicite)
-                            rec.date_prochain_controle = date_prochain_controle.strftime('%Y-%m-%d')
-                    else:
-                        rec.date_prochain_controle = False
-                    break
+                            date_prochain_controle = date_prochain_controle.strftime('%Y-%m-%d')
+                            break
+            rec.date_prochain_controle = date_prochain_controle
 
-                
+
     @api.onchange('famille_id')
     def onchange_famille_id(self):
         self.type_boolean = self.famille_id.afficher_type
