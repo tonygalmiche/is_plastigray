@@ -103,9 +103,8 @@
                 <div class="titre">
                     <span t-if="o.partner_id.lang == 'fr_FR'">Commande ferme N°</span>
                     <span t-if="o.partner_id.lang != 'fr_FR'">Order N°</span>
-                    <span style="font-size:12pt;" t-field="o.name"/>
-                    <span t-if="o.partner_id.lang == 'fr_FR'">du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H</span>
-                    <span t-if="o.partner_id.lang != 'fr_FR'"> <t t-usertime="%d/%m/%Y"/> <t t-usertime="%H"/>H</span>
+                    <span style="font-size:12pt;" t-field="o.name"/> 
+                    <span style="font-size:12pt;" t-esc="datetime.datetime.strptime(o.date_order, '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')"/>
                     <br />
                 </div>
                 <div class="fournisseur">

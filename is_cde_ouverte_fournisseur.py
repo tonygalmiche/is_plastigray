@@ -560,7 +560,11 @@ class is_cde_ouverte_fournisseur(models.Model):
             SQL="""
                 select rp.id, rp.is_type_contact, itc.name
                 from res_partner rp inner join is_type_contact itc on rp.is_type_contact=itc.id
-                where rp.parent_id="""+str(obj.partner_id.id)+""" and itc.name ilike '%logistique%' limit 1
+                where 
+                    rp.parent_id="""+str(obj.partner_id.id)+""" and 
+                    rp.active='t' and
+                    itc.name ilike '%logistique%' 
+                limit 1
             """
             cr.execute(SQL)
             result = cr.fetchall()
