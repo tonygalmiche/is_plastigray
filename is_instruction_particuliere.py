@@ -7,6 +7,12 @@ import datetime
 import base64
 
 
+def _date_creation():
+    now  = datetime.date.today()
+    #print "now=",datetime.datetime.now().strftime('%H:%M:%S')
+    return now.strftime('%Y-%m-%d')
+
+
 class is_instruction_particuliere(models.Model):
     _name = 'is.instruction.particuliere'
     _order = 'name desc'
@@ -22,8 +28,8 @@ class is_instruction_particuliere(models.Model):
     contenu       = fields.Binary("Image du contenu")
 
     _defaults = {
-        'createur_id': lambda obj, cr, uid, context: uid,
-        'date_creation': datetime.date.today(),
+        'createur_id'  : lambda obj, cr, uid, context: uid,
+        'date_creation': lambda *a: _date_creation(),
     }
 
 
