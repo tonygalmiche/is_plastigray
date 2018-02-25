@@ -246,6 +246,10 @@
                                 <br />
                                 <i>Nomenclature douanière : <span t-field="l.product_id.is_nomenclature_douaniere"/></i>
                             </t>
+                            <t t-if="l.is_document">
+                                <br />
+                                <i>N° du chantier  : <span t-field="l.is_document"/></i>
+                            </t>
                         </td>
                         <td><span t-field="l.product_id.is_ref_client"/></td>
                         <td class="text-right"><span style="white-space: nowrap;" t-field="l.price_unit"/></td>

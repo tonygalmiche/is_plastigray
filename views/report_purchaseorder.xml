@@ -231,7 +231,15 @@
                 </thead>
                 <tbody>
                     <tr t-foreach="o.order_line" t-as="l">
-                        <td class="text-left">         <span t-field="l.name"/> </td>
+                        <td class="text-left">
+                            <span t-field="l.name"/>
+                            <!--
+                            <t t-if="l.is_num_chantier">
+                                <br />
+                                <i>N° du chantier  : <span t-field="l.is_num_chantier"/></i>
+                            </t>
+                            -->
+                        </td>
                         <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
                         <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
                         <td class="text-left">         <span t-esc="', '.join(map(lambda x: x.name, l.taxes_id))"/></td>
