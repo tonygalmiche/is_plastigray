@@ -28,25 +28,18 @@ class stock_transfer_details(models.TransientModel):
 
     @api.one
     def do_detailed_transfer(self):
-
-
-
         res = super(stock_transfer_details, self).do_detailed_transfer()
         for obj in self:
             obj.picking_id.is_num_bl         = obj.is_num_bl
             obj.picking_id.is_date_reception = obj.is_date_reception
-            for row in obj.item_ids:
-                if row.lot_id:
-                    row.lot_id.is_lot_fournisseur=row.is_lot_fournisseur
-        #raise Warning('test')
+            if obj.picking_id.is_purchase_order_id:
+                for row in obj.item_ids:
+                    if row.lot_id:
+                        row.lot_id.is_lot_fournisseur=row.is_lot_fournisseur
         return res
 
 
     def default_get(self, cr, uid, fields, context=None):
-
-
-
-
         if context is None: context = {}
         picking_ids = context.get('active_ids', [])
         picking_id, = picking_ids
@@ -76,6 +69,7 @@ class stock_transfer_details(models.TransientModel):
                 'quantity': op.product_qty,
                 'package_id': op.package_id.id,
                 'lot_id': op.lot_id.id,
+                'is_lot_fournisseur':op.lot_id.is_lot_fournisseur,
                 'sourceloc_id': op.location_id.id,
                 'destinationloc_id': op.location_dest_id.id,
                 'result_package_id': op.result_package_id.id,

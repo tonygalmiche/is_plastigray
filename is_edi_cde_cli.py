@@ -163,13 +163,15 @@ class is_edi_cde_cli(models.Model):
                             #***************************************************
 
                             #** Vérification que qt >= lot livraison ***********
-                            lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, obj.partner_id)
+                            #lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, obj.partner_id)
+                            lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, order.partner_id)
                             if quantite<lot and quantite>0:
                                 anomalie2.append("Quantité < Lot de livraison ("+str(int(lot))+")")
                             #***************************************************
 
                             #** Vérification mutliple du lot *******************
-                            arrondi_lot=self.env['product.template'].get_arrondi_lot_livraison(product.id, obj.partner_id.id, quantite)
+                            #arrondi_lot=self.env['product.template'].get_arrondi_lot_livraison(product.id, obj.partner_id.id, quantite)
+                            arrondi_lot=self.env['product.template'].get_arrondi_lot_livraison(product.id, order.partner_id.id, quantite)
                             if quantite!=arrondi_lot and quantite>0:
                                 anomalie2.append("Quantité non multiple du lot ("+str(int(arrondi_lot))+")")
                             #***************************************************
