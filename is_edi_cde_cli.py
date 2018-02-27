@@ -117,11 +117,9 @@ class is_edi_cde_cli(models.Model):
                     ref_article_client  = row["ref_article_client"]
                     order_id = False
                     if 'order_id' in row:
-                        print('il y a un order_id', row['order_id'])
                         order_id=row['order_id']
                         order=self.env['sale.order'].search([('id', '=', order_id)])
                     else:
-                        print('pas de order_id')
                         order=self.env['sale.order'].search([
                             ('partner_id.is_code', '=', obj.partner_id.is_code),
                             ('is_ref_client'     , '=', ref_article_client),
@@ -129,7 +127,6 @@ class is_edi_cde_cli(models.Model):
                             ('is_type_commande'  , '=', 'ouverte'),
                             ('state'             , '=', 'draft'),
                         ])
-                    print("order", order)
                     anomalie1   = "Cde non trouvée"
                     if len(order):
                         anomalie1=False
