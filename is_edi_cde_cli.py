@@ -143,6 +143,13 @@ class is_edi_cde_cli(models.Model):
                                 anomalie2.append(ligne["anomalie"])
 
                         if len(order):
+                            if len(order)>1:
+                                t=[]
+                                for o in order:
+                                    t.append(o.name)
+                                anomalie2.append('Commande ouverte en double trouvée =>'+','.join(t))
+                                order=order[0]
+                            
                             quantite   = int(ligne["quantite"])
                             product    = order[0].is_article_commande_id
                             product_id = product.id
@@ -167,6 +174,7 @@ class is_edi_cde_cli(models.Model):
                             #** Vérification que qt >= lot livraison ***********
                             #lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, obj.partner_id)
                             lot=self.env['product.template'].get_lot_livraison(product.product_tmpl_id, order.partner_id)
+
                             if quantite<lot and quantite>0:
                                 anomalie2.append("Quantité < Lot de livraison ("+str(int(lot))+")")
                             #***************************************************
