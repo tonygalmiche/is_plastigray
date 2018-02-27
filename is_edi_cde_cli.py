@@ -5,6 +5,8 @@ import csv, cStringIO
 from openerp.tools.translate import _
 from openerp import netsvc
 from openerp import models,fields,api
+from openerp.exceptions import Warning
+
 from lxml import etree
 
 import xml.etree.ElementTree as ET
@@ -115,9 +117,11 @@ class is_edi_cde_cli(models.Model):
                     ref_article_client  = row["ref_article_client"]
                     order_id = False
                     if 'order_id' in row:
+                        print('il y a un order_id', row['order_id'])
                         order_id=row['order_id']
                         order=self.env['sale.order'].search([('id', '=', order_id)])
                     else:
+                        print('pas de order_id')
                         order=self.env['sale.order'].search([
                             ('partner_id.is_code', '=', obj.partner_id.is_code),
                             ('is_ref_client'     , '=', ref_article_client),
@@ -125,6 +129,7 @@ class is_edi_cde_cli(models.Model):
                             ('is_type_commande'  , '=', 'ouverte'),
                             ('state'             , '=', 'draft'),
                         ])
+                    print("order", order)
                     anomalie1   = "Cde non trouvée"
                     if len(order):
                         anomalie1=False
@@ -315,11 +320,11 @@ class is_edi_cde_cli(models.Model):
 
     @api.multi
     def get_data_lacroix(self, attachment):
-        nb_cols = 20
-        col_ref = 2
-        col_qn = 14
+        nb_cols = 19
+        col_ref = 1
+        col_qn = 13
         col_type = None
-        col_date = 17
+        col_date = 16
         data_previsionnel = 'P'
         res = []
         for obj in self:
@@ -328,51 +333,53 @@ class is_edi_cde_cli(models.Model):
             csvfile = csv.reader(csvfile)
 
             tab=[]
-            for ct, lig in enumerate(csvfile):
-                # Header CSV
-                if ct == 0:
-                    continue
-                if len(lig) == nb_cols:
-                    ref_article_client = lig[col_ref].strip()
-                    order = self.env['sale.order'].search([
-                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
-                        ('is_ref_client', '=', ref_article_client)]
-                    )
-                    num_commande_client = "??"
-                    if len(order):
-                        num_commande_client = order[0].client_order_ref
-                    val = {
-                        'num_commande_client' : num_commande_client,
-                        'ref_article_client'  : ref_article_client,
-                    }
-                    # '1\xc2\xa0456,000' => 1456.00
-                    quantite = lig[col_qn].decode('utf8').strip()
-                    quantite = quantite.replace(u'\xa0', '')
-                    quantite = quantite.replace(',', '.')
-                    try:
-                        qt = float(quantite)
-                    except ValueError:
+            try:
+                for ct, lig in enumerate(csvfile):
+                    # Header CSV
+                    if ct == 0:
                         continue
-                    if col_type is None:
-                        type_commande="previsionnel"
-                    else:
-                        type_commande = lig[col_type].strip()
-                        if type_commande == data_previsionnel:
-                            type_commande = "previsionnel"
+                    if len(lig) == nb_cols:
+                        ref_article_client = lig[col_ref].strip()
+                        order = self.env['sale.order'].search([
+                            ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                            ('is_ref_client', '=', ref_article_client)]
+                        )
+                        num_commande_client = "??"
+                        if len(order):
+                            num_commande_client = order[0].client_order_ref
+                        val = {
+                            'num_commande_client' : num_commande_client,
+                            'ref_article_client'  : ref_article_client,
+                        }
+                        # '1\xc2\xa0456,000' => 1456.00
+                        quantite = lig[col_qn].decode('utf8').strip()
+                        quantite = quantite.replace(u'\xa0', '')
+                        quantite = quantite.replace(',', '.')
+                        try:
+                            qt = float(quantite)
+                        except ValueError:
+                            continue
+                        if col_type is None:
+                            type_commande="previsionnel"
                         else:
-                            type_commande = "ferme"
-                    date_livraison = lig[col_date].strip()
-                    d = datetime.strptime(date_livraison, '%d/%m/%Y')
-                    date_livraison = d.strftime('%Y-%m-%d')
-                    ligne = {
-                        'quantite'      : qt,
-                        'type_commande' : type_commande,
-                        'date_livraison': date_livraison,
-                    }
-                    val.update({'lignes': [ligne]})
-                    res.append(val)
+                            type_commande = lig[col_type].strip()
+                            if type_commande == data_previsionnel:
+                                type_commande = "previsionnel"
+                            else:
+                                type_commande = "ferme"
+                        date_livraison = lig[col_date].strip()
+                        d = datetime.strptime(date_livraison, '%d/%m/%Y')
+                        date_livraison = d.strftime('%Y-%m-%d')
+                        ligne = {
+                            'quantite'      : qt,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes': [ligne]})
+                        res.append(val)
+            except csv.Error:
+                raise Warning('Fichier vide ou non compatible (le fichier doit être au format CSV)')
         return res
-
 
 
     @api.multi
@@ -405,6 +412,7 @@ class is_edi_cde_cli(models.Model):
                         try:
                             qt=float(quantite)
                         except ValueError:
+                            #print '## ValueError', quantite
                             continue
                         type_commande=lig[5].strip()
                         if type_commande=="P":
