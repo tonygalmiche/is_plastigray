@@ -608,10 +608,11 @@ class is_cde_ouverte_fournisseur(models.Model):
                     where 
                         sm.product_id="""+str(product.product_id.id)+""" and
                         sp.is_date_reception is not null and
+                        sp.state='done' and
                         sm.state='done' and
                         sp.picking_type_id=1 and 
                         sp.partner_id="""+str(obj.partner_id.id)+""" 
-                    order by sp.is_date_reception desc, sm.date desc
+                    order by sp.is_date_reception desc , sm.date desc 
                     limit 1
                 """
                 cr.execute(SQL)
@@ -688,7 +689,8 @@ class is_cde_ouverte_fournisseur(models.Model):
                         moves=self.env['stock.move'].search(where)
                         quantite_rcp=0
                         for move in moves:
-                            quantite_rcp=quantite_rcp+move.product_uom_qty
+                            if move.picking_id.state=='done':
+                                quantite_rcp=quantite_rcp+move.product_uom_qty
                         #*******************************************************
 
                         vals={
