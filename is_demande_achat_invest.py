@@ -52,7 +52,7 @@ class is_demande_achat_invest(models.Model):
     pricelist_id         = fields.Many2one('product.pricelist', "Liste de prix", related='fournisseur_id.property_product_pricelist_purchase', readonly=True)
     fournisseur_autre    = fields.Char("Fournisseur autre")
     delai_livraison      = fields.Date("Délai de livraison", required=True)
-    lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True),('customer','=',True)], required=True)
+    lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True)], required=True)
     num_devis            = fields.Char("N° du devis")
     date_devis           = fields.Date("Date du devis")
     commentaire          = fields.Text("Commentaire")
@@ -204,8 +204,8 @@ class is_demande_achat_invest(models.Model):
                 raise Warning('Liste de prix non renseignée pour ce fournisseur')
             else:
                 is_document=False
-                for line in obj.line_ids:
-                    is_document=u'M0000/'+line.num_chantier
+                #for line in obj.line_ids:
+                #    is_document=u'M0000/'+line.num_chantier
                 vals={
                     'partner_id'      : partner.id,
                     'is_livre_a_id'   : obj.lieu_livraison_id.id,
@@ -240,8 +240,7 @@ class is_demande_achat_invest(models.Model):
                         vals['order_id']        = order.id
                         vals['date_planned']    = obj.delai_livraison
                         vals['product_id']      = line.product_id.id
-                        vals['is_num_chantier'] = line.num_chantier
-
+                        vals['is_num_chantier'] = u'M0000/'+str(line.num_chantier)
                         name=[]
                         if line.product_id.id:
                             name.append(line.product_id.is_code+u' - '+line.product_id.name)

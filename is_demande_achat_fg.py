@@ -47,7 +47,7 @@ class is_demande_achat_fg(models.Model):
     pricelist_id         = fields.Many2one('product.pricelist', "Liste de prix", related='fournisseur_id.property_product_pricelist_purchase', readonly=True)
     fournisseur_autre    = fields.Char("Fournisseur autre")
     delai_livraison      = fields.Date("Délai de livraison", required=True)
-    lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True),('customer','=',True)], required=True)
+    lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True)], required=True)
     num_devis            = fields.Char("N° du devis")
     date_devis           = fields.Date("Date du devis")
     commentaire          = fields.Text("Commentaire")

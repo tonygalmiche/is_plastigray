@@ -115,7 +115,7 @@
             </div>
         </div><br />
         <div class="row">
-            <div class="col-xs-12">
+            <div class="col-xs-8">
                 <t t-if="o.is_demandeur_id">
                     Contact : <b><span t-field="o.is_demandeur_id.name"/> / <span t-field="o.is_demandeur_id.partner_id.email"/> </b><br />
                 </t>
@@ -126,8 +126,11 @@
                 <span t-if="o.partner_id.lang == 'fr_FR'">Type de réglement : </span>
                 <span t-if="o.partner_id.lang != 'fr_FR'">Type of payment : </span>
                 <span t-field="o.partner_id.is_type_reglement.name"/> <br />
-                Incoterm : <span t-field="o.partner_id.is_incoterm.name"/> <br />
                 </i>
+            </div>
+            <div class="col-xs-4">
+                <div t-if="o.partner_id.is_incoterm">Incoterm : <span t-field="o.partner_id.is_incoterm.name"/></div>
+                <div t-if="o.get_da()">Devis : <t t-esc="o.get_da()"/></div>
             </div>
         </div>
     </div>
