@@ -103,7 +103,11 @@
                             type="object"
                             confirm="Voulez-vous vraiment envoyer ce document par mail ?"
                         />
-
+                        <button 
+                            name="liste_articles"
+                            string="Liste des articles"
+                            type="object"
+                        />
                     </header>
                     <sheet>
                         <group>
@@ -229,7 +233,29 @@
 
 
 
-       <!-- Lignes is.cde.ouverte.fournisseur --> 
+        <!-- Lignes is.cde.ouverte.fournisseur --> 
+        <record id="is_cde_ouverte_fournisseur_product_imprimer_action_server" model="ir.actions.server">
+             <field name="name">A imprimer</field>
+            <field name="model_id" ref="model_is_cde_ouverte_fournisseur_product"/>
+            <field name="code">action = self.a_imprimer(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_product_imprimer_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.cde.ouverte.fournisseur.product'" name="model"/>
+            <field name="name">A imprimer</field>
+            <field eval="'ir.actions.server,%d'%is_cde_ouverte_fournisseur_product_imprimer_action_server" name="value"/>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_product_pas_imprimer_action_server" model="ir.actions.server">
+             <field name="name">Ne pas imprimer</field>
+            <field name="model_id" ref="model_is_cde_ouverte_fournisseur_product"/>
+            <field name="code">action = self.ne_pas_imprimer(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="is_cde_ouverte_fournisseur_product_pas_imprimer_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.cde.ouverte.fournisseur.product'" name="model"/>
+            <field name="name">Ne pas imprimer</field>
+            <field eval="'ir.actions.server,%d'%is_cde_ouverte_fournisseur_product_pas_imprimer_action_server" name="value"/>
+        </record>
         <record model="ir.ui.view" id="is_cde_ouverte_fournisseur_product_form_view">
             <field name="name">is_cde_ouverte_fournisseur_product_form_view</field>
             <field name="model">is.cde.ouverte.fournisseur.product</field>
@@ -271,9 +297,20 @@
             <field name="model">is.cde.ouverte.fournisseur.product</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree editable="bottom">
+                    <button 
+                        string="Commandes" 
+                        name= "action_acces_commandes" type="object" icon="gtk-justify-fill"
+                    />
                     <field name="order_id"/> 
-                    <field name="product_id"/> 
+                    <field name="product_id" widget="many2one_clickable" /> 
+                    <field name="num_bl"/> 
+                    <field name="date_bl"/> 
+                    <field name="qt_bl"/> 
+                    <field name="nb_commandes"/>
+                    <field name="nb_ferme_imprime"/> 
+                    <field name="attente_confirmation"/> 
+                    <field name="imprimer"/> 
                 </tree>
             </field>
         </record>

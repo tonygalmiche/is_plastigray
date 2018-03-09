@@ -12,9 +12,14 @@ class is_livraison_gefco(models.Model):
 
     is_date_expedition  = fields.Date("Date d'expédition")
     partner_id          = fields.Many2one('res.partner', 'Client')
+    picking_id          = fields.Many2one('stock.picking', 'Livraison')
     name                = fields.Char('BL')
     is_mold_dossierf    = fields.Char('Moule ou Dossier F')
     product_id          = fields.Many2one('product.template', 'Article')
+    product_uom_qty     = fields.Float("Quantité")
+    uc                  = fields.Char('UC')
+    nb_uc               = fields.Float("Nb UC")
+    nb_um               = fields.Float("Nb UM")
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_livraison_gefco')
@@ -24,9 +29,29 @@ class is_livraison_gefco(models.Model):
                     sm.id,
                     sp.is_date_expedition,
                     sp.partner_id,
+                    sp.id as picking_id,
                     sp.name,
                     pt.is_mold_dossierf,
-                    pt.id product_id
+                    pt.id product_id,
+                    sm.product_uom_qty,
+                    sm.product_uom_qty/coalesce(
+                        (
+                            select qty from product_packaging pack where pack.product_tmpl_id=pt.id and qty>0 limit 1
+                        )
+                    ,1) nb_uc,
+
+                    sm.product_uom_qty/coalesce(
+                        (
+                            select qty*rows*ul_qty from product_packaging pack where pack.product_tmpl_id=pt.id and qty>0 limit 1
+                        )
+                    ,1) nb_um,
+
+
+                    (
+                        select ul.name 
+                        from product_packaging pack inner join product_ul ul on pack.ul=ul.id
+                        where pack.product_tmpl_id=pt.id limit 1
+                    ) uc
                 from stock_picking sp inner join stock_move       sm on sp.id=sm.picking_id
                                       inner join product_product  pp on sm.product_id=pp.id
                                       inner join product_template pt on pp.product_tmpl_id=pt.id
@@ -38,4 +63,14 @@ class is_livraison_gefco(models.Model):
                     sp.picking_type_id=2 
             )
         """)
+
+
+
+#                                        <t t-foreach="move.product_id.packaging_ids" t-as="l">
+#                                            <t t-set="nb2"    t-value="l.qty"/>
+#                                            <t t-set="unite2" t-value="l.ul.name"/>
+#                                            <t t-set="nb3"    t-value="l.qty*l.ul_qty*l.rows"/>
+#                                            <t t-set="unite3" t-value="l.ul_container.name"/>
+#                                        </t>
+
 

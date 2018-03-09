@@ -712,6 +712,26 @@ class is_cde_ouverte_fournisseur(models.Model):
             obj.attente_confirmation=attente_confirmation_total
 
 
+
+
+    @api.multi
+    def liste_articles(self):
+        for obj in self:
+            return {
+                'name': u'Articles',
+                'view_mode': 'tree,form',
+                'view_type': 'form',
+                'res_model': 'is.cde.ouverte.fournisseur.product',
+                'domain': [
+                    ('order_id','=',obj.id),
+                ],
+                'type': 'ir.actions.act_window',
+                'limit': 1000,
+            }
+
+
+
+
 class is_cde_ouverte_fournisseur_product(models.Model):
     _name='is.cde.ouverte.fournisseur.product'
     _order='product_id'
@@ -741,8 +761,16 @@ class is_cde_ouverte_fournisseur_product(models.Model):
             }
 
 
+    @api.multi
+    def a_imprimer(self):
+        for obj in self:
+            obj.imprimer=True
 
 
+    @api.multi
+    def ne_pas_imprimer(self):
+        for obj in self:
+            obj.imprimer=False
 
 
 class is_cde_ouverte_fournisseur_tarif(models.Model):

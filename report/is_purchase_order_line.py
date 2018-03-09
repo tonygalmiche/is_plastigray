@@ -34,6 +34,7 @@ class is_purchase_order_line(models.Model):
     product_qty_uom_po   = fields.Float('Qt Cde (UA)'  , digits=(14,3))
     qt_rcp               = fields.Float('Qt Rcp (UA)'  , digits=(14,3))
     qt_reste             = fields.Float('Qt Reste (UA)', digits=(14,3))
+    commande_ouverte     = fields.Char('Commande ouverte')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_purchase_order_line')
@@ -76,7 +77,8 @@ class is_purchase_order_line(models.Model):
                                                   inner join product_product      pp on sm.product_id=pp.id
                                                   inner join product_template     pt on pp.product_tmpl_id=pt.id
                             where sp.is_purchase_order_id=po.id and sm.purchase_line_id=pol.id and sp.state not in ('done','cancel') 
-                        ) qt_reste
+                        ) qt_reste,
+                        (select icof.name from is_cde_ouverte_fournisseur icof where po.partner_id=icof.partner_id limit 1) as commande_ouverte
 
                 from purchase_order po inner join purchase_order_line pol on po.id=pol.order_id
                                        inner join product_product      pp on pol.product_id=pp.id
