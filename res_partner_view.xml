@@ -488,6 +488,16 @@
                 </form>
             </field>
         </record>
+        <record id="is_famille_achat_search_view" model="ir.ui.view">
+            <field name="name">is_famille_achat_search_view</field>
+            <field name="model">is.famille.achat</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="segment_id" />
+                </search>
+            </field>
+        </record>
         <record id="action_is_famille_achat" model="ir.actions.act_window">
             <field name="name">Famille d'achat</field>
             <field name="type">ir.actions.act_window</field>

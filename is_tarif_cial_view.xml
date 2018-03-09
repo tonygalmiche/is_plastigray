@@ -15,7 +15,7 @@
                                 <field name="partner_id"/> 
                                 <field name="product_id"/> 
                                 <field name="is_ref_client"/> 
-                                <field name="is_mold_id"/> 
+                                <field name="is_mold_dossierf"/> 
                                 <field name="indice_prix"/> 
                                 <field name="date_debut"/> 
                                 <field name="date_fin"/> 
@@ -49,7 +49,7 @@
                     <field name="partner_id" widget="many2one_clickable"/> 
                     <field name="product_id" widget="many2one_clickable"/> 
                     <field name="is_ref_client"/> 
-                    <field name="is_mold_id" widget="many2one_clickable"/> 
+                    <field name="is_mold_dossierf"/> 
                     <field name="indice_prix"/> 
                     <field name="date_debut"/> 
                     <field name="date_fin"/> 
@@ -76,7 +76,7 @@
                     <field name="partner_id"/>
                     <field name="product_id"/>
                     <field name="is_ref_client"/>
-                    <field name="is_mold_id"/>
+                    <field name="is_mold_dossierf"/>
                     <field name="indice_prix"/>
                 </search>
             </field>
@@ -118,7 +118,7 @@
                 <tree colors="gray:indice_prix != 999">
                     <field name="partner_id" widget="many2one_clickable"/> 
                     <field name="product_id" widget="many2one_clickable"/> 
-                    <field name="is_mold_id" widget="many2one_clickable"/> 
+                    <field name="is_mold_dossierf"/> 
                     <field name="indice_prix"/> 
                     <field name="date_debut"/> 
                     <field name="date_fin"/> 

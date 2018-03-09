@@ -94,6 +94,8 @@
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
                             <div t-if="o.partner_id.vat">VAT : <span t-field="o.partner_id.vat"/></div>
                         </div>
+                        <br />
+                        <p><b>Commande client : </b><span t-field="o.client_order_ref"/></p>
                     </div>
                 </div>
             </div>

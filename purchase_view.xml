@@ -80,7 +80,7 @@
                 </field>
                 <field name="partner_ref" position="after">
                     <field name="is_num_da" />
-                    <field name="is_document" />
+                    <!--<field name="is_document" />-->
                     <field name="is_demandeur_id" />
                     <!--<field name="is_acheteur_id"/>-->
                 </field>
@@ -98,7 +98,7 @@
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="is_num_da" />
-                    <field name="is_document" />
+                    <!--<field name="is_document" />-->
                     <field name="is_demandeur_id" />
                 </field>
                 <field name="minimum_planned_date" position="after">
