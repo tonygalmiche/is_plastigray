@@ -228,11 +228,6 @@
                         groups="is_plastigray.is_rsp_production_group,is_plastigray.is_rsp_achats_group,is_plastigray.is_magasiniers_group,is_plastigray.is_comptable_group" 
                         type="object" class="oe_highlight"/>
                 </button>
-
-
-
-
-
                 <xpath expr="//notebook/page[@string='Additional Info']/group/group/field[@name='location_id']" position="attributes">
                     <attribute name="invisible">0</attribute>>
                 </xpath>
@@ -254,6 +249,9 @@
                     <field name="is_purchase_order_id"  attrs="{'invisible': [('is_purchase_order_id', '=', False)]}" readonly="1"/> 
                     <field name="is_num_bl"             attrs="{'invisible': [('is_purchase_order_id', '=', False)]}"  /> 
                     <field name="is_date_reception"     attrs="{'invisible': [('is_purchase_order_id', '=', False)]}"  /> 
+                </field>
+                <field name="priority" position="after">
+                    <field name="is_facture_pk_id" attrs="{'invisible': [('is_sale_order_id', '=', False)]}"  /> 
                 </field>
             </field>
         </record>

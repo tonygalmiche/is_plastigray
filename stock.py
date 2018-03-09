@@ -40,7 +40,7 @@ class stock_picking(models.Model):
     is_date_livraison    = fields.Date("Date d'arrivée chez le client")
     is_num_bl            = fields.Char("N° BL fournisseur")
     is_date_reception    = fields.Date('Date de réception')
-
+    is_facture_pk_id     = fields.Many2one('is.facture.pk', 'Facture PK')
 
     @api.multi
     def action_imprimer_etiquette_reception(self):

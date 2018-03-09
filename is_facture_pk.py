@@ -3,6 +3,7 @@ from openerp import models,fields,api
 import time
 from datetime import datetime
 from math import *
+from openerp.exceptions import Warning
 
 class is_facture_pk(models.Model):
     _name='is.facture.pk'
@@ -32,7 +33,7 @@ class is_facture_pk(models.Model):
     date_facture     = fields.Date('Date de facture', required=True)
     annee_facture    = fields.Char('Année de la facture'  , compute='_compute', store=True)
     semaine_facture  = fields.Char('Semaine de la facture', compute='_compute', store=True)
-    num_bl           = fields.Many2one('stock.picking', string='N° de BL', required=True)
+    num_bl           = fields.Many2one('stock.picking', string='N° de BL', required=True, domain=[('is_sale_order_id', '!=', False),('is_facture_pk_id', '=', False)]) 
     matiere_premiere = fields.Float('Total Matière première (€)'       , digits=(14, 4), readonly=True)
     main_oeuvre      = fields.Float("Total Main d'oeuvre (€)"          , digits=(14, 4), readonly=True)
     total_moules     = fields.Float("Total des moules à taxer (€)"     , digits=(14, 4), compute='_compute', store=True)
@@ -120,8 +121,23 @@ class is_facture_pk(models.Model):
                 'poids_brut'      : total_poids_brut,
             })
         res = super(is_facture_pk, self).create(vals)
+        self.check_bl(res)
         return res
 
+
+    @api.multi
+    def write(self,vals):
+        res = super(is_facture_pk, self).write(vals)
+        for obj in self:
+            self.check_bl(obj)
+        return res
+
+
+    @api.multi
+    def check_bl(self,obj):
+        if obj.num_bl.is_facture_pk_id:
+            raise Warning('Ce BL est déjà facturé !')
+        obj.num_bl.is_facture_pk_id=obj.id
 
 
     @api.multi
