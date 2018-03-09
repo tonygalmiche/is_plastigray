@@ -12,11 +12,31 @@ class is_demande_achat_serie(models.Model):
 
     @api.depends('line_ids')
     def _compute(self):
+        uid=self._uid
         for obj in self:
             nb_lignes=len(obj.line_ids)
             if nb_lignes>1:
                 raise Warning('Une seule ligne autorisée !')
             obj.nb_lignes=nb_lignes
+
+            vsb=False
+            if obj.state!='brouillon' and uid==obj.acheteur_id.id:
+                vsb=True
+            obj.vers_brouillon_vsb=vsb
+            vsb=False
+            if obj.state=='brouillon':
+                vsb=True
+            obj.vers_transmis_achat_vsb=vsb
+            vsb=False
+            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
+                vsb=True
+            obj.vers_solde_vsb=vsb
+            vsb=False
+            if obj.state=='brouillon' and uid==obj.createur_id.id:
+                vsb=True
+            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
+                vsb=True
+            obj.vers_annule_vsb=vsb
 
 
     name                 = fields.Char("N° demande achat série", readonly=True)
@@ -43,6 +63,12 @@ class is_demande_achat_serie(models.Model):
     line_ids             = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes", copy=True)
     order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
     nb_lignes            = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
+
+    vers_brouillon_vsb      = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_transmis_achat_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_solde_vsb          = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_annule_vsb         = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+
 
 
     @api.multi

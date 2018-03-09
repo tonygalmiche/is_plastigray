@@ -25,6 +25,36 @@
             <field name="arch" type="xml">
                 <form string="Form">
                     <header>
+                        <field name="vers_brouillon_vsb" invisible="1"/>
+                        <button 
+                            name="vers_brouillon_action"
+                            string="Vers brouillon"
+                            attrs="{'invisible': [('vers_brouillon_vsb', '!=', True)]}"
+                            type="object"
+                        />
+                        <field name="vers_transmis_achat_vsb" invisible="1"/>
+                        <button 
+                            name="vers_transmis_achat_action"
+                            string="Vers transmis achat"
+                            attrs="{'invisible': [('vers_transmis_achat_vsb', '!=', True)]}"
+                            class="oe_highlight" type="object"
+                        />
+                        <field name="vers_solde_vsb" invisible="1"/>
+                        <button 
+                            name="vers_solde_action"
+                            string="Générer la commande et solder cette DA"
+                            attrs="{'invisible': [('vers_solde_vsb', '!=', True)]}"
+                            class="oe_highlight" type="object"
+                        />
+                        <field name="vers_annule_vsb" invisible="1"/>
+                        <button 
+                            name="vers_annule_action"
+                            string="Vers annulé"
+                            attrs="{'invisible': [('vers_annule_vsb', '!=', True)]}"
+                            type="object"
+                        />
+
+                        <!--
                         <button 
                             name="vers_brouillon_action"
                             string="Vers brouillon"
@@ -49,6 +79,7 @@
                             attrs="{'invisible': ['|',('state', '=', 'annule'),('state', '=', 'solde')]}"
                             type="object"
                         />
+                        -->
                         <field name="state" widget="statusbar"/>
                     </header>
                     <sheet class="oe_form_sheet_width_wider">
