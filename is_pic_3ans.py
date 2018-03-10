@@ -61,6 +61,38 @@ class is_pic_3ans_saisie(models.Model):
     pic_total  = fields.Integer('PIC Total', compute='_compute_pic_total', readonly=True, store=False)
 
 
+    prevision_annuelle = fields.Integer('Prévision annuelle')
+
+    repartition_01     = fields.Integer('Répartition 01')
+    repartition_02     = fields.Integer('Répartition 02')
+    repartition_03     = fields.Integer('Répartition 03')
+    repartition_04     = fields.Integer('Répartition 04')
+    repartition_05     = fields.Integer('Répartition 05')
+    repartition_06     = fields.Integer('Répartition 06')
+    repartition_07     = fields.Integer('Répartition 07')
+    repartition_08     = fields.Integer('Répartition 08')
+    repartition_09     = fields.Integer('Répartition 09')
+    repartition_10     = fields.Integer('Répartition 10')
+    repartition_11     = fields.Integer('Répartition 11')
+    repartition_12     = fields.Integer('Répartition 12')
+    repartition_total  = fields.Integer('Répartition Total', compute='_compute_proposition', readonly=True, store=False)
+
+
+    proposition_01     = fields.Integer('Proposition 01', compute='_compute_proposition', readonly=True, store=False)
+    proposition_02     = fields.Integer('Proposition 02', compute='_compute_proposition', readonly=True, store=False)
+    proposition_03     = fields.Integer('Proposition 03', compute='_compute_proposition', readonly=True, store=False)
+    proposition_04     = fields.Integer('Proposition 04', compute='_compute_proposition', readonly=True, store=False)
+    proposition_05     = fields.Integer('Proposition 05', compute='_compute_proposition', readonly=True, store=False)
+    proposition_06     = fields.Integer('Proposition 06', compute='_compute_proposition', readonly=True, store=False)
+    proposition_07     = fields.Integer('Proposition 07', compute='_compute_proposition', readonly=True, store=False)
+    proposition_08     = fields.Integer('Proposition 08', compute='_compute_proposition', readonly=True, store=False)
+    proposition_09     = fields.Integer('Proposition 09', compute='_compute_proposition', readonly=True, store=False)
+    proposition_10     = fields.Integer('Proposition 10', compute='_compute_proposition', readonly=True, store=False)
+    proposition_11     = fields.Integer('Proposition 11', compute='_compute_proposition', readonly=True, store=False)
+    proposition_12     = fields.Integer('Proposition 12', compute='_compute_proposition', readonly=True, store=False)
+    proposition_total  = fields.Integer('Proposition Total', compute='_compute_proposition', readonly=True, store=False)
+
+
     _defaults = {
         'annee': lambda self, cr, uid, ctx=None: self.pool.get('is.mem.var').get(cr, uid, uid, uid, 'annee_pic'),
     }
@@ -130,6 +162,28 @@ class is_pic_3ans_saisie(models.Model):
                     date_debut = date_debut + relativedelta(months=1)
                 obj.liv_total=liv_total
 
+
+    @api.depends('repartition_01','repartition_02','repartition_03','repartition_04','repartition_05','repartition_06','repartition_07','repartition_08','repartition_09','repartition_10','repartition_11','repartition_12','prevision_annuelle')
+    def _compute_proposition(self):
+        for obj in self:
+            total=0
+            for i in range(1,13):
+                champ="repartition_"+("00"+str(i))[-2:]
+                qt=getattr(obj, champ)
+                total=total+qt
+            obj.repartition_total=total
+
+            proposition_total=0
+            for i in range(1,13):
+                champ="repartition_"+("00"+str(i))[-2:]
+                qt=getattr(obj, champ)
+                proposition=0
+                if total>0:
+                    proposition=qt*obj.prevision_annuelle/total
+                proposition_total=proposition_total+proposition
+                champ="proposition_"+("00"+str(i))[-2:]
+                setattr(obj, champ, proposition)
+            obj.proposition_total=proposition_total
 
 
     @api.multi

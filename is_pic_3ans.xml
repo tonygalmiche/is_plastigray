@@ -72,6 +72,37 @@
                                 Remarque : La recherche de la quantité livrée est faite indépendamment de l'indice de l'article
                             </div>
                         </group>
+                        <group>
+                            <field name="prevision_annuelle"/>
+                        </group>
+                        <group col="4" colspan="4">
+                            <field name="repartition_01"/>
+                            <field name="proposition_01"/>
+                            <field name="repartition_02"/>
+                            <field name="proposition_02"/>
+                            <field name="repartition_03"/>
+                            <field name="proposition_03"/>
+                            <field name="repartition_04"/>
+                            <field name="proposition_04"/>
+                            <field name="repartition_05"/>
+                            <field name="proposition_05"/>
+                            <field name="repartition_06"/>
+                            <field name="proposition_06"/>
+                            <field name="repartition_07"/>
+                            <field name="proposition_07"/>
+                            <field name="repartition_08"/>
+                            <field name="proposition_08"/>
+                            <field name="repartition_09"/>
+                            <field name="proposition_09"/>
+                            <field name="repartition_10"/>
+                            <field name="proposition_10"/>
+                            <field name="repartition_11"/>
+                            <field name="proposition_11"/>
+                            <field name="repartition_12"/>
+                            <field name="proposition_12"/>
+                            <field name="repartition_total"/>
+                            <field name="proposition_total"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
