@@ -358,7 +358,7 @@
                                             <tboby>
                                                 <tr t-foreach="o.mold_ids" t-as="l" >
                                                     <t t-if="w.workcenter_id.id == l.workcenter_id.id"> 
-                                                        <td><span t-field="l.mold_id.name"/></td>
+                                                        <td><span t-field="l.mold_dossierf"/></td>
                                                         <td><span t-field="l.matiere"/></td>
                                                         <td><t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'      /></td>
                                                         <td><t t-esc='"{:,.0f}".format(l.temps_h).replace(","," ").replace(".",",")'      /></td>

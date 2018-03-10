@@ -145,7 +145,8 @@
                             <field name="pdc_id" readonly="1"/>
                             <field name="workcenter_id"/>
                             <field name="resource_type"/>
-                            <field name="mold_id"/>
+                            <field name="mold_id" readonly="1"/>
+                            <field name="mold_dossierf"/>
                             <field name="matiere"/>
                             <field name="quantite"/>
                             <field name="temps_h"/>
@@ -168,7 +169,8 @@
                     <field name="pdc_id" readonly="1"/>
                     <field name="workcenter_id"/>
                     <field name="resource_type"/>
-                    <field name="mold_id"/>
+                    <field name="mold_id" readonly="1"/>
+                    <field name="mold_dossierf"/>
                     <field name="matiere"/>
                     <field name="quantite" sum="Total"/>
                     <field name="temps_u"         digits="(14, 2)" />
@@ -189,7 +191,7 @@
                     <field name="pdc_id"/>
                     <field name="workcenter_id"/>
                     <field name="resource_type"/>
-                    <field name="mold_id"/>
+                    <field name="mold_dossierf"/>
 
                     <!-- Filtres pré-enregistrés -->
                     <filter string="MO"       name="type_mo"      domain="[('resource_type','=','user')]"/>
@@ -198,7 +200,7 @@
                     <group expand="1" string="Regrouper par">
                         <filter string="Poste de charge"  context="{'group_by':'workcenter_id'}"/>
                         <filter string="Type"             context="{'group_by':'resource_type'}"/>
-                        <filter string="Moule"            context="{'group_by':'mold_id'}"/>
+                        <filter string="Moule"            context="{'group_by':'mold_dossierf'}"/>
                     </group>
                 </search>
             </field>

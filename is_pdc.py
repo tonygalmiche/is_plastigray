@@ -102,7 +102,7 @@ class is_pdc(models.Model):
             #** Importation des FS *********************************************
             cr.execute("""
                 select  mrw.workcenter_id                        as workcenter_id,
-                        pt.is_mold_id                            as mold_id, 
+                        pt.is_mold_dossierf                      as mold_dossierf,
                         pt.is_couleur                            as matiere,
                         sum(mp.quantity)                         as quantite,
                         sum(mp.quantity*mrw.is_nb_secondes)      as temps_total
@@ -113,7 +113,7 @@ class is_pdc(models.Model):
                 where   mp.type='fs' 
                         and mp.start_date>='"""+str(obj.date_debut)+"""'
                         and mp.start_date<='"""+str(obj.date_fin)+"""'
-                group by mrw.workcenter_id, pt.is_mold_id, pt.is_couleur
+                group by mrw.workcenter_id, pt.is_mold_dossierf, pt.is_couleur
                 order by mrw.workcenter_id;
             """)
             result = cr.fetchall()
@@ -126,7 +126,7 @@ class is_pdc(models.Model):
                     temps_h=row[4]/3600
                 vals={
                     'workcenter_id': row[0],
-                    'mold_id'      : row[1],
+                    'mold_dossierf': row[1],
                     'matiere'      : row[2],
                     'quantite'     : row[3],
                     'temps_u'      : temps_u,
@@ -139,7 +139,7 @@ class is_pdc(models.Model):
             #** Importation des FL *********************************************
             cr.execute("""
                 select  mrw.workcenter_id                        as workcenter_id,
-                        pt.is_mold_id                            as mold_id, 
+                        pt.is_mold_dossierf                      as mold_dossierf,
                         pt.is_couleur                            as matiere,
                         sum(sm.product_uom_qty)                         as quantite,
                         sum(sm.product_uom_qty*mrw.is_nb_secondes) as temps_total
@@ -151,7 +151,7 @@ class is_pdc(models.Model):
                         and sm.date>='"""+str(obj.date_debut)+"""'
                         and sm.date<='"""+str(obj.date_fin)+"""'
                         and sm.production_id is not null
-                group by mrw.workcenter_id, pt.is_mold_id, pt.is_couleur
+                group by mrw.workcenter_id, pt.is_mold_dossierf, pt.is_couleur
                 order by mrw.workcenter_id;
             """)
             result = cr.fetchall()
@@ -163,7 +163,7 @@ class is_pdc(models.Model):
                     temps_h=row[4]/3600
                 vals={
                     'workcenter_id': row[0],
-                    'mold_id'      : row[1],
+                    'mold_dossierf': row[1],
                     'matiere'      : row[2],
                     'quantite'     : row[3],
                     'temps_u'      : temps_u,
@@ -182,7 +182,7 @@ class is_pdc(models.Model):
                 vals={
                     'pdc_id'       : obj.id,
                     'workcenter_id': res[key]['workcenter_id'],
-                    'mold_id'      : res[key]['mold_id'],
+                    'mold_dossierf': res[key]['mold_dossierf'],
                     'matiere'      : res[key]['matiere'],
                     'quantite'     : res[key]['quantite'],
                     'temps_u'      : res[key]['temps_u'],
@@ -340,12 +340,13 @@ class is_pdc(models.Model):
 
 class is_pdc_mold(models.Model):
     _name='is.pdc.mold'
-    _order='pdc_id desc, workcenter_id, mold_id'
+    _order='pdc_id desc, workcenter_id, mold_dossierf'
 
     pdc_id         = fields.Many2one('is.pdc', 'PDC', required=True, ondelete='cascade')
     workcenter_id  = fields.Many2one('mrp.workcenter', 'Poste de charge')
     resource_type  = fields.Selection([('material', u'Machine'),('user', u'MO')], u"Type", readonly=True, select=True, store=True, compute='_resource_type')
     mold_id        = fields.Many2one('is.mold', 'Moule')
+    mold_dossierf  = fields.Char('Moule')
     matiere        = fields.Char('Matière')
     quantite       = fields.Integer('Quantité')
     temps_u        = fields.Float('Temps unitaire (s)', digits=(14, 4))
@@ -388,11 +389,11 @@ class is_pdc_mold(models.Model):
             cumul_pourcent=0
             cumul_h=0
 
-            if obj.mold_id.name and obj.workcenter_id.id and obj.pdc_id.id:
+            if obj.mold_dossierf and obj.workcenter_id.id and obj.pdc_id.id:
                 sql="""
                     select sum(temps_pourcent), sum(temps_h)
-                    from is_pdc_mold ipm inner join is_mold im on ipm.mold_id=im.id
-                    where im.name<='"""+str(obj.mold_id.name)+"""'
+                    from is_pdc_mold
+                    where mold_dossierf<='"""+str(obj.mold_dossierf)+"""'
                           and workcenter_id="""+str(obj.workcenter_id.id)+"""
                           and pdc_id="""+str(obj.pdc_id.id)+"""
                 """
