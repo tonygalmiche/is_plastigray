@@ -168,7 +168,7 @@
                                 <field name="cout_std_mo"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_st"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_std_total"         attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1" sum="Total"/> 
-                                <field name="cout_std_prix_vente"    attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_std_prix_vente"/> 
                             </group>
                             <group string="Coût actualisé">
                                 <field name="cout_act_matiere"/> 
@@ -177,11 +177,11 @@
                                 <field name="cout_act_mo"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_act_st"         attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
                                 <field name="cout_act_total"      attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1" sum="Total"/> 
-                                <field name="cout_act_prix_vente" attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_act_prix_vente"/> 
                             </group>
                         </group>
                         <group>
-                            <group string="Tarif commercial" attrs="{'invisible': [('type_article', '=', 'A')] }">
+                            <group string="Tarif commercial">
                                 <field name="amortissement_moule"/> 
                                 <field name="surcout_pre_serie"  /> 
                                 <field name="prix_vente"         /> 
