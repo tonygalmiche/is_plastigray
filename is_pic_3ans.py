@@ -92,6 +92,8 @@ class is_pic_3ans_saisie(models.Model):
     proposition_12     = fields.Integer('Proposition 12', compute='_compute_proposition', readonly=True, store=False)
     proposition_total  = fields.Integer('Proposition Total', compute='_compute_proposition', readonly=True, store=False)
 
+    proposition_vers_pic = fields.Boolean('Copier propositions dans PIC')
+
 
     _defaults = {
         'annee': lambda self, cr, uid, ctx=None: self.pool.get('is.mem.var').get(cr, uid, uid, uid, 'annee_pic'),
@@ -184,6 +186,42 @@ class is_pic_3ans_saisie(models.Model):
                 champ="proposition_"+("00"+str(i))[-2:]
                 setattr(obj, champ, proposition)
             obj.proposition_total=proposition_total
+
+
+    @api.multi
+    def on_change_proposition_vers_pic(self,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12):
+        value={}
+        for i in range(1,13):
+            qt=0
+            if i==1:
+                qt=p1
+            if i==2:
+                qt=p2
+            if i==3:
+                qt=p3
+            if i==4:
+                qt=p4
+            if i==5:
+                qt=p5
+            if i==6:
+                qt=p6
+            if i==7:
+                qt=p7
+            if i==8:
+                qt=p8
+            if i==9:
+                qt=p9
+            if i==10:
+                qt=p10
+            if i==11:
+                qt=p11
+            if i==12:
+                qt=p12
+            champ="pic_"+("00"+str(i))[-2:]
+            value[champ]=qt
+        return {'value': value}
+
+
 
 
     @api.multi

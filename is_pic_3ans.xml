@@ -103,6 +103,13 @@
                             <field name="repartition_total"/>
                             <field name="proposition_total"/>
                         </group>
+                        <group>
+                            <field 
+                                name="proposition_vers_pic"
+                                on_change="on_change_proposition_vers_pic(proposition_01,proposition_02,proposition_03,proposition_04,proposition_05,proposition_06,proposition_07,proposition_08,proposition_09,proposition_10,proposition_11,proposition_12)"
+                            />
+                        </group>
+
                     </sheet>
                 </form>
             </field>
