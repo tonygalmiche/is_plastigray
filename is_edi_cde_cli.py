@@ -1,22 +1,16 @@
 # -*- coding: utf-8 -*-
-
 import csv, cStringIO
-
 from openerp.tools.translate import _
 from openerp import netsvc
 from openerp import models,fields,api
 from openerp.exceptions import Warning
-
 from lxml import etree
-
 import xml.etree.ElementTree as ET
-
 from tempfile import TemporaryFile
 import base64
 import os
 import time
 from datetime import date, datetime
-from openerp.exceptions import Warning
 
 
 class is_edi_cde_cli_line(models.Model):
