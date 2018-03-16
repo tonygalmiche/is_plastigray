@@ -300,6 +300,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_902810(attachment)
         if import_function=="903410":
             datas=self.get_data_903410(attachment)
+        if import_function=="ACTIA":
+            datas=self.get_data_ACTIA(attachment)
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
         if import_function=="John-Deere":
@@ -315,6 +317,55 @@ class is_edi_cde_cli(models.Model):
         if import_function == 'Lacroix':
             datas = self.get_data_lacroix(attachment)
         return datas
+
+
+    @api.multi
+    def get_data_ACTIA(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=';')
+            tab=[]
+            for ct, lig in enumerate(csvfile):
+                if ct == 0:
+                    continue
+                if len(lig) == 9:
+                    ref_article_client = lig[1].strip()
+                    order = self.env['sale.order'].search([
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                        ('is_ref_client', '=', ref_article_client)]
+                    )
+                    num_commande_client = "??"
+                    if len(order):
+                        num_commande_client = order[0].client_order_ref
+                    val = {
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    quantite = lig[4]
+                    qt=0
+                    try:
+                        qt = float(quantite)
+                    except ValueError:
+                        continue
+                    type_commande="previsionnel"
+                    date_livraison = lig[3].strip()
+                    d=False
+                    try:
+                        d = datetime.strptime(date_livraison, '%Y%m%d')
+                    except ValueError:
+                        continue
+                    if d:
+                        date_livraison = d.strftime('%Y-%m-%d')
+                        ligne = {
+                            'quantite'      : qt,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes': [ligne]})
+                        res.append(val)
+        return res
 
 
     @api.multi
@@ -379,6 +430,12 @@ class is_edi_cde_cli(models.Model):
             except csv.Error:
                 raise Warning('Fichier vide ou non compatible (le fichier doit être au format CSV)')
         return res
+
+
+
+
+
+
 
 
     @api.multi
