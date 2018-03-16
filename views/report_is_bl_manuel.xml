@@ -206,6 +206,10 @@
                                 <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Site d'expédition</th> 
                                 <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Shipment address</th>
 
+                                <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Motif d'expédition</th> 
+                                <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Motif d'expédition</th>
+
+
                                 <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Informations</th> 
                                 <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Informations</th>
 
@@ -232,6 +236,9 @@
                                 <span t-field="res_company.partner_id.street" /><br />
                                  <span t-field="res_company.partner_id.zip" /> <span t-field="res_company.partner_id.city" /><br />
                                 <span t-field="res_company.partner_id.country_id.name" /><br /><br />
+                            </td>
+                            <td class="text-left">
+                                <span t-field="o.motif_expedition" /><br />
                             </td>
                             <td class="text-left">
                                 <span t-field="o.incoterm_id.name" /><br />
