@@ -73,7 +73,12 @@ class account_invoice(models.Model):
     is_tva            = fields.Float("TVA"     , compute='_compute', help="Taxes sans l'escompte")
     is_folio_id       = fields.Many2one('is.account.folio', 'Folio')
     is_bon_a_payer    = fields.Boolean("Bon à payer", default=True)
-    is_type_facture   = fields.Selection([('standard', u'Standard'),('diverse', u'Diverse')], u"Type de facture", default='standard', select=True)
+    is_type_facture   = fields.Selection([
+            ('standard'  , u'Standard'),
+            ('diverse'   , u'Diverse'),
+            ('avoir-qt'  , u'Avoir quantité'),
+            ('avoir-prix', u'Avoir prix'),
+        ], u"Type de facture", default='standard', select=True)
     is_origine_id     = fields.Many2one('account.invoice', "Facture d'origine")
     is_mode_envoi_facture = fields.Selection([
         ('courrier'   , 'Envoi par courrier'),
