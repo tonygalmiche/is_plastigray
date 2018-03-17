@@ -43,7 +43,6 @@
                                 <field name="type"/> 
                                 <field name="product_id"/>
                                 <field name="partner_id"       attrs="{'invisible': [('type','!=', 'sa')]}"/>
-                                <field name="end_date" />
                                 <field name="quantity" />
                                 <field name="uom_id" />
                                 <field name="quantity_ha"      attrs="{'invisible': [('type','!=', 'sa')]}"/>
@@ -52,11 +51,12 @@
                             </group>
                             <group>
                                 <field name="name"             readonly="1"/>
-                                <field name="delai_cq"         readonly="1"/>
+                                <field name="start_date"       readonly="1" />
                                 <field name="delai_livraison"  attrs="{'invisible': [('type','!=', 'sa')]}"/>
                                 <field name="tps_fab"          attrs="{'invisible': [('type','!=', 'fs')]}"/>
-                                <field name="start_date"       readonly="1" />
-                                <field name="start_date_cq"/>
+                                <field name="start_date_cq"    attrs="{'readonly': [('type','!=', 'sa')], 'required': [('type','=', 'sa')]}"/>
+                                <field name="delai_cq"         readonly="1"/>
+                                <field name="end_date"         attrs="{'readonly': [('type','=', 'sa')], 'required': [('type','!=', 'sa')]}"/>
                                 <field name="quantity_origine" readonly="1"/>
                                 <field name="is_category_id"/>
                                 <field name="is_gestionnaire_id"/>

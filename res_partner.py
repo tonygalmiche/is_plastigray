@@ -415,6 +415,29 @@ class res_partner(models.Model):
 
 
     @api.multi
+    def get_date_fin(self, partner_id, date_debut, nb_jours):
+        """ Calcul la date de fin à partir de la date de début en jours ouvrés 
+        """
+        if nb_jours<=0:
+            return date_debut
+        num_closing_days = self.num_closing_days(partner_id)
+        leave_dates      = self.get_leave_dates(partner_id)
+        new_date = datetime.datetime.strptime(date_debut, '%Y-%m-%d')
+        while True:
+            new_date = new_date + datetime.timedelta(days=1)
+            date_txt=new_date.strftime('%Y-%m-%d')
+            num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
+            if not(num_day in num_closing_days or date_txt in leave_dates):
+                nb_jours=nb_jours-1
+            if nb_jours<=0:
+                break
+        return new_date.strftime('%Y-%m-%d')
+
+
+
+
+
+    @api.multi
     def bon_sortie_matiere(self, filename):
         '''
         Test génération 'Bon de sortie matière' pour être utilisée en PHP

@@ -35,8 +35,8 @@ class mrp_prevision(models.Model):
     is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire', readonly=True)
     partner_id         = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
     start_date         = fields.Date('Date de début', select=True)
-    start_date_cq      = fields.Date('Date début contrôle qualité'   , readonly=True)
-    end_date           = fields.Date('Date fin contrôle qualité', required=True)
+    start_date_cq      = fields.Date('Date début CQ (Réception)')
+    end_date           = fields.Date('Date fin contrôle qualité')
     quantity           = fields.Float('Quantité', required=True)
     quantity_ha        = fields.Float("Quantité (UA)", compute="_compute", digits=(12, 4))
     quantity_origine   = fields.Float("Quantité d'origine")
@@ -52,10 +52,6 @@ class mrp_prevision(models.Model):
     active             = fields.Boolean('Active')
     ft_ids             = fields.One2many('mrp.prevision', 'parent_id', u'Composants')
     state              = fields.Selection([('creation', u'Création'),('valide', u'Validé')], u"État", readonly=True, select=True)
-
-
-
-
 
 
     _defaults = {
@@ -191,16 +187,13 @@ class mrp_prevision(models.Model):
                 name=obj.name
                 unlink=True
                 try:
-                    #workflow.trg_validate(self._uid, 'mrp.production', mrp_id.id, 'button_confirm', self._cr)
                     mrp_id.action_confirm()
                     mrp_id.force_production()
                     mrp_id.action_in_production()
-                    #break
                 except Exception as inst:
                     unlink=False
                     msg="Impossible de convertir la "+name+'\n('+str(inst)+')'
                     obj.note=msg
-                    #raise Warning(msg)
 
                 if unlink:
                     obj.unlink()
@@ -209,21 +202,16 @@ class mrp_prevision(models.Model):
 
     @api.multi
     def _start_date(self, product_id, quantity, end_date):
-
         start_date=end_date
         for obj in self:
             product_obj = self.pool.get('product.product')
             for product in product_obj.browse(self._cr, self._uid, [product_id], context=self._context):
                 end_date = datetime.strptime(end_date, '%Y-%m-%d')
-                #days=int(quantity*product.temps_realisation/(3600*24))
-                #days=product.produce_delay+int(quantity*product.temps_realisation/(3600*24))
                 tps_fab=quantity*product.temps_realisation/(3600*24)
                 days=int(ceil(tps_fab))
                 start_date= end_date - timedelta(days=days)
                 start_date = start_date.strftime('%Y-%m-%d')
         return start_date
-
-
 
 
     @api.model
@@ -257,29 +245,31 @@ class mrp_prevision(models.Model):
             if len(product.seller_ids)>0:
                 partner_id=product.seller_ids[0].name.id
         vals["partner_id"]=partner_id
-        #*******************************************************************
+        #***********************************************************************
 
+
+        #** Si création via le CBN, la date fournie est la date de fin *********
         if type=='sa' and end_date:
-            #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
+            #Date de fin des SA pendant les jours ouvrés de l'entreprise
             end_date=partner_obj.get_date_dispo(company.partner_id, end_date)
             vals["end_date"]=end_date
             r=self.get_delai_cq_tps_fab_start_date(type, product_id, quantity, end_date, partner_id)
             vals.update(r)
+        #***********************************************************************
 
-            #** Date de début des SA en tenant compte du délai de livraison ****
-            #vals["start_date"]=self.get_start_date_sa(product, end_date)
-            #*******************************************************************
+
+        #** Si création manuelle, date fournie=start_date_cq (date réception) **
+        start_date_cq = vals.get('start_date_cq', None)
+        if type=='sa' and start_date_cq:
+            r=self.get_dates_from_start_date_cq(type, product_id, quantity,start_date_cq, partner_id)
+            vals.update(r)
+        #***********************************************************************
+
 
         if type=='fs':
             r=self.get_delai_cq_tps_fab_start_date(type, product_id, quantity, end_date, partner_id)
             vals.update(r)
 
-            #** Date début des FS en tenant compte du temps de fabrication *****
-            #start_date=self._start_date(product_id, quantity, end_date)
-            #** Date début des FS pendant les jours ouvrés de l'entreprise *****
-            #start_date=partner_obj.get_date_dispo(company.partner_id, start_date)
-            #vals["start_date"]=start_date
-            #*******************************************************************
 
         #** Numérotation *******************************************************
         data_obj = self.env['ir.model.data']
@@ -289,6 +279,7 @@ class mrp_prevision(models.Model):
             vals['name'] = self.env['ir.sequence'].get_id(sequence_id, 'id')
         obj = super(mrp_prevision, self).create(vals)
         #***********************************************************************
+
 
         #** Recherche des composants de la nomenclature pour les fs ************
         if obj:
@@ -314,26 +305,6 @@ class mrp_prevision(models.Model):
                         }
                         self.create(vals)
                     #***********************************************************
-
-#                    bom_obj = self.env['mrp.bom']
-#                    template_id = row.product_id.product_tmpl_id.id
-#                    if template_id:
-#                        bom_ids = bom_obj.search([('product_tmpl_id','=',template_id),])
-#                        if len(bom_ids)>0:
-#                            bom=bom_ids[0]
-#                            for line in bom.bom_line_ids:
-#                                vals={
-#                                    'parent_id': row.id,
-#                                    'type': 'ft',
-#                                    'product_id': line.product_id.id,
-#                                    'start_date': row.start_date,
-#                                    'end_date': row.start_date,
-#                                    'quantity': row.quantity*line.product_qty,
-#                                    'quantity_origine': row.quantity*line.product_qty,
-#                                    'state': 'valide',
-#                                }
-#                                self.create(vals)
-        #***********************************************************************
         return obj
 
 
@@ -344,34 +315,35 @@ class mrp_prevision(models.Model):
         company = user.company_id
 
         for obj in self:
-            product_id = vals.get('product_id', obj.product_id.id)
-            partner_id = vals.get('partner_id', obj.partner_id.id)
-            quantity   = vals.get('quantity'  , obj.quantity)
-            end_date   = vals.get('end_date'  , obj.end_date)
+            product_id    = vals.get('product_id'   , obj.product_id.id)
+            partner_id    = vals.get('partner_id'   , obj.partner_id.id)
+            quantity      = vals.get('quantity'     , obj.quantity)
+            start_date_cq = vals.get('start_date_cq', obj.start_date_cq)
+            end_date      = vals.get('end_date'     , obj.end_date)
 
             if quantity==None or quantity==0:
                 raise Warning(u'Quantité à 0 non autorisée !')
 
-            if obj.type=='sa' and end_date:
-                #** Date de fin des SA pendant les jours ouvrés de l'entreprise ****
-                end_date=partner_obj.get_date_dispo(company.partner_id, end_date)
-                vals["end_date"]=end_date
-                r=self.get_delai_cq_tps_fab_start_date(obj.type, product_id, quantity, end_date, partner_id)
-                vals.update(r)
 
-                #** Date de début des SA en tenant compte du délai de livraison ****
-                #vals["start_date"]=self.get_start_date_sa(obj.product_id, end_date)
-                #*******************************************************************
+            #** Si modification end_date ***************************************
+            #if obj.type=='sa' and end_date:
+            #    end_date=partner_obj.get_date_dispo(company.partner_id, end_date)
+            #    vals["end_date"]=end_date
+            #    r=self.get_delai_cq_tps_fab_start_date(obj.type, product_id, quantity, end_date, partner_id)
+            #    vals.update(r)
+            #*******************************************************************
+
+
+            #** Si modification start_date_cq **********************************
+            if obj.type=='sa' and start_date_cq:
+                r=self.get_dates_from_start_date_cq(obj.type, product_id, quantity,start_date_cq, partner_id)
+                vals.update(r)
+            #***********************************************************************
+
 
             if obj.type=='fs':
                 r=self.get_delai_cq_tps_fab_start_date(obj.type, product_id, quantity, end_date, partner_id)
                 vals.update(r)
-#                ##** Date début des FS en tenant compte du temps de fabrication *****
-#                #start_date=self._start_date(product_id, quantity, end_date)
-#                ##** Date début des FS pendant les jours ouvrés de l'entreprise *****
-#                #start_date=partner_obj.get_date_dispo(company.partner_id, start_date)
-#                #vals["start_date"]=start_date
-#                ##*******************************************************************
 
         res = super(mrp_prevision, self).write(vals)
 
@@ -439,6 +411,61 @@ class mrp_prevision(models.Model):
                 'start_date'      : start_date,
             }
         return vals
+
+
+
+
+
+    @api.multi
+    def get_dates_from_start_date_cq(self, type_od, product_id, quantity, start_date_cq, partner_id):
+        partner_obj = self.env['res.partner']
+        user = self.env["res.users"].browse(self._uid)
+        company = user.company_id
+        vals={}
+
+        #** start_date_cq pendant les jours ouvrés de l'entreprise *************
+        start_date_cq=partner_obj.get_date_dispo(company.partner_id, start_date_cq)
+        #***********************************************************************
+
+        product_obj = self.env['product.product']
+        for product in product_obj.browse(product_id):
+            #** end_date = start_date_cq + delai_cq (en jours ouvrés) **********
+            delai_cq = ceil(product.delai_cq)
+            end_date = partner_obj.get_date_fin(company.partner_id, start_date_cq, delai_cq)
+            #*******************************************************************
+
+            #** Pour les sa, tenir compte du délai de livraison ****************
+            start_date = start_date_cq
+            delai_livraison=0
+            if type_od=='sa':
+                if len(product.seller_ids)>0:
+                    days=product.seller_ids[0].delay
+                    delai_livraison=days
+                    start_date = datetime.strptime(start_date_cq, '%Y-%m-%d')  - timedelta(days=days)
+                    start_date = start_date.strftime('%Y-%m-%d')
+                    start_date = partner_obj.get_date_dispo(company.partner_id, start_date)
+            #*******************************************************************
+
+            #** Pour les fs, tenir compte du temps de fabrication **************
+            tps_fab=0
+            if type_od=='fs':
+                tps_fab = round(quantity*product.temps_realisation/(3600*24),1)
+                days    = ceil(tps_fab)
+                start_date = partner_obj.get_date_debut(company.partner_id, start_date, days)
+            #*******************************************************************
+
+            vals={
+                'delai_cq'        : product.delai_cq,
+                'delai_livraison' : delai_livraison,
+                'tps_fab'         : tps_fab,
+                'start_date'      : start_date,
+                'start_date_cq'   : start_date_cq,
+                'end_date'        : end_date,
+            }
+        return vals
+
+
+
 
 
 
