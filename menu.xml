@@ -47,6 +47,31 @@
 
 
 
+    <!-- THEIA -->
+    <record model="ir.actions.act_url" id="is_url_theia_action">
+        <field name="name">is_url_theia</field>
+        <field name="type">ir.actions.act_url</field>
+        <field name="url">http://localhost</field>
+    </record>
+    <record model="ir.actions.act_url" id="is_url_theia_suivi_prod_action">
+        <field name="name">is_url_theia_suivi_prod</field>
+        <field name="type">ir.actions.act_url</field>
+        <field name="url">http://localhost</field>
+    </record>
+    <record model="ir.actions.act_url" id="is_url_theia_trs_action">
+        <field name="name">is_url_theia_trs</field>
+        <field name="type">ir.actions.act_url</field>
+        <field name="url">http://localhost</field>
+    </record>
+    <record model="ir.actions.act_url" id="is_url_theia_rebuts_action">
+        <field name="name">is_url_theia_rebuts</field>
+        <field name="type">ir.actions.act_url</field>
+        <field name="url">http://localhost</field>
+    </record>
+
+
+
+
     <menuitem id="menu_is_donnees_techniques"  sequence="1"  name="Données techniques"/>
 
 
@@ -1072,6 +1097,50 @@
             ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
+
+
+
+
+    <!-- Production / THEIA -->
+    <record id="is_theia_main_menu" model="ir.ui.menu" >
+        <field name="name">THEIA</field>
+        <field name="sequence">15</field>
+        <field name="parent_id" eval="ref('menu_is_production')"/>
+        <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+    <record id="is_theia_menu" model="ir.ui.menu" >
+        <field name="name">THEIA</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_theia_main_menu')"/>
+        <field name="action"    ref="is_url_theia_action"/>
+        <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+    <record id="is_theia_suivi_prod_menu" model="ir.ui.menu" >
+        <field name="name">Suivi de production</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_theia_main_menu')"/>
+        <field name="action"    ref="is_url_theia_suivi_prod_action"/>
+        <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+    <record id="is_theia_trs_menu" model="ir.ui.menu" >
+        <field name="name">TRS</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_theia_main_menu')"/>
+        <field name="action"    ref="is_url_theia_trs_action"/>
+        <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+    <record id="is_theia_rebuts_menu" model="ir.ui.menu" >
+        <field name="name">Rebuts</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_theia_main_menu')"/>
+        <field name="action"    ref="is_url_theia_rebuts_action"/>
+        <field name="groups_id" eval="[(6,0,[])]"/>
+    </record>
+
+
+
+
+
 
 
     <!-- Production / Stock -->
