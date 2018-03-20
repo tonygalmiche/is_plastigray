@@ -23,7 +23,7 @@ class is_stock_quant(models.Model):
     emplacement        = fields.Char('Emplacement')
     lot                = fields.Char('Lot')
     lot_fournisseur    = fields.Char('Lot fournisseur')
-    quantite           = fields.Float('Quantité')
+    quantite           = fields.Float('Quantité', digits=(16,6))
     uom_id             = fields.Many2one('product.uom', 'Unité')
     date_entree        = fields.Datetime("Date d'entrée")
 
