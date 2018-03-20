@@ -16,6 +16,7 @@ class is_ligne_livraison(models.Model):
     segment_id          = fields.Many2one('is.product.segment', 'Segment')
     is_category_id      = fields.Many2one('is.category', 'Catégorie')
     is_gestionnaire_id  = fields.Many2one('is.gestionnaire', 'Gestionnaire')
+    family_id           = fields.Char('Famille')
     ref_client          = fields.Char('Référence client')
     is_mold_dossierf    = fields.Char('Moule ou Dossier F')
     product_uom_qty     = fields.Float('Quantité livrée', digits=(14,2))
@@ -85,6 +86,7 @@ class is_ligne_livraison(models.Model):
                         sol.is_client_order_ref as client_order_ref,
                         sp.partner_id           as partner_id, 
                         pt.id                   as product_id, 
+                        ipf.name                as family_id,
                         pt.segment_id           as segment_id,
                         pt.is_category_id       as is_category_id,
                         pt.is_gestionnaire_id   as is_gestionnaire_id,
@@ -109,6 +111,7 @@ class is_ligne_livraison(models.Model):
                                       inner join product_product           pp on sm.product_id=pp.id
                                       inner join product_template          pt on pp.product_tmpl_id=pt.id
                                       inner join res_partner               rp on sp.partner_id=rp.id
+                                      left outer join is_product_famille   ipf on pt.family_id=ipf.id
                                       left outer join sale_order           so on sp.is_sale_order_id=so.id
                                       left outer join sale_order_line     sol on sm.is_sale_line_id=sol.id
 
