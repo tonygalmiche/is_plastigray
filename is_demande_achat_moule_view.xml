@@ -28,6 +28,7 @@
                             string="Vers brouillon"
                             attrs="{'invisible': [('vers_brouillon_vsb', '!=', True)]}"
                             type="object"
+                            confirm="Voulez-vous vraiment revenir à l'état brouillon ?"
                         />
 
                         <field name="vers_validation_rsp_vsb" invisible="1"/>
