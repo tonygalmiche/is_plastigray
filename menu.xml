@@ -939,6 +939,16 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
+    <record id="is_deb_menu" model="ir.ui.menu" >
+        <field name="name">DEB</field>
+        <field name="sequence">80</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_deb_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+
 
 
     <!-- Facturation PK -->

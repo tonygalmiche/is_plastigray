@@ -95,6 +95,7 @@ Module principal du projet Plastigray
         "is_bl_manuel_view.xml",
         "is_taux_rotation_stock_view.xml",
         "is_export_edi_view.xml",
+        "is_deb_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

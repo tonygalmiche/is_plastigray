@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="is_deb_form_view">
+            <field name="name">is_deb_form_view</field>
+            <field name="model">is.deb</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="calcul_action"
+                            string="Calcul des données"
+                            type="object"
+                            confirm="Cela va écraser vos modifications manuelles ?"
+                        />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <field name="name"/>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                        </group>
+                        <group>
+                            <field name="exportation_line_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="invoice_id" widget="many2one_clickable"/>
+                                    <field name="type_facture" />
+                                    <field name="partner_id" widget="many2one_clickable"/>
+                                    <field name="code_regime" />
+                                    <field name="nomenclature_douaniere" />
+                                    <field name="masse_nette"      sum="Total"/>
+                                    <field name="pays_destination" />
+                                    <field name="valeur_fiscale"   sum="Total"/>
+                                    <field name="nature_transaction" />
+                                    <field name="mode_transport" />
+                                    <field name="departement_expedition" />
+                                    <field name="num_tva" />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_deb_tree_view">
+            <field name="name">is_deb_tree_view</field>
+            <field name="model">is.deb</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_deb_search_view" >
+            <field name="name">is_deb_search_view</field>
+            <field name="model">is.deb</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_deb_action">
+            <field name="name">DEB</field>
+            <field name="res_model">is.deb</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+    </data>
+</openerp>

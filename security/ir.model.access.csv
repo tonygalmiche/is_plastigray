@@ -184,6 +184,9 @@ access_is_certifications_qualite_suivi,access_is_certifications_qualite_suivi,mo
 access_is_anomalie_declar_prod,access_is_anomalie_declar_prod,model_is_anomalie_declar_prod,base.group_user,1,0,0,0
 access_is_res_users,access_is_res_users,model_is_res_users,base.group_user,1,0,0,0
 access_is_create_postgres_function,access_is_create_postgres_function,model_is_create_postgres_function,,1,0,0,0
+access_is_deb,access_is_deb,model_is_deb,base.group_user,1,1,1,1
+access_is_deb_exportation,access_is_deb_exportation,model_is_deb_exportation,base.group_user,1,1,1,1
+
 
 
 
