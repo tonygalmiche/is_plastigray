@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
+        <!-- is.deb -->
         <record model="ir.ui.view" id="is_deb_form_view">
             <field name="name">is_deb_form_view</field>
             <field name="model">is.deb</field>
@@ -9,35 +11,42 @@
                 <form string="Form">
                     <header>
                         <button 
-                            name="calcul_action"
-                            string="Calcul des données"
+                            name="transfert_action"
+                            string="Transfert des données"
                             type="object"
-                            confirm="Cela va écraser vos modifications manuelles ?"
+                            attrs="{'invisible': ['|',('state', '!=', 'creation'),('soc', '==', 'odoo0')]}"
+                            confirm="Cela va écraser les modifications des lignes ?"
                         />
+                        <button 
+                            name="synthese_action"
+                            string="Tableau de synthèse"
+                            type="object"
+                            attrs="{'invisible': ['|',('state', '==', 'creation'),('soc', '==', 'odoo0')]}"
+                        />
+                        <button 
+                            name="synthese_multi_sites_action"
+                            string="Synthèse multi-sites"
+                            type="object"
+                            attrs="{'invisible': [('soc', '!=', 'odoo0')]}"
+                        />
+                        <button 
+                            name="lignes_deb_action"
+                            string="Lignes DEB"
+                            type="object"
+                            attrs="{'invisible': ['|',('state', '!=', 'modification'),('soc', '==', 'odoo0')]}"
+                        />
+                        <field name="state" widget="statusbar" clickable="True"/>
                     </header>
-                    <sheet class="oe_form_sheet_width_wider">
+                    <sheet>
                         <group>
-                            <field name="name"/>
-                            <field name="date_debut"/>
-                            <field name="date_fin"/>
-                        </group>
-                        <group>
-                            <field name="exportation_line_ids" nolabel="1" >
-                                <tree editable="bottom">
-                                    <field name="invoice_id" widget="many2one_clickable"/>
-                                    <field name="type_facture" />
-                                    <field name="partner_id" widget="many2one_clickable"/>
-                                    <field name="code_regime" />
-                                    <field name="nomenclature_douaniere" />
-                                    <field name="masse_nette"      sum="Total"/>
-                                    <field name="pays_destination" />
-                                    <field name="valeur_fiscale"   sum="Total"/>
-                                    <field name="nature_transaction" />
-                                    <field name="mode_transport" />
-                                    <field name="departement_expedition" />
-                                    <field name="num_tva" />
-                                </tree>
-                            </field>
+                            <group>
+                                <field name="name"/>
+                                <field name="date_debut"/>
+                                <field name="date_fin"/>
+                            </group>
+                            <group>
+                                <field name="soc"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
@@ -72,5 +81,148 @@
             <field name="context">{}
             </field>
         </record>
+
+
+        <!-- is.deb.line -->
+        <record model="ir.ui.view" id="is_deb_line_form_view">
+            <field name="name">is_deb_line_form_view</field>
+            <field name="model">is.deb.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <sheet>
+                        <group>
+                            <field name="deb_id"/>
+                            <field name="type_deb"/>
+                            <field name="invoice_id"/>
+                            <field name="num_facture"/>
+                            <field name="date_facture"/>
+                            <field name="type_facture" />
+                            <field name="partner_id"/>
+                            <field name="code_regime" />
+                            <field name="nomenclature_douaniere" />
+                            <field name="masse_nette"/>
+                            <field name="pays_origine" />
+                            <field name="pays_destination" />
+                            <field name="valeur_fiscale"/>
+                            <field name="nature_transaction"/>
+                            <field name="mode_transport" />
+                            <field name="departement_expedition"/>
+                            <field name="num_tva"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_deb_line_tree_view">
+            <field name="name">is_deb_line_tree_view</field>
+            <field name="model">is.deb.line</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" colors="red:valeur_fiscale&lt;0)">
+                    <field name="deb_id" invisible="1"/>
+                    <field name="type_deb"/>
+                    <field name="invoice_id" widget="many2one_clickable" readonly="1"/>
+                    <field name="num_facture"/>
+                    <field name="date_facture"/>
+                    <field name="type_facture"  readonly="1"/>
+                    <field name="partner_id" widget="many2one_clickable"  readonly="1"/>
+                    <field name="code_regime"  readonly="1"/>
+                    <field name="nomenclature_douaniere" />
+                    <field name="masse_nette"      sum="Total"/>
+                    <field name="pays_origine" />
+                    <field name="pays_destination" />
+                    <field name="valeur_fiscale"   sum="Total"/>
+                    <field name="nature_transaction"  readonly="1"/>
+                    <field name="mode_transport"  readonly="1"/>
+                    <field name="departement_expedition" />
+                    <field name="num_tva" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_deb_line_search_view" >
+            <field name="name">is_deb_line_search_view</field>
+            <field name="model">is.deb.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="type_deb"/>
+                    <field name="invoice_id"/>
+                    <field name="type_facture" />
+                    <field name="partner_id"/>
+                    <field name="nomenclature_douaniere" />
+                    <field name="pays_destination" />
+                    <field name="nature_transaction"/>
+                    <field name="num_tva"/>
+                </search>
+            </field>
+        </record>
+
+
+
+        <!-- is.deb.synthese -->
+        <record model="ir.ui.view" id="is_deb_synthese_form_view">
+            <field name="name">is_deb_synthese_form_view</field>
+            <field name="model">is.deb.synthese</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <sheet>
+                        <group>
+                            <field name="deb_id"/>
+                            <field name="type_deb"/>
+                            <field name="num_facture"/>
+                            <field name="date_facture"/>
+                            <field name="code_regime" />
+                            <field name="nomenclature_douaniere" />
+                            <field name="masse_nette"/>
+                            <field name="pays_destination" />
+                            <field name="valeur_fiscale"/>
+                            <field name="nature_transaction"/>
+                            <field name="mode_transport" />
+                            <field name="departement_expedition"/>
+                            <field name="num_tva"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_deb_synthese_tree_view">
+            <field name="name">is_deb_synthese_tree_view</field>
+            <field name="model">is.deb.synthese</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree editable="top" colors="red:valeur_fiscale&lt;0)">
+                    <field name="deb_id" invisible="1"/>
+                    <field name="type_deb"/>
+                    <field name="num_facture"/>
+                    <field name="date_facture"/>
+                    <field name="code_regime"  readonly="1"/>
+                    <field name="nomenclature_douaniere" />
+                    <field name="masse_nette"      sum="Total"/>
+                    <field name="pays_destination" />
+                    <field name="valeur_fiscale"   sum="Total"/>
+                    <field name="nature_transaction"  readonly="1"/>
+                    <field name="mode_transport"  readonly="1"/>
+                    <field name="departement_expedition" />
+                    <field name="num_tva" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_deb_synthese_search_view" >
+            <field name="name">is_deb_synthese_search_view</field>
+            <field name="model">is.deb.synthese</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="type_deb"/>
+                    <field name="num_facture"/>
+                    <field name="nomenclature_douaniere" />
+                    <field name="pays_destination" />
+                    <field name="nature_transaction"/>
+                    <field name="num_tva"/>
+                </search>
+            </field>
+        </record>
+
+
     </data>
 </openerp>
