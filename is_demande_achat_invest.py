@@ -303,7 +303,7 @@ class is_demande_achat_invest_line(models.Model):
     quantite               = fields.Float("Quantité", digits=(14,4), required=True)
     prix                   = fields.Float("Prix"    , digits=(14,4))
     montant                = fields.Float("Montant", compute='_compute', readonly=True, store=True)
-    num_chantier           = fields.Char("N° du chantier sur 5 chiffres", help="N° du chantier (M0000/xxxxx)")
+    num_chantier           = fields.Char("N° du chantier sur 5 chiffres", help="Saisir 5 chiffres uniquement")
 
     @api.multi
     def product_id_on_change(self,parent,product_id,quantite):
