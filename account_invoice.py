@@ -86,6 +86,7 @@ class account_invoice(models.Model):
         ('mail_client', 'Envoi par mail (1 mail par client)'),
     ], "Mode d'envoi de la facture")
     is_date_envoi_mail = fields.Datetime("Mail envoyé le", readonly=False)
+    is_masse_nette     = fields.Float("Masse nette (Kg)")
 
     def _compute(self):
         for obj in self:
@@ -306,8 +307,40 @@ class account_invoice(models.Model):
         res['is_num_cde_client']=invoice.is_num_cde_client
         res['is_num_bl_manuel']=invoice.is_num_bl_manuel
         res['supplier_invoice_number']=invoice.supplier_invoice_number
-
         return res
+
+
+    @api.multi
+    def repartir_frais_de_port(self):
+        """Répartir les frais de port sur les lignes"""
+        for obj in self:
+            frais_de_port=0.0
+            nb_lignes=0
+            total1=0.0
+            for line in obj.invoice_line:
+                montant=line.quantity*line.price_unit
+                total1=total1+montant
+                if line.product_id.is_code=='608005VENT':
+                    frais_de_port=frais_de_port+montant
+                    line.price_unit=0.0
+                else:
+                    nb_lignes=nb_lignes+1
+            if nb_lignes>0 and frais_de_port>0:
+                repartition=frais_de_port/nb_lignes
+                total2=0.0
+                for line in obj.invoice_line:
+                    if line.product_id.is_code!='608005VENT' and line.quantity!=0:
+                        montant=line.quantity*line.price_unit
+                        repartition_unitaire=round(repartition/line.quantity,4)
+                        new_price=line.price_unit+repartition_unitaire
+                        line.price_unit=new_price
+                        total2=total2+round(line.quantity*new_price,2)
+                if total1!=total2:
+                    for line in obj.invoice_line:
+                        if line.product_id.is_code=='608005VENT':
+                            line.quantity=1
+                            line.price_unit=(total1-total2)
+                            break
 
 
 class account_invoice_line(models.Model):

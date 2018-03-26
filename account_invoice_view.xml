@@ -168,6 +168,9 @@
                 <xpath expr="//field[@name='move_id']" position="after" >
                     <field name="internal_number"/> 
                 </xpath>
+
+
+
             </field>
         </record>
 
@@ -310,6 +313,7 @@
                     <!--<field name="is_origine_id" domain="[('state','=', 'open'),('type','=', 'in_invoice')]" />-->
                     <field name="is_folio_id"/> 
                     <field name="is_bon_a_payer"/> 
+                    <field name="is_masse_nette"/> 
                 </xpath>
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>

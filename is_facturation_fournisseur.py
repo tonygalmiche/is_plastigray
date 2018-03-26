@@ -28,7 +28,7 @@ class is_facturation_fournisseur(models.Model):
     justification_id    = fields.Many2one('is.facturation.fournisseur.justification', 'Justification')
     bon_a_payer         = fields.Boolean("Bon à payer", compute='_compute', readonly=True, store=False)
     forcer_bon_a_payer  = fields.Selection([('oui', u'Bon à payer = Oui'),('non', u'Bon à payer = Non')], "Forcer bon à payer")
-
+    is_masse_nette      = fields.Float("Masse nette (Kg)")
 
 
 
@@ -202,6 +202,7 @@ class is_facturation_fournisseur(models.Model):
                 'date_invoice': obj.date_facture,
                 'supplier_invoice_number': obj.num_facture,
                 'is_bon_a_payer': bon_a_payer,
+                'is_masse_nette': obj.is_masse_nette,
             })
             lines = []
             invoice_line_tax_id=[]
@@ -265,6 +266,7 @@ class is_facturation_fournisseur(models.Model):
             })
             res=self.env['account.invoice'].create(vals)
             res.button_reset_taxes()
+            res.repartir_frais_de_port()
 
             dummy, view_id = self.env['ir.model.data'].get_object_reference('account', 'invoice_supplier_form')
             obj.state='termine'

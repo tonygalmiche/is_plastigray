@@ -95,12 +95,9 @@ class is_deb(models.Model):
                 if type_deb=='introduction':
                     masse_nette=0
                 country=self.env['res.country'].browse(row[7])
-
                 pays_origine=''
                 if type_deb=='introduction':
                     pays_origine=country.name
-
-
                 partner=self.env['res.partner'].browse(row[5])
                 pays_destination=partner.country_id.name
                 vals={
@@ -120,6 +117,26 @@ class is_deb(models.Model):
                     'num_tva'               : partner.vat, 
                 }
                 line=self.env['is.deb.line'].create(vals)
+
+            #** Mise à jour de la masse nette sur les lignes *******************
+            for line in obj.line_ids:
+                if line.type_deb=='introduction':
+                    SQL="""
+                        select count(*) 
+                        from is_deb_line
+                        where 
+                            deb_id="""+str(line.deb_id.id)+""" and
+                            invoice_id="""+str(line.invoice_id.id)+""" and
+                            type_deb='introduction'
+                    """
+                    nb=0
+                    cr.execute(SQL)
+                    result = cr.fetchall()
+                    for row in result:
+                        nb=row[0]
+                    if nb>0 and line.invoice_id.is_masse_nette>0:
+                        line.masse_nette=line.invoice_id.is_masse_nette/nb
+            #*******************************************************************
 
 
     @api.multi

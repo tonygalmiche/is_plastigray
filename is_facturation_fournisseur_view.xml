@@ -44,6 +44,7 @@
                                     on_change="cherche_receptions(name, partner_ids, date_fin)"
                                     attrs="{'readonly':[('state','=','termine')]}"
                                 />
+                                <field name="is_masse_nette"  />
                             </group>
                             <group string="Facture fournisseur">
                                 <field name="date_facture"  />
