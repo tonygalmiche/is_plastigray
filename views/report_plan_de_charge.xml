@@ -266,13 +266,16 @@
                                                 <td><t t-esc='"{:,.0f}".format(l.presse_pourcent85).replace(","," ").replace(".",",")' /> %</td>
                                             </t>
                                         </tr>
-                                        <tr>
-                                            <td><b>Total : </b></td>
-                                            <td><b><t t-esc='"{:,.0f}".format(presse_heure).replace(","," ").replace(".",",")'          /></b></td>
-                                            <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture).replace(".",",")'      /> %</b></td>
-                                            <td><b><t t-esc='"{:,.0f}".format(presse_heure/0.85).replace(","," ").replace(".",",")'    /></b></td>
-                                            <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture/0.85).replace(".",",")'      /> %</b></td>
-                                        </tr>
+
+                                        <t t-if="total_ouverture!=0"> 
+                                            <tr>
+                                                <td><b>Total : </b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(presse_heure).replace(","," ").replace(".",",")'          /></b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture).replace(".",",")'      /> %</b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(presse_heure/0.85).replace(","," ").replace(".",",")'    /></b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture/0.85).replace(".",",")'      /> %</b></td>
+                                            </tr>
+                                        </t>
                                    </table><br />
 
                                     <table style="border:1px solid black; width:100%">
