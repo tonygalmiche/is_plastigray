@@ -197,7 +197,8 @@ class account_invoice(models.Model):
         #email_to   = email_cc
 
         email_from = email_cc
-        subject    = u'Facture Plastigray pour '+partner.name+u' ('+u','.join(emails_to)+u')'
+        #subject    = u'Facture Plastigray pour '+partner.name+u' ('+u','.join(emails_to)+u')'
+        subject    = u'Facture Plastigray pour '+partner.name
         email_vals = {}
         body_html=modele_mail.replace('[from]', user.name)
         email_vals.update({
