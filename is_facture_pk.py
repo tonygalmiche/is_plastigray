@@ -128,8 +128,9 @@ class is_facture_pk(models.Model):
     @api.multi
     def write(self,vals):
         res = super(is_facture_pk, self).write(vals)
-        for obj in self:
-            self.check_bl(obj)
+        if 'num_bl' in vals:
+            for obj in self:
+                self.check_bl(obj)
         return res
 
 
