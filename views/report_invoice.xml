@@ -231,7 +231,15 @@
                     </tr>
                 </thead>
                 <tbody class="invoice_tbody">
+                    <t t-set="pds_brut_total" t-value="0"/>
+                    <t t-set="pds_net_total" t-value="0"/>
                     <tr t-foreach="o.invoice_line" t-as="l">
+                        <t t-set="qt1" t-value="l.is_move_id.product_uom_qty"/>
+                        <t t-set="pds_brut" t-value="qt1*l.is_move_id.product_id.weight"/>
+                        <t t-set="pds_brut_total" t-value="pds_brut_total + pds_brut"/>
+                        <t t-set="pds_net" t-value="qt1*l.is_move_id.product_id.weight_net"/>
+                        <t t-set="pds_net_total" t-value="pds_net_total + pds_net"/>
+
                         <td>
                             <t t-if="l.is_move_id.is_sale_line_id.is_client_order_ref">
                                 <span t-field="l.is_move_id.is_sale_line_id.is_client_order_ref"/><br />
@@ -254,6 +262,7 @@
                                 <br />
                                 <i>N° du chantier  : <span t-field="l.is_document"/></i>
                             </t>
+                            <p>Poids : <span t-esc="pds_brut"/> KG (brut) - <span t-esc="pds_net"/> KG (net)</p>
                         </td>
                         <td><span t-field="l.product_id.is_ref_client"/></td>
                         <td class="text-right"><span style="white-space: nowrap;" t-field="l.price_unit"/></td>
@@ -283,8 +292,26 @@
             </t>
             -->
             <div class="row">
-                <div class="col-xs-4 pull-right">
+                <div class="col-xs-4">
                     <table class="table table-condensed">
+                        <tr>
+                            <td><strong>Poids brut total : </strong></td>
+                            <td class="text-right">
+                                <span t-esc="pds_brut_total"/> KG
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Poids net total : </strong></td>
+                            <td class="text-right">
+                                <span t-esc="pds_net_total"/> KG
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-xs-4">
+                </div>
+                <div class="col-xs-4">
+                    <table class="table table-condensed" style="width:100%">
                         <tr class="border-black">
                             <td><strong>Total H.T.</strong></td>
                             <td class="text-right">
