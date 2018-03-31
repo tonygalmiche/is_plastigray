@@ -239,8 +239,12 @@
                                 <tr t-foreach="p.line_ids" t-as="l">
                                     <td class="text-center"><span t-field="l.date"/></td>
                                     <td class="text-center"><span t-field="l.type_cde"/></td>
+                                    <!--
                                     <td class="text-right"><span t-field="l.quantite"/></td>
                                     <td class="text-right"><span t-field="l.quantite_rcp"/></td>
+                                    -->
+                                    <td class="text-right"><span t-esc='"{:,.4f}".format(l.quantite).replace(".",",")'/></td>
+                                    <td class="text-right"><span t-esc='"{:,.4f}".format(l.quantite_rcp).replace(".",",")'/></td>
                                     <td class="text-right"><span t-field="l.uom_id"/></td>
                                     <t t-if="o.type_commande!='ouverte'">
                                         <td class="text-center"><b><span t-field="l.purchase_order_id.name"/></b></td>
