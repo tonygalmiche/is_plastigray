@@ -12,6 +12,10 @@ import MySQLdb
 # - Faire une doc : Saisie en US ou UC, sasie unqiuement au clavier et tri des lignes
 
 
+def _date_creation():
+    #print datetime.datetime.now()
+    return datetime.date.today() # Date du jour
+
 
 class is_inventaire(models.Model):
     _name='is.inventaire'
@@ -26,11 +30,11 @@ class is_inventaire(models.Model):
     ecart_ids     = fields.One2many('is.inventaire.ecart'    , 'inventaire_id', u"Ecarts")
     state         = fields.Selection([('creation', u'Création'),('cloture', u'Cloturé'),('traite', u'Traité')], u"État", readonly=True, select=True)
 
-    def _date_creation():
-        return datetime.date.today() # Date du jour
+    #def _date_creation():
+    #    return datetime.date.today() # Date du jour
 
     _defaults = {
-        'date_creation': _date_creation(),
+        'date_creation': lambda *a: _date_creation(),
         'createur_id': lambda obj, cr, uid, ctx=None: uid,
         'state': 'creation',
     }
@@ -442,12 +446,12 @@ class is_inventaire_feuille(models.Model):
 
     sequence=1
 
-    def _date_creation():
-        return datetime.date.today() # Date du jour
+    #def _date_creation():
+    #    return datetime.date.today() # Date du jour
 
     _defaults = {
         'createur_id': lambda obj, cr, uid, ctx=None: uid,
-        'date_creation': _date_creation(),
+        'date_creation': lambda *a: _date_creation(),
         'state': 'creation',
     }
 
