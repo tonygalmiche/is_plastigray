@@ -72,7 +72,9 @@ class is_deb(models.Model):
                 where 
                     ai.date_invoice>='"""+str(obj.date_debut)+"""' and
                     ai.date_invoice<='"""+str(obj.date_fin)+"""' and
-                    get_property_account_position(COALESCE(sp.partner_id, ai.partner_id))=1
+                    get_property_account_position(COALESCE(sp.partner_id, ai.partner_id))=1 and
+                    pt.is_code not like '608005%' and
+                    ai.state not in ('draft','cancel')
                 group by
                     ai.id,
                     ai.internal_number,
@@ -118,9 +120,11 @@ class is_deb(models.Model):
                 }
                 line=self.env['is.deb.line'].create(vals)
 
-            #** Mise à jour de la masse nette sur les lignes *******************
+
             for line in obj.line_ids:
                 if line.type_deb=='introduction':
+
+                    #** Mise à jour de la masse nette sur les lignes ***********
                     SQL="""
                         select count(*) 
                         from is_deb_line
@@ -136,7 +140,28 @@ class is_deb(models.Model):
                         nb=row[0]
                     if nb>0 and line.invoice_id.is_masse_nette>0:
                         line.masse_nette=line.invoice_id.is_masse_nette/nb
-            #*******************************************************************
+                    #***********************************************************
+
+                    #** Mise à jour du port sur les lignes *********************
+                    if nb>0:
+                        SQL="""
+                            select
+                                COALESCE(sum(fsens(ai.type)*ail.price_unit*ail.quantity),0)
+                            from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id 
+                                                    inner join product_product       pp on ail.product_id=pp.id
+                                                    inner join product_template      pt on pp.product_tmpl_id=pt.id
+                            where 
+                                ai.id="""+str(line.invoice_id.id)+""" and
+                                pt.is_code like '608005%' 
+                        """
+                        frais_de_port=0
+                        cr.execute(SQL)
+                        result = cr.fetchall()
+                        for row in result:
+                            frais_de_port=row[0]
+                        if nb>0 and frais_de_port!=0:
+                            line.valeur_fiscale=line.valeur_fiscale+frais_de_port/nb
+                    #***********************************************************
 
 
     @api.multi

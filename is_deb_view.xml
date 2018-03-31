@@ -225,6 +225,7 @@
 
 
         <!-- account.invoice : Répartir les frais de port sur les lignes -->
+        <!--
         <record id="repartir_frais_de_port_action_server" model="ir.actions.server">
              <field name="name">Répartir les frais de port sur les lignes</field>
             <field name="model_id" ref="model_account_invoice"/>
@@ -236,6 +237,7 @@
             <field name="name">Répartir les frais de port sur les lignes</field>
             <field eval="'ir.actions.server,%d'%repartir_frais_de_port_action_server" name="value"/>
         </record>
+        -->
 
     </data>
 </openerp>

@@ -266,7 +266,7 @@ class is_facturation_fournisseur(models.Model):
             })
             res=self.env['account.invoice'].create(vals)
             res.button_reset_taxes()
-            res.repartir_frais_de_port()
+            #res.repartir_frais_de_port()
 
             dummy, view_id = self.env['ir.model.data'].get_object_reference('account', 'invoice_supplier_form')
             obj.state='termine'
