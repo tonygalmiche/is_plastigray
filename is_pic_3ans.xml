@@ -72,8 +72,9 @@
                                 Remarque : La recherche de la quantité livrée est faite indépendamment de l'indice de l'article
                             </div>
                         </group>
-                        <group>
+                        <group col="4" colspan="4">
                             <field name="prevision_annuelle"/>
+                            <field name="lot_livraison"/>
                         </group>
                         <group col="4" colspan="4">
                             <field name="repartition_01"/>

@@ -5,6 +5,7 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import math
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -62,6 +63,7 @@ class is_pic_3ans_saisie(models.Model):
 
 
     prevision_annuelle = fields.Integer('Prévision annuelle')
+    lot_livraison      = fields.Integer('Lot de livraison du client par défaut', compute='_compute_proposition', readonly=True, store=False)
 
     repartition_01     = fields.Integer('Répartition 01')
     repartition_02     = fields.Integer('Répartition 02')
@@ -168,20 +170,31 @@ class is_pic_3ans_saisie(models.Model):
     @api.depends('repartition_01','repartition_02','repartition_03','repartition_04','repartition_05','repartition_06','repartition_07','repartition_08','repartition_09','repartition_10','repartition_11','repartition_12','prevision_annuelle')
     def _compute_proposition(self):
         for obj in self:
+            client_id=obj.product_id.is_client_id
+            product=obj.product_id.product_tmpl_id
+            lot_livraison=product.get_lot_livraison(product,client_id)
+            obj.lot_livraison=lot_livraison
+
             total=0
             for i in range(1,13):
                 champ="repartition_"+("00"+str(i))[-2:]
                 qt=getattr(obj, champ)
                 total=total+qt
             obj.repartition_total=total
-
             proposition_total=0
+            prevision_total=0
             for i in range(1,13):
                 champ="repartition_"+("00"+str(i))[-2:]
                 qt=getattr(obj, champ)
                 proposition=0
                 if total>0:
                     proposition=qt*obj.prevision_annuelle/total
+                prevision_total=prevision_total+proposition
+                proposition=prevision_total-proposition_total
+                if lot_livraison!=0:
+                    proposition=lot_livraison*math.ceil(proposition/lot_livraison)
+                if proposition_total>(prevision_total+lot_livraison):
+                    proposition=0
                 proposition_total=proposition_total+proposition
                 champ="proposition_"+("00"+str(i))[-2:]
                 setattr(obj, champ, proposition)
