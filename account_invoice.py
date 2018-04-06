@@ -81,9 +81,10 @@ class account_invoice(models.Model):
         ], u"Type de facture", default='standard', select=True)
     is_origine_id     = fields.Many2one('account.invoice', "Facture d'origine")
     is_mode_envoi_facture = fields.Selection([
-        ('courrier'   , 'Envoi par courrier'),
-        ('mail'       , 'Envoi par mail (1 mail par facture)'),
-        ('mail_client', 'Envoi par mail (1 mail par client)'),
+        ('courrier'      , 'Envoi par courrier'),
+        ('mail'          , 'Envoi par mail (1 mail par facture)'),
+        ('mail_client'   , 'Envoi par mail (1 mail par client)'),
+        ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
     ], "Mode d'envoi de la facture")
     is_date_envoi_mail = fields.Datetime("Mail envoyé le", readonly=False)
     is_masse_nette     = fields.Float("Masse nette (Kg)")
@@ -153,6 +154,21 @@ class account_invoice(models.Model):
             #*******************************************************************
 
 
+            # ** Un mail+BL par client******************************************
+            for row in result:
+                if row[0]=='mail_client_bl':
+                    partner_id = row[1]
+                    id         = row[3]
+                    if not partner_id in partners:
+                        partners[partner_id]=[]
+                    partners[partner_id].append(id)
+            for partner_id in partners:
+                ids=partners[partner_id]
+                self._envoi_par_mail(partner_id, ids)
+            #*******************************************************************
+
+
+
     @api.multi
     def _envoi_par_mail(self, partner_id, ids):
         cr = self._cr
@@ -170,14 +186,51 @@ class account_invoice(models.Model):
                 raise Warning(u"Facture "+invoice.number+" non générée (non imprimée) !")
             for attachment in attachments:
                 attachment_ids.append(attachment.id)
+        partner = self.env['res.partner'].browse(partner_id)
+        if partner.is_mode_envoi_facture=='mail_client_bl':
+            attachment_obj = self.env['ir.attachment']
+            for id in ids:
+                invoice = self.env['account.invoice'].browse(id)
+                for line in invoice.invoice_line:
+                    picking=line.is_move_id.picking_id
+
+                    # ** Recherche si une pièce jointe est déja associèe au bl *
+                    model='stock.picking'
+                    name='BL-'+picking.name+u'.pdf'
+                    attachments = attachment_obj.search([('res_model','=',model),('res_id','=',picking.id),('name','=',name)])
+                    # **********************************************************
+
+                    # ** Creation ou modification de la pièce jointe *******************
+                    pdf = self.env['report'].get_pdf(picking, 'stock.report_picking')
+                    vals = {
+                        'name':        name,
+                        'datas_fname': name,
+                        'type':        'binary',
+                        'res_model':   model,
+                        'res_id':      picking.id,
+                        'datas':       pdf.encode('base64'),
+                    }
+                    if attachments:
+                        for attachment in attachments:
+                            attachment.write(vals)
+                            attachment_id=attachment.id
+                    else:
+                        attachment = attachment_obj.create(vals)
+                        attachment_id=attachment.id
+                    # ******************************************************************
+
+                    if attachment_id not in attachment_ids:
+                        attachment_ids.append(attachment_id)
 
 
         #** Recherche du contact Facturation *******************************
-        partner = self.env['res.partner'].browse(partner_id)
         SQL="""
-            select rp.name, rp.email
+            select rp.name, rp.email, rp.active
             from res_partner rp inner join is_type_contact itc on rp.is_type_contact=itc.id
-            where rp.parent_id="""+str(partner_id)+""" and itc.name='Facturation'
+            where 
+                rp.parent_id="""+str(partner_id)+""" and 
+                itc.name='Facturation' and
+                rp.active='t'
         """
         cr.execute(SQL)
         result = cr.fetchall()
@@ -195,10 +248,9 @@ class account_invoice(models.Model):
         email_cc   = user.name+u' <'+user.email+u'>'
         email_to   = u','.join(emails_to)
         #email_to   = email_cc
-
         email_from = email_cc
-        #subject    = u'Facture Plastigray pour '+partner.name+u' ('+u','.join(emails_to)+u')'
         subject    = u'Facture Plastigray pour '+partner.name
+        #subject    = u'Facture Plastigray pour '+partner.name+u' ('+u','.join(emails_to)+u')'
         email_vals = {}
         body_html=modele_mail.replace('[from]', user.name)
         email_vals.update({

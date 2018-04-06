@@ -207,9 +207,10 @@ class res_partner(models.Model):
         ('ref_article', '1 référence client = 1 BL'),
     ], 'Caractéristique des BL')
     is_mode_envoi_facture   = fields.Selection([
-        ('courrier'   , 'Envoi par courrier'),
-        ('mail'       , 'Envoi par mail (1 mail par facture)'),
-        ('mail_client', 'Envoi par mail (1 mail par client)'),
+        ('courrier'      , 'Envoi par courrier'),
+        ('mail'          , 'Envoi par mail (1 mail par facture)'),
+        ('mail_client'   , 'Envoi par mail (1 mail par client)'),
+        ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
     ], "Mode d'envoi des factures")
     is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", readonly=True)
 
