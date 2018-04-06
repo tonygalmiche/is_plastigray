@@ -187,6 +187,7 @@ access_is_create_postgres_function,access_is_create_postgres_function,model_is_c
 access_is_deb,access_is_deb,model_is_deb,base.group_user,1,1,1,1
 access_is_deb_line,access_is_deb_line,model_is_deb_line,base.group_user,1,1,1,1
 access_is_deb_synthese,access_is_deb_synthese,model_is_deb_synthese,base.group_user,1,1,1,1
+access_is_cde_ouverte_fournisseur_message,access_is_cde_ouverte_fournisseur_message,model_is_cde_ouverte_fournisseur_message,base.group_user,1,1,1,1
 
 
 

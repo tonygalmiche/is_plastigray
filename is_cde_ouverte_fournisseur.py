@@ -153,7 +153,7 @@ class is_cde_ouverte_fournisseur(models.Model):
     tarif_ids            = fields.One2many('is.cde.ouverte.fournisseur.tarif'  , 'order_id', u"Tarifs")
     demandeur_id         = fields.Many2one('res.users', 'Demandeur', readonly=True)
     historique_ids       = fields.One2many('is.cde.ouverte.fournisseur.histo'  , 'order_id', u"Historique")
-
+    message              = fields.Text("Message", readonly=True)
 
     @api.model
     def create(self, vals):
@@ -556,6 +556,18 @@ class is_cde_ouverte_fournisseur(models.Model):
             self.set_histo(obj.id, u'Intégration des commandes et SA')
             for product in obj.product_ids:
                 product.imprimer=False
+
+
+            #** Recherche messages *********************************************
+
+            where=['|',('name','=',obj.partner_id.id),('name','=',False)]
+            messages=[]
+            for row in self.env['is.cde.ouverte.fournisseur.message'].search(where):
+                messages.append(row.message)
+            obj.message='\n'.join(messages)
+            #*******************************************************************
+
+
             #** Recherche du contact logistique ********************************
             SQL="""
                 select rp.id, rp.is_type_contact, itc.name
@@ -818,5 +830,14 @@ class is_cde_ouverte_fournisseur_histo(models.Model):
         'name'   : lambda *a: fields.datetime.now(),
         'user_id': lambda obj, cr, uid, context: uid,
     }
+
+
+class is_cde_ouverte_fournisseur_message(models.Model):
+    _name='is.cde.ouverte.fournisseur.message'
+    _order='name'
+    _sql_constraints = [('name_uniq','UNIQUE(name)', 'Un message pour ce fournisseur existe déjà')] 
+
+    name    = fields.Many2one('res.partner', 'Fournisseur')
+    message = fields.Text('Message')
 
 
