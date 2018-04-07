@@ -72,9 +72,9 @@
                             Siret B 377 846 381 00020 - Code NAF 2229 A <br />
                             Registre du Commerce GRAY <br />
                             N°Identification T.V.A. FR 65 377 846 381 <br />
-                            <span t-if="o.partner_id.lang == 'fr_FR'">Fournisseur N°</span>
-                            <span t-if="o.partner_id.lang != 'fr_FR'">Supplier N°</span>
-                            <span t-field="o.partner_id.is_cofor"/>
+                            <span t-if="o.partner_invoice_id.lang == 'fr_FR'">Fournisseur N°</span>
+                            <span t-if="o.partner_invoice_id.lang != 'fr_FR'">Supplier N°</span>
+                            <span t-field="o.partner_invoice_id.is_cofor"/>
                         </div>
                     </div>
                     <div class="col-xs-1" />
@@ -85,14 +85,14 @@
                              du <span t-field="o.date_order"  t-field-options='{"format": "dd/MM/yyyy"}' /><br />
                         </div>
                         <b>
-                            <div t-if="o.partner_id.lang == 'fr_FR'">Nom du client et adresse de facturation : </div>
-                            <div t-if="o.partner_id.lang != 'fr_FR'">Name of client and invoicing adress : </div>
+                            <div t-if="o.partner_invoice_id.lang == 'fr_FR'">Nom du client et adresse de facturation : </div>
+                            <div t-if="o.partner_invoice_id.lang != 'fr_FR'">Name of client and invoicing adress : </div>
                         </b>
                         <div class="destinataire">
-                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)
-                            <div t-field="o.partner_id"
+                            <b><span t-field="o.partner_invoice_id.name"/></b> (<span t-field="o.partner_invoice_id.is_code"/>/<span t-field="o.partner_invoice_id.is_adr_code"/>)
+                            <div t-field="o.partner_invoice_id"
                                  t-field-options='{"widget": "contact", "fields": ["address", "phone", "fax"], "no_marker": true}'/>
-                            <div t-if="o.partner_id.vat">VAT : <span t-field="o.partner_id.vat"/></div>
+                            <div t-if="o.partner_invoice_id.vat">VAT : <span t-field="o.partner_invoice_id.vat"/></div>
                         </div>
                         <br />
                         <p><b>Commande client : </b><span t-field="o.client_order_ref"/></p>
@@ -214,14 +214,14 @@
 
                     <p t-if="o.fiscal_position.name=='Franchise de Taxe'">
                         <strong>N° d'autorisation de franchise de taxe : </strong>
-                        <span t-field="o.partner_id.is_num_autorisation_tva"/>
+                        <span t-field="o.partner_invoice_id.is_num_autorisation_tva"/>
                     </p>
 
-                    <p t-if="o.partner_id.is_type_reglement">
+                    <p t-if="o.partner_invoice_id.is_type_reglement">
                         <strong>Type de règlement : </strong>
-                        <span t-field="o.partner_id.is_type_reglement.name"/>
+                        <span t-field="o.partner_invoice_id.is_type_reglement.name"/>
                     </p>
-                    <table class="table table-condensed" style="width:50%" t-if="o.partner_id.is_rib_id">
+                    <table class="table table-condensed" style="width:50%" t-if="o.partner_invoice_id.is_rib_id">
                         <thead>
                             <tr>
                                 <th>IBAN</th>
@@ -230,8 +230,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span t-field="o.partner_id.is_rib_id.acc_number"/></td>
-                                <td><span t-field="o.partner_id.is_rib_id.bank_name"/></td>
+                                <td><span t-field="o.partner_invoice_id.is_rib_id.acc_number"/></td>
+                                <td><span t-field="o.partner_invoice_id.is_rib_id.bank_name"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -243,7 +243,7 @@
         <template id="report_proforma">
             <t t-call="is_plastigray.report_proforma_html_container">
                 <t t-foreach="doc_ids" t-as="doc_id">
-                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'is_plastigray.report_proforma_document')"/>
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_invoice_id.lang', 'is_plastigray.report_proforma_document')"/>
                 </t>
             </t>
         </template>
