@@ -139,18 +139,6 @@ class account_invoice(models.Model):
                     if not partner_id in partners:
                         partners[partner_id]=[]
                     partners[partner_id].append(id)
-            for partner_id in partners:
-                ids=partners[partner_id]
-                self._envoi_par_mail(partner_id, ids)
-            #*******************************************************************
-
-            # ** Un mail par facture *******************************************
-            for row in result:
-                if row[0]=='mail':
-                    partner_id = row[1]
-                    id         = row[3]
-
-                    self._envoi_par_mail(partner_id, [id])
             #*******************************************************************
 
 
@@ -162,11 +150,23 @@ class account_invoice(models.Model):
                     if not partner_id in partners:
                         partners[partner_id]=[]
                     partners[partner_id].append(id)
+            #*******************************************************************
+
+
+            #** Envoi des mails par partner ************************************
             for partner_id in partners:
                 ids=partners[partner_id]
                 self._envoi_par_mail(partner_id, ids)
             #*******************************************************************
 
+
+            # ** Un mail par facture *******************************************
+            for row in result:
+                if row[0]=='mail':
+                    partner_id = row[1]
+                    id         = row[3]
+                    self._envoi_par_mail(partner_id, [id])
+            #*******************************************************************
 
 
     @api.multi
