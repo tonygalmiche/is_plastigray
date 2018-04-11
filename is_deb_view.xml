@@ -61,6 +61,7 @@
                     <field name="name"/>
                     <field name="date_debut"/>
                     <field name="date_fin"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -70,6 +71,7 @@
             <field name="arch" type="xml">
                 <search>
                     <field name="name"/>
+                    <field name="state"/>
                 </search>
             </field>
         </record>
@@ -130,13 +132,13 @@
                     <field name="code_regime"  readonly="1"/>
                     <field name="nomenclature_douaniere" />
                     <field name="masse_nette"      sum="Total"/>
+                    <field name="valeur_fiscale"   sum="Total"/>
                     <field name="pays_origine" />
                     <field name="pays_destination" />
-                    <field name="valeur_fiscale"   sum="Total"/>
-                    <field name="nature_transaction"  readonly="1"/>
-                    <field name="mode_transport"  readonly="1"/>
-                    <field name="departement_expedition" />
                     <field name="num_tva" />
+                    <field name="nature_transaction"  readonly="1"/>
+                    <field name="departement_expedition" />
+                    <field name="mode_transport"  readonly="1"/>
                 </tree>
             </field>
         </record>
@@ -199,12 +201,12 @@
                     <field name="code_regime"  readonly="1"/>
                     <field name="nomenclature_douaniere" />
                     <field name="masse_nette"      sum="Total"/>
-                    <field name="pays_destination" />
                     <field name="valeur_fiscale"   sum="Total"/>
-                    <field name="nature_transaction"  readonly="1"/>
-                    <field name="mode_transport"  readonly="1"/>
-                    <field name="departement_expedition" />
+                    <field name="pays_destination" />
                     <field name="num_tva" />
+                    <field name="nature_transaction"  readonly="1"/>
+                    <field name="departement_expedition" />
+                    <field name="mode_transport"  readonly="1"/>
                 </tree>
             </field>
         </record>

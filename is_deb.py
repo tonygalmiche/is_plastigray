@@ -52,6 +52,8 @@ class is_deb(models.Model):
             user    = self.pool['res.users'].browse(cr, uid, [uid])[0]
             company     = user.company_id.partner_id
             departement = company.zip[:2]
+            if obj.soc=='3':
+                departement='70'
             SQL="""
                 select 
                     ai.id,
@@ -60,7 +62,7 @@ class is_deb(models.Model):
                     ai.type,
                     ai.is_type_facture,
                     COALESCE(sp.partner_id, ai.partner_id),
-                    pt.is_nomenclature_douaniere,
+                    left(pt.is_nomenclature_douaniere,8),
                     pt.is_origine_produit_id,
                     sum(fsens(ai.type)*pt.weight_net*ail.quantity),
                     sum(fsens(ai.type)*ail.price_unit*ail.quantity)
@@ -99,9 +101,9 @@ class is_deb(models.Model):
                 country=self.env['res.country'].browse(row[7])
                 pays_origine=''
                 if type_deb=='introduction':
-                    pays_origine=country.name
+                    pays_origine=country.code
                 partner=self.env['res.partner'].browse(row[5])
-                pays_destination=partner.country_id.name
+                pays_destination=partner.country_id.code
                 vals={
                     'deb_id'                : obj.id,
                     'type_deb'              : type_deb,
