@@ -3,6 +3,7 @@ import datetime
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
+import math
 
 
 class is_facturation_fournisseur(models.Model):
@@ -53,7 +54,7 @@ class is_facturation_fournisseur(models.Model):
             ht=ttc=tva=0
             for line in obj.line_ids:
                 if line.selection:
-                    total=line.prix*line.quantite
+                    total=math.ceil(100*line.prix*line.quantite)/100
                     ht=ht+total
                     tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
@@ -304,7 +305,7 @@ class is_facturation_fournisseur_line(models.Model):
     @api.depends('quantite','prix','taxe_ids')
     def _compute(self):
         for obj in self:
-            obj.total=obj.quantite*obj.prix
+            obj.total=math.ceil(100*obj.quantite*obj.prix)/100
             taxe_taux=0
             for taxe in obj.taxe_ids:
                 taxe_taux=taxe_taux+taxe.amount
