@@ -305,7 +305,7 @@ class is_facturation_fournisseur_line(models.Model):
     @api.depends('quantite','prix','taxe_ids')
     def _compute(self):
         for obj in self:
-            obj.total=math.ceil(100*obj.quantite*obj.prix)/100
+            obj.total=math.ceil(100.0*round(obj.quantite*obj.prix,2))/100.0
             taxe_taux=0
             for taxe in obj.taxe_ids:
                 taxe_taux=taxe_taux+taxe.amount
