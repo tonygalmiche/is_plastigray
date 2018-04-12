@@ -11,6 +11,7 @@ class is_account_invoice_line(models.Model):
     _auto = False
 
     partner_id              = fields.Many2one('res.partner', 'Client/Fournisseur')
+    partner_picking_id      = fields.Many2one('res.partner', 'Client/Fournisseur Livraison')
     invoice_id              = fields.Many2one('account.invoice', 'Facture')
     date_reception          = fields.Datetime("Date réception")
     date_invoice            = fields.Date("Date facture")
@@ -69,6 +70,7 @@ class is_account_invoice_line(models.Model):
                     ail.id,
                     ail.id invoice_line_id,
                     ai.partner_id,
+                    sp.partner_id        partner_picking_id,
                     ai.id invoice_id,
                     sm.date date_reception,
                     ai.date_invoice,
