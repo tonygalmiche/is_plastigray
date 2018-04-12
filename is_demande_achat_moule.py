@@ -9,11 +9,44 @@ class is_demande_achat_moule(models.Model):
     _name='is.demande.achat.moule'
     _order='name desc'
 
+
+#    def _compute(self):
+#        uid=self._uid
+#        for obj in self:
+#            vsb=False
+#            if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
+#                vsb=True
+#            obj.vers_brouillon_vsb=vsb
+#            vsb=False
+#            if obj.state=='brouillon' and uid==obj.createur_id.id:
+#                vsb=True
+#            obj.vers_validation_rsp_vsb=vsb
+#            vsb=False
+#            if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
+#                vsb=True
+#            obj.vers_transmis_achat_vsb=vsb
+#            vsb=False
+#            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
+#                vsb=True
+#            obj.vers_solde_vsb=vsb
+#            vsb=False
+#            if obj.state=='brouillon' and uid==obj.createur_id.id:
+#                vsb=True
+#            if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
+#                vsb=True
+#            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
+#                vsb=True
+#            obj.vers_annule_vsb=vsb
+
+
     def _compute(self):
         uid=self._uid
         for obj in self:
             vsb=False
             if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
+                vsb=True
+            obj.vers_brouillon_vsb=vsb
+            if obj.state=='annule' and (uid==obj.createur_id.id or uid==obj.chef_service_id.id or uid==obj.direction_id.id or uid==obj.acheteur_id.id):
                 vsb=True
             obj.vers_brouillon_vsb=vsb
             vsb=False
@@ -22,6 +55,10 @@ class is_demande_achat_moule(models.Model):
             obj.vers_validation_rsp_vsb=vsb
             vsb=False
             if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
+                vsb=True
+            obj.vers_validation_direction_vsb=vsb
+            vsb=False
+            if obj.state=='validation_direction' and uid==obj.direction_id.id:
                 vsb=True
             obj.vers_transmis_achat_vsb=vsb
             vsb=False
@@ -40,7 +77,8 @@ class is_demande_achat_moule(models.Model):
 
     name                 = fields.Char("N°DA FG", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
-    chef_service_id      = fields.Many2one('res.users', 'Chef de service', required=True)
+    chef_service_id      = fields.Many2one('res.users', 'Chef de projet', required=True)
+    direction_id         = fields.Many2one('res.users', 'Directeur technique', readonly=True)
     date_creation        = fields.Date("Date de création", required=True)
     acheteur_id          = fields.Many2one('res.users', 'Acheteur', required=True)
     fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur', domain=[('is_company','=',True),('is_segment_achat.name','=',u'Fournisseurs de Moules')])
@@ -54,7 +92,8 @@ class is_demande_achat_moule(models.Model):
     commentaire          = fields.Text("Commentaire")
     state                = fields.Selection([
         ('brouillon'           , 'Brouillon'),
-        ('validation_rsp'      , 'Validation responsable'),
+        ('validation_rsp'      , 'Validation chef de projet'),
+        ('validation_direction', 'Validation directeur technique'),
         ('transmis_achat'      , 'Transmis achat'),
         ('solde'               , 'Soldé'),
         ('annule'              , 'Annulé'),
@@ -64,6 +103,7 @@ class is_demande_achat_moule(models.Model):
 
     vers_brouillon_vsb            = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_rsp_vsb       = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
+    vers_validation_direction_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_transmis_achat_vsb       = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_solde_vsb                = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_annule_vsb               = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
@@ -78,13 +118,14 @@ class is_demande_achat_moule(models.Model):
 
     @api.multi
     def _dirigeant_id(self):
-        user = self.env['res.users'].search([('login','=','eg')])
+        user = self.env['res.users'].search([('login','=','bph')])
         return user.id
 
 
     _defaults = {
         'date_creation'    : lambda *a: fields.datetime.now(),
         'createur_id'      : lambda obj, cr, uid, context: uid,
+        'direction_id'     : lambda self,cr,uid,context: self._dirigeant_id(cr,uid,context),
         'state'            : 'brouillon',
         'lieu_livraison_id': lambda self,cr,uid,context: self._lieu_livraison_id(cr,uid,context),
     }
@@ -116,14 +157,13 @@ class is_demande_achat_moule(models.Model):
     @api.multi
     def vers_brouillon_action(self):
         for obj in self:
-            #if obj.acheteur_id.id==self._uid or obj.chef_service_id.id==self._uid:
             obj.sudo().state="brouillon"
 
 
     @api.multi
     def vers_validation_rsp_action(self):
         for obj in self:
-            subject=u'['+obj.name+u'] Validation responsable'
+            subject=u'['+obj.name+u'] Validation chef de projet'
             email_to=obj.chef_service_id.email
             user  = self.env['res.users'].browse(self._uid)
             email_from = user.email
@@ -132,11 +172,30 @@ class is_demande_achat_moule(models.Model):
             url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.moule'
             body_html=u"""
                 <p>Bonjour,</p>
-                <p>"""+nom+""" vient de passer la demande d'achat moule <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Validation responsable'.</p>
+                <p>"""+nom+""" vient de passer la demande d'achat moule <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Validation chef de projet'.</p>
                 <p>Merci d'en prendre connaissance.</p>
             """
             self.envoi_mail(email_from,email_to,subject,body_html)
             obj.state="validation_rsp"
+
+
+    @api.multi
+    def vers_validation_direction_action(self):
+        for obj in self:
+            subject=u'['+obj.name+u'] Validation directeur technique'
+            email_to=obj.direction_id.email
+            user  = self.env['res.users'].browse(self._uid)
+            email_from = user.email
+            nom   = user.name
+            base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.moule'
+            body_html=u"""
+                <p>Bonjour,</p>
+                <p>"""+nom+""" vient de passer la demande d'achat moule <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Validation directeur technique'.</p>
+                <p>Merci d'en prendre connaissance.</p>
+            """
+            self.envoi_mail(email_from,email_to,subject,body_html)
+            obj.state="validation_direction"
 
 
     @api.multi
@@ -175,9 +234,6 @@ class is_demande_achat_moule(models.Model):
             if partner.property_product_pricelist_purchase.id == False:
                 raise Warning('Liste de prix non renseignée pour ce fournisseur')
             else:
-                #is_document=False
-                #for line in obj.line_ids:
-                #    is_document=line.num_chantier
                 vals={
                     'partner_id'      : partner.id,
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
@@ -187,7 +243,6 @@ class is_demande_achat_moule(models.Model):
                     'fiscal_position' : partner.property_account_position.id,
                     'payment_term_id' : partner.property_supplier_payment_term.id,
                     'is_num_da'       : obj.name,
-                    #'is_document'     : is_document,
                     'is_demandeur_id' : obj.createur_id.id,
                 }
                 order=order_obj.create(vals)
