@@ -26,7 +26,13 @@ class is_gabarit_controle(models.Model):
     client_id              = fields.Many2one("res.partner","Client")
     site_id                = fields.Many2one('is.database', string='Site')
     lieu_stockage          = fields.Char("Lieu de stockage")
-    periodicite            = fields.Integer("Périodicité ( en mois )")
+
+    #periodicite            = fields.Integer("Périodicité ( en mois )")
+    periodicite            = fields.Selection([
+                                    ('24','24 mois (standard)'),
+                                    ('48','48 mois ( qté annuelle < 10000p)'),
+                                ], string="Périodicité ( en mois )")
+
     type_controle          = fields.Many2one("is.type.controle.gabarit","Type de contrôle")
     date_prochain_controle = fields.Date("Date prochain contrôle", compute='_compute_date_prochain_controle', readonly=True, store=True)
     controle_ids           = fields.One2many('is.historique.controle', 'gabarit_id', string='Historique des contrôles')
