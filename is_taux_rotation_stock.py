@@ -9,6 +9,8 @@ class is_taux_rotation_stock_new(models.Model):
     _order='product_id'
 
     product_id      = fields.Many2one('product.template', 'Article')
+    code_pg         = fields.Char('Code PG')
+    designation     = fields.Char('Désignation')
     cat             = fields.Char('Cat')
     gest            = fields.Char('Gest')
     cout_act        = fields.Float('Coût actualisé'      , digits=(14,2))
@@ -32,8 +34,8 @@ class is_taux_rotation_stock_new(models.Model):
         sql="""
             delete from is_taux_rotation_stock_new;
 
-            INSERT INTO is_taux_rotation_stock_new (id,product_id,cat,gest,cout_act,stock,pic_12mois,pic_3mois_ferme,pic_3mois_prev,fm_3mois,ft_3mois,besoin_total,nb_sem,stock_valorise)
-            SELECT id,product_id,cat,gest,cout_act,stock,pic_12mois,pic_3mois_ferme,pic_3mois_prev,fm_3mois,ft_3mois,besoin_total,nb_sem,stock_valorise
+            INSERT INTO is_taux_rotation_stock_new (id,product_id,code_pg,designation,cat,gest,cout_act,stock,pic_12mois,pic_3mois_ferme,pic_3mois_prev,fm_3mois,ft_3mois,besoin_total,nb_sem,stock_valorise)
+            SELECT id,product_id,code_pg,designation,cat,gest,cout_act,stock,pic_12mois,pic_3mois_ferme,pic_3mois_prev,fm_3mois,ft_3mois,besoin_total,nb_sem,stock_valorise
             FROM is_taux_rotation_stock_view;
         """
         cr.execute(sql)
@@ -46,6 +48,8 @@ class is_taux_rotation_stock_view(models.Model):
     _auto = False
 
     product_id      = fields.Many2one('product.template', 'Article')
+    code_pg         = fields.Char('Code PG')
+    designation     = fields.Char('Désignation')
     cat             = fields.Char('Cat')
     gest            = fields.Char('Gest')
     cout_act        = fields.Float('Coût actualisé'      , digits=(14,2))
@@ -169,6 +173,8 @@ CREATE OR REPLACE VIEW is_taux_rotation_stock_view AS (
     select 
         pt.id                               id,
         pt.id                               product_id,
+        pt.is_code                          code_pg,
+        pt.name                             designation,
         ic.name                             cat,
         ig.name                             gest,
         get_cout_act_total(pp.id)           cout_act,
@@ -184,6 +190,10 @@ CREATE OR REPLACE VIEW is_taux_rotation_stock_view AS (
     from product_product pp inner join product_template      pt on pp.product_tmpl_id=pt.id
                             left outer join is_category      ic on pt.is_category_id=ic.id
                             left outer join is_gestionnaire  ig on pt.is_gestionnaire_id=ig.id
+
+    where ic.name not in('70','72','73','74','80') and is_stock(pp.id)<>0
+
+
 )
 
         """)
