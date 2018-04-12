@@ -38,7 +38,13 @@ class is_piece_montabilite(models.Model):
     client_id              = fields.Many2one('res.partner', string='Client', compute="compute_client_id", store=True)
     site_id                = fields.Many2one('is.database', string='Site')
     lieu_stockage          = fields.Char("Lieu de stockage")
-    periodicite            = fields.Integer("Périodicité ( en mois )")
+
+    #periodicite            = fields.Integer("Périodicité ( en mois )")
+    periodicite            = fields.Selection([
+                                    ('24','24 mois (standard)'),
+                                    ('48','48 mois ( qté annuelle < 10000p)'),
+                                ], string="Périodicité ( en mois )")
+
     type_controle          = fields.Many2one('is.type.controle.gabarit', string='Type de contrôle')
     date_prochain_controle = fields.Date("Date prochain contrôle", compute='_compute_date_prochain_controle', readonly=True, store=True)
     is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
@@ -51,23 +57,6 @@ class is_piece_montabilite(models.Model):
     def _compute_date_prochain_controle(self):
         for rec in self:
             date_prochain_controle(rec)
-#            date_prochain_controle=False
-#            if rec.controle_ids:
-#                for row in rec.controle_ids:
-#                    if row.operation_controle_id.code!='arret' and row.operation_controle_id.code!='maintenance':
-#                        date_controle=row.date_controle
-#                        if date_controle:
-#                            date_controle = datetime.strptime(date_controle, "%Y-%m-%d")
-#                            periodicite=0
-#                            if rec.periodicite:
-#                                try:
-#                                    periodicite = int(rec.periodicite)
-#                                except ValueError:
-#                                    continue
-#                            date_prochain_controle = date_controle + relativedelta(months=periodicite)
-#                            date_prochain_controle = date_prochain_controle.strftime('%Y-%m-%d')
-#                            break
-#            rec.date_prochain_controle = date_prochain_controle
 
 
     @api.multi
