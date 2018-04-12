@@ -10,7 +10,7 @@ from tempfile import TemporaryFile
 import base64
 import os
 import time
-from datetime import date, datetime
+from datetime import date,datetime,timedelta
 
 
 class is_edi_cde_cli_line(models.Model):
@@ -308,6 +308,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_John_Deere(attachment)
         if import_function=="GXS":
             datas=self.get_data_GXS(attachment)
+        if import_function=="Millipore":
+            datas=self.get_data_Millipore(attachment)
         if import_function=="Motus":
             datas=self.get_data_Motus(attachment)
         if import_function=="Odoo":
@@ -317,6 +319,70 @@ class is_edi_cde_cli(models.Model):
         if import_function == 'Lacroix':
             datas = self.get_data_lacroix(attachment)
         return datas
+
+
+    @api.multi
+    def get_data_Millipore(self, attachment):
+        res = []
+        mois=[u'janv.',u'févr.',u'mars',u'avr.',u'mai',u'juin',u'juil.',u'août',u'sept.',u'oct.',u'nov.',u'déc.']
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=',')
+            tab=[]
+            annees=[]
+            dates=[]
+            for ct, lig in enumerate(csvfile):
+                if ct<7:
+                    continue
+                nb=len(lig)
+                if ct==7:
+                    for i in range(8,nb):
+                        annees.append(lig[i])
+                if ct==8:
+                    for i in range(8,nb):
+                        m=mois.index(lig[i])+1
+                        txt=str(annees[i-8])+'-'+str(m)+'-01'
+                        d=datetime.strptime(txt, '%Y-%m-%d')
+                        #** Recherche du premier mercredi du mois **************
+                        while True:
+                            jour_semaine=d.strftime('%w')
+                            #print d, jour_semaine
+                            if jour_semaine=='3':
+                                break
+                            d = d + timedelta(days=1)
+                        #*******************************************************
+                        dates.append(d.strftime('%Y-%m-%d'))
+                if ct>8:
+                    if nb>=10:
+                        ref_article_client = lig[1].strip()
+                        order = self.env['sale.order'].search([
+                            ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                            ('is_ref_client', '=', ref_article_client)]
+                        )
+                        num_commande_client = "??"
+                        if len(order):
+                            num_commande_client = order[0].client_order_ref
+                        for i in range(8,nb):
+                            val = {
+                                'num_commande_client' : num_commande_client,
+                                'ref_article_client'  : ref_article_client,
+                            }
+                            date_livraison=dates[(i-8)]
+                            quantite = lig[i]
+                            try:
+                                qt = float(quantite)
+                            except ValueError:
+                                qt=0
+                            type_commande="previsionnel"
+                            ligne = {
+                                'quantite'      : qt,
+                                'type_commande' : type_commande,
+                                'date_livraison': date_livraison,
+                            }
+                            val.update({'lignes': [ligne]})
+                            res.append(val)
+        return res
 
 
     @api.multi

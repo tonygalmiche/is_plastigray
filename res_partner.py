@@ -19,6 +19,7 @@ import_function=[
     ('GXS'       , 'GXS'),
     ('John-Deere', 'John-Deere'),
     ('Lacroix'   , 'Lacroix'),
+    ('Millipore' , 'Millipore'),
     ('Motus'     , 'Motus'),
     ('Odoo'      , 'Odoo'),
     ('Plasti-ka' , 'Plasti-ka'),
