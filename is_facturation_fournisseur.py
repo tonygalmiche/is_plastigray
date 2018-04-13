@@ -54,7 +54,8 @@ class is_facturation_fournisseur(models.Model):
             ht=ttc=tva=0
             for line in obj.line_ids:
                 if line.selection:
-                    total=math.ceil(100*line.prix*line.quantite)/100
+                    #total=math.ceil(100*line.prix*line.quantite)/100
+                    total=math.ceil(100.0*round(line.quantite*line.prix,2))/100.0
                     ht=ht+total
                     tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
