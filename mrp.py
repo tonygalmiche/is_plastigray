@@ -154,6 +154,7 @@ class mrp_routing_workcenter(models.Model):
         ('2'   , '2'),
         ('2.5' , '2.5'),
         ('3'   , '3'),
+        ('4'   , '4'),
     ], 'Nombre de MOD', help='Donnée utilisée en particlier pour le planning')
 
 
