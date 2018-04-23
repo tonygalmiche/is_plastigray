@@ -329,6 +329,20 @@
         </record>
 
 
+        <report 
+            id="report_emballages"
+            model="product.template"
+            string="Emballage"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_emballage"
+            file="is_plastigray.report_emballage"
+        />
+        <record id="report_emballages" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.emballage_paperformat"/>
+        </record>
+
+
+
 
     </data>
 </openerp>
