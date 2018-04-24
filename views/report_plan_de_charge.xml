@@ -210,38 +210,7 @@
                                 <h1>Charge du parc presse</h1>
                             </div>
                             <div class="row contenu">
-                                <div class="col-xs-2" style="padding-right:5mm">
-                                    <table style="width:100%">
-                                        <tr><td style="width:40%">Nombre de presses                     </td></tr>
-                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.nb_presses).replace(","," ").replace(".",",")'      /></b></td></tr>
-                                    </table>
-                                    <br /><br />
-                                    <table style="width:100%">
-                                        <tr><td style="width:40%">Temps d'ouverture                     </td></tr>
-                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.temps_ouverture).replace(","," ").replace(".",",")'      /></b></td></tr>
-                                    </table>
-                                    <br /><br />
-                                    <table style="width:100%">
-                                        <tr><td style="width:40%">Nombre d'heures total dans la période </td></tr>
-                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.nb_heures_periode).replace(","," ").replace(".",",")'      /></b></td></tr>
-                                    </table>
-                                    <br /><br />
-                                    <table style="width:100%">
-                                        <tr><td style="width:40%">Total heures presses</td></tr>
-                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.total_presse_heure).replace(","," ").replace(".",",")'      /></b></td></tr>
-                                    </table>
-                                    <br /><br />
-                                    <table style="width:100%">
-                                        <tr><td style="width:40%">% Presse</td></tr>
-                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.presse_pourcent).replace(","," ").replace(".",",")'      /></b></td></tr>
-                                    </table>
-                                    <br /><br />
-                                    <table style="width:100%">
-                                        <tr><td style="width:40%">% presse au rendement de 85%</td></tr>
-                                        <tr><td><b><t t-esc='"{:,.0f}".format(o.presse_pourcent85).replace(","," ").replace(".",",")'      /></b></td></tr>
-                                    </table>
-                                </div>
-                                <div class="col-xs-10">
+                                <div class="col-xs-12">
                                     <table style="border:1px solid black; width:100%">
                                         <tr>
                                             <th style="width:20%;text-align:center"><b>Presse</b></th>
@@ -250,10 +219,12 @@
                                             <th style="width:20%;text-align:center"><b>H / Presse au rendement de 85%</b></th>
                                             <th style="width:20%;text-align:center"><b>% Presse au rendement de 85%</b></th>
                                         </tr>
+                                        <t t-set="nb_ligne"          t-value="0"/>
                                         <t t-set="presse_heure"      t-value="0"/>
                                         <t t-set="total_ouverture"   t-value="0"/>
                                         <tr t-foreach="o.workcenter_ids" t-as="l">
                                             <t t-if="l.workcenter_id.code  &lt; '9000'"> 
+                                                <t t-set="nb_ligne"         t-value="nb_ligne+1"/>
                                                 <t t-set="presse_heure"    t-value="presse_heure+l.presse_heure"/>
                                                 <t t-set="total_ouverture" t-value="total_ouverture+o.temps_ouverture"/>
 
@@ -269,7 +240,7 @@
 
                                         <t t-if="total_ouverture!=0"> 
                                             <tr>
-                                                <td><b>Total : </b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(nb_ligne)'          /></b></td>
                                                 <td><b><t t-esc='"{:,.0f}".format(presse_heure).replace(","," ").replace(".",",")'          /></b></td>
                                                 <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture).replace(".",",")'      /> %</b></td>
                                                 <td><b><t t-esc='"{:,.0f}".format(presse_heure/0.85).replace(","," ").replace(".",",")'    /></b></td>
@@ -286,8 +257,14 @@
                                             <th style="width:20%;text-align:center"><b>H / Poste au rendement de 85%</b></th>
                                             <th style="width:20%;text-align:center"><b>% Poste au rendement de 85%</b></th>
                                         </tr>
+                                        <t t-set="nb_ligne"          t-value="0"/>
+                                        <t t-set="presse_heure"          t-value="0"/>
+                                        <t t-set="total_ouverture"          t-value="0"/>
                                         <tr t-foreach="o.workcenter_ids" t-as="l">
                                             <t t-if="l.workcenter_id.code>='9000'"> 
+                                                <t t-set="nb_ligne"         t-value="nb_ligne+1"/>
+                                                <t t-set="presse_heure"    t-value="presse_heure+l.presse_heure"/>
+                                                <t t-set="total_ouverture" t-value="total_ouverture+o.temps_ouverture"/>
                                                 <td><span t-field="l.workcenter_id.code"/></td>
                                                 <td><t t-esc='"{:,.0f}".format(l.presse_heure).replace(","," ").replace(".",",")'      /></td>
                                                 <td><t t-esc='"{:,.0f}".format(l.presse_pourcent).replace(","," ").replace(".",",")'    /> %</td>
@@ -295,6 +272,16 @@
                                                 <td><t t-esc='"{:,.0f}".format(l.presse_pourcent85).replace(","," ").replace(".",",")' /> %</td>
                                             </t>
                                         </tr>
+
+                                        <t t-if="total_ouverture!=0"> 
+                                            <tr>
+                                                <td><b><t t-esc='"{:,.0f}".format(nb_ligne)'          /></b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(presse_heure).replace(","," ").replace(".",",")'          /></b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture).replace(".",",")'      /> %</b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(presse_heure/0.85).replace(","," ").replace(".",",")'    /></b></td>
+                                                <td><b><t t-esc='"{:,.0f}".format(100*presse_heure/total_ouverture/0.85).replace(".",",")'      /> %</b></td>
+                                            </tr>
+                                        </t>
                                    </table>
 
 
@@ -347,21 +334,23 @@
                                         <table style="border:1px solid black; width:100%">
                                             <thead>
                                                 <tr>
-                                                    <th style="width:10%;text-align:center"><b>Moule</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Matière</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Quantité</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Temps</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Capacité</b></th>
-                                                    <th style="width:10%;text-align:center"><b>% Temps</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Cumul (%)</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Cumul (H)</b></th>
-                                                    <th style="width:10%;text-align:center"><b>Cumul (J)</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Moule</b></th>
+                                                    <th style="width:19%;text-align:center"><b>Commentaire</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Matière</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Quantité</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Temps</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Capacité</b></th>
+                                                    <th style="width:9%;text-align:center"><b>% Temps</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Cumul (%)</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Cumul (H)</b></th>
+                                                    <th style="width:9%;text-align:center"><b>Cumul (J)</b></th>
                                                 </tr>
                                             </thead>
                                             <tboby>
                                                 <tr t-foreach="o.mold_ids" t-as="l" >
                                                     <t t-if="w.workcenter_id.id == l.workcenter_id.id"> 
                                                         <td><span t-field="l.mold_dossierf"/></td>
+                                                        <td></td>
                                                         <td><span t-field="l.matiere"/></td>
                                                         <td><t t-esc='"{:,.0f}".format(l.quantite).replace(","," ").replace(".",",")'      /></td>
                                                         <td><t t-esc='"{:,.0f}".format(l.temps_h).replace(","," ").replace(".",",")'      /></td>
