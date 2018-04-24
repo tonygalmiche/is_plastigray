@@ -1,1 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?><openerp><data>   <record id="is_livraison_gefco_form_view" model="ir.ui.view">        <field name="name">is_livraison_gefco_form_view</field>        <field name="model">is.livraison.gefco</field>        <field name="arch" type="xml">            <form>                <sheet>                    <group>                        <group>                            <field name="is_date_expedition" />                            <field name="partner_id" />                            <field name="picking_id"/>                            <field name="is_mold_dossierf" />                            <field name="product_id" />                            <field name="uc" />                            <field name="product_uom_qty" />                            <field name="nb_uc" />                            <field name="nb_um" />                        </group>                    </group>                </sheet>            </form>        </field>    </record>    <record id="is_livraison_gefco_tree_view" model="ir.ui.view">        <field name="name">is_livraison_gefco_tree_view</field>        <field name="model">is.livraison.gefco</field>        <field name="arch" type="xml">            <tree create="false">                <field name="is_date_expedition" />                <field name="partner_id"           widget="many2one_clickable"/>                <field name="picking_id"           widget="many2one_clickable"/>                <field name="is_mold_dossierf" />                <field name="product_id"           widget="many2one_clickable"/>                <field name="uc" />                <field name="product_uom_qty" />                <field name="nb_uc" />                <field name="nb_um" />           </tree>        </field>    </record>    <record id="is_livraison_gefco_search_view" model="ir.ui.view">        <field name="name">is_livraison_gefco_search_view</field>        <field name="model">is.livraison.gefco</field>        <field name="arch" type="xml">            <search string="Recherche">                <field name="is_date_expedition" />                <field name="partner_id" />                <field name="picking_id"/>                <field name="is_mold_dossierf" />                <field name="product_id" />                <field name="uc" />            </search>        </field>    </record>    <record id="is_livraison_gefco_action" model="ir.actions.act_window">        <field name="name">Livraison GEFCO</field>        <field name="res_model">is.livraison.gefco</field>        <field name="view_type">form</field>        <field name="view_mode">tree,form</field>    </record></data></openerp>
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+   <record id="is_livraison_gefco_form_view" model="ir.ui.view">
+        <field name="name">is_livraison_gefco_form_view</field>
+        <field name="model">is.livraison.gefco</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="is_date_expedition" />
+                            <field name="partner_id" />
+                            <field name="picking_id"/>
+                            <field name="is_mold_dossierf" />
+                            <field name="product_id" />
+                            <field name="uc" />
+                            <field name="product_uom_qty" />
+                            <field name="nb_uc" />
+                            <field name="nb_um" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_livraison_gefco_tree_view" model="ir.ui.view">
+        <field name="name">is_livraison_gefco_tree_view</field>
+        <field name="model">is.livraison.gefco</field>
+        <field name="arch" type="xml">
+            <tree create="false">
+                <field name="is_date_expedition" />
+                <field name="partner_id"           widget="many2one_clickable"/>
+                <field name="picking_id"           widget="many2one_clickable"/>
+                <field name="is_mold_dossierf" />
+                <field name="product_id"           widget="many2one_clickable"/>
+                <field name="uc" />
+                <field name="product_uom_qty" />
+                <field name="nb_uc" />
+                <field name="nb_um" />
+           </tree>
+        </field>
+    </record>
+    <record id="is_livraison_gefco_search_view" model="ir.ui.view">
+        <field name="name">is_livraison_gefco_search_view</field>
+        <field name="model">is.livraison.gefco</field>
+        <field name="arch" type="xml">
+            <search string="Recherche">
+                <field name="is_date_expedition" />
+                <field name="partner_id" />
+                <field name="picking_id"/>
+                <field name="is_mold_dossierf" />
+                <field name="product_id" />
+                <field name="uc" />
+            </search>
+        </field>
+    </record>
+    <record id="is_livraison_gefco_action" model="ir.actions.act_window">
+        <field name="name">Livraison GEFCO</field>
+        <field name="res_model">is.livraison.gefco</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</data>
+</openerp>
