@@ -201,6 +201,8 @@
                         <th class="text-left"  style="vertical-align:top">Désignation</th>
                         <th class="text-left"  style="vertical-align:top">Référence<br />fournisseur</th>
                         <th class="text-left"  style="vertical-align:top">Plan</th>
+                        <th class="text-left"  style="vertical-align:top">Indice plan</th>
+                        <th class="text-left"  style="vertical-align:top">Couleur<br />Type matière</th>
                         <th class="text-right" style="vertical-align:top">Minimum de commande</th>
                         <th class="text-right" style="vertical-align:top">Prix d'achat<br />€ HT</th>
                         <th class="text-left"  style="vertical-align:top">Unité</th>
@@ -225,6 +227,8 @@
                                         <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.name"/> </td>
                                         <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
                                         <td class="text-left">  <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
+                                        <td class="text-left">  <span t-field="l.product_id.is_ind_plan"/> </td>
+                                        <td class="text-left">  <span t-field="l.product_id.is_couleur"/> </td>
                                         <td class="text-right"> <span t-field="l.minimum"/>  </td>
                                         <td class="text-right"> <span t-field="l.prix_achat"/> </td>
                                         <td class="text-left">  <span t-field="l.uom_po_id"/>  </td>

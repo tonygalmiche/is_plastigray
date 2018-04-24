@@ -209,6 +209,14 @@
                             <span t-if="o.partner_id.lang != 'fr_FR'">Plan</span>
                         </th>
                         <th class="text-left"   style="vertical-align:top">
+                            <span t-if="o.partner_id.lang == 'fr_FR'">Plan indice</span>
+                            <span t-if="o.partner_id.lang != 'fr_FR'">Drawing revision</span>
+                        </th>
+                        <th class="text-left"   style="vertical-align:top">
+                            <span t-if="o.partner_id.lang == 'fr_FR'">Couleur<br />Type matière</span>
+                            <span t-if="o.partner_id.lang != 'fr_FR'">Color<br />Material type</span>
+                        </th>
+                        <th class="text-left"   style="vertical-align:top">
                             <span t-if="o.partner_id.lang == 'fr_FR'">TVA</span>
                             <span t-if="o.partner_id.lang != 'fr_FR'">VAT</span>
 
@@ -246,6 +254,8 @@
                         </td>
                         <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_fournisseur"/> </td>
                         <td class="text-left">         <span t-field="l.product_id.product_tmpl_id.is_ref_plan"/> </td>
+                        <td class="text-left">         <span t-field="l.product_id.is_ind_plan"/> </td>
+                        <td class="text-left">         <span t-field="l.product_id.is_couleur"/> </td>
                         <td class="text-left">         <span t-esc="', '.join(map(lambda x: x.name, l.taxes_id))"/></td>
                         <td class="text-center">       <span t-field="l.date_planned"/>  </td>
                         <td class="text-right nowrap"> <span t-field="l.product_qty"/>  </td>
