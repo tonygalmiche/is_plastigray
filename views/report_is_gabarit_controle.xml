@@ -92,22 +92,21 @@
                             <thead>
                                 <tr width="100%">
                                     <th width="7%"><strong>Date</strong></th>
+                                    <th width="7%"><strong>Fournisseur</strong></th>
                                     <th width="23%"><strong>Opération</strong></th>
-                                    <th width="6%"><strong>Affectation</strong></th>
-                                    <th width="7%"><strong>Organisme</strong></th>
+                                    <th width="23%"><strong>Cause arrêt</strong></th>
+                                    <th width="7%"><strong>Organisme contrôleur</strong></th>
                                     <th width="5%"><strong>Résultat</strong></th>
-                                    <th width="13%"><strong>Commentaire</strong></th>
-                                    <th width="5%"><strong>Classe</strong></th>
-                                    <th width="5%"><strong>Nom</strong></th>
+                                    <th width="5%"><strong>Commentaire</strong></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.controle_ids" t-as="l">
                                     <td><span t-field="l.date_controle"/> </td>
+                                    <td><span t-field="l.fournisseur_id"/> </td>
                                     <td><span t-field="l.operation_controle_id"/> </td>
                                     <td><span t-field="l.cause_arret"/> </td>
                                     <td><span t-field="l.organisme_controleur"/></td>
-                                    <td><span t-field="l.fournisseur_id"/> </td>
                                     <td><span t-field="l.etat_conformite"/> </td>
                                     <td></td>
                                 </tr>
