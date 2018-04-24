@@ -13,6 +13,7 @@ class is_livraison_gefco(models.Model):
     is_date_expedition  = fields.Date("Date d'expédition")
     partner_id          = fields.Many2one('res.partner', 'Client')
     picking_id          = fields.Many2one('stock.picking', 'Livraison')
+    client_order_ref    = fields.Char('Commande Client')
     name                = fields.Char('BL')
     is_mold_dossierf    = fields.Char('Moule ou Dossier F')
     product_id          = fields.Many2one('product.template', 'Article')
@@ -30,6 +31,7 @@ class is_livraison_gefco(models.Model):
                     sp.is_date_expedition,
                     sp.partner_id,
                     sp.id as picking_id,
+                    sol.is_client_order_ref client_order_ref,
                     sp.name,
                     pt.is_mold_dossierf,
                     pt.id product_id,
@@ -52,10 +54,11 @@ class is_livraison_gefco(models.Model):
                         from product_packaging pack inner join product_ul ul on pack.ul=ul.id
                         where pack.product_tmpl_id=pt.id limit 1
                     ) uc
-                from stock_picking sp inner join stock_move       sm on sp.id=sm.picking_id
-                                      inner join product_product  pp on sm.product_id=pp.id
-                                      inner join product_template pt on pp.product_tmpl_id=pt.id
-                                      inner join res_partner      rp on sp.partner_id=rp.id
+                from stock_picking sp inner join stock_move            sm on sp.id=sm.picking_id
+                                      inner join product_product       pp on sm.product_id=pp.id
+                                      inner join product_template      pt on pp.product_tmpl_id=pt.id
+                                      inner join res_partner           rp on sp.partner_id=rp.id
+                                      left outer join sale_order_line  sol on sm.is_sale_line_id=sol.id
                 where 
                     pt.is_livraison_gefbox='t' and
                     sm.state='done' and
