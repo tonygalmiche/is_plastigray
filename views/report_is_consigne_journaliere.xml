@@ -210,7 +210,7 @@
                                     </thead>
                                     <tbody>
                                         <tr t-foreach="o.assemblage_ids" t-as="l">
-                                            <td class="text-center">    <span t-field="l.poste_id.name"/></td>
+                                            <td class="text-center" style="font-size:10pt;">    <span t-field="l.poste_id.name"/></td>
                                             <td class="text-center">    <span t-field="l.priorite"/> </td>
                                             <td class="text-center">    <span t-field="l.mod"/> </td>
                                             <td class="text-center">    <span t-field="l.operateur"/> </td>
