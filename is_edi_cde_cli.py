@@ -110,6 +110,7 @@ class is_edi_cde_cli(models.Model):
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
                     order_id = False
+                    date_livraison=False
                     if 'order_id' in row:
                         order_id=row['order_id']
                         order=self.env['sale.order'].search([('id', '=', order_id)])
