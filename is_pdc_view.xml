@@ -67,6 +67,16 @@
                             </field>
                         </group>
                         <group>
+                            <field name="temps_ouverture"/>
+                            <!--
+                            <field name="nb_presses"         readonly="1"/> 
+                            <field name="nb_heures_periode"  readonly="1"/> 
+                            <field name="total_presse_heure" readonly="1"/> 
+                            <field name="presse_pourcent"    readonly="1"/> 
+                            <field name="presse_pourcent85"  readonly="1"/> 
+                            -->
+                        </group>
+                        <group>
                             <field name="workcenter_ids" readonly="1" nolabel="1">
                                 <tree>
                                     <button 
