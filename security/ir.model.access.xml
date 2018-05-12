@@ -253,7 +253,29 @@
     </record>
 
 
+    <!-- Gestionnaire des articles -->
+    <record id="is_product_product_access"  model="ir.model.access" >
+        <field name="name">is_product_product_access</field>
+        <field name="model_id"    eval="ref('product.model_product_product')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_articles_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_product_template_access"  model="ir.model.access" >
+        <field name="name">is_product_template_access</field>
+        <field name="model_id"    eval="ref('product.model_product_template')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_articles_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
     <!-- Gestionnaire des données techniques -->
+    <!--
     <record id="is_product_product_access"  model="ir.model.access" >
         <field name="name">is_product_product_access</field>
         <field name="model_id"    eval="ref('product.model_product_product')"/>
@@ -263,6 +285,7 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+
     <record id="is_product_template_access"  model="ir.model.access" >
         <field name="name">is_product_template_access</field>
         <field name="model_id"    eval="ref('product.model_product_template')"/>
@@ -272,6 +295,7 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+    -->
     <record id="is_product_price_history_access"  model="ir.model.access" >
         <field name="name">is_product_price_history_access</field>
         <field name="model_id"    eval="ref('product.model_product_price_history')"/>
@@ -1284,7 +1308,7 @@
         <field name="perm_create" eval="True"/>
     </record>
 
-
+    <!--
     <record id="is_product_product_rsp_achats_access"  model="ir.model.access" >
         <field name="name">is_product_product_rsp_achats_access</field>
         <field name="model_id"    eval="ref('product.model_product_product')"/>
@@ -1294,6 +1318,7 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="False"/>
     </record>
+
     <record id="is_product_template_rsp_achats_access"  model="ir.model.access" >
         <field name="name">is_product_template_rsp_achats_access</field>
         <field name="model_id"    eval="ref('product.model_product_template')"/>
@@ -1303,6 +1328,7 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="False"/>
     </record>
+    -->
     <record id="is_product_price_history_rsp_achats_access"  model="ir.model.access" >
         <field name="name">is_product_price_history_rsp_achats_access</field>
         <field name="model_id"    eval="ref('product.model_product_price_history')"/>
