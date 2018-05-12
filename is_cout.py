@@ -849,10 +849,14 @@ class is_cout(models.Model):
             new_cr = self.pool.cursor()
             self = self.with_env(self.env(cr=new_cr))
             report_service = 'is_plastigray.report_is_cout'
-            file_param  = self.env['ir.config_parameter'].get_param('path_report_pdf')
-            if not os.path.exists(file_param):
-                os.makedirs(file_param)
-            recs=self.search([], order="name",limit=20000)
+            #file_param  = self.env['ir.config_parameter'].get_param('path_report_pdf')
+            db=self._cr.dbname
+            path="/tmp/couts-" + db
+            cde="rm -Rf " + path
+            os.popen(cde).readlines()
+            if not os.path.exists(path):
+                os.makedirs(path)
+            recs=self.search([], order="name",limit=50000)
             nb=len(recs)
             _logger.info("#### Début sauvegarde Coûts ####")
             ct=0
@@ -861,26 +865,30 @@ class is_cout(models.Model):
                 code_pg=rec.name.is_code
                 _logger.info('- '+str(ct)+'/'+str(nb)+' : '+str(code_pg))
                 result, format = self.env['report'].get_pdf(rec, report_service), 'pdf'
-                file_name = file_param + '/'+str(code_pg) +'.pdf'
+                file_name = path + '/'+str(code_pg) +'.pdf'
                 fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
                 try:
                     os.write(fd, result)
                 finally:
                     os.close(fd)
+            filename="/var/www/odoo/couts/"+db+".zip"
+            cde="rm -f " + filename + " && cd /tmp && zip -r " + filename + " couts-" +db
+            os.popen(cde).readlines()
             self.send_mail_notyfy_user()
             new_cr.close()
             _logger.info("#### Fin sauvegarde Coûts ####")
             return {}
 
     def send_mail_notyfy_user(self):
+        db=self._cr.dbname
         user = self.env['res.users'].browse(self._uid)
         mail_pool = self.env['mail.mail']
         values={}
-        values.update({'subject': 'Coût article printing task finished.'})
+        values.update({'subject': 'Génération des PDF des coûts terminée'})
         values.update({'email_from': user.partner_id.email})
         values.update({'email_to': user.partner_id.email})
-        values.update({'body_html': 'Printing of Coût article Reports are finished.' })
-        values.update({'body': 'Printing of Coût article Reports are finished.' })
+        values.update({'body_html': '<p>Bonjour,</p><p>Le zip contenant tous les PDF est disponible <a href="http://odoo/couts/'+db+'.zip">ici</a></p>' })
+        #values.update({'body': 'Bonjour,\nLe zip contenant tous les PDF est disonible ici http://odoo/couts-odoo1.zip' })
 #         values.update({'res_id': 'obj.id' }) #[optional] here is the record id, where you want to post that email after sending
         values.update({'model': 'is.cout' }) #[optional] here is the object(like 'project.project')  to whose record id you want to post that email after sending
         msg_id = mail_pool.sudo().create(values)
