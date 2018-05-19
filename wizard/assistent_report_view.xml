@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <record id="is_pointage_report1_view" model="ir.ui.view">
+            <field name="name">Assistent Report1</field>
+            <field name="model">assistent.report1</field>
+            <field name="arch" type="xml">
+                <form string="Report">
+                    <group>
+                        <field name="site" required="1"/>
+                        <field name="type_rapport"/>
+                        <field name="date_mois"   attrs="{'invisible': [('type_rapport', '!=', 'rapport_mois')]       , 'required':[('type_rapport','=', 'rapport_mois')]}"/>
+                        <field name="date_debut"  attrs="{'invisible': [('type_rapport', '!=', 'rapport_date_a_date')], 'required':[('type_rapport','=', 'rapport_date_a_date')]}"/>
+                        <field name="date_fin"    attrs="{'invisible': [('type_rapport', '!=', 'rapport_date_a_date')], 'required':[('type_rapport','=', 'rapport_date_a_date')]}"/>
+                        <field name="date_jour"   attrs="{'invisible': [('type_rapport', '!=', 'rapport_a_date')]     , 'required':[('type_rapport','=', 'rapport_a_date')]}"/>
+                        <field name="employee"/>
+                        <field name="interimaire"/>
+                        <field name="saut_page"/>
+                        <field name="detail"/>
+                    </group>
+                    <footer>
+                        <button name="assistent_report1" string="OK" type="object" class="oe_highlight" />
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="is_pointage_report1_action" model="ir.actions.act_window">
+            <field name="name">Rapport</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">assistent.report1</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="is_pointage_report1_view"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_is_pointage_report"  sequence="25" parent="hr.menu_hr_root" name="Rapport" />
+        <menuitem id="menu_is_pointage_report1" sequence="10" action="is_pointage_report1_action" parent="menu_is_pointage_report"/>
+    </data>
+</openerp>

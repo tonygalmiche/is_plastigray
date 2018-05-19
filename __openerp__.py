@@ -24,6 +24,7 @@ Module principal du projet Plastigray
         "mrp",                    # MRP
         "mrp_operations",         # Gammes
         "purchase",               # Gestion des achats
+        "hr",                     # RH
         "is_mold",                # Moules et Projets pour l'injection plastique
         "is_pg_product",          # Fiche article
         "account_cancel",         # Permet d'autoriser l'annulation des factures 
@@ -96,6 +97,8 @@ Module principal du projet Plastigray
         "is_taux_rotation_stock_view.xml",
         "is_export_edi_view.xml",
         "is_deb_view.xml",
+        "hr_view.xml",
+        "is_pointage_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",
@@ -107,6 +110,7 @@ Module principal du projet Plastigray
         "wizard/is_cas_emploi_wizard.xml",
         "wizard/is_cas_emploi_wizard_new.xml",
         "wizard/set_sheduler_cout_article.xml",
+        "wizard/assistent_report_view.xml",
         "views/web_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+
+        <!-- Liste des pointages appellée depuis la fiche de l'employee -->
+        <record model="ir.actions.act_window" id="is_pointage_action2">
+            <field name="context">{'default_employee': active_id, 'search_default_employee': active_id}</field>
+            <field name="name">Pointages</field>
+            <field name="res_model">is.pointage</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Liste des badges appellée depuis la fiche de l'employee -->
+        <record model="ir.actions.act_window" id="is_badge_action2">
+            <field name="context">{'default_employee': active_id, 'search_default_employee': active_id}</field>
+            <field name="name">Badges</field>
+            <field name="res_model">is.badge</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <record id="is_view_employee_form" model="ir.ui.view">
+            <field name="name">is.hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name="image_medium" position="before">
+                    <div class="oe_right oe_button_box" style="width: 300px;" name="buttons">
+
+                        <!-- Liste des icones : http://fortawesome.github.io/Font-Awesome/icons/  -->
+                        <button class="oe_inline oe_stat_button" name="%(is_badge_action2)d" type="action" icon="fa-user">
+                            <field string="Badge" name="is_badge_count" widget="statinfo" />
+                        </button>
+
+                        <button class="oe_inline oe_stat_button" name="%(is_pointage_action2)d" type="action" icon="fa-clock-o">
+                            <field string="Pointages" name="is_pointage_count" widget="statinfo" />
+                        </button>
+                    </div>
+                </field>
+                <page string="Public Information" position="before">
+                    <page string="Pointage">
+                        <group>
+                            <group string="Paramètrage">
+                                <field name="is_site"/>
+                                <field name="is_matricule"/>
+                                <field name="is_categorie"/>
+                                <field name="is_interimaire"/>
+                            </group>
+                            <group string="Horaires">
+                                <field name="is_jour1"/>
+                                <field name="is_jour2"/>
+                                <field name="is_jour3"/>
+                                <field name="is_jour4"/>
+                                <field name="is_jour5"/>
+                                <field name="is_jour6"/>
+                                <field name="is_jour7"/>
+                            </group>
+                        </group>
+                    </page>
+                </page>
+
+            </field>
+        </record>
+
+
+        <record id="is_view_employee_tree" model="ir.ui.view">
+            <field name="name">is.hr.employee.tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <field name="work_phone" position="replace">
+                    <field name="is_site"/>
+                    <field name="is_matricule"/>
+                </field>
+                <field name="work_email" position="replace">
+                    <field name="is_categorie"/>
+                </field>
+                <field name="department_id" position="replace">
+                    <field name="is_interimaire"/>
+                    <field name="is_jour1" invisible="context.get('invisible_horaire', True)"/>
+                    <field name="is_jour2" invisible="context.get('invisible_horaire', True)"/>
+                    <field name="is_jour3" invisible="context.get('invisible_horaire', True)"/>
+                    <field name="is_jour4" invisible="context.get('invisible_horaire', True)"/>
+                    <field name="is_jour5" invisible="context.get('invisible_horaire', True)"/>
+                    <field name="is_jour6" invisible="context.get('invisible_horairet', True)"/>
+                    <field name="is_jour7" invisible="context.get('invisible_horaire', True)"/>
+                </field>
+                <field name="job_id" position="replace" />
+                <field name="parent_id" position="replace" />
+            </field>
+        </record>
+
+
+        <record id="is_view_employee_filter" model="ir.ui.view">
+            <field name="name">is_view_employee_filter</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                    <field name="name" position="after">
+                        <field name="is_site"/>
+                        <field name="is_matricule"/>
+                        <field name="is_categorie"/>
+                        <field name="is_interimaire"/>
+                    </field>
+                    <!-- Filtres pré-enregistrés -->
+                    <group string="Group By" position="before">
+                        <group string="Filtres">
+                            <filter string="Employés"     name="is_interimaire" domain="[('is_interimaire','!=',True)]" />
+                            <filter string="Intérimaires" name="is_interimaire" domain="[('is_interimaire','=',True)]" />
+                        </group>
+                    </group>
+                    <!-- Group by -->
+                    <filter string="Manager" position="before">
+                        <filter string="Site"        context="{'group_by': 'is_site'}"/>
+                        <filter string="Catégorie"   context="{'group_by': 'is_categorie'}"/>
+                        <filter string="Intérimaire" context="{'group_by': 'is_interimaire'}"/>
+                    </filter>
+                    <!-- Filtres permettant d'afficher des colonnes -->
+                    <group string="Group By" position="after">
+                        <group string="Afficher les champs">
+                            <filter string="Horaires" context="{'invisible_horaire': False}" />
+                        </group>
+                    </group>
+             </field>
+         </record>
+
+
+        <!-- Pour surcharger une action (ici changer l'ordre des vues), il suffit de mettre le même id que l'action d'origine (et son module en préfix) -->
+        <record id="hr.open_view_employee_list_my" model="ir.actions.act_window">
+            <field name="name">Employees test</field>
+            <field name="context">{}</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

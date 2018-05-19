@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <!-- is.badge -->
+        <record model="ir.ui.view" id="is_badge_form_view">
+            <field name="name">is_badge_form_view</field>
+            <field name="model">is.badge</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="2" colspan="4">
+                            <field name="name"/> 
+                            <field name="employee"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_badge_tree_view">
+            <field name="name">is_badge_tree_view</field>
+            <field name="model">is.badge</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="badge">
+                    <field name="employee"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_badge_filter_view" >
+            <field name="name">is_badge_filter_view</field>
+            <field name="model">is.badge</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"    filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="employee" />
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_badge_action">
+            <field name="name">Badges</field>
+            <field name="res_model">is.badge</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.jour.ferie -->
+        <record model="ir.ui.view" id="is_jour_ferie_form_view">
+            <field name="name">is_jour_ferie_form_view</field>
+            <field name="model">is.jour.ferie</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <sheet>
+                        <group col="2" colspan="4">
+                            <field name="name"/> 
+                            <field name="date"/> 
+                            <field name="jour_fixe"/> 
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_jour_ferie_tree_view">
+            <field name="name">is_jour_ferie_tree_view</field>
+            <field name="model">is.jour.ferie</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="jour_ferie">
+                    <field name="date"/> 
+                    <field name="name"/>
+                    <field name="jour_fixe"/> 
+                    </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_jour_ferie_filter_view" >
+            <field name="name">is_jour_ferie_filter_view</field>
+            <field name="model">is.jour.ferie</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"    filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="date"/>
+                    <field name="jour_fixe"/>
+                    <group expand="0" string="Regroupé par...">
+                        <filter name="group_annee"     string="Année"    context="{'group_by':'date:year'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_jour_ferie_action">
+            <field name="name">Jours Fériés</field>
+            <field name="res_model">is.jour.ferie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_group_annee':1}</field>
+        </record>
+
+
+        <!-- is.pointage.commentaire -->
+        <record model="ir.ui.view" id="is_pointage_commentaire_form_view">
+        <field name="name">is_pointage_commentaire_form_view</field>
+        <field name="model">is.pointage.commentaire</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>  
+                <sheet>
+                    <group col="2" colspan="4">
+                        <field name="name"/> 
+                        <field name="employee"/> 
+                        <field name="commentaire"/> 
+                    </group>
+                </sheet>
+            </form>
+        </field>
+        </record>
+        <record model="ir.ui.view" id="is_pointage_commentaire_tree_view">
+            <field name="name">is_pointage_commentaire_tree_view</field>
+            <field name="model">is.pointage.commentaire</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="pointage">
+                    <field name="name"/>
+                    <field name="employee"/>
+                    <field name="commentaire"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_pointage_commentaire_filter_view" >
+            <field name="name">is_pointage_commentaire_filter_view</field>
+            <field name="model">is.pointage.commentaire</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"/>
+                    <field name="employee"/>
+                    <field name="commentaire"/>
+                    <group expand="0" string="Regroupé par...">
+                        <filter name="group_employee"  string="Employé" context="{'group_by':'employee'}"/>
+                        <filter name="group_mois"      string="Mois"    context="{'group_by':'name:month'}"/>
+                        <filter name="group_semaine"   string="Semaine" context="{'group_by':'name:week'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_pointage_commentaire_action">
+            <field name="name">Commentaires de pointages</field>
+            <field name="res_model">is.pointage.commentaire</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.pointage -->
+        <record model="ir.ui.view" id="is_pointage_form_view">
+            <field name="name">is_pointage_form_view</field>
+            <field name="model">is.pointage</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>  
+                    <sheet>
+                        <group col="2" colspan="4">
+                            <field name="name"/> 
+                            <field name="employee"/> 
+                            <field name="entree_sortie"/> 
+                            <field name="pointeuse"/> 
+                            <field name="note"/> 
+                            <field name="commentaire" readonly="1"/> 
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_pointage_tree_view">
+            <field name="name">is_pointage_tree_view</field>
+            <field name="model">is.pointage</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="pointage" editable="top">
+                    <field name="name"          readonly="1"/>
+                    <field name="employee"      readonly="1"/>
+                    <field name="entree_sortie" readonly="1"/>
+                    <field name="note"/> 
+                    <field name="pointeuse"     readonly="1"/> 
+                    <field name="commentaire"   readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_pointage_filter_view" >
+            <field name="name">is_pointage_filter_view</field>
+            <field name="model">is.pointage</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="name"/>
+                    <field name="employee"/>
+                    <field name="entree_sortie"/>
+                    <field name="pointeuse"/> 
+                    <field name="note"/>
+                    <field name="commentaire"/>
+                    <group expand="0" string="Regroupé par...">
+                        <filter name="group_pointeuse" string="Pointeuse" context="{'group_by':'pointeuse'}"/>
+                        <filter name="group_employee"  string="Employé"   context="{'group_by':'employee'}"/>
+                        <filter name="group_mois"      string="Mois"      context="{'group_by':'name:month'}"/>
+                        <filter name="group_jour"      string="Jour"      context="{'group_by':'name:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_pointage_action">
+            <field name="name">Pointages</field>
+            <field name="res_model">is.pointage</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem id="menu_is_pointage"             sequence="20" name="Pointage"     parent="hr.menu_hr_root"  />
+        <menuitem id="menu_is_pointage_badge"       sequence="10" name="Badges"       parent="menu_is_pointage" action="is_badge_action" />
+        <menuitem id="menu_is_pointage_pointage"    sequence="20" name="Pointages"    parent="menu_is_pointage" action="is_pointage_action" />
+        <menuitem id="menu_is_pointage_commentaire" sequence="25"                     parent="menu_is_pointage" action="is_pointage_commentaire_action" />
+        <menuitem id="menu_is_pointage_jour_ferie"  sequence="40" name="Jours fériés" parent="menu_is_pointage" action="is_jour_ferie_action" />
+
+  </data>
+</openerp>
