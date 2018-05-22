@@ -454,6 +454,7 @@ class stock_quant(models.Model):
 class stock_move(models.Model):
     _inherit = "stock.move"
     _order   = "date desc, id"
+    is_dosmat_ctrl_qual           = fields.Char('Contrôle qualité', readonly=True)
 
 
     @api.multi
