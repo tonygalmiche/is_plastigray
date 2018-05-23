@@ -147,7 +147,7 @@
                             <field name="pdc_id" readonly="1"/>
                             <field name="workcenter_id"/>
                             <field name="resource_type"/>
-                            <field name="mold_id" readonly="1"/>
+                            <!--<field name="mold_id" readonly="1"/>-->
                             <field name="mold_dossierf"/>
                             <field name="matiere"/>
                             <field name="quantite"/>
@@ -171,7 +171,7 @@
                     <field name="pdc_id" readonly="1"/>
                     <field name="workcenter_id"/>
                     <field name="resource_type"/>
-                    <field name="mold_id" readonly="1"/>
+                    <!--<field name="mold_id" readonly="1"/>-->
                     <field name="mold_dossierf"/>
                     <field name="matiere"/>
                     <field name="quantite" sum="Total"/>
