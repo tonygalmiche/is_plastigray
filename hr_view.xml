@@ -60,6 +60,32 @@
                                 <field name="is_jour7"/>
                             </group>
                         </group>
+                        <group string="Horaires">
+                            <field name="is_employe_horaire_ids" nolabel="1" >
+                                <tree editable="top">
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                    <field name="semaine"/>
+                                    <field name="jour1"/>
+                                    <field name="jour2"/>
+                                    <field name="jour3"/>
+                                    <field name="jour4"/>
+                                    <field name="jour5"/>
+                                    <field name="jour6"/>
+                                    <field name="jour7"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Absences">
+                            <field name="is_employe_absence_ids" nolabel="1" >
+                                <tree editable="top">
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                    <field name="nb_heures"/>
+                                    <field name="commentaire"/>
+                                </tree>
+                            </field>
+                        </group>
                     </page>
                 </page>
 

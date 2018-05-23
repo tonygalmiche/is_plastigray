@@ -27,7 +27,6 @@ class hr_employee(models.Model):
         res['context'] = "{'employee': " + str(ids[0]) + "}"
         return res
 
-
     is_site=fields.Selection([
             ("1", "Gray"), 
             ("4", "ST-Brice"), 
@@ -51,4 +50,38 @@ class hr_employee(models.Model):
     is_jour6=fields.Float('Samedi')
     is_jour7=fields.Float('Dimanche')
 
+    is_employe_horaire_ids = fields.One2many('is.employe.horaire', 'employe_id', u"Horaires")
+    is_employe_absence_ids = fields.One2many('is.employe.absence', 'employe_id', u"Absences")
+
+
+class is_employe_horaire(models.Model):
+    _name='is.employe.horaire'
+    _order='date_debut desc'
+
+    employe_id = fields.Many2one('hr.employee', 'Employé', required=True, ondelete='cascade', readonly=True)
+    date_debut = fields.Date('Date de début', required=True)
+    date_fin   = fields.Date('Date de fin'  , required=True)
+    semaine=fields.Selection([
+            ("P" , "Paire"), 
+            ("I" , "Impaire"), 
+            ("PI", "Paire+Impaire"), 
+        ], "Semaine", required=True)
+    jour1 = fields.Float('Lundi')
+    jour2 = fields.Float('Mardi')
+    jour3 = fields.Float('Mercredi')
+    jour4 = fields.Float('Jeudi')
+    jour5 = fields.Float('Vendredi')
+    jour6 = fields.Float('Samedi')
+    jour7 = fields.Float('Dimanche')
+
+
+class is_employe_absence(models.Model):
+    _name='is.employe.absence'
+    _order='date_debut desc'
+
+    employe_id  = fields.Many2one('hr.employee', 'Employé', required=True, ondelete='cascade', readonly=True)
+    date_debut  = fields.Date('Date de début', required=True)
+    date_fin    = fields.Date('Date de fin'  , required=True)
+    nb_heures   = fields.Float("Nombre d'heures d'absence par jour", required=True)
+    commentaire = fields.Char("Commentaire")
 

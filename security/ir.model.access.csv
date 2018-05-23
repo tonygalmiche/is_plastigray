@@ -196,5 +196,7 @@ access_is_pointage_manager,is.pointage.manager,model_is_pointage,base.group_hr_m
 access_is_jour_ferie_user,is.jour.ferie.user,model_is_jour_ferie,base.group_user,1,0,0,0
 access_is_jour_ferie_manager,is.jour.ferie.manager,model_is_jour_ferie,base.group_hr_manager,1,1,1,1
 access_is_pointage_commentaire,access_is_pointage_commentaire,model_is_pointage_commentaire,base.group_hr_manager,1,1,1,1
+access_is_employe_horaire,access_is_employe_horaire,model_is_employe_horaire,base.group_hr_manager,1,1,1,1
+access_is_employe_absence,access_is_employe_absence,model_is_employe_absence,base.group_hr_manager,1,1,1,1
 
 

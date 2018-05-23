@@ -18,7 +18,11 @@ class assistent_report1(models.TransientModel):
     site= fields.Selection([
             ("1", "Gray"), 
             ("4", "ST-Brice"), 
-        ], "Site", required=False)
+        ], "Site", required=True)
+    version = fields.Selection([
+            ("1", "1"), 
+            ("2", "2"), 
+        ], "Version du rapport", required=True, default="2")
     type_rapport= fields.Selection([
             ("rapport_mois", "Liste mensuelle"), 
             ("rapport_date_a_date", "Liste de date à date"),  
@@ -45,12 +49,8 @@ class assistent_report1(models.TransientModel):
 
     def assistent_report1(self, cr, uid, ids, context=None):
         report_data = self.browse(cr, uid, ids[0])
-        report_link = "http://odoo/odoo-rh/rapport1.php"
+        report_link = "http://odoo/odoo-rh/rapport"+ str(report_data.version)+".php"
         url = str(report_link) + '?'+ '&type_rapport=' + str(report_data.type_rapport)+'&site=' + str(report_data.site)+ '&date_jour=' + str(report_data.date_jour)+ '&date_mois=' + str(report_data.date_mois)+'&detail='+str(report_data.detail)+'&employee='+str(report_data.employee.id)+'&interimaire='+str(report_data.interimaire)+'&saut_page='+str(report_data.saut_page)+ '&date_debut=' + str(report_data.date_debut)+ '&date_fin=' + str(report_data.date_fin)
-
-
-        print url
-
         return {
             'name'     : 'Go to website',
             'res_model': 'ir.actions.act_url',

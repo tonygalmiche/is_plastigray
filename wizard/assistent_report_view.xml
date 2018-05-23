@@ -9,7 +9,8 @@
             <field name="arch" type="xml">
                 <form string="Report">
                     <group>
-                        <field name="site" required="1"/>
+                        <field name="site"/>
+                        <field name="version"/>
                         <field name="type_rapport"/>
                         <field name="date_mois"   attrs="{'invisible': [('type_rapport', '!=', 'rapport_mois')]       , 'required':[('type_rapport','=', 'rapport_mois')]}"/>
                         <field name="date_debut"  attrs="{'invisible': [('type_rapport', '!=', 'rapport_date_a_date')], 'required':[('type_rapport','=', 'rapport_date_a_date')]}"/>
