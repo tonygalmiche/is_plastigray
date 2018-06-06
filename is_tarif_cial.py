@@ -5,7 +5,6 @@ from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import datetime
 
-#TODO : 
 
 class is_tarif_cial(models.Model):
     _name='is.tarif.cial'
@@ -13,7 +12,7 @@ class is_tarif_cial(models.Model):
     _sql_constraints = [('is_indice_prix_uniq','UNIQUE(partner_id, product_id,indice_prix)', 'Cet indice de prix existe déja pour ce client et cet article')]
 
 
-    @api.depends('product_id')
+    @api.depends('product_id','prix_vente','date_debut','date_fin')
     def _ref_client(self):
         for obj in self:
             if obj.product_id:
@@ -84,7 +83,6 @@ class is_tarif_cial(models.Model):
         for obj in self:
             if obj.indice_prix!=999:
                 raise Warning(u"Cette fonction n'est possible que depuis l'indice 999 !")
-
             new_obj=obj.copy({})
             res=self.env['is.tarif.cial'].search([
                 ['partner_id', '=', obj.partner_id.id], 
@@ -103,7 +101,6 @@ class is_tarif_cial(models.Model):
 
     @api.multi
     def copy(self,vals):
-        print vals
         for obj in self:
             vals['indice_prix']=0
             res=super(is_tarif_cial, self).copy(vals)
@@ -117,9 +114,6 @@ class is_tarif_cial(models.Model):
             name=obj.product_id.is_code
             res.append((obj.id,name))
         return res
-
-
-
 
 
 
