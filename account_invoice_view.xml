@@ -111,19 +111,6 @@
                 </xpath>
                 <button name="action_invoice_sent" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}"  position="replace" />
                 <button name="action_invoice_sent" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" position="replace" />
-
-                <!--
-                <button name="invoice_open" position="before" >
-                    <button 
-                        name="action_invoice_sent"
-                        type="object" 
-                        string="Envoyer par mail" 
-                        attrs="{'invisible':['|','|',('state', '!=', 'open'),('is_mode_envoi_facture', '!=', 'mail'),('is_date_envoi_mail', '!=', False)]}" 
-                        groups="is_plastigray.is_comptable_group"/>
-                </button>
-                -->
-
-
                 <xpath expr="//button[@name='invoice_pay_customer']" position="replace" />
                 <field name="date_invoice" position="after">
                     <field name="is_type_facture" />
@@ -302,7 +289,6 @@
             <field name="act_window_id" ref="is_factures_diverses_action"/>
         </record>
 
-
         <!-- Facture fournisseur -->
         <record id="is_invoice_supplier_form" model="ir.ui.view">
             <field name="name">is_invoice_supplier_form</field>
@@ -310,7 +296,6 @@
             <field name="inherit_id" ref="account.invoice_supplier_form" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='account_id']" position="after" >
-                    <!--<field name="is_origine_id" domain="[('state','=', 'open'),('type','=', 'in_invoice')]" />-->
                     <field name="is_folio_id"/> 
                     <field name="is_bon_a_payer"/> 
                     <field name="is_masse_nette"/> 
@@ -324,6 +309,7 @@
                 </xpath>
             </field>
         </record>
+
         <!-- Supprimer le bouton 'Payer' sur la facture fournisseur -->
         <record id="is_view_invoice_supplier" model="ir.ui.view">
             <field name="name">is_view_invoice_supplier</field>
@@ -334,43 +320,18 @@
             </field>
         </record>
 
-
-
-
         <record id="is_view_invoice_line_form" model="ir.ui.view">
             <field name="name">is_view_invoice_line_form</field>
             <field name="model">account.invoice.line</field>
             <field name="inherit_id" ref="account.view_invoice_line_form"/>
             <field name="arch" type="xml">
+                <field name="price_unit" position="after">
+                    <field name="is_document"/>
+                </field>
                 <field name="invoice_line_tax_id" position="after">
                     <field name="is_move_id"/>
                 </field>
             </field>
         </record>
-
-
-
-
-
-        <!-- Rapprochement ligne facture fournisseur et mouvement de stock -->
-        <!--
-        <record id="initialisation_mouvement_stock_action_server" model="ir.actions.server">
-             <field name="name">Initialisation mouvements de stocks</field>
-            <field name="model_id" ref="model_account_invoice"/>
-            <field name="code">action = self.initialisation_mouvement_stock(cr, uid, context.get('active_ids', []), context=context)</field>
-        </record>
-        <record id="initialisation_mouvement_stock_ir_value" model="ir.values">
-            <field eval="'client_action_multi'" name="key2"/>
-            <field eval="'account.invoice'" name="model"/>
-            <field name="name">Initialisation mouvements de stocks</field>
-            <field eval="'ir.actions.server,%d'%initialisation_mouvement_stock_action_server" name="value"/>
-        </record>
-        -->
-
-
-
-
-
-
     </data>
 </openerp>
