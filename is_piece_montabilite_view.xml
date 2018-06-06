@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
-
         <record model="ir.ui.view" id="is_piece_montabilite_form_view">
             <field name="name">is.piece.montabilite.form.view</field>
             <field name="model">is.piece.montabilite</field>
@@ -32,29 +30,6 @@
                             <field name="type_controle"/> 
                             <field name="date_prochain_controle"/>
                         </group>
-                        <!--
-                        <group col="4" colspan="4" string="Résultat du contrôle">
-                            <group>
-                                <field name="controle"/> 
-                                <field name="cause_arret" attrs="{'invisible':[('controle','!=', 'arrêt')],'required':[('controle','=', 'arrêt')]}" /> 
-                                <field name="cause_visuel" attrs="{'invisible':[('controle','!=', 'visuel')],'required':[('controle','=', 'visuel')]}" />
-                                <field name="date_controle"/>
-                                <field name="date_prochain_controle"/>
-                            </group>
-                            <group>
-                                <field name="organisme_controleur"/>
-                                <field name="fournisseur_id" attrs="{'invisible':[('organisme_controleur','!=', 'externe')],'required':[('organisme_controleur','=', 'externe')]}"/>
-                                <field name="etat_conformite"/>
-                                <field name="rapport_de_controle"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Historique des contrôles">
-                                <field name="piece_controle_ids" />
-                            </page>
-                        </notebook>
-                        -->
-
                         <notebook>
                             <page string="Historique des contrôles">
                                 <field name="controle_ids">
@@ -111,7 +86,8 @@
                     <field name="code_pg"/> 
                     <field name="designation"/> 
                     <field name="fabriquant"/> 
-                    <field name="fabricant_client_id"/> 
+                    <field name="fabricant_client_id"/>
+                    <field name="lieu_stockage"/> 
                     <field name="date_prochain_controle"/>
                     <field name="is_database_origine_id"/>
                 </tree>
@@ -134,10 +110,7 @@
             <field name="res_model">is.piece.montabilite</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <!--<field name="context">{'search_default_date_prochain_controle_filter':1}</field>-->
             <field name="context">{}</field>
         </record>
-        
-        
-</data>
+    </data>
 </openerp>

@@ -124,7 +124,7 @@
                                         Page 1/1
                                     </td>
                                 </tr>
-                                <tr style="height:60mm">
+                                <tr style="height:70mm">
                                     <td colspan="3">
                                         <table style="width:100%;border:0">
                                             <tr>
@@ -149,17 +149,17 @@
                                                             <th>Nb UC/UM</th>
                                                             <td><span t-field="o.is_emb_nb_uc_par_um"/></td>
                                                         </tr>
-                                                        <tr t-if="o.is_gerbage_stockage">
-                                                            <th>Gerbage au stockage</th>
-                                                            <td><span t-field="o.is_gerbage_stockage"/></td>
+                                                    </table>
+                                                    <br />
+                                                    <h2>Caractéristiques</h2>
+                                                    <table style="width:100%">
+                                                        <tr t-if="o.is_couleur">
+                                                            <th>Couleur</th>
+                                                            <td><span t-field="o.is_couleur"/></td>
                                                         </tr>
                                                         <tr t-if="o.is_emb_matiere">
                                                             <th>Matière</th>
                                                             <td><span t-field="o.is_emb_matiere"/></td>
-                                                        </tr>
-                                                        <tr t-if="o.is_emb_emplacement_id">
-                                                            <th>Emplacement de stockage</th>
-                                                            <td><span t-field="o.is_emb_emplacement_id"/></td>
                                                         </tr>
                                                         <tr t-if="o.is_emb_norme_id">
                                                             <th>Nomenclature/Norme </th>
@@ -205,6 +205,18 @@
                                                             <td><span t-field="o.is_emb_masse"/></td>
                                                         </tr>
                                                     </table>
+                                                    <br />
+                                                    <h2>Stockage</h2>
+                                                    <table style="width:100%">
+                                                        <tr t-if="o.is_gerbage_stockage">
+                                                            <th>Gerbage au stockage</th>
+                                                            <td><span t-field="o.is_gerbage_stockage"/></td>
+                                                        </tr>
+                                                         <tr t-if="o.is_emb_emplacement_id">
+                                                            <th>Emplacement de stockage</th>
+                                                            <td><span t-field="o.is_emb_emplacement_id"/></td>
+                                                        </tr>
+                                                    </table>
                                                 </td>
                                                 <td style="width:2%;border:0">
                                                 </td>
@@ -212,9 +224,9 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <tr style="height:230mm">
+                                <tr style="height:220mm">
                                     <td colspan="3">
-                                        <img t-att-src="'data:image/png;base64,%s' % o.image" style="max-width:180mm;max-height:220mm"/>
+                                        <img t-att-src="'data:image/png;base64,%s' % o.image" style="max-width:180mm;max-height:210mm"/>
                                     </td>
                                 </tr>
                             </table>
