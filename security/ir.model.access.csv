@@ -199,4 +199,15 @@ access_is_pointage_commentaire,access_is_pointage_commentaire,model_is_pointage_
 access_is_employe_horaire,access_is_employe_horaire,model_is_employe_horaire,base.group_hr_manager,1,1,1,1
 access_is_employe_absence,access_is_employe_absence,model_is_employe_absence,base.group_hr_manager,1,1,1,1
 
+access_is_reach,access_is_reach,model_is_reach,base.group_user,1,1,1,1
+access_is_reach_product,access_is_reach_product,model_is_reach_product,base.group_user,1,1,1,1
+access_is_reach_product_cas,access_is_reach_product_cas,model_is_reach_product_cas,base.group_user,1,1,1,1
+
+
+
+
+
+
+
+
 
