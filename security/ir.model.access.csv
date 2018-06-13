@@ -203,6 +203,11 @@ access_is_reach,access_is_reach,model_is_reach,base.group_user,1,1,1,1
 access_is_reach_product,access_is_reach_product,model_is_reach_product,base.group_user,1,1,1,1
 access_is_reach_product_cas,access_is_reach_product_cas,model_is_reach_product_cas,base.group_user,1,1,1,1
 
+access_is_rgpd_service,access_is_rgpd_service,model_is_rgpd_service,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
+access_is_rgpd_traitement,access_is_rgpd_traitement,model_is_rgpd_traitement,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
+access_is_rgpd_lieu_stockage,access_is_rgpd_lieu_stockage,model_is_rgpd_lieu_stockage,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
+access_is_rgpd_action,access_is_rgpd_action,model_is_rgpd_action,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
+access_is_rgpd_donnee_personnelle,access_is_rgpd_donnee_personnelle,model_is_rgpd_donnee_personnelle,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 
 
 

@@ -57,6 +57,7 @@ import is_deb
 import hr
 import is_pointage
 import is_reach
+import is_rgpd
 
 import is_copy_other_database
 import report

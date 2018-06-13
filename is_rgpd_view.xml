@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- is.rgpd.service --> 
+        <record model="ir.ui.view" id="is_rgpd_service_form_view">
+            <field name="name">is_rgpd_service_form_view</field>
+            <field name="model">is.rgpd.service</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_service_tree_view">
+            <field name="name">is_rgpd_service_tree_view</field>
+            <field name="model">is.rgpd.service</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_service_search_view" >
+            <field name="name">is_rgpd_service_search_view</field>
+            <field name="model">is.rgpd.service</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_rgpd_service_action">
+            <field name="name">Service RGPD</field>
+            <field name="res_model">is.rgpd.service</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
+        <!-- is.rgpd.lieu.stockage --> 
+        <record model="ir.ui.view" id="is_rgpd_lieu_stockage_form_view">
+            <field name="name">is_rgpd_lieu_stockage_form_view</field>
+            <field name="model">is.rgpd.lieu.stockage</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_lieu_stockage_tree_view">
+            <field name="name">is_rgpd_lieu_stockage_tree_view</field>
+            <field name="model">is.rgpd.lieu.stockage</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_lieu_stockage_search_view" >
+            <field name="name">is_rgpd_lieu_stockage_search_view</field>
+            <field name="model">is.rgpd.lieu.stockage</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_rgpd_lieu_stockage_action">
+            <field name="name">Service RGPD</field>
+            <field name="res_model">is.rgpd.lieu.stockage</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
+        <!-- is.rgpd.donnee.personnelle --> 
+        <record model="ir.ui.view" id="is_rgpd_donnee_personnelle_form_view">
+            <field name="name">is_rgpd_donnee_personnelle_form_view</field>
+            <field name="model">is.rgpd.donnee.personnelle</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="liste_traitemments_action"
+                            string="Liste des traitements"
+                            type="object"
+                        />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="service_id"/>
+                                <field name="traitement_ids" widget="many2many_tags"/>
+                                <field name="lieu_stockage_id"/>
+                                <field name="duree_conservation"/>
+                                <field name="acces"/>
+                                <field name="commentaire"/>
+                                <field name="createur_id"/>
+                                <field name="date_creation"/>
+                                <field name="conforme"/>
+                                <field 
+                                    name="action_id" 
+                                    attrs="{
+                                        'invisible':[('conforme','!=','Non')],
+                                        'required':[('conforme','=','Non')]
+                                    }"
+                                />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_donnee_personnelle_tree_view">
+            <field name="name">is_rgpd_donnee_personnelle_tree_view</field>
+            <field name="model">is.rgpd.donnee.personnelle</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:conforme=='Non'">
+                    <field name="name"/>
+                    <field name="service_id"/>
+                    <button 
+                        string="Liste des traitements" 
+                        name= "liste_traitemments_action" type="object" icon="gtk-justify-fill"
+                    />
+                    <field name="traitement_ids"/>
+                    <field name="lieu_stockage_id"/>
+                    <field name="duree_conservation"/>
+                    <field name="acces"/>
+                    <field name="commentaire"/>
+                    <field name="createur_id"/>
+                    <field name="date_creation"/>
+                    <field name="conforme"/>
+                    <field name="action_id"        widget="many2one_clickable"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_donnee_personnelle_search_view" >
+            <field name="name">is_rgpd_donnee_personnelle_search_view</field>
+            <field name="model">is.rgpd.donnee.personnelle</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="service_id"/>
+                    <field name="traitement_ids"/>
+                    <field name="lieu_stockage_id"/>
+                    <field name="commentaire"/>
+                    <field name="createur_id"/>
+                    <field name="conforme"/>
+                    <field name="action_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_rgpd_donnee_personnelle_action">
+            <field name="name">Donnée personnelle RGPD</field>
+            <field name="res_model">is.rgpd.donnee.personnelle</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
+
+        <!-- is.rgpd.traitement --> 
+        <record id="is_rgpd_traitement_type_seq" model="ir.sequence.type">
+            <field name="name">RGPD Traitement</field>
+            <field name="code">is.rgpd.traitement</field>
+        </record>
+        <record id="is_rgpd_traitement_seq" model="ir.sequence">
+            <field name="name">RGPD Traitement</field>
+            <field name="code">is.rgpd.traitement</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_traitement_form_view">
+            <field name="name">is_rgpd_traitement_form_view</field>
+            <field name="model">is.rgpd.traitement</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="liste_donnees_action"
+                            string="Liste des données personnelles"
+                            type="object"
+                        />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="traitement"/>
+                                <field name="annee_creation"/>
+                                <field name="mise_a_jour"/>
+                                <field name="service_id"/>
+                                <field name="finalite"/>
+                                <field name="sous_finalite"/>
+                                <field name="mesure_technique"/>
+                                <field name="mesure_organisationnelle"/>
+                                <field name="commentaire"/>
+                                <field name="createur_id"/>
+                                <field name="date_creation"/>
+                                <field name="conforme"/>
+                                <field 
+                                    name="action_id" 
+                                    attrs="{
+                                        'invisible':[('conforme','!=','Non')],
+                                        'required':[('conforme','=','Non')]
+                                    }"
+                                />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_traitement_tree_view">
+            <field name="name">is_rgpd_traitement_tree_view</field>
+            <field name="model">is.rgpd.traitement</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:conforme=='Non'">
+                    <field name="name"/>
+                    <field name="traitement"/>
+                    <field name="annee_creation"/>
+                    <field name="mise_a_jour"/>
+                    <field name="service_id"/>
+                    <field name="finalite"/>
+                    <field name="sous_finalite"/>
+                    <field name="mesure_technique"/>
+                    <field name="mesure_organisationnelle"/>
+                    <field name="commentaire"/>
+                    <field name="createur_id"/>
+                    <field name="date_creation"/>
+                    <field name="conforme"/>
+                    <field name="action_id"        widget="many2one_clickable"/>
+                    <button 
+                        string="Liste des données personnelles" 
+                        name= "liste_donnees_action" type="object" icon="gtk-justify-fill"
+                    />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_traitement_search_view" >
+            <field name="name">is_rgpd_traitement_search_view</field>
+            <field name="model">is.rgpd.traitement</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="traitement"/>
+                    <field name="service_id"/>
+                    <field name="finalite"/>
+                    <field name="mesure_technique"/>
+                    <field name="mesure_organisationnelle"/>
+                    <field name="commentaire"/>
+                    <field name="createur_id"/>
+                    <field name="conforme"/>
+                    <field name="action_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_rgpd_traitement_action">
+            <field name="name">Traitement RGPD</field>
+            <field name="res_model">is.rgpd.traitement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
+        <!-- is.rgpd.action --> 
+        <record id="is_rgpd_action_type_seq" model="ir.sequence.type">
+            <field name="name">RGPD Action</field>
+            <field name="code">is.rgpd.action</field>
+        </record>
+        <record id="is_rgpd_action_seq" model="ir.sequence">
+            <field name="name">RGPD Action</field>
+            <field name="code">is.rgpd.action</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_action_form_view">
+            <field name="name">is_rgpd_action_form_view</field>
+            <field name="model">is.rgpd.action</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <header>
+                        <button 
+                            name="liste_donnees_action"
+                            string="Liste des données personnelles"
+                            type="object"
+                        />
+                        <button 
+                            name="liste_traitemments_action"
+                            string="Liste des traitements"
+                            type="object"
+                        />
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="action"/>
+                                <field name="responsable_id"/>
+                                <field name="date_fin_prevue"/>
+                                <field name="date_realisee"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_action_tree_view">
+            <field name="name">is_rgpd_action_tree_view</field>
+            <field name="model">is.rgpd.action</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:date_realisee==False">
+                    <field name="name"/>
+                    <field name="action"/>
+                    <field name="responsable_id"/>
+                    <field name="date_fin_prevue"/>
+                    <field name="date_realisee"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_rgpd_action_search_view" >
+            <field name="name">is_rgpd_action_search_view</field>
+            <field name="model">is.rgpd.action</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="action"/>
+                    <field name="responsable_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_rgpd_action_action">
+            <field name="name">Action RGPD</field>
+            <field name="res_model">is.rgpd.action</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
+        <!-- Menus -->
+        <record id="is_rgpd_main_menu" model="ir.ui.menu">
+            <field name="name">RGPD</field>
+            <field name="sequence">90</field>
+            <field name="groups_id" eval="[(6,0,[
+                ref('is_gestionnaire_rgpd_group'),
+            ])]"/>
+        </record>
+        <menuitem id="is_rgpd_menu"                    sequence="10" name="RGPD" parent="is_rgpd_main_menu"/>
+        <menuitem id="is_rgpd_donnee_personnelle_menu" sequence="10" name="Données personnelles" parent="is_rgpd_menu" action="is_rgpd_donnee_personnelle_action"/>
+        <menuitem id="is_rgpd_traitement_menu"         sequence="20" name="Traitements"          parent="is_rgpd_menu" action="is_rgpd_traitement_action"/>
+        <menuitem id="is_rgpd_action_menu"             sequence="30" name="Actions"              parent="is_rgpd_menu" action="is_rgpd_action_action"/>
+        <menuitem id="is_rgpd_table_menu"              sequence="20" name="Tables" parent="is_rgpd_main_menu"/>
+        <menuitem id="is_rgpd_service_menu"            sequence="10" name="Services"             parent="is_rgpd_table_menu" action="is_rgpd_service_action"/>
+        <menuitem id="is_rgpd_lieu_stockage_menu"      sequence="20" name="Lieu de stockage"     parent="is_rgpd_table_menu" action="is_rgpd_lieu_stockage_action"/>
+  </data>
+</openerp>

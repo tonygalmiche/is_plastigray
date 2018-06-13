@@ -100,6 +100,7 @@ Module principal du projet Plastigray
         "hr_view.xml",
         "is_pointage_view.xml",
         "is_reach_view.xml",
+        "is_rgpd_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

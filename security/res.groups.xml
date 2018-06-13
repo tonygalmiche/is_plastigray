@@ -105,6 +105,12 @@
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
 
+    <record model="res.groups" id="is_gestionnaire_rgpd_group" >
+        <field name="name">Gestionnaire RGPD</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+
     <record model="res.groups" id="is_gestionnaire_tables_group" >
         <field name="name">Gestionnaire des tables, postes de charge et calcul des coûts</field>
         <field name="comment"></field>
