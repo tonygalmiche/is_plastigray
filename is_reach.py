@@ -55,8 +55,8 @@ class is_reach(models.Model):
                 where 
                     sp.picking_type_id=2 and 
                     sm.state='done' and
-                    sp.is_date_expedition>='2018-03-01' and
-                    sp.is_date_expedition<='2018-06-01'
+                    sp.is_date_expedition>='"""+str(obj.date_debut)+"""' and
+                    sp.is_date_expedition<='"""+str(obj.date_fin)+"""'
             """
             if clients:
                 SQL=SQL+" and rp.is_code in ("+clients+") "
@@ -94,6 +94,9 @@ class is_reach(models.Model):
                 global ordre
                 ordre=0
                 product = self.env['product.product'].browse(product_id)
+
+                #print product_id, product.is_code,row[7]
+
                 self.cbb_multi_niveaux(line,product)
                 poids_substances=0
                 for cas in line.cas_ids:
@@ -149,6 +152,10 @@ class is_reach(models.Model):
             ordre=ordre+1
             line_product  = self.env['product.product'].browse(line['product_id'])
             line_quantite = quantite*line['product_qty']
+
+            #if line_product.is_code=='501893':
+            #    print product.is_code,line_product.is_code,line['product_qty'],quantite
+
             self.cbb_multi_niveaux(reach_product,line_product, line_quantite, niveau+1)
 
 
