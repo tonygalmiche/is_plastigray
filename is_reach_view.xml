@@ -21,6 +21,11 @@
                             type="object"
                         />
                         <button 
+                            name="matieres_livrees_action"
+                            string="Liste des matières livrées"
+                            type="object"
+                        />
+                        <button 
                             name="substances_livrees_action"
                             string="Liste des substances livrées"
                             type="object"
@@ -100,8 +105,10 @@
                                 <field name="qt_livree"/>
                                 <field name="interdit"/>
                                 <field name="poids_substances"/>
+                                <field name="poids_produit_unitaire"/>
                                 <field name="poids_produit"/>
                                 <field name="pourcentage_substances"/>
+                                <field name="codes_cas"/>
                             </group>
                         </group>
                     </sheet>
@@ -121,10 +128,12 @@
                     <field name="category_id"/>
                     <field name="gestionnaire_id"/>
                     <field name="qt_livree"        sum="Total"/>
+                    <field name="poids_produit_unitaire"/>
                     <field name="poids_produit"    sum="Total"/>
                     <field name="interdit"/>
                     <field name="poids_substances" sum="Total"/>
                     <field name="pourcentage_substances"/>
+                    <field name="codes_cas"/>
                     <button 
                         string="Liste des substances livrées" 
                         name= "substances_livrees_action" type="object" icon="gtk-justify-fill"
@@ -145,6 +154,7 @@
                     <field name="gestionnaire_id"/>
                     <field name="interdit"/>
                     <field name="reach_id"/>
+                    <field name="codes_cas"/>
                     <group string="Regrouper par...">
                         <filter string="Client" context="{'group_by':'partner_id'}"/>
                     </group>
@@ -154,6 +164,63 @@
         <record model="ir.actions.act_window" id="is_reach_product_action">
             <field name="name">Analyse REACH par produit</field>
             <field name="res_model">is.reach.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
+        <!-- is.reach.product.matiere -->
+        <record model="ir.ui.view" id="is_reach_product_matiere_form_view">
+            <field name="name">is_reach_product_matiere_form_view</field>
+            <field name="model">is.reach.product.matiere</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="reach_id"/>
+                                <field name="reach_product_id"/>
+                                <field name="qt_livree"/>
+                                <field name="product_id"/>
+                                <field name="qt_nomenclature"/>
+                                <field name="qt_matiere_livree"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_reach_product_matiere_tree_view">
+            <field name="name">is_reach_product_matiere_tree_view</field>
+            <field name="model">is.reach.product.matiere</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="reach_product_id"/>
+                    <field name="qt_livree"/>
+                    <field name="product_id"/>
+                    <field name="qt_nomenclature"/>
+                    <field name="qt_matiere_livree" sum="Total"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_reach_product_matiere_search_view" >
+            <field name="name">is_reach_product_matiere_search_view</field>
+            <field name="model">is.reach.product.matiere</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="reach_id"/>
+                    <field name="reach_product_id"/>
+                    <field name="product_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_reach_product_matiere_action">
+            <field name="name">Analyse REACH par matière</field>
+            <field name="res_model">is.reach.product.matiere</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{}
@@ -184,8 +251,10 @@
                                 <field name="name"/>
                                 <field name="interdit"/>
                                 <field name="poids_substance"/>
+                                <field name="poids_produit_unitaire"/>
                                 <field name="poids_produit"/>
                                 <field name="pourcentage_substance"/>
+                                <field name="poids_autorise"/>
                             </group>
                         </group>
                     </sheet>
@@ -205,12 +274,14 @@
                     <field name="category_id"/>
                     <field name="gestionnaire_id"/>
                     <field name="qt_livree"/>
+                    <field name="poids_produit_unitaire"/>
                     <field name="poids_produit"/>
                     <field name="matiere_id"       widget="many2one_clickable"/>
                     <field name="name"             widget="many2one_clickable"/>
                     <field name="interdit"/>
                     <field name="poids_substance"  sum="Total"/>
                     <field name="pourcentage_substance"/>
+                    <field name="poids_autorise"/>
                 </tree>
             </field>
         </record>
