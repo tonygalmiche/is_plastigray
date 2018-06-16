@@ -131,8 +131,8 @@ class is_reach(models.Model):
                     code_cas=cas.name.code_cas
                     if code_cas not in codes_cas:
                         codes_cas.append(code_cas)
-                line.codes_cas=','.join(codes_cas)
-                line.interdit=','.join(interdits)
+                line.codes_cas=', '.join(codes_cas)
+                line.interdit=', '.join(interdits)
                 pourcentage_substances=0
                 if line.poids_produit!=0:
                     pourcentage_substances=100*poids_substances/line.poids_produit
