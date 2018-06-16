@@ -55,6 +55,7 @@
                                     <field name="qt_odoo"/>
                                     <field name="qt_inventaire"/>
                                     <field name="ecart"/>
+                                    <field name="lieu"/> 
                                 </tree>
                             </field>
                         </group>

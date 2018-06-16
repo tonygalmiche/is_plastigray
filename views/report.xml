@@ -36,6 +36,9 @@
             name="is_plastigray.report_inventaire"
             file="is_plastigray.report_inventaire"
         />
+        <record id="report_inventaires" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.inventaire_paperformat"/>
+        </record>
 
 
 

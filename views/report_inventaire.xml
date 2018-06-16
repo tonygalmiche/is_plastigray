@@ -20,21 +20,19 @@
                         td{
                             border:1pt solid black;
                             padding:2pt;
+                            font-size:9pt;
                         }
                         th{
                             text-align:center;
                             border:1pt solid black;
                             background-color:#0082DC;
                             padding:2pt;
+                            font-size:9pt;
                         }
                         .message{
                             font-size:16pt;
                             background:orange;
                         }
-
-
-
-
                     </style>
 
                     <div class="row">
@@ -55,6 +53,8 @@
                                         <th>Qt Odoo</th>
                                         <th>Qt Inv</th>
                                         <th>Ecart</th>
+                                        <th>Lieu</th>
+                                        <th>Qt recontrôlée</th>
                                         <th>Commentaire</th>
                                     </tr>
                                 </thead>
@@ -65,10 +65,12 @@
                                             <td class="text-left">   <span t-field="l.code"/></td>
                                             <td class="text-left">   <small><span t-field="l.designation"/></small></td>
                                             <td class="text-center"> <span t-field="l.us_id"/></td>
-                                            <td class="text-right">  <span t-field="l.qt_odoo"/></td>
-                                            <td class="text-right">  <span t-field="l.qt_inventaire"/></td>
-                                            <td class="text-right">  <span t-field="l.ecart" /></td>
-                                            <td width="50mm"> </td>
+                                            <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_odoo"/></td>
+                                            <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_inventaire"/></td>
+                                            <td class="text-right">  <span style="white-space: nowrap;" t-field="l.ecart" /></td>
+                                            <td class="text-left">   <span t-field="l.lieu" /></td>
+                                            <td class="text-right"></td>
+                                            <td class="text-left"></td>
                                         </tr>
                                     </t>
                                 </tbody>

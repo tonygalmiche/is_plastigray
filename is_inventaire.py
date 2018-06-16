@@ -6,10 +6,8 @@ from openerp.exceptions import Warning
 import datetime
 import base64
 import MySQLdb
-
-#TODO : 
-# - Une fois l'inventaire validé, plus rien n'est modifiable
-# - Faire une doc : Saisie en US ou UC, sasie unqiuement au clavier et tri des lignes
+import logging
+_logger = logging.getLogger(__name__)
 
 
 def _date_creation():
@@ -168,12 +166,20 @@ class is_inventaire(models.Model):
                 for ecart in ecarts:
                     #Si ecart positif, il faut ajouter des lignes : 
                     if ecart.ecart>0:
+
+                        # ** Recherche du dernier lot pour cet article *********
+                        lot=False
+                        lots=self.env['stock.production.lot'].search([['product_id', '=', ecart.product_id.id]],limit=1,order='id desc')
+                        for l in lots:
+                            lot=l
+
                         # ** Il faut créer un lot du nom de l'inventaire *******
-                        vals={
-                            'name': obj.name,
-                            'product_id': ecart.product_id.id,
-                        }
-                        lot=self.env['stock.production.lot'].create(vals)
+                        if lot==False:
+                            vals={
+                                'name': obj.name,
+                                'product_id': ecart.product_id.id,
+                            }
+                            lot=self.env['stock.production.lot'].create(vals)
 
                         vals={
                             'product_id' : ecart.product_id.id,
@@ -261,6 +267,7 @@ class is_inventaire(models.Model):
             cr.execute(SQL)
             res=cr.fetchall()
             # ******************************************************************
+
             for row in res:
                 # ** Creation inventaire ***************************************
                 location_id=row[0]
@@ -393,11 +400,37 @@ class is_inventaire(models.Model):
                 """
                 cr.execute(SQL)
                 res2=cr.fetchall()
+                ct=0
+                nb=len(res2)
                 for row2 in res2:
+                    ct=ct+1
+                    #_logger.info('action_calcul_ecart : location_id='+str(location_id)+' : '+str(ct)+'/'+str(nb)+' : '+str(row2[0]))
+
                     qt_odoo       = row2[3] or 0
                     qt_inventaire = row2[4] or 0
                     ecart         = qt_inventaire-qt_odoo
+                    product_id    = row2[5]
                     if ecart!=0:
+
+                        #** Recherche de la liste des lieux ********************
+                        SQL="""
+                            select iil.lieu
+                            from is_inventaire_line iil
+                            where iil.location_id='"""+str(location_id)+"""' and
+                                  iil.product_id="""+str(product_id)+""" and 
+                                  iil.inventaire_id='"""+str(obj.id)+"""' and
+                                  iil.encours!=True
+                        """
+                        cr.execute(SQL)
+                        res3=cr.fetchall()
+                        lieux=[]
+                        for row3 in res3:
+                            lieu=row3[0] or '#N/A'
+                            if lieu not in lieux:
+                                lieux.append(lieu)
+                        lieux=', '.join(lieux)
+                        #*******************************************************
+
                         vals={
                             'inventaire_id': obj.id,
                             'location_id'  : location_id,
@@ -407,6 +440,7 @@ class is_inventaire(models.Model):
                             'us_id'        : row2[2],
                             'qt_odoo'      : qt_odoo,
                             'qt_inventaire': qt_inventaire,
+                            'lieu'         : lieux,
                             'ecart'        : ecart,
 
                         }
@@ -627,18 +661,20 @@ class is_inventaire_feuille(models.Model):
                 if product==False:
                     anomalies.append("Article "+str(row[0])+" inexistant !")
                 else:
-                    # Recherche du lot
+                    #** Recherche du lot ***************************************
                     lot=False
                     lots=self.env['stock.production.lot'].search([['name', '=', row[1]],['product_id', '=', product.id]])
                     for l in lots:
                         lot=l
-                    # Création du lot s'il n'existe pas
+
+                    #** Création du lot s'il n'existe pas **********************
                     if lot==False:
                         vals={
                             'name': str(row[1]),
                             'product_id': product.id,
                         }
                         lot=self.env['stock.production.lot'].create(vals)
+
                     # Recherche emplacement
                     location_id=0
                     statut=""
@@ -798,6 +834,7 @@ class is_inventaire_ecart(models.Model):
     qt_odoo         = fields.Float("Qt Odoo")
     qt_inventaire   = fields.Float("Qt Inventaire")
     ecart           = fields.Float("Ecart", help="Qt Inventaire - Qt Odoo")
+    lieu            = fields.Char('Lieu')
 
 
 
