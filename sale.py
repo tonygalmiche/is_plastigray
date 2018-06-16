@@ -247,27 +247,20 @@ class sale_order_line(models.Model):
                 # Jours de congé de la société
                 leave_dates = res_partner.get_leave_dates(order.order_id.company_id.partner_id)
                 delai_transport = order.order_id.partner_id.is_delai_transport
-
                 date_expedition = order.is_date_livraison
                 if delai_transport:
-                    i = 0
-                    while i < delai_transport:
-                        date = datetime.datetime.strptime(date_expedition, '%Y-%m-%d') - datetime.timedelta(days=1)
-                        date = date.strftime('%Y-%m-%d')
-                        num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
-                        date_expedition = res_partner.get_day_except_weekend(date, num_day)         
-                        i += 1
-                    date_expedition = res_partner.get_working_day(date, num_day, jours_fermes, leave_dates)
+                    new_date=datetime.datetime.strptime(date_expedition, '%Y-%m-%d')
+                    nb_jours=delai_transport
+                    while True:
+                        new_date = new_date - datetime.timedelta(days=1)
+                        date_txt=new_date.strftime('%Y-%m-%d')
+                        num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
+                        if not(num_day in jours_fermes or date_txt in leave_dates):
+                            nb_jours=nb_jours-1
+                        if nb_jours<=0:
+                            date_expedition=new_date.strftime('%Y-%m-%d')
+                            break
                 order.is_date_expedition=date_expedition
-
-#                if delai_transport:
-#                    date = datetime.datetime.strptime(order.is_date_livraison, '%Y-%m-%d') - datetime.timedelta(days=delai_transport)
-#                    date = date.strftime('%Y-%m-%d')
-#                    num_day = time.strftime('%w', time.strptime(date, '%Y-%m-%d'))
-#                    date_expedition = res_partner.get_working_day(date, num_day, jours_fermes, leave_dates)
-#                    order.is_date_expedition=date_expedition
-#                else:
-#                    order.is_date_expedition = order.is_date_livraison 
 
 
     @api.multi
