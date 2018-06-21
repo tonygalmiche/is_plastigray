@@ -428,7 +428,7 @@ class is_inventaire(models.Model):
                             lieu=row3[0] or '#N/A'
                             if lieu not in lieux:
                                 lieux.append(lieu)
-                        lieux=', '.join(lieux)
+                        lieux='\n'.join(lieux)
                         #*******************************************************
 
                         vals={
@@ -834,7 +834,7 @@ class is_inventaire_ecart(models.Model):
     qt_odoo         = fields.Float("Qt Odoo")
     qt_inventaire   = fields.Float("Qt Inventaire")
     ecart           = fields.Float("Ecart", help="Qt Inventaire - Qt Odoo")
-    lieu            = fields.Char('Lieu')
+    lieu            = fields.Text('Lieu')
 
 
 

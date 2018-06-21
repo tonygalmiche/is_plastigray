@@ -337,7 +337,7 @@
             <field name="name">stock.production.lot.tree</field>
             <field name="model">stock.production.lot</field>
             <field name="arch" type="xml">
-                <tree colors="red:is_date_peremption and (is_date_peremption&lt;current_date)" create="0" >
+                <tree colors="red:is_date_peremption and (is_date_peremption&lt;current_date)" create="1" >
                     <field name="name"/>
                     <field name="product_id"/>
                     <field name="is_lot_fournisseur"/>
@@ -346,6 +346,17 @@
                 </tree>
             </field>
         </record>
+        <record id="is_stock_production_lot_action" model="ir.actions.act_window">
+            <field name="name">Numéros de lots</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.production.lot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="stock.view_production_lot_tree"/>
+        </record>
+
+
+
 
         <record id="is_stock_incoterms_action" model="ir.actions.act_window">
             <field name="name">Incoterm</field>

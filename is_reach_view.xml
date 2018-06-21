@@ -302,8 +302,9 @@
                     <field name="reach_id"/>
                     <field name="reach_product_id"/>
                     <group string="Regrouper par...">
-                        <filter string="Client"  context="{'group_by':'partner_id'}"/>
-                        <filter string="Produit" context="{'group_by':'product_id'}"/>
+                        <filter string="Substance" context="{'group_by':'name'}"/>
+                        <filter string="Client"    context="{'group_by':'partner_id'}"/>
+                        <filter string="Produit"   context="{'group_by':'product_id'}"/>
                     </group>
                 </search>
             </field>

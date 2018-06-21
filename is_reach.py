@@ -122,10 +122,10 @@ class is_reach(models.Model):
                             interdits.append(cas.name.code_cas)
                     cas.poids_produit_unitaire = poids_produit
                     cas.poids_produit          = poids_produit*qt_livree
-                    pourcentage_substance=0
-                    if line.poids_produit!=0:
-                        pourcentage_substance=100*cas.poids_substance/line.poids_produit
-                    cas.pourcentage_substance=pourcentage_substance
+                    #pourcentage_substance=0
+                    #if line.poids_produit!=0:
+                    #    pourcentage_substance=100*cas.poids_substance/line.poids_produit
+                    #cas.pourcentage_substance=pourcentage_substance
                     
                     poids_substances=poids_substances+cas.poids_substance
                     code_cas=cas.name.code_cas
@@ -179,6 +179,7 @@ class is_reach(models.Model):
                 'name'                 : cas.code_cas_id.id,
                 'interdit'             : interdit,
                 'poids_substance'      : poids_substance,
+                'pourcentage_substance': cas.poids,
                 'poids_autorise'       : cas.code_cas_id.poids_autorise, 
             }
             res=self.env['is.reach.product.cas'].create(vals)
