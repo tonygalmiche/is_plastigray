@@ -194,6 +194,9 @@ Module principal du projet Plastigray
         "report/is_anomalie_declar_prod.xml",
         "menu.xml",
     ], 
+    "qweb": [
+        "static/src/xml/*.xml"
+    ],
     "installable": True,
     "active": False
 }

@@ -1,15 +1,11 @@
 
-
-
 .openerp .oe_form_sheetbg {
     padding: 16px 0;
     max-width: none !important;
 }
 .openerp .oe_form_sheet_width_wider {
-    /*max-width: 1100px;*/
     max-width: 95%;
 }
-
 
 
 .oe_list_field_float{
@@ -21,39 +17,56 @@
 }
 
 
-/*
-.oe_number{
-    color: red;
-    white-space: nowrap !important;
-}
-*/
-
-/*
-.graph_border {
-    text-align: left;
-    color: red;
-}
-*/
-
-/*
-h1 {
-  color:red;
-}
-
-
-.openerp p {
-  color:red;
-  background-color: green;
-}
-
-
-.openerp .oe_secondary_menu_section {
-    color: red;
-    background-color: green;
-}
-*/
-
-
 .openerp .announcement_bar {
     display:none;
 }
+
+
+.cbn{
+    margin:0;
+    padding:0.5em;
+    color:black;
+    background-color:#EFEFF8;
+}
+a.info {
+    position: relative;
+    text-decoration: none;
+    /*border-bottom: 1px gray dotted; */ /* on souligne le texte */
+}
+a.info span {
+    display: none; /* on masque l'infobulle */
+}
+a.info:hover {
+    background: none; /* correction d'un bug IE */
+    z-index: 500; /* on définit une valeur pour l'ordre d'affichage */
+}
+a.info:hover span {
+    display: inline; /* on affiche l'infobulle */
+    position: absolute;
+    white-space: nowrap; /* on change la valeur de la propriété white-space pour qu'il n'y ait pas de retour à la ligne non-désiré */
+    top: 20px; /* on positionne notre infobulle */
+    left: 0px;
+    background: white;
+    color: blue;
+    padding: 3px;
+    border: 1px solid blue;
+    border-left: 4px solid blue;
+    text-align: left;
+}
+#table_body {
+    overflow-x:auto; 
+    overflow-y:auto;
+}
+#table_body th {
+     display:none;
+}
+.tbody  {
+    overflow: auto;
+    border: 10px;
+}
+.scroll {
+    width: 20px;
+    Background-Color: white;
+}
+
+

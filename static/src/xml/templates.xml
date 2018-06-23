@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Doc : http://odoo-80.readthedocs.org/en/latest/howtos/web.html#using-qweb -->
+
+
+<!-- Ce fichier est pris en compte à chaque rafraichissement du navigateur -->
+<templates xml:space="preserve">
+    <t t-name="AnalyseCBN">
+        <div class="cbn">
+            <h2 style="font-size:1.5em;padding:0;margin:0" id="titre"></h2>
+            <form style="padding-top:0.5em;padding-bottom:0.5em">
+                <table>
+                    <tr>
+                        <td>Code PG (Début) <br /><input style='width:9em' type='text'     id='code_pg_debut'  title="Début Code PG"/></td>
+                        <td>Gest            <br /><select style="width: 4em;" id='gest'/></td>
+                        <td>Cat             <br /><input style='width:4em' type='text'     id='cat'/></td>
+                        <td>Moule           <br /><input style='width:4em' type='text'     id='moule'/></td>
+                        <td>Projet          <br /><input style='width:4em' type='text'     id='projet'/></td>
+                        <td>Client          <br /><input style='width:6em' type='text'     id='client'/></td>
+                        <td>Fournisseur     <br /><select style="width: 6em;" id='fournisseur'/></td>
+                        <td>Semaines        <br /><select style="width: 8em;" id='nb_semaines'/></td>
+                        <td>Type Cde        <br /><select style="width: 8em;" id='type_commande'/></td>
+                        <td>Rapport         <br /><select style="width: 8em;" id='type_rapport'/></td>
+                        <td>Calage          <br /><select style="width: 8em;" id='calage'/></td>
+                        <td>Val             <br /><input type='checkbox' id='valorisation' title="Valorisation"/></td>
+                        <td>                <br /><button type="submit">OK</button><input id="validation" type="hidden" value="ko"/></td>
+                    </tr>
+                </table>
+            </form>
+            <div id="analysecbn"/>
+        </div>
+    </t>
+</templates>
+
+
+
+
