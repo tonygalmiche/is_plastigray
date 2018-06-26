@@ -235,6 +235,8 @@
                                 <tr>
                                     <th class="text-center">Date</th>
                                     <th class="text-center">Type</th>
+                                    <th class="text-center">Plan indice</th>
+                                    <th class="text-center">Couleur<br />Type matière</th>
                                     <th class="text-right">Quantité Commandée</th>
                                     <th class="text-right">Quantité Reçue</th>
                                     <th class="text-right">Unité</th>
@@ -247,6 +249,8 @@
                                 <tr t-foreach="p.line_ids" t-as="l">
                                     <td class="text-center"><span t-field="l.date"/></td>
                                     <td class="text-center"><span t-field="l.type_cde"/></td>
+                                    <td class="text-center"><span t-field="p.product_id.is_ind_plan"/> </td>
+                                    <td class="text-center"><span t-field="p.product_id.is_couleur"/> </td>
                                     <!--
                                     <td class="text-right"><span t-field="l.quantite"/></td>
                                     <td class="text-right"><span t-field="l.quantite_rcp"/></td>
