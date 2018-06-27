@@ -27,7 +27,7 @@ openerp.is_plastigray = function(instance, local) {
             d.obj=e.currentTarget;
             type=$(d.obj).attr("type");
 
-            if(type=='FL' || type=='FS' || type=='SA') {
+            if(type=='FL' || type=='FS' || type=='SA' || type=='CF' || type=='CP' || type=='SF') {
                 docid=$(d.obj).attr("docid");
                 docid = docid.split(","); 
                 nb=docid.length;
@@ -35,23 +35,38 @@ openerp.is_plastigray = function(instance, local) {
                 if (type=='FL') {
                     model='mrp.production';
                 }
+                if (type=='CF' || type=='CP') {
+                    model='sale.order.line';
+                }
+                if (type=='SF') {
+                    model='purchase.order.line';
+                }
                 if (nb==1) {
                     docid=docid[0]/1;
                     if (docid>0) {
-                        this.do_action({
-                            type: 'ir.actions.act_window',
-                            res_model: model,
-                            res_id: docid,
-                            views: [[false, 'form']],
-                            flags: {
-                                form: {
-                                    action_buttons: true, 
-                                    options: {
-                                        mode: 'edit'
+                        if(type=='FL' || type=='FS' || type=='SA') {
+                            this.do_action({
+                                type: 'ir.actions.act_window',
+                                res_model: model,
+                                res_id: docid,
+                                views: [[false, 'form']],
+                                flags: {
+                                    form: {
+                                        action_buttons: true, 
+                                        options: {
+                                            mode: 'edit'
+                                        }
                                     }
-                                }
-                            },
-                        });
+                                },
+                            });
+                        } else {
+                            this.do_action({
+                                type: 'ir.actions.act_window',
+                                res_model: model,
+                                res_id: docid,
+                                views: [[false, 'form']],
+                            });
+                        }
                     }
                 } else {
                     ids=new Array();

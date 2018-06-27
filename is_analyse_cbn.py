@@ -5,10 +5,6 @@ import datetime
 from collections import OrderedDict
 
 
-#TODO : 
-#- Pouvoir modifier les CF, CP et SF
-
-
 class product_product(models.Model):
     _inherit = "product.product"
 
@@ -271,6 +267,8 @@ class product_product(models.Model):
                             )="""+str(partner_id)+"""
                         )
                 """
+
+            filtre=filtre+" AND ic.name!='80' "
             # **********************************************************************
 
 
@@ -626,8 +624,15 @@ class product_product(models.Model):
                         k=i+2
                         if k not in TabSho:
                             TabSho[k]={}
+
+
+                        if Qt==0:
+                            val=''
+                        else:
+                            val="{0:10.0f}".format(Qt)
+
                         #TabSho[k][lig]="<a style=\"color:"+color+";\" class=\"info\" target='Modif_Odoo' href=\""+Lien+"\">"+"{0:10.0f}".format(Qt)+"<span>"+INFO+"</span></a>"
-                        TabSho[k][lig]="<a style=\"color:"+color+";\" class=\"info\" type='"+Type+"' docid='"+str(docid)+"'>"+"{0:10.0f}".format(Qt)+"<span>"+INFO+"</span></a>"
+                        TabSho[k][lig]="<a style=\"color:"+color+";\" class=\"info\" type='"+Type+"' docid='"+str(docid)+"'>"+val+"<span>"+INFO+"</span></a>"
 
 
                         #** Calcul du stock theorique ******************************
@@ -783,7 +788,10 @@ class product_product(models.Model):
                             color=self.color_cel(Tab[1][lig],cel)
                         if col>1:
                             if type(cel)==float:
-                                cel="{:10.0f}".format(cel)
+                                if cel==0:
+                                    cel=''
+                                else:
+                                    cel="{:10.0f}".format(cel)
                             cel="<b>"+str(cel)+"</b>"
                         align='left'
                         if col>1:
