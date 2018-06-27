@@ -118,7 +118,7 @@
                                     </td>
                                     <td style="width:70%">
                                         Fiche emballage<br />
-                                        <h1 t-field="o.name"/>
+                                        <h1><span t-field="o.is_code"/> - <span t-field="o.name"/></h1>
                                     </td>
                                     <td style="width:15%">
                                         Page 1/1
@@ -131,6 +131,11 @@
                                                 <td style="width:2%;border:0">
                                                 </td>
                                                 <td style="width:47%;border:0">
+                                                    <h2>Client</h2>
+                                                    <div t-foreach="o.seller_ids" t-as="l">
+                                                        <b><span t-field="l.name.name"/></b> (<span t-field="l.name.is_code"/>/<span t-field="l.name.is_adr_code"/>)
+                                                    </div>
+                                                    <br />
                                                     <h2>Palettisation</h2>
                                                     <table style="width:100%">
                                                         <tr t-if="o.is_emb_couvercle_id">
