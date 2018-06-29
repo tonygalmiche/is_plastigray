@@ -224,6 +224,7 @@
         <record id="report_pricelist_versions" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="is_plastigray.pricelist_version_paperformat"/>
         </record>
+
         <report 
             string="Stock détaillés" 
             id="report_stock_detail_tree" 
@@ -232,10 +233,25 @@
             name="is_plastigray.report_stockdetails_tree" 
             file="is_plastigray.report_stockdetails_tree" 
         />
-        
         <record id="report_stock_detail_tree" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="is_plastigray.document_fabrication_landscape_paperformat"/>
         </record>
+
+
+        <report 
+            string="Réceptions" 
+            id="ligne_reception_tree_reports" 
+            model="is.ligne.reception" 
+            report_type="qweb-pdf"
+            name="is_plastigray.ligne_reception_tree_report" 
+            file="is_plastigray.ligne_reception_tree_report" 
+        />
+        <record id="ligne_reception_tree_reports" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.document_fabrication_landscape_paperformat"/>
+        </record>
+
+
+
         
         <report 
             string="Mouvements de stock" 

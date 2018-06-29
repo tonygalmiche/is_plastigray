@@ -148,6 +148,7 @@ Module principal du projet Plastigray
         "views/report_proforma.xml",
         "views/report_is_facture_pk_line_tree.xml",
         "views/report_emballage.xml",
+        "views/report_ligne_reception_tree.xml",
         "views/report.xml",
         "report/stock_bloquer_lot.xml",
         "report/stock_debloquer_lot.xml",

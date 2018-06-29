@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="ligne_reception_tree_report">
+	<t t-call="report.html_container">
+    <t t-call="report.internal_layout">
+        <div class="page">
+            <div class="oe_structure"/>
+            <h2>Réceptions</h2>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th><strong>Date prévue</strong></th>
+                        <th><strong>Réception</strong></th>
+                        <th><strong>Commande</strong></th>
+                        <th><strong>Commande ouverte</strong></th>
+                        <th><strong>Fournisseur</strong></th>
+                        <th><strong>Article</strong></th>
+                        <th><strong>Référence fournisseur</strong></th>
+                        <th><strong>Quantité à réceptionner</strong></th>
+                        <th><strong>Unité</strong></th>
+                        <th><strong>Demandeur</strong></th>
+                        <th><strong>Date de confirmation</strong></th>
+                        <th><strong>Commentaire</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr t-foreach="docs" t-as="o">
+                        <td><span t-field="o.date_planned"/> </td>
+                        <td><span t-field="o.picking_id"/> </td>
+                        <td><span t-field="o.order_id"/> </td>
+                        <td><span t-field="o.commande_ouverte"/> </td>
+                        <td><span t-field="o.partner_id"/> </td>
+                        <td><span t-field="o.product_id"/> </td>
+                        <td><span t-field="o.ref_fournisseur"/> </td>
+                        <td><span t-field="o.qt_receptionnee" style="white-space: nowrap;"/> </td>
+                        <td><span t-field="o.product_uom"/> </td>
+                        <td><span t-field="o.is_demandeur_id"/> </td>
+                        <td><span t-field="o.is_date_confirmation"/> </td>
+                        <td><span t-field="o.is_commentaire"/> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t>
+    </t>
+</template>
+
+</data>
+</openerp>
