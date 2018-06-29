@@ -8,7 +8,7 @@
             <field name="model_id" ref="model_is_demande_achat_serie"/>
             <field name="domain_force">[('state','=','brouillon'),('createur_id','=',user.id)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_unlink"/>
             <field eval="1" name="perm_write"/>
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
@@ -61,7 +61,7 @@
             <field name="model_id" ref="model_is_demande_achat_fg"/>
             <field name="domain_force">[('state','=','brouillon'),('createur_id','=',user.id)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_unlink"/>
             <field eval="1" name="perm_write"/>
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
@@ -104,7 +104,7 @@
             <field name="model_id" ref="model_is_demande_achat_invest"/>
             <field name="domain_force">[('state','=','brouillon'),('createur_id','=',user.id)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_unlink"/>
             <field eval="1" name="perm_write"/>
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
@@ -159,7 +159,7 @@
             <field name="model_id" ref="model_is_demande_achat_moule"/>
             <field name="domain_force">[('state','=','brouillon'),('createur_id','=',user.id)]</field>
             <field name="groups" eval="[(4, ref('base.group_user'))]"/>
-            <field eval="0" name="perm_unlink"/>
+            <field eval="1" name="perm_unlink"/>
             <field eval="1" name="perm_write"/>
             <field eval="1" name="perm_read"/>
             <field eval="1" name="perm_create"/>
