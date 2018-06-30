@@ -27,6 +27,15 @@ openerp.is_plastigray = function(instance, local) {
             d.obj=e.currentTarget;
             type=$(d.obj).attr("type");
 
+            if(type=='stock-valorise'){
+                attachment_id=$(d.obj).attr("attachment_id");
+                this.do_action({
+                    type: 'ir.actions.act_url',
+                    url: '/web/binary/saveas?model=ir.attachment&field=datas&id='+attachment_id+'&filename_field=name',
+                    target: 'new',
+                });
+            }
+
             if(type=='FL' || type=='FS' || type=='SA' || type=='CF' || type=='CP' || type=='SF') {
                 docid=$(d.obj).attr("docid");
                 docid = docid.split(","); 

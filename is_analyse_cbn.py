@@ -3,6 +3,7 @@ from openerp import models,fields,api
 import time
 import datetime
 from collections import OrderedDict
+import tempfile
 
 
 class product_product(models.Model):
@@ -157,7 +158,6 @@ class product_product(models.Model):
             """
             cr.execute(SQL)
             result = cr.fetchall()
-            Couts={}
             for row in result:
                 cle=('0000'+row[2])[-4:]+'-'+row[3]+'/'+str(row[4])
                 TypeCde[cle]=row[0]
@@ -635,7 +635,7 @@ class product_product(models.Model):
                         TabSho[k][lig]="<a style=\"color:"+color+";\" class=\"info\" type='"+Type+"' docid='"+str(docid)+"'>"+val+"<span>"+INFO+"</span></a>"
 
 
-                        #** Calcul du stock theorique ******************************
+                        #** Calcul du stock theorique **************************
                         if Tab[key]['TYPE']=='90-Stock':
                             if i==0:
                                 Stock=Tab[key][0]+Qt
@@ -644,20 +644,20 @@ class product_product(models.Model):
                                 Stock=TabSho[1+i][lig]+Qt
                             TabSho[2+i][lig]=Stock
 
-                        #***********************************************************
+                        #*******************************************************
 
 
-                        #** Calcul du stock valorisé *******************************
+                        #** Calcul du stock valorisé ***************************
                         if Tab[key]['TYPE']=='92-Stock Valorisé':
                             if i==0:
                                 Stock=Tab[key][0]+Qt;
                             else:
                                Stock=TabSho[1+i][lig]+Qt;
                             TabSho[2+i][lig]=round(Stock)
-                        #***********************************************************
+                        #*******************************************************
                     lig+=1
             Tab=TabSho
-            # **********************************************************************
+            # ******************************************************************
 
 
             NomCol = ["Sécu / Délai / Lot / Multi / Stock A/Q", "Type"]
@@ -668,7 +668,7 @@ class product_product(models.Model):
             Size   = [220       , 40        ]
 
 
-            # ** Tableau des semaines **********************************************
+            # ** Tableau des semaines ******************************************
             date=datetime.datetime.now()
             jour=date.weekday()
             date = date - datetime.timedelta(days=jour)
@@ -677,7 +677,7 @@ class product_product(models.Model):
                 s='S'+str(date.isocalendar()[1])+'<br />'+date.strftime('%d.%m')
                 TabSemaines.append(s)
                 date = date + datetime.timedelta(days=7)
-            # **********************************************************************
+            # ******************************************************************
 
 
             for i in range(0,int(nb_semaines)):
@@ -690,7 +690,7 @@ class product_product(models.Model):
             width=220+40+nb_semaines*(48+2)+22
 
 
-            #** Création des listes et de la clé de tri  ***************************
+            #** Création des listes et de la clé de tri  ***********************
             lst={}
             lst['key']=[]
             for col, v1 in Tab.iteritems():
@@ -700,20 +700,20 @@ class product_product(models.Model):
                         key=Tab[0][lig]+Tab[1][lig]
                         lst['key'].append(key)
                     lst[col].append(v2)
-            #***********************************************************************
+            #*******************************************************************
 
 
-            #** Tri des listes *****************************************************
+            #** Tri des listes *************************************************
             z=[]
             z.append(lst['key'])
             for col in range(0,len(Tab)):
                 z.append(lst[col])
             NewTab=zip(*z)
             NewTab.sort()
-            #***********************************************************************
+            #*******************************************************************
 
 
-            #** Reconsctuction du Tab **********************************************
+            #** Reconsctuction du Tab ******************************************
             Tab={}
             lig=0
             for row in NewTab:
@@ -726,10 +726,95 @@ class product_product(models.Model):
                     col+=1
 
                 lig+=1
-            #***********************************************************************
+            #*******************************************************************
 
 
-            #** Code HTML **********************************************************
+            #** Génération du fichier CSV **************************************
+            attachment_id=''
+            if valorisation:
+                csv={};
+                for lig in range(0,len(Tab[0])):
+                    #** Recherche du CodePG et de la désignation ***************
+                    Key=Tab[0][lig]
+                    Key=Key.split('</b>')
+                    Key=Key[0]
+                    Key=Key.split('<b>')
+                    Key=Key[1]
+                    CodePG=Key
+                    Key=Tab[0][lig]
+                    Key=Key.split('<br />')
+                    Key=Key[1]
+                    Designation=Key
+                    #***********************************************************
+
+                    if CodePG not in csv:
+                        csv[CodePG]={}
+                    csv[CodePG][0]=CodePG
+                    csv[CodePG][1]=Designation
+                    Type=Tab[1][lig]
+                    if Type=='90-Stock':
+                        for col in range(2,len(Tab)):
+                            csv[CodePG][col*1000+1]=Tab[col][lig]
+                    if Type=='92-Stock Valorisé':
+                        for col in range(2,len(Tab)):
+                            csv[CodePG][col*1000+2]=Tab[col][lig]
+
+
+                #** Ecriture fichier CSV  **************************************
+                user  = self.env['res.users'].browse(uid)
+                name  = 'analyse-cbn-'+user.login+'.csv'
+                path='/tmp/'+name
+                f = open(path,'wb')
+                txt=[];
+                txt.append('CodePG')
+                txt.append('Désignation')
+                date=datetime.datetime.now()
+                jour=date.weekday()
+                date = date - datetime.timedelta(days=jour)
+                for i in range(0,int(nb_semaines)):
+                    v='Stock S'+str(date.isocalendar()[1])+' '+date.strftime('%d.%m')
+                    txt.append(v)
+                    v='Valorisé S'+str(date.isocalendar()[1])+' '+date.strftime('%d.%m')
+                    txt.append(v)
+                    date = date + datetime.timedelta(days=7)
+
+                f.write(u'\t'.join(txt)+'\r\n')
+                for k, v in csv.iteritems():
+                    v=self.ksort(v)
+                    txt=[]
+                    for k2, v2 in v:
+                        txt.append(str(v2).replace('.',','))
+                    f.write(u'\t'.join(txt)+'\r\n')
+                f.close()
+                #***************************************************************
+
+
+                # ** Creation ou modification de la pièce jointe *******************
+                attachment_obj = self.env['ir.attachment']
+                attachments = attachment_obj.search([('res_id','=',user.id),('name','=',name)])
+                csv = open(path,'rb').read()
+                vals = {
+                    'name':        name,
+                    'datas_fname': name,
+                    'type':        'binary',
+                    'res_id':      user.id,
+                    'datas':       csv.encode('base64'),
+                }
+                attachment_id=False
+                if attachments:
+                    for attachment in attachments:
+                        attachment.write(vals)
+                        attachment_id=attachment.id
+                else:
+                    attachment = attachment_obj.create(vals)
+                    attachment_id=attachment.id
+                #*******************************************************************
+
+
+            #*******************************************************************
+
+
+            #** Code HTML ******************************************************
             if len(Tab)==0:
                 html='Aucune donnée !'
             else:
@@ -748,8 +833,6 @@ class product_product(models.Model):
                 html+="</table>\n"
                 html+="</div>\n"
                 alt=1
-
-
 
                 html+="<div style=\"width:"+str(width+20)+"px;height:"+str(height)+"px\" id=\"table_body\">\n";
                 html+="<table style=\"border-width:0px;border-spacing:0px;padding:0px;width:"+str(width)+"px;\">\n";
@@ -802,6 +885,9 @@ class product_product(models.Model):
                 html+="</tbody>\n"
                 html+="</table>\n"
                 html+="</div>"
+                if valorisation:
+                    html+="<a class=\"info\" type='stock-valorise' attachment_id='"+str(attachment_id)+"'>Stock valorisé</a>\n"
+
             #***********************************************************************
 
 
@@ -828,6 +914,11 @@ class product_product(models.Model):
             'html'                : html,
         }
         return vals
+
+
+    @api.model
+    def ksort(self,d):
+        return [(k,d[k]) for k in sorted(d.keys())]
 
 
     @api.model
