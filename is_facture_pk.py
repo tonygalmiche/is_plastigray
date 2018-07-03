@@ -57,6 +57,15 @@ class is_facture_pk(models.Model):
         data_obj          = self.env['ir.model.data']
         stock_picking_obj = self.env['stock.picking']
         cout_obj          = self.env['is.cout']
+
+        #** Recherche si le BL est déjà facturé ********************************
+        if 'num_bl' in vals:
+            pickings = stock_picking_obj.search([('id', '=', vals['num_bl'])])
+            for picking in pickings:
+                if picking.is_facture_pk_id:
+                    raise Warning('Ce BL est déjà facturé !')
+        #***********************************************************************
+
         sequence_ids = data_obj.search([('name','=','seq_is_facture_pk')])
         if len(sequence_ids)>0:
             sequence_id = sequence_ids[0].res_id
@@ -121,7 +130,8 @@ class is_facture_pk(models.Model):
                 'poids_brut'      : total_poids_brut,
             })
         res = super(is_facture_pk, self).create(vals)
-        self.check_bl(res)
+        res.num_bl.is_facture_pk_id=res.id
+        #self.check_bl(res)
         return res
 
 
