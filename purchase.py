@@ -46,6 +46,8 @@ class purchase_order_line(models.Model):
 class purchase_order(models.Model):
     _inherit = "purchase.order"
 
+
+    is_contact_id        = fields.Many2one('res.partner', 'Contact Logistique')
     is_livre_a_id        = fields.Many2one('res.partner', 'Livrer à', help="Indiquez l'adresse de livraison si celle-ci est différente de celle de la société")
     is_num_da            = fields.Char("N°Demande d'achat")
     is_document          = fields.Char("Document (N° de dossier)")
@@ -53,6 +55,7 @@ class purchase_order(models.Model):
     is_date_confirmation = fields.Date("Date de confirmation du fournisseur")
     is_commentaire       = fields.Text("Commentaire")
     is_acheteur_id       = fields.Many2one('res.users','Acheteur')
+    is_date_envoi_mail   = fields.Datetime("Mail envoyé le", readonly=False)
 
     _defaults = {
         'is_demandeur_id': lambda obj, cr, uid, ctx=None: uid,
@@ -60,16 +63,126 @@ class purchase_order(models.Model):
 
 
     @api.multi
+    def envoyer_par_mail(self):
+        cr , uid, context = self.env.args
+        modele_mail=u"""
+        <html>
+            <head>
+                <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+            </head>
+            <body>
+                <font>Bonjour, </font>
+                <br><br>
+                <font> Veuillez trouver ci-joint notre commande.</font>
+                <br><br>
+                Cordialement <br><br>
+                [from]<br>
+            </body>
+        </html>
+        """
+
+        for obj in self:
+            email_contact=obj.is_contact_id.email
+            if email_contact==False:
+                raise Warning(u"Mail non renseigné pour ce contact !")
+            user  = self.env['res.users'].browse(uid)
+            email = user.email
+            nom   = user.name
+            if email==False:
+                raise Warning(u"Votre mail n'est pas renseigné !")
+
+
+            #** Génération du PDF **********************************************
+            name=u'commande-'+obj.name+u'.pdf'
+            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.is_report_purchaseorder')
+            #*******************************************************************
+
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            model=self._name
+            attachment_obj = self.env['ir.attachment']
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdf.encode('base64'),
+            }
+            attachment_id=False
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+            #*******************************************************************
+
+            email_cc      = nom+u' <'+email+u'>'
+            email_from    = email_cc
+            email_contact = obj.is_contact_id.name+u' <'+obj.is_contact_id.email+u'>'
+
+            subject    = u'Commande Plastigray '+obj.name+' pour '+obj.partner_id.name
+            #subject    = u'Commande Plastigray '+obj.name+' pour '+obj.partner_id.name+u' (to='+email_contact+u')'
+
+            email_to = email_contact
+            #email_to = email_cc
+
+            email_vals = {}
+            body_html=modele_mail.replace('[from]', user.name)
+            email_vals.update({
+                'subject'       : subject,
+                'email_to'      : email_to,
+                'email_cc'      : email_cc,
+                'email_from'    : email_from, 
+                'body_html'     : body_html.encode('utf-8'), 
+                'attachment_ids': [(6, 0, [attachment_id])] 
+            })
+
+            email_id=self.env['mail.mail'].create(email_vals)
+            if email_id:
+                self.env['mail.mail'].send(email_id)
+
+            obj.message_post(u'Commande envoyée par mail à '+email_contact)
+            obj.is_date_envoi_mail=datetime.now()
+
+
+    @api.multi
     def onchange_partner_id(self, partner_id, context=None):
+        cr , uid, context = self.env.args
         res = super(purchase_order, self).onchange_partner_id(partner_id)
+
+
+        #** Recherche du contact logistique ************************************
+        if partner_id:
+            SQL="""
+                select rp.id, rp.is_type_contact, itc.name
+                from res_partner rp inner join is_type_contact itc on rp.is_type_contact=itc.id
+                where 
+                    rp.parent_id="""+str(partner_id)+""" and 
+                    rp.active='t' and
+                    itc.name ilike '%logistique%' 
+                limit 1
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row in result:
+                if 'value' in res:
+                    res['value'].update({
+                        'is_contact_id': row[0]
+                    })
+        #***********************************************************************
+
 
         if 'value' in res:
             partner = self.env['res.partner'].browse(partner_id)
             res['value'].update({
                 'is_livre_a_id': partner.is_livre_a_id.id
             })
-        
-        print res
         return res
 
 

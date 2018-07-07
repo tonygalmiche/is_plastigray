@@ -35,13 +35,14 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form" />
             <field name="arch" type="xml">
-                <!--
-                <xpath expr="//header/button[@name='purchase_confirm']" position="before">
-                    <button name="do_demande_achat" states="draft" type="object" string="Faire une demande d'achat" id="draft_demande_achat"/>
-                    <button name="do_demande_achat" states="demande_achat" type="object" string="Confirmation de cette demande d'achat" id="draft_demande_confirm" context="{'confirm_demande_achat':True}"/>
-                    <button name="action_cancel_draft" type="object" states="demande_achat" string="Set to Draft"/>
+                <xpath expr="//header/button[@name='purchase_confirm']" position="after">
+                    <button
+                        name="envoyer_par_mail"
+                        string="Envoyer par mail"
+                        type="object"
+                        confirm="Voulez-vous vraiment envoyer ce document par mail ?"
+                    />
                 </xpath>
-                -->
                 <xpath expr="//sheet" position="attributes">
                     <attribute name="class">oe_form_sheet_width_wider</attribute>
                 </xpath>
@@ -62,6 +63,7 @@
                 </button>
 
                 <field name="date_order" position="after">
+                    <field name="is_date_envoi_mail"/>
                     <field name="is_livre_a_id"  domain="[('is_company','=',True)]"/>
                 </field>
 
@@ -79,10 +81,9 @@
                     <attribute name="invisible">1</attribute>
                 </field>
                 <field name="partner_ref" position="after">
+                    <field name="is_contact_id" domain="[('parent_id','=',partner_id)]" /> 
                     <field name="is_num_da" />
-                    <!--<field name="is_document" />-->
                     <field name="is_demandeur_id" />
-                    <!--<field name="is_acheteur_id"/>-->
                 </field>
                 <field name="minimum_planned_date" position="after">
                     <field name="is_date_confirmation" />

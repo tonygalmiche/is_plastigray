@@ -78,8 +78,15 @@ class mrp_prevision(models.Model):
         for obj in ids:
             partner=obj.product_id.seller_ids[0].name
             if partner.property_product_pricelist_purchase:
+                is_contact_id=False
+                r=order_obj.onchange_partner_id(partner.id)
+                if r and 'value' in r:
+                    v=r['value']
+                    if 'is_contact_id' in v:
+                        is_contact_id=v['is_contact_id']
                 vals={
                     'partner_id'      : partner.id,
+                    'is_contact_id'   : is_contact_id,
                     'is_livre_a_id'   : partner.is_livre_a_id.id,
                     'location_id'     : partner.is_source_location_id.id,
                     'fiscal_position' : partner.property_account_position.id,
