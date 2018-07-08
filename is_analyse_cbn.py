@@ -625,8 +625,7 @@ class product_product(models.Model):
                         if k not in TabSho:
                             TabSho[k]={}
 
-
-                        if Qt==0:
+                        if Qt==0 and color!='Black':
                             val=''
                         else:
                             val="{0:10.0f}".format(Qt)
@@ -871,7 +870,7 @@ class product_product(models.Model):
                             color=self.color_cel(Tab[1][lig],cel)
                         if col>1:
                             if type(cel)==float:
-                                if cel==0:
+                                if cel==0 and color!='Black':
                                     cel=''
                                 else:
                                     cel="{:10.0f}".format(cel)
@@ -1109,7 +1108,7 @@ class product_product(models.Model):
             "CF"    : "DarkRed",
             "CP"    : "DarkGreen",
             "FL"    : "DarkMagenta",
-            "FM"    : "Black",
+            "FM"    : "#000000",
             "SF"    : "DarkMagenta",
             "FS"    : "DarkBlue",
             "FT"    : "Black",
