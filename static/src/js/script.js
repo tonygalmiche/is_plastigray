@@ -37,23 +37,23 @@ openerp.is_plastigray = function(instance, local) {
             }
 
             if(type=='FL' || type=='FS' || type=='SA' || type=='CF' || type=='CP' || type=='SF') {
-                docid=$(d.obj).attr("docid");
-                docid = docid.split(","); 
-                nb=docid.length;
                 model='mrp.prevision';
                 if (type=='FL') {
                     model='mrp.production';
                 }
                 if (type=='CF' || type=='CP') {
-                    model='sale.order.line';
+                    model='sale.order';
                 }
                 if (type=='SF') {
-                    model='purchase.order.line';
+                    model='purchase.order';
                 }
+                docid=$(d.obj).attr("docid");
+                docid = docid.split(","); 
+                nb=docid.length;
                 if (nb==1) {
                     docid=docid[0]/1;
                     if (docid>0) {
-                        if(type=='FL' || type=='FS' || type=='SA') {
+                        //if(type=='FL' || type=='FS' || type=='SA') {
                             this.do_action({
                                 type: 'ir.actions.act_window',
                                 res_model: model,
@@ -68,6 +68,7 @@ openerp.is_plastigray = function(instance, local) {
                                     }
                                 },
                             });
+                        /*
                         } else {
                             this.do_action({
                                 type: 'ir.actions.act_window',
@@ -76,6 +77,7 @@ openerp.is_plastigray = function(instance, local) {
                                 views: [[false, 'form']],
                             });
                         }
+                        */
                     }
                 } else {
                     ids=new Array();

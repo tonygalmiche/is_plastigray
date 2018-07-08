@@ -396,7 +396,7 @@ class product_product(models.Model):
             # ** Recherche des commandes client ************************************
             SQL="""
                 SELECT 
-                    sol.id as numod, 
+                    so.id as numod, 
                     sol.is_date_expedition as date_debut, 
                     sol.is_date_expedition as date_fin, 
                     sol.product_uom_qty as qt, 
@@ -510,7 +510,7 @@ class product_product(models.Model):
             # ** Recherche des commandes fournisseurs  *****************************
             SQL="""
                 SELECT 
-                    pol.id as numod, 
+                    po.id as numod, 
                     pol.date_planned as date_debut, 
                     pol.date_planned as date_fin, 
                     sm.product_qty as qt, 
