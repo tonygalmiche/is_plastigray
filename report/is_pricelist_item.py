@@ -19,7 +19,7 @@ class is_pricelist_item(models.Model):
     product_id         = fields.Many2one('product.product', 'Article')
     ref_client         = fields.Char('Référence client')
     ref_fournisseur    = fields.Char('Référence fournisseur')
-    mold_id            = fields.Many2one('is.mold', 'Moule')
+    moule              = fields.Char('Moule ou Dossier F')
     sequence           = fields.Integer('Sequence')
     product_uom_id     = fields.Many2one('product.uom', "Unité")
     product_po_uom_id  = fields.Many2one('product.uom', "Unité d'achat")
@@ -27,9 +27,6 @@ class is_pricelist_item(models.Model):
     price_surcharge    = fields.Float('Prix')
     item_date_start    = fields.Date('Date début ligne')
     item_date_end      = fields.Date('Date fin ligne')
-
-
-#pp.type='purchase' and  ppi.base!=2;
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_pricelist_item')
@@ -46,7 +43,7 @@ class is_pricelist_item(models.Model):
                     ppi.product_id        as product_id,
                     pt.is_ref_client      as ref_client,
                     pt.is_ref_fournisseur as ref_fournisseur,
-                    pt.is_mold_id         as mold_id,
+                    pt.is_mold_dossierf   as moule,
                     ppi.sequence          as sequence,
                     pt.uom_id             as product_uom_id,
                     pt.uom_po_id          as product_po_uom_id,
