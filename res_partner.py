@@ -341,18 +341,34 @@ class res_partner(models.Model):
     
 
     @api.multi
-    def get_leave_dates(self, partner_id):
+    def get_leave_dates(self, partner, avec_jours_feries=False):
         """ Retourner les jours de congé de l'usine 
         """
         leave_dates = []
-        if partner_id.calendar_line:
-            for line in partner_id.calendar_line:                                                                                                                                                            
+        if partner.calendar_line:
+            for line in partner.calendar_line:                                                                                                                                                            
                 delta = datetime.datetime.strptime(line.date_to, DATETIME_FORMAT) - datetime.datetime.strptime(line.date_from, DATETIME_FORMAT)
                 for i in range(delta.days + 1):
                     date = datetime.datetime.strptime(line.date_from, DATETIME_FORMAT) + datetime.timedelta(days=i)
                     leave_dates.append(date.strftime('%Y-%m-%d'))
+        if avec_jours_feries:
+            jours_feries=self.get_jours_feries(partner)
+            for date in jours_feries:
+                if date not in leave_dates:
+                    leave_dates.append(date)
         return leave_dates
     
+
+    @api.multi
+    def get_jours_feries(self, partner):
+        """ Retourner les jours fériés du pays du partner indiqué 
+        """
+        jours_feries = []
+        for line in partner.country_id.is_jour_ferie_ids:
+            jours_feries.append(line.name)
+        return jours_feries
+
+
     @api.multi
     def get_day_except_weekend(self, date, num_day):
         """ Calculer la date d'expédition en exceptant les weekends

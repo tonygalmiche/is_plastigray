@@ -39,6 +39,7 @@ Module principal du projet Plastigray
         "security/ir.model.access.is.demande.achat.xml",
         "security/ir.model.access.is.liste.servir.xml",
         "security/res.groups.csv",
+        "res_country_view.xml",
         "res_partner_view.xml",
         "assets.xml",
         "sale_view.xml",

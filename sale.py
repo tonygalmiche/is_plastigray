@@ -319,7 +319,11 @@ class sale_order_line(models.Model):
             # jours de fermeture de la société
             jours_fermes = res_partner.num_closing_days(partner)
             # Jours de congé de la société
-            leave_dates = res_partner.get_leave_dates(partner)
+            leave_dates = res_partner.get_leave_dates(partner,avec_jours_feries=True)
+
+            # Jours fériés du pays du client 
+            #jours_feries=res_partner.get_jours_feries(partner)
+
             # num de jour dans la semaine de la date de livraison
             num_day = time.strftime('%w', time.strptime(date_livraison, '%Y-%m-%d'))
             

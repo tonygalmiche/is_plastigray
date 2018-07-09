@@ -210,7 +210,8 @@ access_is_rgpd_lieu_stockage,access_is_rgpd_lieu_stockage,model_is_rgpd_lieu_sto
 access_is_rgpd_action,access_is_rgpd_action,model_is_rgpd_action,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 access_is_rgpd_donnee_personnelle,access_is_rgpd_donnee_personnelle,model_is_rgpd_donnee_personnelle,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 
-
+access_is_jour_ferie_country,access_is_jour_ferie_country,model_is_jour_ferie_country,base.group_user,1,1,1,1
+access_is_res_country,access_is_res_country,model_res_country,base.group_user,1,1,0,0
 
 
 
