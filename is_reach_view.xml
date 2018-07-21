@@ -2,6 +2,55 @@
 <openerp>
     <data>
 
+        <!-- is.product.code.cas -->
+        <record model="ir.ui.view" id="is_product_code_cas_form_view">
+            <field name="name">is_product_code_cas_form_view</field>
+            <field name="model">is.product.code.cas</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                     <sheet>
+                        <group>
+                            <field name="product_id"/>
+                            <field name="code_cas_id"/>
+                            <field name="poids"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_product_code_cas_tree_view">
+            <field name="name">is_product_code_cas_tree_view</field>
+            <field name="model">is.product.code.cas</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_id"  widget="many2one_clickable"/>
+                    <field name="code_cas_id" widget="many2one_clickable"/>
+                    <field name="poids"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_product_code_cas_search_view" >
+            <field name="name">is_product_code_cas_search_view</field>
+            <field name="model">is.product.code.cas</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="product_id"/>
+                    <field name="code_cas_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_product_code_cas_action">
+            <field name="name">Codes CAS par article</field>
+            <field name="res_model">is.product.code.cas</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}
+            </field>
+        </record>
+
+
         <!-- is.reach -->
         <record model="ir.ui.view" id="is_reach_form_view">
             <field name="name">is_reach_form_view</field>

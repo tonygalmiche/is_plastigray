@@ -1043,14 +1043,17 @@
             ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
-    <record id="is_reach_menu" model="ir.ui.menu" >
-        <field name="name">Analyse REACH</field>
+    <record id="is_product_code_cas_menu" model="ir.ui.menu" >
+        <field name="name">Codes CAS par article</field>
         <field name="sequence">10</field>
         <field name="parent_id" eval="ref('is_reach_main_menu')"/>
+        <field name="action"    ref="is_product_code_cas_action"/>
+    </record>
+    <record id="is_reach_menu" model="ir.ui.menu" >
+        <field name="name">Analyse REACH</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_reach_main_menu')"/>
         <field name="action"    ref="is_reach_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_employes_hors_production_group'),
-        ])]"/>
     </record>
 
 
