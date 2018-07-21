@@ -127,6 +127,15 @@ class is_liste_servir(models.Model):
     info_client            = fields.Text("Information client complèmentaire")
 
 
+
+    
+
+    @api.multi
+    def tableaux(self):
+        t=[True,False]
+        return t
+
+
     def _date_fin():
         now = datetime.date.today()                 # Date du jour
         date_fin = now + datetime.timedelta(days=1) # J+1
