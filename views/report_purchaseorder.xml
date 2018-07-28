@@ -112,7 +112,11 @@
                     <div style="height:45mm;border:0px solid black">
                         <br />
                         <t t-if="o.is_demandeur_id">
-                            Contact : <b><span t-field="o.is_demandeur_id.name"/> / <span t-field="o.is_demandeur_id.partner_id.email"/> </b><br />
+                            Contact : <b><span t-field="o.is_demandeur_id.name"/></b><br />
+                            Courriel : <b><span t-field="o.is_demandeur_id.partner_id.email"/> </b><br />
+                            <t t-if="o.is_demandeur_id.partner_id.phone">
+                                Ligne directe : <b><span t-field="o.is_demandeur_id.partner_id.phone"/> </b><br />
+                            </t>
                         </t>
                         <i>
                             <span t-if="o.partner_id.lang == 'fr_FR'">Conditions de paiement : </span>

@@ -110,7 +110,14 @@
         </div><br />
         <div class="row">
             <div class="col-xs-12">
-                Contact : <b><span t-field="o.demandeur_id.name"/> / <span t-field="o.demandeur_id.partner_id.email"/> </b><br />
+                Contact : 
+                <b>
+                    <span t-field="o.demandeur_id.name"/> / 
+                    <span t-field="o.demandeur_id.partner_id.email"/> 
+                    <t t-if="o.demandeur_id.partner_id.phone">
+                     / <span t-field="o.demandeur_id.partner_id.phone"/>
+                    </t>
+                </b><br />
                 <i>
                 Conditions de paiement :  <span t-field="o.partner_id.property_supplier_payment_term.name"/> <br />
                 Type de réglement :       <span t-field="o.partner_id.is_type_reglement.name"/> <br />
