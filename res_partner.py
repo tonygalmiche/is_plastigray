@@ -396,6 +396,38 @@ class res_partner(models.Model):
         
 
 
+    def get_date_livraison(self, company, partner, date_expedition):
+        date_livraison=date_expedition
+        if partner:
+            res_partner = self.env['res.partner']
+            # jours de fermeture de la société
+            jours_fermes = res_partner.num_closing_days(company.partner_id)
+            # Jours de congé de la société
+            leave_dates = res_partner.get_leave_dates(company.partner_id)
+            delai_transport = partner.is_delai_transport
+            if delai_transport:
+                new_date=datetime.datetime.strptime(date_expedition, '%Y-%m-%d')
+                nb_jours=delai_transport
+                while True:
+                    new_date = new_date + datetime.timedelta(days=1)
+                    date_txt=new_date.strftime('%Y-%m-%d')
+                    num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
+                    if not(num_day in jours_fermes or date_txt in leave_dates):
+                        print num_day, jours_fermes, date_txt, leave_dates
+                        nb_jours=nb_jours-1
+                    if nb_jours<=0:
+                        date_livraison=new_date.strftime('%Y-%m-%d')
+                        break
+        return date_livraison
+
+
+
+
+
+
+
+
+
     @api.multi
     def get_date_dispo(self, partner_id, date):
         """ Retourne la première date disponible dans le passé en tenant compte des jours d'ouverture et des vacances 

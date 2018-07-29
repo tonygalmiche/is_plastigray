@@ -32,15 +32,59 @@ class stock_picking(models.Model):
     _inherit = "stock.picking"
     _order   = "date desc, name desc"
     
-    location_id          = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
-    is_sale_order_id     = fields.Many2one('sale.order', 'Commande Client')
-    is_purchase_order_id = fields.Many2one('purchase.order', 'Commande Fournisseur')
-    is_transporteur_id   = fields.Many2one('res.partner', 'Transporteur')
-    is_date_expedition   = fields.Date("Date d'expédition")
-    is_date_livraison    = fields.Date("Date d'arrivée chez le client")
-    is_num_bl            = fields.Char("N° BL fournisseur")
-    is_date_reception    = fields.Date('Date de réception')
-    is_facture_pk_id     = fields.Many2one('is.facture.pk', 'Facture PK')
+    location_id           = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
+    is_sale_order_id      = fields.Many2one('sale.order', 'Commande Client')
+    is_purchase_order_id  = fields.Many2one('purchase.order', 'Commande Fournisseur')
+    is_transporteur_id    = fields.Many2one('res.partner', 'Transporteur')
+    is_date_expedition    = fields.Date("Date d'expédition")
+    is_date_livraison     = fields.Date("Date d'arrivée chez le client")
+    is_date_livraison_vsb = fields.Boolean('Avertissement VSB', store=False, compute='_compute_is_date_livraison_vsb', readonly=True)
+    is_date_livraison_msg = fields.Char("Avertissement"       , store=False, compute='_compute_is_date_livraison_vsb', readonly=True)
+    is_num_bl             = fields.Char("N° BL fournisseur")
+    is_date_reception     = fields.Date('Date de réception')
+    is_facture_pk_id      = fields.Many2one('is.facture.pk', 'Facture PK')
+
+
+    @api.depends('is_date_livraison', 'partner_id', 'company_id')
+    def _compute_is_date_livraison_vsb(self):
+        for obj in self:
+            vsb = self.check_date_livraison(obj.is_date_livraison, obj.partner_id.id)
+            obj.is_date_livraison_vsb=vsb
+            msg=''
+            if not vsb:
+                msg='La date de livraison tombe pendant la fermeture du client !'
+            obj.is_date_livraison_msg=msg
+
+
+    @api.multi
+    def check_date_livraison(self, date_livraison,  partner_id, context=None):
+        res_partner = self.env['res.partner']
+        if partner_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            # jours de fermeture de la société
+            jours_fermes = res_partner.num_closing_days(partner)
+            # Jours de congé de la société
+            leave_dates = res_partner.get_leave_dates(partner,avec_jours_feries=True)
+            # num de jour dans la semaine de la date de livraison
+            num_day = time.strftime('%w', time.strptime(date_livraison, '%Y-%m-%d'))
+            if int(num_day) in jours_fermes or date_livraison in leave_dates:
+                return False
+        return True
+
+
+    @api.multi
+    def onchange_date_expedition(self, date_expedition, partner_id, company_id):
+        date_livraison=date_expedition
+        if partner_id and company_id:
+            partner = self.env['res.partner'].browse(partner_id)
+            company = self.env['res.company'].browse(company_id)
+            date_livraison= self.env['res.partner'].get_date_livraison(company, partner, date_expedition)
+        v = {}
+        warning = {}
+        v['is_date_livraison'] = date_livraison
+        return {'value': v,
+                'warning': warning}
+
 
     @api.multi
     def action_imprimer_etiquette_reception(self):
@@ -547,24 +591,31 @@ class stock_move(models.Model):
 
 
     def _get_date_livraison(self,date_expedition):
-        cr, uid, context = self.env.args
         date_livraison=date_expedition
         for obj in self:
-            if obj.partner_id:
-                res_partner = self.env['res.partner']
-                # jours de fermeture de la société
-                jours_fermes = res_partner.num_closing_days(obj.partner_id)
-                # Jours de congé de la société
-                leave_dates = res_partner.get_leave_dates(obj.partner_id)
-                # Délai de transport
-                delai_transport = obj.partner_id.is_delai_transport
-                date_livraison = datetime.datetime.strptime(date_livraison, '%Y-%m-%d') + datetime.timedelta(days=delai_transport)
-                # Reporter au premier jour ouvré disponible
-                date = date_livraison.strftime('%Y-%m-%d')
-                num_day = date_livraison.strftime('%w')
-                date_livraison = self.get_working_day(date, num_day, jours_fermes, leave_dates)
-            return date_livraison
+            date_livraison= self.env['res.partner'].get_date_livraison(obj.company_id, obj.partner_id, date_expedition)
         return date_livraison
+
+
+#    def _get_date_livraison(self,date_expedition):
+#        cr, uid, context = self.env.args
+#        date_livraison=date_expedition
+#        for obj in self:
+#            if obj.partner_id:
+#                res_partner = self.env['res.partner']
+#                # jours de fermeture de la société
+#                jours_fermes = res_partner.num_closing_days(obj.partner_id)
+#                # Jours de congé de la société
+#                leave_dates = res_partner.get_leave_dates(obj.partner_id)
+#                # Délai de transport
+#                delai_transport = obj.partner_id.is_delai_transport
+#                date_livraison = datetime.datetime.strptime(date_livraison, '%Y-%m-%d') + datetime.timedelta(days=delai_transport)
+#                # Reporter au premier jour ouvré disponible
+#                date = date_livraison.strftime('%Y-%m-%d')
+#                num_day = date_livraison.strftime('%w')
+#                date_livraison = self.get_working_day(date, num_day, jours_fermes, leave_dates)
+#            return date_livraison
+#        return date_livraison
 
 
     @api.multi

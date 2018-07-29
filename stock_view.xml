@@ -239,9 +239,26 @@
                     <attribute name="invisible">1</attribute>>
                 </field>
                 <field name="origin" position="after">
-                    <field name="is_sale_order_id"   attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" /> 
-                    <field name="is_date_expedition" attrs="{'invisible': [('is_sale_order_id', '=', False)]}" /> 
-                    <field name="is_date_livraison"  attrs="{'invisible': [('is_sale_order_id', '=', False)]}" /> 
+                    <field name="is_sale_order_id"   attrs="{'invisible': [('is_sale_order_id', '=', False)]}" readonly="1" />
+                    <field 
+                        name="is_date_expedition"
+                        attrs="{'invisible': [('is_sale_order_id', '=', False)]}"
+                        on_change="onchange_date_expedition(
+                            is_date_expedition,
+                            partner_id, 
+                            company_id
+                        )" 
+                    /> 
+                    <field
+                        name="is_date_livraison"
+                        attrs="{'invisible': [('is_sale_order_id', '=', False)]}"
+                    /> 
+                    <field name="is_date_livraison_vsb" invisible="1"/>
+                    <field 
+                        name="is_date_livraison_msg" 
+                        attrs="{'invisible': [('is_date_livraison_vsb', '=', True)]}"
+                        style="background:orange" 
+                    />
                     <field 
                         name="is_transporteur_id" 
                         domain="[('supplier','=',True),('is_company','=',True)]" 
