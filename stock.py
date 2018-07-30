@@ -59,7 +59,7 @@ class stock_picking(models.Model):
     @api.multi
     def check_date_livraison(self, date_livraison,  partner_id, context=None):
         res_partner = self.env['res.partner']
-        if partner_id:
+        if partner_id and date_livraison:
             partner = self.env['res.partner'].browse(partner_id)
             # jours de fermeture de la société
             jours_fermes = res_partner.num_closing_days(partner)
