@@ -281,6 +281,7 @@
             <field name="arch" type="xml">
                 <field name="product_id" position="after">
                     <field name="is_ref_client" />
+                    <field name="is_type_commande" />
                 </field>
             </field>
         </record>

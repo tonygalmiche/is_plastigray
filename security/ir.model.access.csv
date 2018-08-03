@@ -213,7 +213,9 @@ access_is_rgpd_donnee_personnelle,access_is_rgpd_donnee_personnelle,model_is_rgp
 access_is_jour_ferie_country,access_is_jour_ferie_country,model_is_jour_ferie_country,base.group_user,1,1,1,1
 access_is_res_country,access_is_res_country,model_res_country,base.group_user,1,1,0,0
 
-
+access_is_mini_delta_dore,access_is_mini_delta_dore,model_is_mini_delta_dore,base.group_user,1,1,1,1
+access_is_mini_delta_dore_line,access_is_mini_delta_dore_line,model_is_mini_delta_dore_line,base.group_user,1,1,1,1
+access_is_mini_delta_dore_besoin,access_is_mini_delta_dore_besoin,model_is_mini_delta_dore_besoin,base.group_user,1,1,1,1
 
 
 

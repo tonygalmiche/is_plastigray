@@ -311,6 +311,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_GXS(attachment)
         if import_function=="Millipore":
             datas=self.get_data_Millipore(attachment)
+        if import_function=="Mini-Delta-Dore":
+            datas=self.get_data_MiniDeltaDore(attachment)
         if import_function=="Motus":
             datas=self.get_data_Motus(attachment)
         if import_function=="Odoo":
@@ -384,6 +386,50 @@ class is_edi_cde_cli(models.Model):
                             val.update({'lignes': [ligne]})
                             res.append(val)
         return res
+
+
+    @api.multi
+    def get_data_MiniDeltaDore(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter='\t')
+            for ct, lig in enumerate(csvfile):
+                if len(lig)==4:
+                    ref_article_client = lig[0].strip()
+                    order = self.env['sale.order'].search([
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                        ('is_ref_client', '=', ref_article_client),
+                        ('is_type_commande'  , '=', 'ouverte'),
+                    ])
+                    num_commande_client = "??"
+                    if len(order):
+                        num_commande_client = order[0].client_order_ref
+
+                    val = {
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    date_livraison=lig[1]
+                    quantite = lig[3]
+                    try:
+                        quantite = float(quantite)
+                    except ValueError:
+                        quantite=0
+                    type_commande=lig[2]
+                    ligne = {
+                        'quantite'      : quantite,
+                        'type_commande' : type_commande,
+                        'date_livraison': date_livraison,
+                    }
+                    val.update({'lignes': [ligne]})
+                    res.append(val)
+        return res
+
+
+
+
 
 
     @api.multi

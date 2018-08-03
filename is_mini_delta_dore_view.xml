@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Sequence --> 
+        <record id="is_mini_delta_dore_type_seq" model="ir.sequence.type">
+            <field name="name">Mini Delta Dore</field>
+            <field name="code">is.mini.delta.dore</field>
+        </record>
+        <record id="is_mini_delta_dore_seq" model="ir.sequence">
+            <field name="name">Mini Delta Dore</field>
+            <field name="code">is.mini.delta.dore</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- Mini Delta Dore -->
+        <record id="is_mini_delta_dore_form_view" model="ir.ui.view">
+            <field name="name">is_mini_delta_dore_from_view</field>
+            <field name="model">is.mini.delta.dore</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button 
+                            name="calcul_action"
+                            string="Lancer le calcul"
+                            type="object"
+                        />
+                        <button 
+                            name="besoins_action"
+                            string="Liste des besoins"
+                            type="object"
+                        />
+                    </header>
+                    <sheet class="oe_form_sheet_width_wider">
+                        <group>
+                            <group>
+                                <field name="name" />
+                                <field name="partner_id" />
+                                <field name="file_ids" widget="many2many_binary"/>
+                                <field name="edi_id" />
+                            </group>
+                            <group>
+                                <field name="nb_jours" />
+                                <field name="nb_semaines" />
+                                <field name="nb_mois" />
+                            </group>
+                        </group>
+                        <group>
+                            <field name="line_ids" nolabel="1" >
+                                <tree colors="red:anomalie">
+                                    <field name="reference_client"/>
+                                    <field name="designation_client"/>
+                                    <field name="indice_client"/>
+                                    <field name="multiple"/>
+                                    <field name="stock"/>
+                                    <field name="stock_mini"/>
+                                    <field name="stock_maxi"/>
+                                    <field name="product_id" widget="many2one_clickable"/>
+                                    <field name="indice"/>
+                                    <field name="lot_mini"/>
+                                    <field name="order_id"   widget="many2one_clickable"/>
+                                    <field name="anomalie"/>
+                                    <button 
+                                        string="Besoins" 
+                                        name= "besoins_action" type="object" icon="gtk-justify-fill"
+                                    />
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_mini_delta_dore_tree_view">
+            <field name="name">is_mini_delta_dore_tree_view</field>
+            <field name="model">is.mini.delta.dore</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name" />
+                    <field name="partner_id" />
+                    <field name="nb_jours" />
+                    <field name="nb_semaines" />
+                    <field name="nb_mois" />
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_mini_delta_dore_search_view" >
+            <field name="name">is_mini_delta_dore_search_view</field>
+            <field name="model">is.mini.delta.dore</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="partner_id" />
+                </search>
+            </field>
+        </record>
+        <record id="is_mini_delta_dore_action" model="ir.actions.act_window">
+            <field name="name">Mini Delta Dore</field>
+            <field name="res_model">is.mini.delta.dore</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- Mini Delta Dore Besoins -->
+        <record id="is_mini_delta_dore_besoin_form_view" model="ir.ui.view">
+            <field name="name">is_mini_delta_dore_besoin_from_view</field>
+            <field name="model">is.mini.delta.dore.besoin</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="mini_delta_dore_id"/>
+                            <field name="product_id"/>
+                            <field name="lot_mini"/>
+                            <field name="stock"/>
+                            <field name="stock_mini"/>
+                            <field name="stock_maxi"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="date_origine"/>
+                                <field name="besoin"/>
+                            </group>
+                            <group>
+                                <field name="date_calculee"/>
+                                <field name="besoin_calcule"/>
+                                <field name="stock_date"/>
+                                <field name="type_commande"/>
+                                <field name="commande"/>
+                                <field name="date_livraison"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="anomalie"/>
+                        </group>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_mini_delta_dore_besoin_tree_view">
+            <field name="name">is_mini_delta_dore_besoin_tree_view</field>
+            <field name="model">is.mini.delta.dore.besoin</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree colors="red:anomalie">
+                    <field name="product_id"/>
+                    <field name="multiple"/>
+                    <field name="stock"/>
+                    <field name="stock_mini"/>
+                    <field name="stock_maxi"/>
+                    <field name="besoin"/>
+                    <field name="date_origine"/>
+                    <field name="date_calculee"/>
+                    <field name="besoin_calcule" sum="Total"/>
+                    <field name="commande"       sum="Total"/>
+                    <field name="date_livraison"/>
+                    <field name="type_commande"/>
+                    <field name="stock_date"/>
+                    <field name="stock_date_mini"/>
+                    <field name="anomalie"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_mini_delta_dore_besoin_search_view" >
+            <field name="name">is_mini_delta_dore_besoin_search_view</field>
+            <field name="model">is.mini.delta.dore.besoin</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="product_id"/>
+                    <field name="commande"/>
+                    <field name="date_livraison"/>
+                    <field name="type_commande"/>
+                    <field name="anomalie"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_mini_delta_dore_besoin_action" model="ir.actions.act_window">
+            <field name="name">Mini Delta Dore</field>
+            <field name="res_model">is.mini.delta.dore.besoin</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

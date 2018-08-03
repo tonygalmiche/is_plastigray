@@ -36,7 +36,7 @@
                     <field name="ref_article_client"  readonly="1"/>
                     <field name="num_commande_client" readonly="1"/>
                     <field name="product_id"          readonly="0" widget="many2one_clickable"/>
-                    <field name="quantite"            />
+                    <field name="quantite"            sum="Total"/>
                     <field name="date_livraison"      />
                     <field name="type_commande"       />
                     <field name="prix"                />
@@ -118,9 +118,11 @@
                     <field name="partner_id"/>
                     <field name="date_maxi"/>
                     <field name="import_function"/>
+                    <!--
                     <field name="nb_lignes"/>
                     <field name="nb_fichiers"/>
                     <field name="nb_anomalies"/>
+                    -->
                     <field name="state"/>
                </tree>
             </field>

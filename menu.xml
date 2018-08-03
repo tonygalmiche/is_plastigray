@@ -1057,6 +1057,23 @@
     </record>
 
 
+    <!-- Mini Delta Dore -->
+    <record id="is_mini_delta_dore_main_menu" model="ir.ui.menu" >
+        <field name="name">Mini Delta Dore</field>
+        <field name="sequence">80</field>
+        <field name="parent_id" eval="ref('menu_is_ventes')"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+    <record id="is_mini_delta_dore_menu" model="ir.ui.menu" >
+        <field name="name">Mini Delta Dore</field>
+        <field name="sequence">10</field>
+        <field name="parent_id" eval="ref('is_mini_delta_dore_main_menu')"/>
+        <field name="action"    ref="is_mini_delta_dore_action"/>
+    </record>
+
+
     <!-- Ventes / Tables -->
     <menuitem id="menu_is_ventes_table"    sequence="90" name="Tables"                parent="menu_is_ventes" groups="is_gestionnaire_tables_group" />
     <menuitem id="menu_is_ventes_table_10" sequence="10" name="Secteur d'activité"    parent="menu_is_ventes_table" action="is_secteur_activite_action"/>

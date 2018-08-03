@@ -60,6 +60,7 @@ import is_pointage
 import is_reach
 import is_rgpd
 import is_analyse_cbn
+import is_mini_delta_dore
 
 import is_copy_other_database
 import report
