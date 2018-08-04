@@ -602,7 +602,7 @@ class product_product(models.Model):
                     for i in range(0, nb_semaines):
                         k=TabSemaines[i]
                         if k in Tab[key]:
-                            Qt=round(Tab[key][k])
+                            Qt=round(Tab[key][k],2)
                         else:
                             Qt=0
                         Lien="#"
@@ -652,7 +652,7 @@ class product_product(models.Model):
                                 Stock=Tab[key][0]+Qt;
                             else:
                                Stock=TabSho[1+i][lig]+Qt;
-                            TabSho[2+i][lig]=round(Stock)
+                            TabSho[2+i][lig]=round(Stock,2)
                         #*******************************************************
                     lig+=1
             Tab=TabSho
@@ -1040,11 +1040,11 @@ class product_product(models.Model):
                     DateLundi=self.datelundi(date_debut, TabSemaines)
             
                 if typeod=='FL' and qt<0:
-                    qt=0
+                    qt=-0.01
 
                 if DateLundi not in Tab[Cle]:
                     Tab[Cle][DateLundi]=0
-                Tab[Cle][DateLundi]=Tab[Cle][DateLundi]+int(Sens*qt);
+                Tab[Cle][DateLundi]=Tab[Cle][DateLundi]+round(Sens*qt,2);
 
                 if DateLundi+'OT' not in Tab[Cle]:
                     Tab[Cle][DateLundi+'OT']=''
@@ -1052,7 +1052,7 @@ class product_product(models.Model):
 
                 if DateLundi+'INFO' not in Tab[Cle]:
                     Tab[Cle][DateLundi+'INFO']=''
-                Tab[Cle][DateLundi+'INFO']=Tab[Cle][DateLundi+'INFO']+name+" : "+str(int(qt))+'<br />'
+                Tab[Cle][DateLundi+'INFO']=Tab[Cle][DateLundi+'INFO']+name+" : "+str(round(qt,2))+'<br />'
 
                 #** Calcul du stock theorique **********************************
                 Cle=code_pg+'90-Stock'
@@ -1066,7 +1066,7 @@ class product_product(models.Model):
                 Tab[Cle][0]=StockA-StockSecu
                 if DateLundi not in Tab[Cle]:
                     Tab[Cle][DateLundi]=0
-                Tab[Cle][DateLundi]=Tab[Cle][DateLundi]+int(Sens*qt);
+                Tab[Cle][DateLundi]=Tab[Cle][DateLundi]+round(Sens*qt,2);
                 #***************************************************************
 
                 #** Valorisation stock *****************************************
@@ -1111,7 +1111,7 @@ class product_product(models.Model):
             "FM"    : "#000000",
             "SF"    : "DarkMagenta",
             "FS"    : "DarkBlue",
-            "FT"    : "Black",
+            "FT"    : "#000000",
             "SA"    : "DarkBlue",
             "Stock" : "Black",
         }
