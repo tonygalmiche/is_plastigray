@@ -42,6 +42,32 @@ class purchase_order_line(models.Model):
         return res
 
 
+    @api.multi
+    def onchange_date_planned(self, date_planned, partner_id, company_id):
+        v = {}
+        warning = {}
+        res=True
+        partner_obj=self.env['res.partner']
+        #** Recherche si le partner est ouvert cette journée avec les jours fériés du pays
+        if partner_id:
+            partner = partner_obj.browse(partner_id)
+            if partner:
+                res = partner_obj.test_date_dispo(date_planned, partner, avec_jours_feries=True)
+        #** Recherche si plastigray est ouvert cette journée sans les jours fériés du pays
+        if company_id and res:
+            partner = self.env['res.company'].browse(company_id).partner_id
+            if partner:
+                res = partner_obj.test_date_dispo(date_planned, partner, avec_jours_feries=False)
+        if res==False:
+            warning = {
+                'title': _('Warning!'),
+                'message' : 'La date prévue tombe pendant la fermeture du fournisseur ou de plastigray !'
+            }
+        return {
+            'value': v,
+            'warning': warning,
+        }
+
 
 class purchase_order(models.Model):
     _inherit = "purchase.order"

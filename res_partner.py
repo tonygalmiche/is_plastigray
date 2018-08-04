@@ -320,30 +320,30 @@ class res_partner(models.Model):
 
 
     @api.multi
-    def num_closing_days(self, partner_id):
-        """ Retourner les jours de fermetures de l'usine 
+    def num_closing_days(self, partner):
+        """ Retourner les jours de fermetures du partner
         """
         jours_fermes = []
-        if partner_id.close_monday:
+        if partner.close_monday:
             jours_fermes.append(1)
-        if partner_id.close_tuesday:
+        if partner.close_tuesday:
             jours_fermes.append(2)
-        if partner_id.close_wednesday:
+        if partner.close_wednesday:
             jours_fermes.append(3)
-        if partner_id.close_thursday:
+        if partner.close_thursday:
             jours_fermes.append(4)
-        if partner_id.close_friday:
+        if partner.close_friday:
             jours_fermes.append(5)
-        if partner_id.close_saturday:
+        if partner.close_saturday:
             jours_fermes.append(6)
-        if partner_id.close_sunday:
+        if partner.close_sunday:
             jours_fermes.append(0)
         return jours_fermes
     
 
     @api.multi
     def get_leave_dates(self, partner, avec_jours_feries=False):
-        """ Retourner les jours de congé de l'usine 
+        """ Retourner les jours de congés du partner
         """
         leave_dates = []
         if partner.calendar_line:
@@ -368,6 +368,19 @@ class res_partner(models.Model):
         for line in partner.country_id.is_jour_ferie_ids:
             jours_feries.append(line.name)
         return jours_feries
+
+
+    @api.multi
+    def test_date_dispo(self, date, partner, avec_jours_feries=False):
+        """ Test si la date indiquée tombe sur un jour ouvert du partner 
+        """
+        res=True
+        num_day = int(time.strftime('%w', time.strptime(date, '%Y-%m-%d'))) #Jour de la semaine (avec dimanche=0)
+        if num_day in self.num_closing_days(partner):
+            res=False
+        if date in self.get_leave_dates(partner, avec_jours_feries):
+            res=False
+        return res
 
 
     @api.multi
@@ -396,7 +409,6 @@ class res_partner(models.Model):
             return self.get_working_day(date, num_day, jours_fermes, leave_dates)
         
 
-
     def get_date_livraison(self, company, partner, date_expedition):
         date_livraison=date_expedition
         if partner:
@@ -414,7 +426,6 @@ class res_partner(models.Model):
                     date_txt=new_date.strftime('%Y-%m-%d')
                     num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
                     if not(num_day in jours_fermes or date_txt in leave_dates):
-                        print num_day, jours_fermes, date_txt, leave_dates
                         nb_jours=nb_jours-1
                     if nb_jours<=0:
                         date_livraison=new_date.strftime('%Y-%m-%d')
@@ -422,19 +433,12 @@ class res_partner(models.Model):
         return date_livraison
 
 
-
-
-
-
-
-
-
     @api.multi
-    def get_date_dispo(self, partner_id, date):
+    def get_date_dispo(self, partner, date, avec_jours_feries=False):
         """ Retourne la première date disponible dans le passé en tenant compte des jours d'ouverture et des vacances 
         """
-        num_closing_days = self.num_closing_days(partner_id)
-        leave_dates      = self.get_leave_dates(partner_id)
+        num_closing_days = self.num_closing_days(partner)
+        leave_dates      = self.get_leave_dates(partner, avec_jours_feries)
         new_date = datetime.datetime.strptime(date, '%Y-%m-%d')
         while True:
             date_txt=new_date.strftime('%Y-%m-%d')

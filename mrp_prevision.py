@@ -147,7 +147,6 @@ class mrp_prevision(models.Model):
                             'motif'          : 'pas_tarif', 
                         }
                         da=self.env['is.demande.achat.serie'].create(vals)
-                        print 'Création DA : da=',da,da.name
                         vals={
                             'da_id'     : da.id, 
                             'sequence'  : 10, 
@@ -393,7 +392,8 @@ class mrp_prevision(models.Model):
             #La date d'arrivée (= start_date_cq) doit tomber sur un jour d'ouverture du fournisseur pour fixer la date de réception par fournisseur
             if type_od=='sa' and partner_id:
                 partner = self.env["res.partner"].browse(partner_id)
-                start_date_cq = partner_obj.get_date_dispo(partner, start_date_cq)
+                start_date_cq = partner_obj.get_date_dispo(partner           , start_date_cq, avec_jours_feries=True)  # Date dispo pour le fourniseur avec calendrier pays
+                start_date_cq = partner_obj.get_date_dispo(company.partner_id, start_date_cq, avec_jours_feries=False) # Date dispo pour Plastigray sans calendrier pays
             start_date = start_date_cq
             days=0
             tps_fab=0
@@ -405,7 +405,7 @@ class mrp_prevision(models.Model):
                     delai_livraison=days
                     start_date = datetime.strptime(start_date_cq, '%Y-%m-%d')  - timedelta(days=days)
                     start_date = start_date.strftime('%Y-%m-%d')
-                    start_date = partner_obj.get_date_dispo(company.partner_id, start_date)
+                    start_date = partner_obj.get_date_dispo(company.partner_id, start_date) # Date dispo pour Plastigray
             if type_od=='fs':
                 tps_fab = round(quantity*product.temps_realisation/(3600*24),1)
                 days    = ceil(tps_fab)
@@ -429,9 +429,12 @@ class mrp_prevision(models.Model):
         user = self.env["res.users"].browse(self._uid)
         company = user.company_id
         vals={}
-
-        #** start_date_cq pendant les jours ouvrés de l'entreprise *************
-        start_date_cq=partner_obj.get_date_dispo(company.partner_id, start_date_cq)
+        #** start_date_cq pendant jours ouvrés entreprise et fourniseur ********
+        #start_date_cq=partner_obj.get_date_dispo(company.partner_id, start_date_cq)
+        partner = self.env["res.partner"].browse(partner_id)
+        if partner:
+            start_date_cq = partner_obj.get_date_dispo(partner       , start_date_cq, avec_jours_feries=True)  # Date dispo pour le fourniseur avec calendrier pays
+        start_date_cq = partner_obj.get_date_dispo(company.partner_id, start_date_cq, avec_jours_feries=False) # Date dispo pour Plastigray sans calendrier pays
         #***********************************************************************
 
         product_obj = self.env['product.product']
