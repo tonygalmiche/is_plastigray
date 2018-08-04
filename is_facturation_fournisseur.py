@@ -51,11 +51,13 @@ class is_facturation_fournisseur(models.Model):
     @api.depends('line_ids','total_ht','total_tva')
     def _compute(self):
         for obj in self:
-            ht=ttc=tva=0
+            ht=ttc=tva=0.0
             for line in obj.line_ids:
                 if line.selection:
                     #total=math.ceil(100*line.prix*line.quantite)/100
-                    total=math.ceil(100.0*round(line.quantite*line.prix,2))/100.0
+                    #total=math.ceil(100.0*round(line.quantite*line.prix,2))/100.0
+                    #TODO : Nouvelle modif du 04/08/2018 suite au mail de Sonia du 17/05/2018
+                    total=round(line.prix*line.quantite,2)
                     ht=ht+total
                     tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
@@ -306,7 +308,10 @@ class is_facturation_fournisseur_line(models.Model):
     @api.depends('quantite','prix','taxe_ids')
     def _compute(self):
         for obj in self:
-            obj.total=math.ceil(100.0*round(obj.quantite*obj.prix,2))/100.0
+            #obj.total=math.ceil(100.0*round(obj.quantite*obj.prix,2))/100.0
+            #TODO : Nouvelle modif du 04/08/2018 suite au mail de Sonia du 17/05/2018
+            obj.total=round(obj.quantite*obj.prix,2)
+
             taxe_taux=0
             for taxe in obj.taxe_ids:
                 taxe_taux=taxe_taux+taxe.amount
