@@ -33,7 +33,7 @@ class is_comparatif_tps_article_gamme(models.Model):
                     min(mrw.sequence)         as sequence,
                     min(mrw.name)             as name,
                     min(mrw.workcenter_id)    as workcenter_id,
-                    sum(mrw.is_nb_secondes)   as nb_secondes_gamme,
+                    sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia) as nb_secondes_gamme,
                     min(pt.temps_realisation) as nb_secondes_article,
                     round(cast(sum(mrw.is_nb_secondes)-min(pt.temps_realisation) as numeric),2) as delta_nb_secondes
                 FROM mrp_bom mb inner join mrp_routing mr             on mb.routing_id=mr.id
