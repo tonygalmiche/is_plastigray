@@ -375,11 +375,12 @@ class res_partner(models.Model):
         """ Test si la date indiquée tombe sur un jour ouvert du partner 
         """
         res=True
-        num_day = int(time.strftime('%w', time.strptime(date, '%Y-%m-%d'))) #Jour de la semaine (avec dimanche=0)
-        if num_day in self.num_closing_days(partner):
-            res=False
-        if date in self.get_leave_dates(partner, avec_jours_feries):
-            res=False
+        if date:
+            num_day = int(time.strftime('%w', time.strptime(date, '%Y-%m-%d'))) #Jour de la semaine (avec dimanche=0)
+            if num_day in self.num_closing_days(partner):
+                res=False
+            if date in self.get_leave_dates(partner, avec_jours_feries):
+                res=False
         return res
 
 
