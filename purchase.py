@@ -149,6 +149,13 @@ class purchase_order(models.Model):
             #*******************************************************************
 
             email_cc      = nom+u' <'+email+u'>'
+
+            #** Demandeur en copie *********************************************
+            if obj.is_demandeur_id.email:
+                print obj.is_demandeur_id.name, obj.is_demandeur_id.email
+                email_cc = email_cc + ',' + obj.is_demandeur_id.name + u' <'+obj.is_demandeur_id.email+u'>'
+            #*******************************************************************
+
             email_from    = email_cc
             email_contact = obj.is_contact_id.name+u' <'+obj.is_contact_id.email+u'>'
 
