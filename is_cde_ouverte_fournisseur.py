@@ -552,6 +552,10 @@ class is_cde_ouverte_fournisseur(models.Model):
     def integrer_commandes(self):
         cr , uid, context = self.env.args
         for obj in self:
+
+            if obj.pricelist_id.id==False:
+                raise Warning(u"Pas de liste de prix pour le fournisseur "+str(obj.partner_id.name))
+
             obj.demandeur_id=uid
             self.set_histo(obj.id, u'Intégration des commandes et SA')
             for product in obj.product_ids:
