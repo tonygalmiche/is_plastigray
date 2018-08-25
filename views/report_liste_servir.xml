@@ -194,6 +194,8 @@
                 </t>
             </t>
 
+
+            <t t-set="poids_total" t-value="0"/>
             <t t-foreach="o.tableaux()" t-as="t">
                 <t t-if="t and aqp"> 
                     <h2>Articles à livrer en AQP</h2>
@@ -285,8 +287,12 @@
                                                 <td class="text-left">    <span t-field="l.um_id"/> </td>
                                                 <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(l.nb_um).replace(","," ").replace(".",",")'/>  </td>
 
+
+                                                <t t-set="poids" t-value="l.quantite*l.product_id.product_tmpl_id.weight"/>
+                                                <t t-set="poids_total" t-value="poids_total + poids"/>
+
                                                 <td class="text-right nowrap">  
-                                                    <t t-esc='"{:,.0f}".format(l.quantite*l.product_id.product_tmpl_id.weight).replace(","," ").replace(".",",")'/> 
+                                                    <t t-esc='"{:,.0f}".format(poids).replace(","," ").replace(".",",")'/> 
                                                 </td>
 
 
@@ -303,6 +309,11 @@
                 </t>
             </t>
 
+            <div class="row">
+                <div class="col-xs-8">
+                    Poids Total : <b><t t-esc='"{:,.0f}".format(poids_total).replace(","," ").replace(".",",")'/> Kg</b>
+                </div>
+            </div><br />
 
             <div class="row">
                 <div class="col-xs-5">

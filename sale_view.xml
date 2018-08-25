@@ -244,7 +244,7 @@
                 <tree editable="top" create="0">
                     <field name="product_id"          readonly="1" widget="many2one_clickable"/>
                     <field name="is_ref_client"       readonly="1"/>
-                    <field name="product_uom_qty"     readonly="1" />
+                    <field name="product_uom_qty"     readonly="1" sum="Total"/>
                     <field name="is_date_livraison"   readonly="1" />
                     <field name="is_date_expedition"  readonly="1"/>
                     <field name="is_type_commande"    readonly="1" />

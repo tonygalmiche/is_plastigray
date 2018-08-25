@@ -124,7 +124,7 @@
                         <filter string="Article"      context="{'group_by':'product_id'}"/>
                         <filter string="Catégorie"    context="{'group_by':'is_category_id'}"/>
                         <filter string="Gestionnaire" context="{'group_by':'is_gestionnaire_id'}"/>
-                        <filter string="Fournisseur"  context="{'group_by':'partner_id'}"/>
+                        <filter string="Client/Fournisseur"  context="{'group_by':'partner_id'}"/>
                         <filter string="Semaine"      context="{'group_by':'start_date:week'}"/>
                     </group>
                 </search>
