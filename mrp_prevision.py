@@ -33,7 +33,7 @@ class mrp_prevision(models.Model):
     product_id         = fields.Many2one('product.product', 'Article', required=True, select=True)
     is_category_id     = fields.Many2one('is.category', 'Catégorie', readonly=True)
     is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire', readonly=True)
-    partner_id         = fields.Many2one('res.partner', 'Fournisseur', readonly=True)
+    partner_id         = fields.Many2one('res.partner', 'Client/Fournisseur', readonly=True)
     start_date         = fields.Date('Date de début', select=True)
     start_date_cq      = fields.Date('Date début CQ (Réception)')
     end_date           = fields.Date('Date fin contrôle qualité')
@@ -245,11 +245,14 @@ class mrp_prevision(models.Model):
         #***********************************************************************
 
 
-        #** Fournisseur par défaur *********************************************
+        #** Client ou Fournisseur par défaut ***********************************
         partner_id=False
         if type=='sa':
             if len(product.seller_ids)>0:
                 partner_id=product.seller_ids[0].name.id
+        if type=='fs':
+            if product.is_client_id:
+                partner_id=product.is_client_id.id
         vals["partner_id"]=partner_id
         #***********************************************************************
 

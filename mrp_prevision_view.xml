@@ -42,7 +42,7 @@
                             <group>
                                 <field name="type"/> 
                                 <field name="product_id"/>
-                                <field name="partner_id"       attrs="{'invisible': [('type','!=', 'sa')]}"/>
+                                <field name="partner_id"/>
                                 <field name="quantity" default_focus="1"/>
                                 <field name="uom_id" />
                                 <field name="quantity_ha"      attrs="{'invisible': [('type','!=', 'sa')]}"/>

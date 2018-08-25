@@ -234,9 +234,11 @@ TODO :
                                             <span t-field="move.product_id.is_ref_client"/> / 
                                             <span t-field="move.product_id.is_ind_plan"/> 
                                             <br />
+                                            <!--
                                             <t t-if="move.product_id.is_origine_produit_id">
                                                 <i>Origine : <span t-field="move.product_id.is_origine_produit_id.name"/></i><br />
                                             </t>
+                                            -->
                                             <t t-if="move.product_id.is_nomenclature_douaniere">
                                                 <i>Nomenclature douanière : <span t-field="move.product_id.is_nomenclature_douaniere"/></i>
                                             </t>

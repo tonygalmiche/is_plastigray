@@ -200,8 +200,10 @@
                     <table class="table table-condensed" style="page-break-inside: avoid" >
                         <thead>
                             <tr>
-                                <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Transporteur</th> 
-                                <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Carrier</th>
+                                <t t-if="o.transporteur_id">
+                                    <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Transporteur</th> 
+                                    <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Carrier</th>
+                                </t>
 
                                 <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Site d'expédition</th> 
                                 <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Shipment address</th>
@@ -213,24 +215,30 @@
                                 <th class="text-left"  t-if="o.destinataire_id.lang != 'en_US'">Informations</th> 
                                 <th class="text-left"  t-if="o.destinataire_id.lang == 'en_US'">Informations</th>
 
+                                <t t-if="o.colisage">
+                                    <th class="text-left" t-if="o.destinataire_id.lang != 'en_US'">Colisage</th> 
+                                    <th class="text-left" t-if="o.destinataire_id.lang == 'en_US'">Colisage</th>
+                                </t>
+
                                 <th class="text-right" t-if="o.destinataire_id.lang != 'en_US'">Poids Brut</th> 
                                 <th class="text-right" t-if="o.destinataire_id.lang == 'en_US'">Weight</th>
 
                                 <th class="text-right" t-if="o.destinataire_id.lang != 'en_US'">Poids Net</th> 
                                 <th class="text-right" t-if="o.destinataire_id.lang == 'en_US'">Net Weight</th>
-
                             </tr>
                         </thead>
                         <tbody>
-                            <td class="text-left">
-                                <span t-field="o.transporteur_id.name" /><br />
-                                <span t-field="o.transporteur_id.street" /><br />
-                                <t t-if="o.transporteur_id.street2">
-                                    <span t-field="o.transporteur_id.street2" /><br />
-                                </t>
-                                <span t-field="o.transporteur_id.zip" /> <span t-field="o.transporteur_id.city" /><br />
-                                <span t-field="o.transporteur_id.country_id.name" /><br />
-                            </td>
+                            <t t-if="o.transporteur_id">
+                                <td class="text-left">
+                                    <span t-field="o.transporteur_id.name" /><br />
+                                    <span t-field="o.transporteur_id.street" /><br />
+                                    <t t-if="o.transporteur_id.street2">
+                                        <span t-field="o.transporteur_id.street2" /><br />
+                                    </t>
+                                    <span t-field="o.transporteur_id.zip" /> <span t-field="o.transporteur_id.city" /><br />
+                                    <span t-field="o.transporteur_id.country_id.name" /><br />
+                                </td>
+                            </t>
                             <td class="text-left">
                                 <span t-field="res_company.partner_id.name" /><br />
                                 <span t-field="res_company.partner_id.street" /><br />
@@ -243,6 +251,11 @@
                             <td class="text-left">
                                 <span t-field="o.incoterm_id.name" /><br />
                             </td>
+                            <t t-if="o.colisage">
+                                <td class="text-left">
+                                    <span t-esc="o.colisage"/>
+                                </td>
+                            </t>
                             <td class="text-right">
                                 <span t-esc="poids_brut_total"/> KG
                             </td>
