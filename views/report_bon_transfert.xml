@@ -168,16 +168,30 @@
                         <th class="text-right">Nb UC</th>
                         <th class="text-left">UC</th>
                         <th class="text-right">Nb UM</th>
+                        <th class="text-right">Poids</th>
                     </tr>
                 </thead>
                 <tbody>
                     <t t-set="quantite" t-value="0"/>
                     <t t-set="nb_uc"    t-value="0"/>
                     <t t-set="nb_um"    t-value="0"/>
+
+                    <t t-set="pds_brut_total" t-value="0"/>
+                    <t t-set="pds_net_total" t-value="0"/>
+
                     <tr t-foreach="o.line_ids" t-as="l">
                         <t t-set="quantite" t-value="quantite + l.quantite"/>
                         <t t-set="nb_uc"    t-value="nb_uc    + l.nb_uc"/>
                         <t t-set="nb_um"    t-value="nb_um    + l.nb_um"/>
+
+
+
+                        <t t-set="pds_brut" t-value="l.quantite*l.product_id.weight"/>
+                        <t t-set="pds_brut_total" t-value="pds_brut_total + pds_brut"/>
+
+                        <t t-set="pds_net" t-value="l.quantite*l.product_id.weight_net"/>
+                        <t t-set="pds_net_total" t-value="pds_net_total + pds_net"/>
+
                         <td class="text-left">  <span t-field="l.product_id"/> </td>
                         <td class="text-left"> <span t-field="l.mold_id"/>  </td>
                         <td class="text-left"> <span t-field="l.ref_client"/>  </td>
@@ -186,14 +200,26 @@
                         <td class="text-right"> <span t-field="l.nb_uc"/>  </td>
                         <td class="text-left"> <span t-field="l.uc_id"/>  </td>
                         <td class="text-right"> <span t-field="l.nb_um"/>  </td>
+                        <td class="text-right" style="white-space: nowrap;">
+                            net :  <t t-esc='"{:,.1f}".format(pds_net).replace(","," ").replace(".",",")'/> KG<br />
+                            brut : <t t-esc='"{:,.1f}".format(pds_brut).replace(","," ").replace(".",",")'/> KG
+                        </td>
+
                     </tr>
                     <tr>
-                        <td colspan="3">Total : </td>
+                        <td colspan="3"><b>Total : </b></td>
                         <td class="text-right" style="white-space: nowrap;"><b><t t-esc='"{:,.0f}".format(quantite).replace(","," ").replace(".",",")' /></b></td>
                         <td></td>
                         <td class="text-right" style="white-space: nowrap;"><b><t t-esc='"{:,.1f}".format(nb_uc).replace(","," ").replace(".",",")' /></b></td>
                         <td></td>
                         <td class="text-right" style="white-space: nowrap;"><b><t t-esc='"{:,.1f}".format(nb_um).replace(","," ").replace(".",",")' /></b></td>
+                        <td class="text-right" style="white-space: nowrap;">
+                            <b>
+                                net :  <t t-esc='"{:,.1f}".format(pds_net_total).replace(","," ").replace(".",",")'/> KG<br />
+                                brut : <t t-esc='"{:,.1f}".format(pds_brut_total).replace(","," ").replace(".",",")'/> KG
+                            </b>
+                        </td>
+
                     </tr>
                 </tbody>
             </table>
