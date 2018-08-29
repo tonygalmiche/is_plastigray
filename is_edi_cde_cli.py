@@ -305,22 +305,25 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_ACTIA(attachment)
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
-        if import_function=="John-Deere":
-            datas=self.get_data_John_Deere(attachment)
         if import_function=="GXS":
             datas=self.get_data_GXS(attachment)
+        if import_function=="John-Deere":
+            datas=self.get_data_John_Deere(attachment)
         if import_function=="Millipore":
             datas=self.get_data_Millipore(attachment)
         if import_function=="Mini-Delta-Dore":
             datas=self.get_data_MiniDeltaDore(attachment)
         if import_function=="Motus":
             datas=self.get_data_Motus(attachment)
+        if import_function == 'Lacroix':
+            datas = self.get_data_lacroix(attachment)
         if import_function=="Odoo":
             datas=self.get_data_Odoo(attachment)
         if import_function=="Plasti-ka":
             datas=self.get_data_plastika(attachment)
-        if import_function == 'Lacroix':
-            datas = self.get_data_lacroix(attachment)
+        if import_function=="Watts":
+            datas=self.get_data_Watts(attachment)
+
         return datas
 
 
@@ -350,7 +353,6 @@ class is_edi_cde_cli(models.Model):
                         #** Recherche du premier mercredi du mois **************
                         while True:
                             jour_semaine=d.strftime('%w')
-                            #print d, jour_semaine
                             if jour_semaine=='3':
                                 break
                             d = d + timedelta(days=1)
@@ -581,7 +583,6 @@ class is_edi_cde_cli(models.Model):
                         try:
                             qt=float(quantite)
                         except ValueError:
-                            #print '## ValueError', quantite
                             continue
                         type_commande=lig[5].strip()
                         if type_commande=="P":
@@ -1020,4 +1021,53 @@ class is_edi_cde_cli(models.Model):
                             val.update({'lignes':[ligne]})
                             res.append(val)
         return res
+
+
+    @api.multi
+    def get_data_Watts(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=',')
+            for ct, lig in enumerate(csvfile):
+                if len(lig)>=10 and ct>0:
+                    ref_article_client = lig[1].strip()
+                    order = self.env['sale.order'].search([
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                        ('is_ref_client', '=', ref_article_client),
+                        ('is_type_commande'  , '=', 'ouverte'),
+                    ])
+                    num_commande_client = "??"
+                    if len(order):
+                        num_commande_client = order[0].client_order_ref
+                    val = {
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    try:
+                        date_livraison=lig[8][0:10]
+                        d=datetime.strptime(date_livraison, '%d/%m/%Y')
+                        date_livraison=d.strftime('%Y-%m-%d')
+                    except ValueError:
+                        date_livraison=False
+                    quantite = lig[9]
+                    try:
+                        quantite = float(quantite)
+                    except ValueError:
+                        quantite=0
+                    type_commande="ferme"
+                    if lig[0]==u'Prévision':
+                        type_commande="previsionnel"
+                    ligne = {
+                        'quantite'      : quantite,
+                        'type_commande' : type_commande,
+                        'date_livraison': date_livraison,
+                    }
+                    val.update({'lignes': [ligne]})
+                    res.append(val)
+        return res
+
+
+
 
