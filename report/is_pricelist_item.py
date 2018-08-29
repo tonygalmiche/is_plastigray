@@ -17,6 +17,7 @@ class is_pricelist_item(models.Model):
     version_date_start = fields.Date('Date début version')
     version_date_end   = fields.Date('Date fin version')
     product_id         = fields.Many2one('product.product', 'Article')
+    gestionnaire_id    = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     ref_client         = fields.Char('Référence client')
     ref_fournisseur    = fields.Char('Référence fournisseur')
     moule              = fields.Char('Moule ou Dossier F')
@@ -41,6 +42,7 @@ class is_pricelist_item(models.Model):
                     ppv.date_start        as version_date_start,
                     ppv.date_end          as version_date_end,
                     ppi.product_id        as product_id,
+                    pt.is_gestionnaire_id as gestionnaire_id,
                     pt.is_ref_client      as ref_client,
                     pt.is_ref_fournisseur as ref_fournisseur,
                     pt.is_mold_dossierf   as moule,

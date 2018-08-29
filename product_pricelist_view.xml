@@ -114,6 +114,7 @@
         <field name="arch" type="xml">
             <tree editable="top">
                 <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
+                <field name="is_gestionnaire_id"/>
                 <field name="is_ref_client"/>
                 <field name="is_mold_dossierf"/>
                 <field name="sequence"/>
@@ -144,6 +145,7 @@
         <field name="arch" type="xml">
             <tree editable="top">
                 <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
+                <field name="is_gestionnaire_id"/>
                 <field name="sequence"/>
                 <field name="min_quantity"    required="1" digits="(14, 4)"/>
                 <field name="product_po_uom_id"/>
@@ -167,6 +169,7 @@
         <field name="arch" type="xml">
             <search string="Products Price Item Search">
                 <field name="product_id" />
+                <field name="is_gestionnaire_id"/>
                 <field name="price_version_id" />
                 <field name="is_ref_client"/>
                 <field name="is_mold_dossierf"/>

@@ -22,13 +22,14 @@ class product_pricelist_item(models.Model):
     _inherit = "product.pricelist.item"
     _order="price_version_id,product_id,sequence"
 
-    date_start        = fields.Date('Date de début de validité')
-    date_end          = fields.Date('Date de fin de validité')
-    product_uom_id    = fields.Many2one('product.uom', 'Unité'        , related='product_id.uom_id'   , readonly=True)
-    product_po_uom_id = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
-    is_ref_client     = fields.Char("Référence client"  , related='product_id.is_ref_client', readonly=True)
-    is_mold_dossierf  = fields.Char("Moule ou Dossier F", related='product_id.is_mold_dossierf', readonly=True)
-    min_quantity      = fields.Float('Quantité minimum', required=True)
+    date_start         = fields.Date('Date de début de validité')
+    date_end           = fields.Date('Date de fin de validité')
+    product_uom_id     = fields.Many2one('product.uom', 'Unité'        , related='product_id.uom_id'   , readonly=True)
+    product_po_uom_id  = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
+    is_ref_client      = fields.Char("Référence client"  , related='product_id.is_ref_client', readonly=True)
+    is_mold_dossierf   = fields.Char("Moule ou Dossier F", related='product_id.is_mold_dossierf', readonly=True)
+    is_gestionnaire_id = fields.Many2one('is.gestionnaire', "Gestionnaire", related='product_id.is_gestionnaire_id', readonly=True)
+    min_quantity       = fields.Float('Quantité minimum', required=True)
 
     @api.multi
     def on_change_product_id(self, product_id):
