@@ -15,4 +15,5 @@ import is_cas_emploi_wizard
 import is_cas_emploi_wizard_new
 import set_sheduler_cout_article
 import assistent_report
+import is_change_emplacement_wizard
 

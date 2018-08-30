@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="is_change_emplacement_wizard_form_view" model="ir.ui.view">
+            <field name="name">is_change_emplacement_wizard_form_view</field>
+            <field name="model">is.change.emplacement.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Changement d'emplacement">
+                    <group>
+                        <field name="location_id" domain="[('usage','=','internal')]"/>
+                    </group>
+                    <footer>
+                        <button string="Changement d'emplacement" name="change_emplacement" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+        <record id="is_change_emplacement_wizard_action" model="ir.actions.act_window">
+            <field name="name">is_change_emplacement_wizard_action</field>
+            <field name="res_model">is.change.emplacement.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+           <field name="view_id" ref="is_change_emplacement_wizard_form_view"/>
+           <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

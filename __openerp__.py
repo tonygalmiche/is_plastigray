@@ -115,6 +115,7 @@ Module principal du projet Plastigray
         "wizard/is_cas_emploi_wizard_new.xml",
         "wizard/set_sheduler_cout_article.xml",
         "wizard/assistent_report_view.xml",
+        "wizard/is_change_emplacement_wizard_view.xml",
         "views/web_view.xml",
         "views/layouts.xml",
         "views/report_mrpbomstructure.xml",
