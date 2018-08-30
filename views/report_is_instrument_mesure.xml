@@ -72,55 +72,43 @@
                                 <td class="text-left" width="20%"><b>Périodicité</b></td>
                                 <td class="text-left" width="30%"><span t-field="o.periodicite"/></td>
                             </tr>
-                            <!--
+
                             <tr>
-                                <td class="text-left" width="20%"><b>Contrôle</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.controle"/></td>
-                                <td class="text-left" width="20%"><b>Cause arrêt</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.cause_arret"/></td>
+                                <td class="text-left" width="20%"></td>
+                                <td class="text-left" width="30%"></td>
+                                <td class="text-left" width="20%"><b>Date prochain contrôle</b></td>
+                                <td class="text-left" width="30%"><span t-field="o.date_prochain_controle"/></td>
                             </tr>
-                            <tr>
-                                <td class="text-left" width="20%"><b>Commentaire</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.commentaire"/></td>
-                                <td class="text-left" width="20%"><b>Date du contrôle</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.date_controle"/></td>
-                            </tr>
-                            <tr>
-                                <td class="text-left" width="20%"><b>Organisme contrôleur</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.organisme_controleur"/></td>
-                                <td class="text-left" width="20%"><b>Fournisseur</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.fournisseur"/></td>
-                            </tr>
-                            <tr>
-                                <td class="text-left" width="20%"><b>Classe</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.classe"/></td>
-                                <td class="text-left" width="20%"><b>Etat de la conformité</b></td>
-                                <td class="text-left" width="30%"><span t-field="o.etat_conformite"/></td>
-                            </tr>
-                            -->
                         </table>
                         <br/>
                         <table class="table table-condensed" width="100%">
                             <thead>
                                 <tr width="100%">
-                                    <th width="7%"><strong>Date</strong></th>
-                                    <th width="23%"><strong>Opération</strong></th>
-                                    <th width="6%"><strong>Affectation</strong></th>
-                                    <th width="7%"><strong>Organisme</strong></th>
-                                    <th width="5%"><strong>Résultat</strong></th>
-                                    <th width="13%"><strong>Commentaire</strong></th>
-                                    <th width="5%"><strong>Classe</strong></th>
-                                    <th width="5%"><strong>Nom</strong></th>
+                                    <th><strong>Date</strong></th>
+                                    <th><strong>Opération</strong></th>
+                                    <th><strong>Organisme</strong></th>
+                                    <th><strong>Fournisseur</strong></th>
+                                    <th><strong>Etat de la conformité</strong></th>
+                                    <th><strong>Classe</strong></th>
+                                    <th><strong>Pièces jointes</strong></th>
+                                    <th><strong>Commentaire</strong></th>
+                                    <th><strong>Nom</strong></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.controle_ids" t-as="l">
                                     <td><span t-field="l.date_controle"/> </td>
                                     <td><span t-field="l.operation_controle_id"/> </td>
-                                    <td><span t-field="l.cause_arret"/> </td>
                                     <td><span t-field="l.organisme_controleur"/></td>
                                     <td><span t-field="l.fournisseur_id"/> </td>
                                     <td><span t-field="l.etat_conformite"/> </td>
+                                    <td><span t-field="l.classe"/> </td>
+                                    <td>
+                                        <t t-foreach="l.rapport_controle_ids" t-as="pj">
+                                            <div t-field="pj.name"/>
+                                        </t>
+                                    </td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                             </tbody>
