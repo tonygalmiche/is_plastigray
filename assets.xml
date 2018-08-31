@@ -5,7 +5,8 @@
     <data>
         <template id="is_assets_backend" name="is_teixeira assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
-                <link rel="stylesheet" href="/is_plastigray/static/src/css/style.css"/>
+                <link rel="stylesheet" href="/is_plastigray/static/src/css/style.css"       media="screen"/>
+                <link rel="stylesheet" href="/is_plastigray/static/src/css/style-print.css" media="print"/>
                 <script type="text/javascript" src="/is_plastigray/static/src/js/script.js"/>
             </xpath>
         </template>

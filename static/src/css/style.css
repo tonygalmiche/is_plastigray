@@ -53,10 +53,13 @@ a.info:hover span {
     border-left: 4px solid blue;
     text-align: left;
 }
+
 #table_body {
     overflow-x:auto; 
     overflow-y:auto;
+    /*height:800px;*/
 }
+
 #table_body th {
      display:none;
 }
@@ -68,5 +71,7 @@ a.info:hover span {
     width: 20px;
     Background-Color: white;
 }
+
+
 
 

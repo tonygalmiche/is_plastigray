@@ -188,6 +188,7 @@ function load_data(instance){
         //Affichage des résultats
         html=data['html'];
         $("#analysecbn").html(html);
+        $("#table_body").height(height);
     });
 }
 

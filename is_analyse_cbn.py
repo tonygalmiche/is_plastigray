@@ -833,7 +833,11 @@ class product_product(models.Model):
                 html+="</div>\n"
                 alt=1
 
-                html+="<div style=\"width:"+str(width+20)+"px;height:"+str(height)+"px\" id=\"table_body\">\n";
+
+                #height=10000
+                #height:"+str(height)+"px
+
+                html+="<div style=\"width:"+str(width+20)+"px;\" id=\"table_body\">\n";
                 html+="<table style=\"border-width:0px;border-spacing:0px;padding:0px;width:"+str(width)+"px;\">\n";
                 html+=head;
                 html+="<tbody class=\"tbody\">\n"
