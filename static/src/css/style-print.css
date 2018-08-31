@@ -1,0 +1,27 @@
+
+
+
+#table_body {
+    overflow-x:visible; 
+    overflow-y:visible;
+    height: auto !important;
+}
+
+#table_head {
+    display:none;
+}
+
+
+.tbody  {
+    overflow: visible;
+}
+
+.scroll {
+    display:none;
+}
+
+
+a.info span {
+    display: none; /* on masque l'infobulle */
+}
+
