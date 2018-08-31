@@ -35,7 +35,7 @@ class is_comparatif_tps_article_gamme(models.Model):
                     min(mrw.workcenter_id)    as workcenter_id,
                     sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia) as nb_secondes_gamme,
                     min(pt.temps_realisation) as nb_secondes_article,
-                    round(cast(sum(mrw.is_nb_secondes)-min(pt.temps_realisation) as numeric),2) as delta_nb_secondes
+                    round(cast(sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia)-min(pt.temps_realisation) as numeric),2) as delta_nb_secondes
                 FROM mrp_bom mb inner join mrp_routing mr             on mb.routing_id=mr.id
                                 inner join mrp_routing_workcenter mrw on mr.id=mrw.routing_id
                                 inner join mrp_workcenter mw          on mrw.workcenter_id=mw.id
@@ -50,7 +50,7 @@ class is_comparatif_tps_article_gamme(models.Model):
                     mb.product_tmpl_id,
                     pt.is_category_id,
                     mr.id
-                HAVING round(cast(sum(mrw.is_nb_secondes)-min(pt.temps_realisation) as numeric),2)<>0
+                HAVING round(cast(sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia)-min(pt.temps_realisation) as numeric),2)<>0
             )
         """)
 
