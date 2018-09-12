@@ -11,6 +11,7 @@
                 <thead>
                     <tr>
                         <th><strong>Date prévue</strong></th>
+                        <th><strong>Date réception</strong></th>
                         <th><strong>Réception</strong></th>
                         <th><strong>Commande</strong></th>
                         <th><strong>Commande ouverte</strong></th>
@@ -27,6 +28,7 @@
                 <tbody>
                     <tr t-foreach="docs" t-as="o">
                         <td><span t-field="o.date_planned"/> </td>
+                        <td><span t-field="o.date_reception"/> </td>
                         <td><span t-field="o.picking_id"/> </td>
                         <td><span t-field="o.order_id"/> </td>
                         <td><span t-field="o.commande_ouverte"/> </td>

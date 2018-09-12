@@ -24,7 +24,7 @@
                                         <b>Fiche de vie</b>
                                     </td>
                                     <td class="text-center" width="25%">
-                                        1111
+                                        <span t-field="o.code_pg"/>
                                     </td>
                                 </tr>
                             </table>
