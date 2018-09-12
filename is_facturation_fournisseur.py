@@ -4,6 +4,24 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import math
+from decimal import getcontext, Decimal
+import numpy as np
+
+
+#TODO : Cette fonction permet de résoudre les problèmes d'arrondi avec les float et le nombre de décimales
+def _total(quantite,prix):
+    resolution = 0.0001 # 4 décimales
+    quantite = int(np.round(quantite/resolution))*resolution
+    prix     = int(np.round(prix/resolution))*resolution
+
+    total=quantite*prix
+    resolution = 0.01 # 2 décimales
+    total = int(np.round(total/resolution))*resolution
+
+    #La fonction Decimal permet d'afficher la représentation réélle d'un float
+    #print Decimal(quantite), Decimal(prix), Decimal(total)
+
+    return total
 
 
 class is_facturation_fournisseur(models.Model):
@@ -57,7 +75,10 @@ class is_facturation_fournisseur(models.Model):
                     #total=math.ceil(100*line.prix*line.quantite)/100
                     #total=math.ceil(100.0*round(line.quantite*line.prix,2))/100.0
                     #TODO : Nouvelle modif du 04/08/2018 suite au mail de Sonia du 17/05/2018
-                    total=round(line.prix*line.quantite,2)
+                    #total=round(line.prix*line.quantite,2)
+                    #TODO : Modification du 12/09/18 suite problème avec round et les float
+                    total=_total(line.quantite,line.prix)
+
                     ht=ht+total
                     tva=tva+total*line.taxe_taux
                     ttc=ttc+total*(1+line.taxe_taux)
@@ -310,7 +331,10 @@ class is_facturation_fournisseur_line(models.Model):
         for obj in self:
             #obj.total=math.ceil(100.0*round(obj.quantite*obj.prix,2))/100.0
             #TODO : Nouvelle modif du 04/08/2018 suite au mail de Sonia du 17/05/2018
-            obj.total=round(obj.quantite*obj.prix,2)
+            #obj.total=round(obj.quantite*obj.prix,2)
+            
+            #TODO : Modification du 12/09/2018 (problème round avec les float)
+            obj.total=_total(obj.quantite, obj.prix)
 
             taxe_taux=0
             for taxe in obj.taxe_ids:
