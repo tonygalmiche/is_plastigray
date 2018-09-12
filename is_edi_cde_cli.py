@@ -219,7 +219,7 @@ class is_edi_cde_cli(models.Model):
             line_obj       = self.env['sale.order.line']
 
             #** Pour PK, il faut supprimer toutes les commandes de tous les articles 
-            if obj.import_function=="Plasti-ka":
+            if obj.import_function=="Plasti-ka" or obj.import_function=="Watts":
                 filtre=[
                     ('is_type_commande'  , '=', 'ouverte'),
                     ('state'             , '=', 'draft'),
