@@ -146,8 +146,10 @@ class product_product(models.Model):
 
 
     @api.model
-    def _get_select_fournisseur(self,filtre):
+    def _get_select_fournisseur(self,filtre,gest=False):
         cr, uid, context = self.env.args
+        if gest:
+            filtre=filtre+" and ig.name='"+gest+"' "
         SQL="""
             SELECT 
                 (   select concat(rp2.is_code,'-',rp2.is_adr_code)
@@ -582,7 +584,7 @@ class product_product(models.Model):
         Couts              = self._get_Couts()                           # Coûts
         TypeCde            = self._get_TypeCde(type_rapport)             # Type de commande d'achat
         select_gest        = self._get_select_gest(filtre,fournisseur)   # Liste des gestionnaires
-        select_fournisseur = self._get_select_fournisseur(filtre)        # Liste des fournisseurs
+        select_fournisseur = self._get_select_fournisseur(filtre,gest)   # Liste des fournisseurs
 
 
         if validation=='ko':
