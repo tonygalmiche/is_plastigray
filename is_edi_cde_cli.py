@@ -799,7 +799,7 @@ class is_edi_cde_cli(models.Model):
             for row in csvfile:
                 ct=ct+1
                 lig=row.split(";")
-                if len(lig)==43:
+                if len(lig)>=43:
                     type_commande=lig[0].strip()
                     if type_commande==u'Ferme' or type_commande==u'Prévisions':
                         ref_article_client  = lig[6].strip()
