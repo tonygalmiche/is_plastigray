@@ -209,7 +209,9 @@ openerp.is_plastigray = function(instance, local) {
             lig=parseInt(td.attr("rowspan"));
             for (j = 0; j < lig; ++j) {
                 tr.hide();
-                tr=tr.next();
+                if (tr.next().length==1) {
+                    tr=tr.next();
+                }
             }
             load_tr(instance,productid,tr,trcolor,trid);
         },
