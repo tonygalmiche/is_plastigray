@@ -1033,6 +1033,7 @@ class product_product(models.Model):
                 if product_id in Fournisseurs:
                     is_code    = Fournisseurs[product_id]
                 cle        = is_code+'/'+str(product_id);
+                t=''
                 if cle in TypeCde:
                     t=TypeCde[cle]
                     Code=code_pg+' ('+t+')';
