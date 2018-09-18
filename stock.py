@@ -495,6 +495,74 @@ class stock_quant(models.Model):
     is_mold_id          = fields.Many2one('is.mold'    , 'Moule'            , related='product_id.is_mold_id'         , readonly=True)
 
 
+
+
+#    #La reprise de cette fonction permet de créer le lot à la volée pour les stocks négatif
+#    def quants_move(self, cr, uid, quants, move, location_to, location_from=False, lot_id=False, owner_id=False, src_package_id=False, dest_package_id=False, context=None):
+#        quants_reconcile = []
+#        to_move_quants = []
+#        self._check_location(cr, uid, location_to, context=context)
+#        for quant, qty in quants:
+
+#            print 'quant=',quant,qty
+
+#            if not quant:
+#                print move,move.product_id
+#                name='#'+move.product_id.is_code
+
+#                lot_obj = self.pool.get("stock.production.lot")
+#                lots = lot_obj.search(cr, uid, [('name', '=', name)], context=context)
+#                print name, lots
+
+#                lot_id=False
+
+#                for lot in lots:
+#                    lot_id=lot
+
+#                if not lot_id:
+#                    vals={
+#                        'name'      : name,
+#                        'product_id': move.product_id.id,
+#                    }
+#                    lot_id=lot_obj.create(cr, uid, vals, context=context)
+
+#                #lot_id=27779
+#                print 'lot_id=',lot_id
+
+
+#                #If quant is None, we will create a quant to move (and potentially a negative counterpart too)
+#                quant = self._quant_create(cr, uid, qty, move, lot_id=lot_id, owner_id=owner_id, src_package_id=src_package_id, dest_package_id=dest_package_id, force_location_from=location_from, force_location_to=location_to, context=context)
+#            else:
+#                self._quant_split(cr, uid, quant, qty, context=context)
+#                to_move_quants.append(quant)
+#            quants_reconcile.append(quant)
+#        if to_move_quants:
+#            to_recompute_move_ids = [x.reservation_id.id for x in to_move_quants if x.reservation_id and x.reservation_id.id != move.id]
+#            self.move_quants_write(cr, uid, to_move_quants, move, location_to, dest_package_id, context=context)
+#            self.pool.get('stock.move').recalculate_move_state(cr, uid, to_recompute_move_ids, context=context)
+#        if location_to.usage == 'internal':
+#            # Do manual search for quant to avoid full table scan (order by id)
+#            cr.execute("""
+#                SELECT 0 FROM stock_quant, stock_location WHERE product_id = %s AND stock_location.id = stock_quant.location_id AND
+#                ((stock_location.parent_left >= %s AND stock_location.parent_left < %s) OR stock_location.id = %s) AND qty < 0.0 LIMIT 1
+#            """, (move.product_id.id, location_to.parent_left, location_to.parent_right, location_to.id))
+#            if cr.fetchone():
+#                for quant in quants_reconcile:
+#                    self._quant_reconcile_negative(cr, uid, quant, move, context=context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class stock_move(models.Model):
     _inherit = "stock.move"
     _order   = "date desc, id"
