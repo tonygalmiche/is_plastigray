@@ -173,9 +173,11 @@
                                 <br />
                                 <span t-field="line.ref_client"/>
                                 <br />
+                                <!--
                                 <t t-if="line.origine_id">
                                     <i>Origine : <span t-field="line.origine_id.name"/></i><br />
                                 </t>
+                                -->
                                 <t t-if="line.nomenclature_douaniere">
                                     <i>Nomenclature douanière : <span t-field="line.nomenclature_douaniere"/></i>
                                 </t>

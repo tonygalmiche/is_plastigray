@@ -831,6 +831,7 @@
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
             ref('is_commerciaux_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <record id="is_livraisons_a_facturer_menu" model="ir.ui.menu" >
@@ -896,7 +897,8 @@
         <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
         <field name="action"    ref="is_factures_diverses_action"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_comptable_group')
+            ref('is_comptable_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <record id="is_action_invoice_tree1_menu" model="ir.ui.menu" >
@@ -905,7 +907,8 @@
         <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
         <field name="action"    ref="account.action_invoice_tree1"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_comptable_group')
+            ref('is_comptable_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <record id="is_account_action_invoice_tree3_menu" model="ir.ui.menu" >
@@ -914,7 +917,8 @@
         <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
         <field name="action"    ref="account.action_invoice_tree3"/>
         <field name="groups_id" eval="[(6,0,[
-            ref('is_comptable_group')
+            ref('is_comptable_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <record id="is_ligne_facture_client_menu" model="ir.ui.menu" >
@@ -925,6 +929,7 @@
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
             ref('is_commerciaux_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <record id="is_export_ventes_seriem_menu" model="ir.ui.menu" >
@@ -1709,6 +1714,7 @@
         <field name="action"    ref="is_liste_stock_negatif_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
         ])]"/>
     </record>
     <record id="is_liste_stock_sans_lot_menu" model="ir.ui.menu" >
@@ -1718,6 +1724,7 @@
         <field name="action"    ref="is_liste_stock_sans_lot_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
         ])]"/>
     </record>
     <record id="is_stock_valorise_menu" model="ir.ui.menu" >

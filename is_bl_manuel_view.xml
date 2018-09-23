@@ -83,7 +83,6 @@
                                     />
                                     <field name="description" />
                                     <field name="ref_client" />
-                                    <field name="origine_id" />
                                     <field name="nomenclature_douaniere" />
                                     <field 
                                         name="qt_livree" sum="Total" 
