@@ -48,8 +48,9 @@
             <field name="arch" type="xml">
                 <form>  
                     <header>
-                        <button name="action_calcul_prix_achat"    type="object" string="Calcul des prix d'achat"    class="oe_highlight" states="creation"   confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
-                        <button name="action_calcul_prix_revient"  type="object" string="Calcul des prix de revient" class="oe_highlight" states="prix_achat" confirm2="Voulez-vous vraiment lancer le calcul des prix de revient ?"/>
+                        <button name="action_calcul_prix_achat"     type="object" string="Calcul des prix d'achat"         class="oe_highlight" states="creation"   confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
+                        <button name="action_calcul_prix_revient"   type="object" string="Calcul des prix de revient"      class="oe_highlight" states="prix_achat" confirm2="Voulez-vous vraiment lancer le calcul des prix de revient ?"/>
+                        <button name="action_calcul_prix_revient2"  type="object" string="Calcul des prix de revient (v2)" class="oe_highlight" states="prix_achat" confirm2="Voulez-vous vraiment lancer le calcul des prix de revient ?"/>
                         <!-- TODO : Je désactive ce bouton, car plantage si plus de 1000 couts => A revoir plus tard autrement
                         <button name="action_imprimer_couts"       type="object" string="Imprimer les coûts"   /> -->
                         <field name="state" widget="statusbar"  clickable="True" />
@@ -142,7 +143,8 @@
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
                             <group string="Description">
-                                <field name="name"/> 
+                                <field name="name"/>
+                                <field name="thread_id"/> 
                                 <field name="cout_calcul_id"/> 
                                 <field name="type_article"/> 
                                 <field name="is_category_id"/> 
