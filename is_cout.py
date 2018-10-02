@@ -60,24 +60,12 @@ class is_cout_calcul(models.Model):
     detail_gamme_mo_pk=[]
 
 
-    locks=[]
-    cursors=[]
-
-
     @api.multi
     @api.multi
     def nomenclature(self, cout_calcul_obj, product, niveau, multiniveaux=True):
         cr = self._cr
         type_article=self.type_article(product)
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
-
-        #if cout==False:
-        #    print "#########################"
-        #    return
-
-
-
-
         if type_article!='A' and multiniveaux==True:
             if niveau>10:
                 raise Warning(u"Trop de niveaux (>10) dans la nomenclature du "+product.is_code)
@@ -99,10 +87,6 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def type_article(self, product):
-
-
-        #print 'type_article : cr=',self._cr,product,product.route_ids, product._cr
-
         type_article=""
         for route in product.route_ids:
             if type_article=='F' and route.name=='Buy':
@@ -127,21 +111,8 @@ class is_cout_calcul(models.Model):
                 'name': product.id,
             }
             cout=cout_obj.create(vals)
-
-
-        #if not cout.id in self.locks:
-        #    self.locks.append(cout.id)
-        #else:
-        #    return False
-        #print self.locks
-        
-
-        if not cout.id in self.locks:
-            if cout.cout_calcul_id.id!=cout_calcul_obj.id:
-                cout.cout_calcul_id=cout_calcul_obj.id
-
-        if cout.type_article!=type_article:
-            cout.type_article=type_article
+        cout.cout_calcul_id=cout_calcul_obj.id
+        cout.type_article=type_article
         return cout
 
 
@@ -203,7 +174,6 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def _log(self,operation):
-        _logger.info(operation)
         for obj in self:
             vals={
                 'cout_calcul_id': obj.id,
@@ -416,7 +386,7 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
-    def nomenclature_prix_revient(self, cout_calcul_obj, niveau, product, unite=False, quantite_unitaire=1, quantite_total=1, prix_calcule=0,thread_id=0):
+    def nomenclature_prix_revient(self, cout_calcul_obj, niveau, product, unite=False, quantite_unitaire=1, quantite_total=1, prix_calcule=0):
         cr = self._cr
         type_article=self.type_article(product)
         cout_mat = 0
@@ -432,146 +402,117 @@ class is_cout_calcul(models.Model):
                 if prix_calcule==0:
                     msg_err=u'Err Coût ST'
 
-
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
+        self.detail_nomenclature.append({
+            'product_id'  : product.id,
+            'is_code'     : product.is_code,
+            'composant'   : '----------'[:niveau]+str(product.is_code),
+            'designation' : product.name,
+            'unite'       : unite,
+            'quantite'    : quantite_unitaire, 
+            'cout_mat'    : cout_mat, 
+            'total_mat'   : quantite_total*cout_mat,
+            'cout_st'     : cout_st, 
+            'total_st'    : quantite_total*cout_st,
+            'msg_err'     : msg_err,
+        })
 
-        #print self.locks
+        if type_article!='A':
+            lot_mini=product.lot_mini
+            if lot_mini==0:
+                lot_mini=1
 
-        #if cout.id in self.locks:
-        #    print "######################### cout in locks : cout=",cout
-
-        if cout.id not in self.locks:
-            self.locks.append(cout.id)
-            #print self.locks
-            #print 'cout=',cout
-
-
-            #print self.locks
-
-
-            #print cout
-            #if cout==False:
-            #    print "#########################"
-            #    return
-
-
-
-            #if cout.thread_id:
-            #    return
-            #cout.thread_id=thread_id
-            #cr.commit()
-
-            self.detail_nomenclature.append({
-                'product_id'  : product.id,
-                'is_code'     : product.is_code,
-                'composant'   : '----------'[:niveau]+str(product.is_code),
-                'designation' : product.name,
-                'unite'       : unite,
-                'quantite'    : quantite_unitaire, 
-                'cout_mat'    : cout_mat, 
-                'total_mat'   : quantite_total*cout_mat,
-                'cout_st'     : cout_st, 
-                'total_st'    : quantite_total*cout_st,
-                'msg_err'     : msg_err,
-            })
-
-            if type_article!='A':
-                lot_mini=product.lot_mini
-                if lot_mini==0:
-                    lot_mini=1
-
-                #** Recherche de la gamme ******************************************
-                SQL="""
-                    select mb.routing_id
-                    from mrp_bom mb inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
-                    where pp.id="""+str(product.id)+ """ 
-                          and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
-                    order by mb.id
-                """
-                cr.execute(SQL)
-                result = cr.fetchall()
-                for row2 in result:
-                    routing_id = row2[0]
-                    if routing_id:
-                        routing = self.env['mrp.routing'].browse(routing_id)
-                        for line in routing.workcenter_lines:
-                            cout_total=quantite_unitaire*line.workcenter_id.costs_hour*round(line.is_nb_secondes/3600,4)
-                            vals={
-                                'composant'     : '----------'[:niveau]+product.is_code,
-                                'sequence'      : line.sequence,
-                                'workcenter_id' : line.workcenter_id.id,
-                                'quantite'      : quantite_unitaire,
-                                'cout_prepa'    : line.workcenter_id.costs_hour,
-                                'tps_prepa'     : line.workcenter_id.time_start, 
-                                'cout_fab'      : line.workcenter_id.costs_hour, 
-                                'tps_fab'       : line.is_nb_secondes,
-                                'cout_total'    : cout_total, 
-                            }
-                            if line.workcenter_id.resource_type=='material':
-                                self.detail_gamme_ma.append(vals)
-                            else:
-                                self.detail_gamme_mo.append(vals)
+            #** Recherche de la gamme ******************************************
+            SQL="""
+                select mb.routing_id
+                from mrp_bom mb inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
+                where pp.id="""+str(product.id)+ """ 
+                      and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
+                order by mb.id
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row2 in result:
+                routing_id = row2[0]
+                if routing_id:
+                    routing = self.env['mrp.routing'].browse(routing_id)
+                    for line in routing.workcenter_lines:
+                        cout_total=quantite_unitaire*line.workcenter_id.costs_hour*round(line.is_nb_secondes/3600,4)
+                        vals={
+                            'composant'     : '----------'[:niveau]+product.is_code,
+                            'sequence'      : line.sequence,
+                            'workcenter_id' : line.workcenter_id.id,
+                            'quantite'      : quantite_unitaire,
+                            'cout_prepa'    : line.workcenter_id.costs_hour,
+                            'tps_prepa'     : line.workcenter_id.time_start, 
+                            'cout_fab'      : line.workcenter_id.costs_hour, 
+                            'tps_fab'       : line.is_nb_secondes,
+                            'cout_total'    : cout_total, 
+                        }
+                        if line.workcenter_id.resource_type=='material':
+                            self.detail_gamme_ma.append(vals)
+                        else:
+                            self.detail_gamme_mo.append(vals)
 
 
 
 
-                #** Recherche de la gamme générique pour Cout Plasti-ka ************
-                SQL="""
-                    select mb.is_gamme_generique_id
-                    from mrp_bom mb inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
-                    where pp.id="""+str(product.id)+ """ 
-                    order by mb.id
-                """
-                cr.execute(SQL)
-                result = cr.fetchall()
-                for row2 in result:
-                    routing_id = row2[0]
-                    if routing_id:
-                        routing = self.env['mrp.routing'].browse(routing_id)
-                        for line in routing.workcenter_lines:
-                            cout_total=quantite_unitaire*line.workcenter_id.is_cout_pk*round(line.is_nb_secondes/3600,4)
-                            vals={
-                                'composant'     : '----------'[:niveau]+product.is_code,
-                                'sequence'      : line.sequence,
-                                'workcenter_id' : line.workcenter_id.id,
-                                'quantite'      : quantite_unitaire,
-                                'cout_prepa'    : line.workcenter_id.is_cout_pk,
-                                'tps_prepa'     : line.workcenter_id.time_start, 
-                                'cout_fab'      : line.workcenter_id.is_cout_pk, 
-                                'tps_fab'       : line.is_nb_secondes,
-                                'cout_total'    : cout_total, 
-                            }
-                            if line.workcenter_id.resource_type=='material':
-                                self.detail_gamme_ma_pk.append(vals)
-                            else:
-                                self.detail_gamme_mo_pk.append(vals)
-                #*******************************************************************
+            #** Recherche de la gamme générique pour Cout Plasti-ka ************
+            SQL="""
+                select mb.is_gamme_generique_id
+                from mrp_bom mb inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
+                where pp.id="""+str(product.id)+ """ 
+                order by mb.id
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row2 in result:
+                routing_id = row2[0]
+                if routing_id:
+                    routing = self.env['mrp.routing'].browse(routing_id)
+                    for line in routing.workcenter_lines:
+                        cout_total=quantite_unitaire*line.workcenter_id.is_cout_pk*round(line.is_nb_secondes/3600,4)
+                        vals={
+                            'composant'     : '----------'[:niveau]+product.is_code,
+                            'sequence'      : line.sequence,
+                            'workcenter_id' : line.workcenter_id.id,
+                            'quantite'      : quantite_unitaire,
+                            'cout_prepa'    : line.workcenter_id.is_cout_pk,
+                            'tps_prepa'     : line.workcenter_id.time_start, 
+                            'cout_fab'      : line.workcenter_id.is_cout_pk, 
+                            'tps_fab'       : line.is_nb_secondes,
+                            'cout_total'    : cout_total, 
+                        }
+                        if line.workcenter_id.resource_type=='material':
+                            self.detail_gamme_ma_pk.append(vals)
+                        else:
+                            self.detail_gamme_mo_pk.append(vals)
+            #*******************************************************************
 
-                #** Composants de la nomenclature **********************************
-                SQL="""
-                    select mbl.product_id, mbl.product_uom, mbl.product_qty, ic.prix_calcule
-                    from mrp_bom mb inner join mrp_bom_line mbl on mbl.bom_id=mb.id
-                                    inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
-                                    inner join is_cout ic on ic.name=mbl.product_id
-                    where pp.id="""+str(product.id)+ """ 
-                    order by mbl.sequence, mbl.id
-                """
-                # TODO : Filtre sur ce critère ? => and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
-                cr.execute(SQL)
-                result = cr.fetchall()
-                niv=niveau+1
-                for row2 in result:
-                    composant    = self.env['product.product'].browse(row2[0])
-                    unite        = row2[1]
-                    qt_unitaire  = row2[2]
-                    qt_total     = qt_unitaire*quantite_total
-                    prix_calcule = row2[3]
-                    self.nomenclature_prix_revient(cout_calcul_obj, niv, composant, unite, qt_unitaire, qt_total, prix_calcule)
-                #*******************************************************************
+            #** Composants de la nomenclature **********************************
+            SQL="""
+                select mbl.product_id, mbl.product_uom, mbl.product_qty, ic.prix_calcule
+                from mrp_bom mb inner join mrp_bom_line mbl on mbl.bom_id=mb.id
+                                inner join product_product pp on pp.product_tmpl_id=mb.product_tmpl_id
+                                inner join is_cout ic on ic.name=mbl.product_id
+                where pp.id="""+str(product.id)+ """ 
+                order by mbl.sequence, mbl.id
+            """
+            # TODO : Filtre sur ce critère ? => and (mb.is_sous_traitance='f' or mb.is_sous_traitance is null)
+            cr.execute(SQL)
+            result = cr.fetchall()
+            niv=niveau+1
+            for row2 in result:
+                composant    = self.env['product.product'].browse(row2[0])
+                unite        = row2[1]
+                qt_unitaire  = row2[2]
+                qt_total     = qt_unitaire*quantite_total
+                prix_calcule = row2[3]
+                self.nomenclature_prix_revient(cout_calcul_obj, niv, composant, unite, qt_unitaire, qt_total, prix_calcule)
+            #*******************************************************************
 
     @api.multi
     def action_calcul_prix_revient(self):
-        self.locks=[]
         for obj in self:
             self._log("## DEBUT Calcul des prix de revient")
 
@@ -670,9 +611,9 @@ class is_cout_calcul(models.Model):
 
 
                         #Client par défaut
-                        for row2 in row.product_id.is_client_ids:
-                            if row2.client_defaut:
-                                cout.partner_id=row2.client_id.id
+                        for row in row.product_id.is_client_ids:
+                            if row.client_defaut:
+                                cout.partner_id=row.client_id.id
 
                         cout.nb_err              = nb_err
                         if nb_err>0:
@@ -796,7 +737,6 @@ class is_cout(models.Model):
     gamme_ma_pk_ids        = fields.One2many('is.cout.gamme.ma.pk' , 'cout_id', u"Lignes gamme machine PK")
     gamme_mo_pk_ids        = fields.One2many('is.cout.gamme.mo.pk' , 'cout_id', u"Lignes gamme MO PK")
     nb_err                 = fields.Integer('Nb Err', help=u"Nombre d'erreures détectées lors du calcul de coûts")
-    thread_id              = fields.Integer('Thread',readonly=True)
 
 
     @api.depends('name')
@@ -824,12 +764,11 @@ class is_cout(models.Model):
     @api.multi
     def write(self, vals):
         for obj in self:
-            if 'cout_std_matiere' in vals or 'cout_std_machine' in vals or 'cout_std_mo' in vals or 'cout_std_st' in vals:
-                matiere   = vals.get('cout_std_matiere'  , obj.cout_std_matiere)
-                machine   = vals.get('cout_std_machine'  , obj.cout_std_machine)
-                mo        = vals.get('cout_std_mo'       , obj.cout_std_mo)
-                st        = vals.get('cout_std_st'       , obj.cout_std_st)
-                vals['cout_std_total']=matiere+machine+mo+st
+            matiere   = vals.get('cout_std_matiere'  , obj.cout_std_matiere)
+            machine   = vals.get('cout_std_machine'  , obj.cout_std_machine)
+            mo        = vals.get('cout_std_mo'       , obj.cout_std_mo)
+            st        = vals.get('cout_std_st'       , obj.cout_std_st)
+            vals['cout_std_total']=matiere+machine+mo+st
         res=super(is_cout, self).write(vals)
         return res
 
