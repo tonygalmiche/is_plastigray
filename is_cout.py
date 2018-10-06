@@ -42,6 +42,7 @@ class is_cout_calcul(models.Model):
     is_gestionnaire_id = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     multiniveaux       = fields.Boolean('Calcul des coûts multi-niveaux')
     cout_actualise_ids = fields.One2many('is.cout.calcul.actualise', 'cout_calcul_id', u"Historique des côuts actualisés")
+    niveau_ids         = fields.One2many('is.cout.calcul.niveau'   , 'cout_calcul_id', u"Niveau des articles dans la nomenclature")
     log_ids            = fields.One2many('is.cout.calcul.log', 'cout_calcul_id', u"Logs")
     state              = fields.Selection([('creation',u'Création'), ('prix_achat', u"Calcul des prix d'achat"),('termine', u"Terminé")], u"État", readonly=True, select=True)
 
@@ -101,18 +102,27 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
-    def creation_cout(self, cout_calcul_obj, product, type_article):
+    def creation_cout(self, cout_calcul_obj, product, type_article, niveau=0):
         cout_obj = self.env['is.cout']
         couts=cout_obj.search([('name', '=', product.id)])
+        vals={
+            'cout_calcul_id': cout_calcul_obj.id,
+            'type_article'  : type_article,
+            'niveau'        : niveau,
+        }
         if len(couts):
             cout=couts[0]
+            #_logger.info(u'creation_cout : write '+str(product.is_code))
+            cout.write(vals)
         else:
-            vals={
+            vals.update({
                 'name': product.id,
-            }
+            })
+            #_logger.info(u'creation_cout : create '+str(product.is_code))
             cout=cout_obj.create(vals)
-        cout.cout_calcul_id=cout_calcul_obj.id
-        cout.type_article=type_article
+        #cout.cout_calcul_id=cout_calcul_obj.id
+        #cout.type_article=type_article
+        #cout.niveau=niveau
         return cout
 
 
@@ -174,6 +184,7 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def _log(self,operation):
+        _logger.info(operation)
         for obj in self:
             vals={
                 'cout_calcul_id': obj.id,
@@ -188,17 +199,18 @@ class is_cout_calcul(models.Model):
     @api.multi
     def action_calcul_prix_achat(self):
         cr = self._cr
+        debut=datetime.datetime.now()
         for obj in self:
-            obj.log_ids.unlink()
+            #obj.log_ids.unlink()
             self._log("## DEBUT Calcul des prix d'achat")
-            self._log('début unlink')
+            _logger.info('début unlink')
             for row in obj.cout_actualise_ids:
                 row.unlink()
-            self._log('fin unlink')
+            _logger.info('fin unlink')
             calcul_actualise_obj = self.env['is.cout.calcul.actualise']
-            self._log("début get_products")
+            _logger.info("début get_products")
             products=self.get_products(obj)
-            self._log("fin get_products : nb="+str(len(products)))
+            _logger.info("fin get_products : nb="+str(len(products)))
 
 
 
@@ -207,16 +219,17 @@ class is_cout_calcul(models.Model):
             nb=len(products)
             #print _now(debut), "## début boucle products : nb=",nb
 
-            self._log("début boucle products : nb="+str(nb))
+            _logger.info("début boucle products : nb="+str(nb))
 
             for product in products:
+                _logger.info(str(ct)+'/'+str(nb)+' : boucle products : '+product.is_code)
                 #print _now(debut), product,ct,'/',nb
-                #ct+=1
+                ct+=1
                 self.nomenclature(obj,product,0, obj.multiniveaux)
             couts=self.env['is.cout'].search([('cout_calcul_id', '=', obj.id)])
             product_uom_obj = self.env['product.uom']
             #print _now(debut), "## fin boucle products"
-            self._log("fin boucle products")
+            _logger.info("fin boucle products")
 
 
 
@@ -224,12 +237,14 @@ class is_cout_calcul(models.Model):
             ct=1
             nb=len(couts)
             #print _now(debut), "## début boucle couts : nb=",nb
-            self._log("début boucle couts : nb="+str(nb))
+            _logger.info("début boucle couts : nb="+str(nb))
             for cout in couts:
                 product=cout.name
 
+                _logger.info(str(ct)+'/'+str(nb)+' : boucle couts : '+product.is_code)
+
                 #print _now(debut), product.is_code,ct,'/',nb
-                #ct+=1
+                ct+=1
 
 
                 prix_tarif    = 0
@@ -359,10 +374,7 @@ class is_cout_calcul(models.Model):
 
             obj.state="prix_achat"
 
-
-        #print _now(debut), "## FIN"
-        self._log("début boucle couts")
-        self._log("## FIN Calcul des prix d'achat")
+        self._log("## FIN Calcul des prix d'achat"+_now(debut))
 
     @api.multi
     def get_products(self,obj):
@@ -659,6 +671,15 @@ class is_cout_calcul_log(models.Model):
     operation      = fields.Char('Opération')
 
 
+class is_cout_calcul_niveau(models.Model):
+    """Contient le niveau de chaque article dans la nomenclature pour pouvoir lancer les calculs par niveau"""
+    _name='is.cout.calcul.niveau'
+
+    cout_calcul_id = fields.Many2one('is.cout.calcul' , 'Coût Calcul', required=True, ondelete='cascade')
+    product_id     = fields.Many2one('product.product', 'Article'    , select=True)
+    niveau         = fields.Integer('Niveau dans la nomenclature'    , select=True)
+
+
 class is_cout_calcul_actualise(models.Model):
     _name='is.cout.calcul.actualise'
 
@@ -736,6 +757,7 @@ class is_cout(models.Model):
     gamme_mo_ids           = fields.One2many('is.cout.gamme.mo'    , 'cout_id', u"Lignes gamme MO")
     gamme_ma_pk_ids        = fields.One2many('is.cout.gamme.ma.pk' , 'cout_id', u"Lignes gamme machine PK")
     gamme_mo_pk_ids        = fields.One2many('is.cout.gamme.mo.pk' , 'cout_id', u"Lignes gamme MO PK")
+    niveau                 = fields.Integer('Niveau le plus bas dans la nomenclature')
     nb_err                 = fields.Integer('Nb Err', help=u"Nombre d'erreures détectées lors du calcul de coûts")
 
 

@@ -48,10 +48,11 @@
             <field name="arch" type="xml">
                 <form>  
                     <header>
-                        <button name="action_calcul_prix_achat"    type="object" string="Calcul des prix d'achat"    class="oe_highlight" states="creation"   confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
+                        <button name="action_calcul_prix_achat"  type="object" string="Calcul des prix d'achat"                class="oe_highlight" states="creation" confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
+                        <button name="action_calcul_prix_achat2" type="object" string="Calcul des prix d'achat (multi-coeurs)" class="oe_highlight" states="creation" confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
+
                         <button name="action_calcul_prix_revient"  type="object" string="Calcul des prix de revient" class="oe_highlight" states="prix_achat" confirm2="Voulez-vous vraiment lancer le calcul des prix de revient ?"/>
-                        <!-- TODO : Je désactive ce bouton, car plantage si plus de 1000 couts => A revoir plus tard autrement
-                        <button name="action_imprimer_couts"       type="object" string="Imprimer les coûts"   /> -->
+
                         <field name="state" widget="statusbar"  clickable="True" />
                     </header>
 
@@ -152,6 +153,7 @@
                                 <field name="uom_id"/> 
                                 <field name="lot_mini"/> 
                                 <field name="nb_err"/> 
+                                <field name="niveau"/> 
                             </group>
                             <group string="Prix"                      attrs="{'invisible': [('type_article', '=', 'F')] }">
                                 <field name="prix_tarif"/> 
