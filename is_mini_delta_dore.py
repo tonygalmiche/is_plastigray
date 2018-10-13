@@ -109,9 +109,11 @@ class is_mini_delta_dore(models.Model):
             nb_jours    = obj.nb_jours
             nb_semaines = obj.nb_semaines
             nb_mois     = obj.nb_mois
-            csvfile = base64.decodestring(attachment.datas)
-            csvfile = csvfile.split("\n")
-            csvfile = csv.reader(csvfile, delimiter=',')
+
+            attachment=base64.decodestring(attachment.datas)
+            attachment=attachment.decode('iso-8859-1').encode('utf8')
+            csvfile = attachment.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=';')
             tsemaines={}
             tmois={}
             tdates=[]
@@ -122,7 +124,7 @@ class is_mini_delta_dore(models.Model):
                     for cel in row:
                         if ct==10:
                             #** Recherche du lundi de chaque semaine ***********
-                            d=datetime.strptime(cel, '%d/%m/%Y')
+                            d=datetime.strptime(cel, '%d/%m/%y')
                             for i in range(0,365):
                                 semaine='S'+d.strftime('%W/%Y')
                                 #Test si lundi
@@ -132,7 +134,7 @@ class is_mini_delta_dore(models.Model):
                             #***************************************************
 
                             #** Recherche du premier jour de chaque mois *******
-                            d=datetime.strptime(cel, '%d/%m/%Y')
+                            d=datetime.strptime(cel, '%d/%m/%y')
                             for i in range(0,12):
                                 d = d.replace(day=1)      # Fixe le jour à 1
                                 d = self.premier_lundi(d) # Recherche le premier lundi suivant
@@ -142,7 +144,7 @@ class is_mini_delta_dore(models.Model):
                             #***************************************************
 
                             #** Date premier lundi *****************************
-                            d=datetime.strptime(cel, '%d/%m/%Y')
+                            d=datetime.strptime(cel, '%d/%m/%y')
                             weekday = d.weekday()                    # Jour dans la semaine
                             date_lundi = d - timedelta(days=weekday) # Date du lundi précédent
                             #***************************************************
@@ -210,14 +212,24 @@ class is_mini_delta_dore(models.Model):
                         if ct==8:
                             stock_maxi=self.txt2integer(cel)
                         if ct==10:
+                            #Recherche multiple de livraison *******************
+                            multiple_livraison=0
+                            for l in product.is_client_ids:
+                                if l.client_id.id==obj.partner_id.id:
+                                    multiple_livraison=l.multiple_livraison
+
+                            #***************************************************
                             if indice_client!=product.is_ind_plan:
                                 anomalie.append(u'Indice différent')
                             if stock<stock_mini:
                                 anomalie.append(u'Stock<Mini')
                             if stock>stock_maxi:
                                 anomalie.append(u'Stock>Maxi')
-                            if multiple!=product.lot_mini:
-                                anomalie.append(u'Lot<>Multiple')
+                            if multiple_livraison==0:
+                                anomalie.append(u'Multiple Plastigray=0')
+                            else:
+                                if round(multiple/multiple_livraison,2)!=round(multiple/multiple_livraison):
+                                    anomalie.append(u'Multiple Client incohérent avec multiple Plastigray')
                             vals={
                                 'mini_delta_dore_id': obj.id,
                                 'reference_client'  : reference_client,
@@ -229,7 +241,7 @@ class is_mini_delta_dore(models.Model):
                                 'stock_maxi'        : stock_maxi,
                                 'product_id'        : product.id,
                                 'indice'            : product.is_ind_plan,
-                                'lot_mini'          : product.lot_mini,
+                                'multiple_livraison': multiple_livraison,
                                 'order_id'          : order.id,
                                 'anomalie'          : ', '.join(anomalie),
                             }
@@ -336,7 +348,7 @@ class is_mini_delta_dore(models.Model):
 
 class is_mini_delta_dore_line(models.Model):
     _name='is.mini.delta.dore.line'
-    _order='product_id'
+    _order='id'
 
     mini_delta_dore_id = fields.Many2one('is.mini.delta.dore', 'Mini Delta Dore', required=True, ondelete='cascade', readonly=True)
     reference_client   = fields.Char('Référence client')
@@ -348,7 +360,7 @@ class is_mini_delta_dore_line(models.Model):
     stock_maxi         = fields.Integer('Stock maxi')
     product_id         = fields.Many2one('product.product', 'Article')
     indice             = fields.Char('Indice Plastigray')
-    lot_mini           = fields.Integer('Lot livraison Plastigray')
+    multiple_livraison = fields.Integer('Multiple Plastigray')
     order_id           = fields.Many2one('sale.order', 'Commande ouverte')
     anomalie           = fields.Char('Anomalie')
     besoin_ids         = fields.One2many('is.mini.delta.dore.besoin', 'line_id', u"Besoins")
@@ -382,7 +394,7 @@ class is_mini_delta_dore_besoin(models.Model):
     stock              = fields.Integer('Stock Client')
     stock_mini         = fields.Integer('Stock mini')
     stock_maxi         = fields.Integer('Stock maxi')
-    lot_mini           = fields.Integer('Lot livraison Plastigray')
+    multiple_livraison = fields.Integer('Multiple Plastigray')
     besoin             = fields.Integer('Besoin')
     date_origine       = fields.Char('Date origine')
     date_calculee      = fields.Date('Date calculée')
