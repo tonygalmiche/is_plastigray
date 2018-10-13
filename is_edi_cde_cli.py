@@ -218,14 +218,22 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             line_obj       = self.env['sale.order.line']
 
-            #** Pour PK, il faut supprimer toutes les commandes de tous les articles 
-            if obj.import_function=="Plasti-ka" or obj.import_function=="Watts":
+            #** Pour PK et Watts, il faut supprimer toutes les commandes de tous les articles 
+            if obj.import_function=="Plasti-ka":
                 filtre=[
                     ('is_type_commande'  , '=', 'ouverte'),
                     ('state'             , '=', 'draft'),
                     ('partner_invoice_id', '=', obj.partner_id.id),
                 ]
                 orders=self.env['sale.order'].search(filtre)
+            if obj.import_function=="Watts":
+                filtre=[
+                    ('is_type_commande'  , '=', 'ouverte'),
+                    ('state'             , '=', 'draft'),
+                    ('partner_id', '=', obj.partner_id.id),
+                ]
+                orders=self.env['sale.order'].search(filtre)
+            if obj.import_function=="Plasti-ka" or obj.import_function=="Watts":
                 for order in orders:
                     filtre=[
                         ('order_id'        , '=', order.id),
