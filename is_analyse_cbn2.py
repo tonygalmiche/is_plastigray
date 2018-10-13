@@ -1154,7 +1154,12 @@ class product_product(models.Model):
                 StockSecu=0
                 if product_id in StocksSecu:
                     StockSecu=StocksSecu[product_id]
-                Tab[Cle][0]=StockA-StockSecu
+
+                if valorisation:
+                    Tab[Cle][0]=StockA+StockQ
+                else:
+                    Tab[Cle][0]=StockA-StockSecu
+
                 if DateLundi not in Tab[Cle]:
                     Tab[Cle][DateLundi]=0
                 Tab[Cle][DateLundi]=Tab[Cle][DateLundi]+round(Sens*qt,2);
