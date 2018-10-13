@@ -278,6 +278,7 @@
         <field name="action"    ref="product.product_pricelist_action_for_purchase"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_commerciaux_group'),
             ref('is_rsp_achats_group'),
         ])]"/>
     </record>
@@ -623,6 +624,7 @@
         <field name="action"    ref="product.product_pricelist_action2"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_commerciaux_group'),
             ref('is_rsp_achats_group'),
         ])]"/>
     </record>

@@ -276,6 +276,7 @@ class is_edi_cde_cli(models.Model):
             #** Importation des commandes **************************************
             sequence=0
             lines=self.env['is.edi.cde.cli.line'].search([('edi_cde_cli_id','=',obj.id)],order='edi_cde_cli_id,ref_article_client,date_livraison')
+            orders=[]
             for line in lines:
                 if line.order_id:
                     if line.quantite!=0 and order_id:
@@ -285,6 +286,9 @@ class is_edi_cde_cli(models.Model):
                             if line.date_livraison>obj.date_maxi:
                                 test=False
                         if test:
+                            order=line.order_id
+                            if order not in orders:
+                                orders.append(order)
                             sequence=sequence+10
                             vals={
                                 'sequence'            : sequence,
@@ -297,6 +301,11 @@ class is_edi_cde_cli(models.Model):
                                 'price_unit'          : line.prix,
                             }
                             line_obj.create(vals)
+            #*******************************************************************
+
+            #** Numérotation des lignes des commandes **************************
+            for order in orders:
+                order.numeroter_lignes() 
             #*******************************************************************
             obj.state='traite'
 

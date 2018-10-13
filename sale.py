@@ -64,6 +64,19 @@ class sale_order(models.Model):
                     line.price_unit=price
 
 
+    @api.multi
+    def numeroter_lignes(self):
+        for obj in self:
+            lines = self.env['sale.order.line'].search([('order_id','=',obj.id)],order="is_date_expedition")
+            sequence=0
+            for line in lines:
+                sequence=sequence+1
+                line.sequence=sequence
+
+
+
+
+
     def onchange_partner_id(self, cr, uid, ids, partner_id, context=None):
         res = super(sale_order, self).onchange_partner_id(cr, uid, ids, partner_id, context=context)
         if partner_id:

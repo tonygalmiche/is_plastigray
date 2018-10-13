@@ -16,6 +16,21 @@
             <field eval="'ir.actions.server,%d'%actualiser_prix_sale_order_action_server" name="value"/>
         </record>
 
+
+        <!-- Numéroter les lignes -->
+        <record id="numeroter_lignes_sale_order_action_server" model="ir.actions.server">
+             <field name="name">Renuméroter les lignes par date d'expédition</field>
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="code">action = self.numeroter_lignes(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="numeroter_lignes_sale_order_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'sale.order'" name="model"/>
+            <field name="name">Renuméroter les lignes par date d'expédition</field>
+            <field eval="'ir.actions.server,%d'%numeroter_lignes_sale_order_action_server" name="value"/>
+        </record>
+
+
         <record id="is_view_order_form" model="ir.ui.view">
             <field name="name">is_view_order_form</field>
             <field name="model">sale.order</field>
