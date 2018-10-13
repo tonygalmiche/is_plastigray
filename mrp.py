@@ -120,7 +120,7 @@ class mrp_routing(models.Model):
     is_presse_affectee  = fields.Boolean("Presse affectée" , store=False, readonly=True, compute='_compute')
     is_presse_generique = fields.Boolean("Presse générique", store=False, readonly=True, compute='_compute')
     is_nb_empreintes    = fields.Integer("Nombre d'empreintes par pièce", help="Nombre d'empreintes pour cette pièce dans le moule")
-    is_coef_theia       = fields.Integer("Coefficient Theia"            , help="Nombre de pièces différentes dans le moule")
+    is_coef_theia       = fields.Float("Coefficient Theia", help="Nombre de pièces différentes dans le moule", digits=(14,1))
 
     _defaults = {
         'is_nb_empreintes': 1,
