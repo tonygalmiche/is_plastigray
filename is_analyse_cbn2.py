@@ -4,6 +4,19 @@ import time
 import datetime
 from collections import OrderedDict
 import tempfile
+import logging
+_logger = logging.getLogger(__name__)
+
+
+def duree(debut):
+    dt = datetime.datetime.now() - debut
+    ms = (dt.days * 24 * 60 * 60 + dt.seconds) * 1000 + dt.microseconds / 1000.0
+    ms=int(ms)
+    return ms
+
+
+def _now(debut):
+    return str(int(duree(debut)/100.0)/10.0)+"s"
 
 
 class product_product(models.Model):
@@ -150,6 +163,24 @@ class product_product(models.Model):
         cr, uid, context = self.env.args
         if gest:
             filtre=filtre+" and ig.name='"+gest+"' "
+
+        #** Recherche des articles ayant des données ***************************
+        #debut=datetime.datetime.now()
+        #_logger.info('Début')
+        #_logger.info('Fin '+_now(debut))
+        r1=self._get_FS_SA(filtre)
+        r2=self._get_CF_CP(filtre)
+        r3=self._get_FL(filtre)
+        r4=self._get_FM(filtre)
+        r5=self._get_SF(filtre)
+        product_ids=[]
+        for row in (r1+r2+r3+r4+r5):
+            product_id=str(row[5])
+            if product_id not in product_ids:
+                product_ids.append(product_id)
+        #_logger.info('Fin '+_now(debut))
+        #***********************************************************************
+
         SQL="""
             SELECT 
                 (   select concat(rp2.is_code,'-',rp2.is_adr_code)
@@ -167,6 +198,8 @@ class product_product(models.Model):
                                     left outer join res_partner      rp   on pt.is_client_id=rp.id
           WHERE pp.id>0 """+filtre+"""
         """
+        if len(product_ids):
+            SQL=SQL+" AND pp.id in ("+','.join(product_ids)+") "
         cr.execute(SQL)
         result = cr.fetchall()
         select_fournisseur=[]
@@ -482,9 +515,10 @@ class product_product(models.Model):
     @api.model
     def analyse_cbn2(self,filter=False,trcolor=False,trid=False):
         cr, uid, context = self.env.args
+        debut=datetime.datetime.now()
+        _logger.info('Début requête')
         product_id=filter.get('product_id',False)
         validation    = filter['validation']
-
         if validation=='ko':
             #** Lecture des critères enregistrés *******************************
             code_pg_debut = self.env['is.mem.var'].get(uid,'code_pg_debut')
@@ -998,6 +1032,7 @@ class product_product(models.Model):
             'calage'              : calage,
             'html'                : html,
         }
+        _logger.info('Fin requête '+_now(debut))
         return vals
 
 
