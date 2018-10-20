@@ -7,7 +7,7 @@ from openerp.tools import frozendict
 class stock_move(models.Model):
     _inherit = 'stock.move'
      
-    is_sale_line_id = fields.Many2one('sale.order.line', 'Ligne de commande')
+    is_sale_line_id = fields.Many2one('sale.order.line', 'Ligne de commande', select=True)
 
     
 class procurement_order(models.Model):

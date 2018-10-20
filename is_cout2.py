@@ -15,6 +15,7 @@ import threading
 from decimal import Decimal
 import logging
 _logger = logging.getLogger(__name__)
+#import cProfile
 
 
 #TODO Nombre de threads
@@ -146,8 +147,11 @@ class is_cout_calcul(models.Model):
     @api.multi
     def _get_pricelist(self,product):
         """Recherche pricelist du fournisseur par défaut"""
+        #pricelist=self.env['product.pricelist'].browse(573)
+        #print pricelist
+        #return pricelist
         seller=False
-        if len(product.seller_ids)>0:
+        if product.seller_ids:
             seller=product.seller_ids[0]
         pricelist=False
         if seller:
@@ -239,6 +243,12 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def _maj_couts_thread(self,obj_id,rows,thread):
+
+
+        #pr=cProfile.Profile()
+        #pr.enable()
+
+
         with api.Environment.manage():
             new_cr = registry(self._cr.dbname).cursor()
             self.cursors.append(new_cr)
@@ -301,6 +311,11 @@ class is_cout_calcul(models.Model):
                 cout.write(vals)
 
 
+        #pr.disable()
+        #pr.dump_stats('/tmp/maj_couts_thread_'+str(thread)+'.cProfile')
+
+
+
     @api.multi
     def _maj_couts(self,nb_threads=1):
         """Mise à jour des couts en threads"""
@@ -348,6 +363,11 @@ class is_cout_calcul(models.Model):
     @api.multi
     def action_calcul_prix_achat2(self):
         """Fonction initiale appellée au début du calcul"""
+
+
+        #pr=cProfile.Profile()
+        #pr.enable()
+
         cr = self._cr
         uid=self._uid
         user=self.env['res.users'].browse(uid)
@@ -371,7 +391,9 @@ class is_cout_calcul(models.Model):
             for product in products:
                 _logger.info(str(ct)+'/'+str(nb)+' : boucle products : '+product.is_code)
                 ct+=1
+                #cProfile.runctx("self.nomenclature2(obj,product,0, obj.multiniveaux)",globals(),locals(),"/tmp/test.bin")
                 self.nomenclature2(obj,product,0, obj.multiniveaux)
+
             _logger.info("fin boucle products")
 
             _logger.info("début création coûts "+_now(debut))
@@ -385,5 +407,10 @@ class is_cout_calcul(models.Model):
             self._log("## FIN Calcul des prix d'achat ("+str(nb_threads)+" coeurs) "+_now(debut))
 
             obj.state="prix_achat"
+
+        #pr.disable()
+        #pr.dump_stats('/tmp/test.bin')
+
+
 
 

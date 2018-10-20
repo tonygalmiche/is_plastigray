@@ -95,6 +95,7 @@ class is_mini_delta_dore(models.Model):
 
     @api.multi
     def traitement(self, attachment):
+        cr, uid, context = self.env.args
         res = []
         for obj in self:
             #** Recherche du prochain jour livrable de ce client ***************
@@ -262,27 +263,6 @@ class is_mini_delta_dore(models.Model):
                                 d              = tdates[ct-10][1]
                                 date_calculee  = d + timedelta(days=i*7) # Ajoute 7 jours => semaine suivant
                                 besoin_calcule = besoin/eclate
-                                stock_date     = stock_date-besoin_calcule
-                                commande       = 0
-                                date_livraison = False
-                                type_commande  = False
-                                if stock_date<0:
-                                    type_commande  = 'previsionnel'
-                                    commande=-stock_date
-                                    x=float(commande)/float(multiple)
-                                    x=math.ceil(x)
-                                    commande=multiple*x
-                                    date_livraison=date_calculee
-                                    if date_calculee<=date_prochaine_livraison:
-                                        type_commande  = 'ferme'
-                                        date_livraison=date_prochaine_livraison
-                                        commande=commande+multiple # Ajoute 1 multiple si commande ferme
-                                    stock_date=stock_date+commande
-                                anomalie       = []
-                                if stock_date<0:
-                                    anomalie.append(u'Stock<Mini')
-                                if (stock_date+stock_mini)>stock_maxi:
-                                    anomalie.append(u'Stock>Maxi')
                                 vals={
                                     'mini_delta_dore_id': obj.id,
                                     'line_id'           : line.id,
@@ -296,15 +276,75 @@ class is_mini_delta_dore(models.Model):
                                     'date_origine'      : date_origine,
                                     'date_calculee'     : date_calculee,
                                     'besoin_calcule'    : besoin_calcule,
-                                    'stock_date'        : stock_date+stock_mini,
-                                    'stock_date_mini'   : stock_date,
-                                    'type_commande'     : type_commande,
-                                    'commande'          : commande,
-                                    'date_livraison'    : date_livraison,
-                                    'anomalie'          : ', '.join(anomalie),
                                 }
                                 self.env['is.mini.delta.dore.besoin'].create(vals)
                         ct+=1
+
+
+            #** Calcul du stock à date et des livraisons ***********************
+            for line in obj.line_ids:
+                SQL="""
+                    select
+                        id,
+                        line_id,
+                        product_id,
+                        multiple,
+                        stock,
+                        stock_mini,
+                        stock_maxi,
+                        date_calculee,
+                        besoin_calcule
+                    from is_mini_delta_dore_besoin 
+                    where line_id="""+str(line.id)+""" 
+                    order by date_calculee, id
+                """
+                cr.execute(SQL)
+                result = cr.fetchall()
+                lig=0
+                for row in result:
+                    b=self.env['is.mini.delta.dore.besoin'].browse(row[0])
+                    if b:
+                        lig=lig+1
+                        multiple       = row[3]
+                        stock          = row[4]
+                        stock_mini     = row[5]
+                        stock_maxi     = row[6]
+                        date_calculee  = row[7]
+                        besoin_calcule = row[8]
+                        date_calculee=datetime.strptime(date_calculee, '%Y-%m-%d')
+                        if lig==1:
+                            stock_date=stock-stock_mini
+                        stock_date     = stock_date - besoin_calcule
+                        commande       = 0
+                        date_livraison = False
+                        type_commande  = False
+                        if stock_date<0:
+                            type_commande  = 'previsionnel'
+                            commande=-stock_date
+                            x=float(commande)/float(multiple)
+                            x=math.ceil(x)
+                            commande=multiple*x
+                            date_livraison=date_calculee
+                            if date_calculee<=date_prochaine_livraison:
+                                type_commande  = 'ferme'
+                                date_livraison=date_prochaine_livraison
+                                commande=commande+multiple # Ajoute 1 multiple si commande ferme
+                            stock_date=stock_date+commande
+                        anomalie = []
+                        if stock_date<0:
+                            anomalie.append(u'Stock<Mini')
+                        if (stock_date+stock_mini)>stock_maxi:
+                            anomalie.append(u'Stock>Maxi')
+                        vals={
+                            'stock_date'        : stock_date+stock_mini,
+                            'stock_date_mini'   : stock_date,
+                            'type_commande'     : type_commande,
+                            'commande'          : commande,
+                            'date_livraison'    : date_livraison,
+                            'anomalie'          : ', '.join(anomalie),
+                        }
+                        b.write(vals)
+            #*******************************************************************
         return res
 
 

@@ -15,6 +15,7 @@ import threading
 from decimal import Decimal
 import logging
 _logger = logging.getLogger(__name__)
+#import cProfile
 
 
 def duree(debut):
@@ -115,9 +116,7 @@ class is_cout_calcul(models.Model):
             #_logger.info(u'creation_cout : write '+str(product.is_code))
             cout.write(vals)
         else:
-            vals.update({
-                'name': product.id,
-            })
+            vals['name'] = product.id
             #_logger.info(u'creation_cout : create '+str(product.is_code))
             cout=cout_obj.create(vals)
         #cout.cout_calcul_id=cout_calcul_obj.id
@@ -525,6 +524,12 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def action_calcul_prix_revient(self):
+
+
+        #pr=cProfile.Profile()
+        #pr.enable()
+
+
         for obj in self:
             self._log("## DEBUT Calcul des prix de revient")
 
@@ -660,6 +665,13 @@ class is_cout_calcul(models.Model):
             obj.state="termine"
 
             self._log("## FIN Calcul des prix de revient")
+
+
+        #pr.disable()
+        #pr.dump_stats('/tmp/action_calcul_prix_revient.cProfile')
+
+
+
 
 
 class is_cout_calcul_log(models.Model):

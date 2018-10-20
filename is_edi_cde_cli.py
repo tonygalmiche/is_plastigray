@@ -11,6 +11,7 @@ import base64
 import os
 import time
 from datetime import date,datetime,timedelta
+#import cProfile
 
 
 class is_edi_cde_cli_line(models.Model):
@@ -215,6 +216,11 @@ class is_edi_cde_cli(models.Model):
 
     @api.multi
     def action_importer_commandes(self):
+
+
+
+
+
         for obj in self:
             line_obj       = self.env['sale.order.line']
 
@@ -273,10 +279,14 @@ class is_edi_cde_cli(models.Model):
                     row.unlink()
             #*******************************************************************
 
+
             #** Importation des commandes **************************************
             sequence=0
             lines=self.env['is.edi.cde.cli.line'].search([('edi_cde_cli_id','=',obj.id)],order='edi_cde_cli_id,ref_article_client,date_livraison')
             orders=[]
+
+            #pr=cProfile.Profile()
+            #pr.enable()
             for line in lines:
                 if line.order_id:
                     if line.quantite!=0 and order_id:
@@ -301,6 +311,8 @@ class is_edi_cde_cli(models.Model):
                                 'price_unit'          : line.prix,
                             }
                             line_obj.create(vals)
+            #pr.disable()
+            #pr.dump_stats('/tmp/action_importer_commandes.cProfile')
             #*******************************************************************
 
             #** Numérotation des lignes des commandes **************************
