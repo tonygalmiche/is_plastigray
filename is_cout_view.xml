@@ -48,7 +48,7 @@
             <field name="arch" type="xml">
                 <form>  
                     <header>
-                        <button name="action_calcul_prix_achat"  type="object" string="Calcul des prix d'achat"                class="oe_highlight" states="creation" confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
+                        <!--<button name="action_calcul_prix_achat"  type="object" string="Calcul des prix d'achat"                class="oe_highlight" states="creation" confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />-->
                         <button name="action_calcul_prix_achat2" type="object" string="Calcul des prix d'achat (multi-coeurs)" class="oe_highlight" states="creation" confirm2="Voulez-vous vraiment lancer le calcul des prix d'achat ?" />
 
                         <button name="action_calcul_prix_revient"  type="object" string="Calcul des prix de revient" class="oe_highlight" states="prix_achat" confirm2="Voulez-vous vraiment lancer le calcul des prix de revient ?"/>

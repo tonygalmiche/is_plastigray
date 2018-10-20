@@ -61,6 +61,8 @@ class is_cout_calcul(models.Model):
     detail_gamme_ma_pk=[]
     detail_gamme_mo_pk=[]
 
+    mem_couts={}
+
 
     @api.multi
     @api.multi
@@ -104,24 +106,28 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def creation_cout(self, cout_calcul_obj, product, type_article, niveau=0):
-        cout_obj = self.env['is.cout']
-        couts=cout_obj.search([('name', '=', product.id)])
-        vals={
-            'cout_calcul_id': cout_calcul_obj.id,
-            'type_article'  : type_article,
-            'niveau'        : niveau,
-        }
-        if len(couts):
-            cout=couts[0]
-            #_logger.info(u'creation_cout : write '+str(product.is_code))
-            cout.write(vals)
+        product_id=product.id
+        if product_id in self.mem_couts:
+            action='trouvé'
+            cout=self.mem_couts[product_id]
         else:
-            vals['name'] = product.id
-            #_logger.info(u'creation_cout : create '+str(product.is_code))
-            cout=cout_obj.create(vals)
-        #cout.cout_calcul_id=cout_calcul_obj.id
-        #cout.type_article=type_article
-        #cout.niveau=niveau
+            cout_obj = self.env['is.cout']
+            couts=cout_obj.search([('name', '=', product_id)])
+            vals={
+                'cout_calcul_id': cout_calcul_obj.id,
+                'type_article'  : type_article,
+                'niveau'        : niveau,
+            }
+            if len(couts):
+                action='write'
+                cout=couts[0]
+                cout.write(vals)
+            else:
+                action='create'
+                vals['name'] = product_id
+                cout=cout_obj.create(vals)
+            self.mem_couts[product_id]=cout
+        #print action,cout.name.is_code
         return cout
 
 
@@ -195,185 +201,185 @@ class is_cout_calcul(models.Model):
 
 
 
-    @api.multi
-    def action_calcul_prix_achat(self):
-        cr = self._cr
-        debut=datetime.datetime.now()
-        for obj in self:
-            #obj.log_ids.unlink()
-            self._log("## DEBUT Calcul des prix d'achat")
-            _logger.info('début unlink')
-            for row in obj.cout_actualise_ids:
-                row.unlink()
-            _logger.info('fin unlink')
-            calcul_actualise_obj = self.env['is.cout.calcul.actualise']
-            _logger.info("début get_products")
-            products=self.get_products(obj)
-            _logger.info("fin get_products : nb="+str(len(products)))
+#    @api.multi
+#    def action_calcul_prix_achat(self):
+#        cr = self._cr
+#        debut=datetime.datetime.now()
+#        for obj in self:
+#            #obj.log_ids.unlink()
+#            self._log("## DEBUT Calcul des prix d'achat")
+#            _logger.info('début unlink')
+#            for row in obj.cout_actualise_ids:
+#                row.unlink()
+#            _logger.info('fin unlink')
+#            calcul_actualise_obj = self.env['is.cout.calcul.actualise']
+#            _logger.info("début get_products")
+#            products=self.get_products(obj)
+#            _logger.info("fin get_products : nb="+str(len(products)))
 
 
 
-            #TODO : 0.07s par article (88s pour 1233 articles)
-            ct=1
-            nb=len(products)
-            #print _now(debut), "## début boucle products : nb=",nb
+#            #TODO : 0.07s par article (88s pour 1233 articles)
+#            ct=1
+#            nb=len(products)
+#            #print _now(debut), "## début boucle products : nb=",nb
 
-            _logger.info("début boucle products : nb="+str(nb))
+#            _logger.info("début boucle products : nb="+str(nb))
 
-            for product in products:
-                _logger.info(str(ct)+'/'+str(nb)+' : boucle products : '+product.is_code)
-                #print _now(debut), product,ct,'/',nb
-                ct+=1
-                self.nomenclature(obj,product,0, obj.multiniveaux)
-            couts=self.env['is.cout'].search([('cout_calcul_id', '=', obj.id)])
-            product_uom_obj = self.env['product.uom']
-            #print _now(debut), "## fin boucle products"
-            _logger.info("fin boucle products")
-
-
-
-
-            ct=1
-            nb=len(couts)
-            #print _now(debut), "## début boucle couts : nb=",nb
-            _logger.info("début boucle couts : nb="+str(nb))
-            for cout in couts:
-                product=cout.name
-
-                _logger.info(str(ct)+'/'+str(nb)+' : boucle couts : '+product.is_code)
-
-                #print _now(debut), product.is_code,ct,'/',nb
-                ct+=1
-
-
-                prix_tarif    = 0
-                prix_commande = 0
-                prix_facture  = 0
-                prix_calcule  = 0
-                ecart_calcule_matiere = 0
-                vals={
-                    'cout_calcul_id': obj.id,
-                    'product_id': product.id,
-                }
-                res=calcul_actualise_obj.create(vals)
-                type_article=cout.type_article
-
-                if type_article!='F':
-                    #** Recherche du fournisseur par défaut ********************
-                    seller=False
-                    if len(product.seller_ids)>0:
-                        seller=product.seller_ids[0]
-                    pricelist=False
-                    if seller:
-                        partner=seller.name
-                        pricelist=partner.property_product_pricelist_purchase
-                    #***********************************************************
-
-
-                    #** Recherche du prix d'achat ******************************
-                    date=time.strftime('%Y-%m-%d') # Date du jour
-
-                    if pricelist:
-                        #Convertion du lot_mini de US vers UA
-                        min_quantity = product_uom_obj._compute_qty(cout.name.uom_id.id, cout.name.lot_mini, cout.name.uom_po_id.id)
-
-                        #TODO : Pour contourner un bug d'arrondi (le 31/01/2017)
-                        min_quantity=min_quantity+0.00000000001
-                        #TODO en utilisant la fonction repr à la place de str, cela ne tronque pas les décimales
-
-                        SQL="""
-                            select ppi.price_surcharge
-                            from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
-                            where ppv.pricelist_id="""+str(pricelist.id)+ """ 
-                                  and min_quantity<="""+repr(min_quantity)+"""
-                                  and (ppv.date_start <= '"""+date+"""' or ppv.date_start is null)
-                                  and (ppv.date_end   >= '"""+date+"""' or ppv.date_end   is null)
-
-                                  and ppi.product_id="""+str(product.id)+ """ 
-                                  and (ppi.date_start <= '"""+date+"""' or ppi.date_start is null)
-                                  and (ppi.date_end   >= '"""+date+"""' or ppi.date_end   is null)
-                            order by ppi.sequence
-                            limit 1
-                        """
-                        cr.execute(SQL)
-                        result = cr.fetchall()
-                        for row in result:
-                            #coef=product.uom_po_id.factor_inv
-                            coef=1
-                            if min_quantity:
-                                coef=cout.name.lot_mini/min_quantity
-                            prix_tarif=row[0]/coef
-                    #***********************************************************
-
-
-                    #** Recherche prix dernière commande ***********************
-                    SQL="""
-                        select pol.price_unit*pu.factor
-                        from purchase_order_line pol inner join product_uom pu on pol.product_uom=pu.id
-                        where pol.product_id="""+str(product.id)+ """ 
-                              and state in('confirmed','done')
-                        order by pol.id desc limit 1
-                    """
-                    cr.execute(SQL)
-                    result = cr.fetchall()
-                    for row in result:
-                        prix_commande=row[0]
-                    #***********************************************************
-
-                    #** Recherche prix dernière facture ************************
-                    SQL="""
-                        select ail.price_unit*pu.factor
-                        from account_invoice_line ail inner join product_uom pu on ail.uos_id=pu.id
-                                                      inner join account_invoice ai on ail.invoice_id=ai.id
-                        where ail.product_id="""+str(product.id)+ """ 
-                              and ai.state in('open','paid') and ai.type='in_invoice'
-                        order by ail.id desc limit 1
-                    """
-                    cr.execute(SQL)
-                    result = cr.fetchall()
-                    for row in result:
-                        prix_facture=row[0]
-                    #***********************************************************
-
-
-                    if cout.prix_force:
-                        prix_calcule=cout.prix_force
-                    else:
-                        if prix_facture:
-                            prix_calcule=prix_facture
-                        else:
-                            if prix_commande:
-                                prix_calcule=prix_commande
-                            else:
-                                if prix_tarif:
-                                    prix_calcule=prix_tarif
+#            for product in products:
+#                _logger.info(str(ct)+'/'+str(nb)+' : boucle products : '+product.is_code)
+#                #print _now(debut), product,ct,'/',nb
+#                ct+=1
+#                self.nomenclature(obj,product,0, obj.multiniveaux)
+#            couts=self.env['is.cout'].search([('cout_calcul_id', '=', obj.id)])
+#            product_uom_obj = self.env['product.uom']
+#            #print _now(debut), "## fin boucle products"
+#            _logger.info("fin boucle products")
 
 
 
-                    if type_article=='A':
-                        if prix_calcule==0:
-                            prix_calcule=cout.cout_act_matiere
-                        ecart_calcule_matiere  = prix_calcule - cout.cout_act_matiere
-                    if type_article=='ST':
-                        if prix_calcule==0:
-                            prix_calcule=cout.cout_act_st
-                        ecart_calcule_matiere  = prix_calcule - cout.cout_act_st
 
-                if prix_tarif:
-                    cout.prix_tarif=prix_tarif
+#            ct=1
+#            nb=len(couts)
+#            #print _now(debut), "## début boucle couts : nb=",nb
+#            _logger.info("début boucle couts : nb="+str(nb))
+#            for cout in couts:
+#                product=cout.name
 
+#                _logger.info(str(ct)+'/'+str(nb)+' : boucle couts : '+product.is_code)
 
-                cout.type_article  = type_article
-
-                cout.prix_commande = prix_commande
-                cout.prix_facture  = prix_facture
-                cout.prix_calcule  = prix_calcule
-                cout.ecart_calcule_matiere = ecart_calcule_matiere
+#                #print _now(debut), product.is_code,ct,'/',nb
+#                ct+=1
 
 
-            obj.state="prix_achat"
+#                prix_tarif    = 0
+#                prix_commande = 0
+#                prix_facture  = 0
+#                prix_calcule  = 0
+#                ecart_calcule_matiere = 0
+#                vals={
+#                    'cout_calcul_id': obj.id,
+#                    'product_id': product.id,
+#                }
+#                res=calcul_actualise_obj.create(vals)
+#                type_article=cout.type_article
 
-        self._log("## FIN Calcul des prix d'achat"+_now(debut))
+#                if type_article!='F':
+#                    #** Recherche du fournisseur par défaut ********************
+#                    seller=False
+#                    if len(product.seller_ids)>0:
+#                        seller=product.seller_ids[0]
+#                    pricelist=False
+#                    if seller:
+#                        partner=seller.name
+#                        pricelist=partner.property_product_pricelist_purchase
+#                    #***********************************************************
+
+
+#                    #** Recherche du prix d'achat ******************************
+#                    date=time.strftime('%Y-%m-%d') # Date du jour
+
+#                    if pricelist:
+#                        #Convertion du lot_mini de US vers UA
+#                        min_quantity = product_uom_obj._compute_qty(cout.name.uom_id.id, cout.name.lot_mini, cout.name.uom_po_id.id)
+
+#                        #TODO : Pour contourner un bug d'arrondi (le 31/01/2017)
+#                        min_quantity=min_quantity+0.00000000001
+#                        #TODO en utilisant la fonction repr à la place de str, cela ne tronque pas les décimales
+
+#                        SQL="""
+#                            select ppi.price_surcharge
+#                            from product_pricelist_version ppv inner join product_pricelist_item ppi on ppv.id=ppi.price_version_id
+#                            where ppv.pricelist_id="""+str(pricelist.id)+ """ 
+#                                  and min_quantity<="""+repr(min_quantity)+"""
+#                                  and (ppv.date_start <= '"""+date+"""' or ppv.date_start is null)
+#                                  and (ppv.date_end   >= '"""+date+"""' or ppv.date_end   is null)
+
+#                                  and ppi.product_id="""+str(product.id)+ """ 
+#                                  and (ppi.date_start <= '"""+date+"""' or ppi.date_start is null)
+#                                  and (ppi.date_end   >= '"""+date+"""' or ppi.date_end   is null)
+#                            order by ppi.sequence
+#                            limit 1
+#                        """
+#                        cr.execute(SQL)
+#                        result = cr.fetchall()
+#                        for row in result:
+#                            #coef=product.uom_po_id.factor_inv
+#                            coef=1
+#                            if min_quantity:
+#                                coef=cout.name.lot_mini/min_quantity
+#                            prix_tarif=row[0]/coef
+#                    #***********************************************************
+
+
+#                    #** Recherche prix dernière commande ***********************
+#                    SQL="""
+#                        select pol.price_unit*pu.factor
+#                        from purchase_order_line pol inner join product_uom pu on pol.product_uom=pu.id
+#                        where pol.product_id="""+str(product.id)+ """ 
+#                              and state in('confirmed','done')
+#                        order by pol.id desc limit 1
+#                    """
+#                    cr.execute(SQL)
+#                    result = cr.fetchall()
+#                    for row in result:
+#                        prix_commande=row[0]
+#                    #***********************************************************
+
+#                    #** Recherche prix dernière facture ************************
+#                    SQL="""
+#                        select ail.price_unit*pu.factor
+#                        from account_invoice_line ail inner join product_uom pu on ail.uos_id=pu.id
+#                                                      inner join account_invoice ai on ail.invoice_id=ai.id
+#                        where ail.product_id="""+str(product.id)+ """ 
+#                              and ai.state in('open','paid') and ai.type='in_invoice'
+#                        order by ail.id desc limit 1
+#                    """
+#                    cr.execute(SQL)
+#                    result = cr.fetchall()
+#                    for row in result:
+#                        prix_facture=row[0]
+#                    #***********************************************************
+
+
+#                    if cout.prix_force:
+#                        prix_calcule=cout.prix_force
+#                    else:
+#                        if prix_facture:
+#                            prix_calcule=prix_facture
+#                        else:
+#                            if prix_commande:
+#                                prix_calcule=prix_commande
+#                            else:
+#                                if prix_tarif:
+#                                    prix_calcule=prix_tarif
+
+
+
+#                    if type_article=='A':
+#                        if prix_calcule==0:
+#                            prix_calcule=cout.cout_act_matiere
+#                        ecart_calcule_matiere  = prix_calcule - cout.cout_act_matiere
+#                    if type_article=='ST':
+#                        if prix_calcule==0:
+#                            prix_calcule=cout.cout_act_st
+#                        ecart_calcule_matiere  = prix_calcule - cout.cout_act_st
+
+#                if prix_tarif:
+#                    cout.prix_tarif=prix_tarif
+
+
+#                cout.type_article  = type_article
+
+#                cout.prix_commande = prix_commande
+#                cout.prix_facture  = prix_facture
+#                cout.prix_calcule  = prix_calcule
+#                cout.ecart_calcule_matiere = ecart_calcule_matiere
+
+
+#            obj.state="prix_achat"
+
+#        self._log("## FIN Calcul des prix d'achat"+_now(debut))
 
     @api.multi
     def get_products(self,obj):
@@ -522,153 +528,188 @@ class is_cout_calcul(models.Model):
                 self.nomenclature_prix_revient(cout_calcul_obj, niv, composant, unite, qt_unitaire, qt_total, prix_calcule)
             #*******************************************************************
 
+
+
+
+
+
+
     @api.multi
-    def action_calcul_prix_revient(self):
+    def _productid2cout(self,product_id):
+        cout_obj = self.env['is.cout']
+        couts=cout_obj.search([('name', '=', product_id)])
+        return couts
 
 
-        #pr=cProfile.Profile()
-        #pr.enable()
-
-
+    @api.multi
+    def _get_couts(self):
+        couts=[]
         for obj in self:
-            self._log("## DEBUT Calcul des prix de revient")
-
-
-            cout_obj = self.env['is.cout']
-
-            nb=len(obj.cout_actualise_ids)
-            ct=0
             for row in obj.cout_actualise_ids:
                 product=row.product_id
+                res=self._productid2cout(product.id)
+                for r in res:
+                    couts.append(r)
+        return couts
+
+
+    @api.multi
+    def _unlink_detail_cout(self,couts):
+        """En regroupant la suppression de toutes les lignes, cela permet de gagner beaucoup de temps"""
+        cr = self._cr
+        if couts:
+            ids = self._get_couts_ids(couts)
+            if ids:
+                ids=','.join(ids)
+                SQL=''
+                SQL+='DELETE FROM is_cout_nomenclature WHERE cout_id in('+ids+'); '
+                SQL+='DELETE FROM is_cout_gamme_ma     WHERE cout_id in('+ids+'); '
+                SQL+='DELETE FROM is_cout_gamme_mo     WHERE cout_id in('+ids+'); '
+                SQL+='DELETE FROM is_cout_gamme_ma_pk  WHERE cout_id in('+ids+'); '
+                SQL+='DELETE FROM is_cout_gamme_mo_pk  WHERE cout_id in('+ids+'); '
+                cr.execute(SQL)
+
+
+    @api.multi
+    def _get_couts_ids(self,couts):
+        """Retourne la liste des id des couts à partir des couts"""
+        ids=[]
+        for cout in couts:
+            ids.append(str(cout.id))
+        return ids
+
+
+    @api.multi
+    def _write_resultats(self):
+        "Ecrit les résultats des calculs dans la page récapitulative"
+        for obj in self:
+            for row in obj.cout_actualise_ids:
+                product=row.product_id
+                couts=self._productid2cout(product.id)
+                for cout in couts:
+                    vals={}
+                    vals['cout_act_matiere']     = cout.cout_act_matiere
+                    vals['cout_act_machine']     = cout.cout_act_machine
+                    vals['cout_act_mo']          = cout.cout_act_mo
+                    vals['cout_act_st']          = cout.cout_act_st
+                    vals['cout_act_total']       = cout.cout_act_total
+                    row.write(vals)
+
+
+    @api.multi
+    def action_calcul_prix_revient(self):
+        #pr=cProfile.Profile()
+        #pr.enable()
+        for obj in self:
+            self._log("## DEBUT Calcul des prix de revient")
+            nb=len(obj.cout_actualise_ids)
+            ct=0
+            couts = self._get_couts()
+            self._unlink_detail_cout(couts)
+            for cout in couts:
+                product=cout.name
                 ct=ct+1
                 _logger.info(str(ct)+'/'+str(nb)+' : '+str(product.is_code))
-                couts=cout_obj.search([('name', '=', product.id)])
-                if len(couts):
-                    for cout in couts:
-                        cout_act_matiere    = 0
-                        cout_act_st         = 0
-                        cout_act_condition  = 0
-                        cout_act_machine    = 0
-                        cout_act_machine_pk = 0
-                        cout_act_mo         = 0
-                        cout_act_mo_pk      = 0
-                        cout_act_total      = 0
 
-                        for row2 in cout.nomenclature_ids:
-                            row2.unlink()
-                        for row2 in cout.gamme_ma_ids:
-                            row2.unlink()
-                        for row2 in cout.gamme_mo_ids:
-                            row2.unlink()
-                        cout.gamme_mo_pk_ids.unlink()
-                        cout.gamme_ma_pk_ids.unlink()
+                cout_act_matiere    = 0
+                cout_act_st         = 0
+                cout_act_condition  = 0
+                cout_act_machine    = 0
+                cout_act_machine_pk = 0
+                cout_act_mo         = 0
+                cout_act_mo_pk      = 0
+                cout_act_total      = 0
 
-                        if cout.type_article=='A':
-                            cout_act_matiere = cout.prix_calcule
-                            cout_act_st      = 0
-                        if cout.type_article=='ST':
-                            cout_act_matiere = 0
-                            cout_act_st      = 0
+                if cout.type_article=='A':
+                    cout_act_matiere = cout.prix_calcule
+                    cout_act_st      = 0
+                if cout.type_article=='ST':
+                    cout_act_matiere = 0
+                    cout_act_st      = 0
 
-                        nb_err=0
-                        if cout.type_article!='A':
-                            self.detail_nomenclature=[]
-                            self.detail_gamme_ma=[]
-                            self.detail_gamme_mo=[]
-                            self.detail_gamme_ma_pk=[]
-                            self.detail_gamme_mo_pk=[]
+                nb_err=0
+                if cout.type_article!='A':
+                    self.detail_nomenclature=[]
+                    self.detail_gamme_ma=[]
+                    self.detail_gamme_mo=[]
+                    self.detail_gamme_ma_pk=[]
+                    self.detail_gamme_mo_pk=[]
 
-                            self.nomenclature_prix_revient(obj, 0, product, False, 1, 1, cout.prix_calcule)
-                            for vals in self.detail_nomenclature:
-                                if vals['msg_err']!='':
-                                    nb_err=nb_err+1
-                                is_code=vals['is_code']
-                                if is_code[:1]=="7":
-                                    cout_act_condition=cout_act_condition+vals['total_mat']
-                                del vals['is_code']
-                                vals['cout_id']=cout.id
-                                cout_act_matiere = cout_act_matiere+vals['total_mat']
-                                cout_act_st      = cout_act_st+vals['total_st']
-                                res=self.env['is.cout.nomenclature'].create(vals)
-                            vals={
-                                'cout_id'     : cout.id,
-                                'designation' : 'TOTAL  : ',
-                                'total_mat'   : cout_act_matiere,
-                                'total_st'    : cout_act_st,
-                            }
-                            res=self.env['is.cout.nomenclature'].create(vals)
-                            vals={
-                                'cout_id'     : cout.id,
-                                'designation' : 'Conditionnement  : ',
-                                'total_mat'   : cout_act_condition,
-                            }
-                            res=self.env['is.cout.nomenclature'].create(vals)
+                    self.nomenclature_prix_revient(obj, 0, product, False, 1, 1, cout.prix_calcule)
+                    for vals in self.detail_nomenclature:
+                        if vals['msg_err']!='':
+                            nb_err=nb_err+1
+                        is_code=vals['is_code']
+                        if is_code[:1]=="7":
+                            cout_act_condition=cout_act_condition+vals['total_mat']
+                        del vals['is_code']
+                        vals['cout_id']=cout.id
+                        cout_act_matiere = cout_act_matiere+vals['total_mat']
+                        cout_act_st      = cout_act_st+vals['total_st']
+                        res=self.env['is.cout.nomenclature'].create(vals)
+                    vals={
+                        'cout_id'     : cout.id,
+                        'designation' : 'TOTAL  : ',
+                        'total_mat'   : cout_act_matiere,
+                        'total_st'    : cout_act_st,
+                    }
+                    res=self.env['is.cout.nomenclature'].create(vals)
+                    vals={
+                        'cout_id'     : cout.id,
+                        'designation' : 'Conditionnement  : ',
+                        'total_mat'   : cout_act_condition,
+                    }
+                    res=self.env['is.cout.nomenclature'].create(vals)
 
-                            for vals in self.detail_gamme_ma:
-                                vals['cout_id']=cout.id
-                                res=self.env['is.cout.gamme.ma'].create(vals)
-                                cout_act_machine = cout_act_machine+vals['cout_total']
-                            for vals in self.detail_gamme_mo:
-                                vals['cout_id']=cout.id
-                                res=self.env['is.cout.gamme.mo'].create(vals)
-                                cout_act_mo = cout_act_mo+vals['cout_total']
+                    for vals in self.detail_gamme_ma:
+                        vals['cout_id']=cout.id
+                        res=self.env['is.cout.gamme.ma'].create(vals)
+                        cout_act_machine = cout_act_machine+vals['cout_total']
+                    for vals in self.detail_gamme_mo:
+                        vals['cout_id']=cout.id
+                        res=self.env['is.cout.gamme.mo'].create(vals)
+                        cout_act_mo = cout_act_mo+vals['cout_total']
 
-                            for vals in self.detail_gamme_ma_pk:
-                                vals['cout_id']=cout.id
-                                res=self.env['is.cout.gamme.ma.pk'].create(vals)
-                                cout_act_machine_pk = cout_act_machine_pk+vals['cout_total']
-                            for vals in self.detail_gamme_mo_pk:
-                                vals['cout_id']=cout.id
-                                res=self.env['is.cout.gamme.mo.pk'].create(vals)
-                                cout_act_mo_pk = cout_act_mo_pk+vals['cout_total']
+                    for vals in self.detail_gamme_ma_pk:
+                        vals['cout_id']=cout.id
+                        res=self.env['is.cout.gamme.ma.pk'].create(vals)
+                        cout_act_machine_pk = cout_act_machine_pk+vals['cout_total']
+                    for vals in self.detail_gamme_mo_pk:
+                        vals['cout_id']=cout.id
+                        res=self.env['is.cout.gamme.mo.pk'].create(vals)
+                        cout_act_mo_pk = cout_act_mo_pk+vals['cout_total']
 
-
-
-
-
-
-                        #Client par défaut
-                        for row in row.product_id.is_client_ids:
-                            if row.client_defaut:
-                                cout.partner_id=row.client_id.id
-
-                        cout.nb_err              = nb_err
-                        if nb_err>0:
-                            cout_act_matiere=0
-
-                        cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
-
-                        cout.cout_act_matiere    = cout_act_matiere
-                        cout.cout_act_condition  = cout_act_condition
-                        cout.cout_act_machine    = cout_act_machine
-                        cout.cout_act_mo         = cout_act_mo
-                        cout.cout_act_machine_pk = cout_act_machine_pk
-                        cout.cout_act_mo_pk      = cout_act_mo_pk
-                        cout.cout_act_st         = cout_act_st
-                        cout.cout_act_total      = cout_act_total
-                        cout.is_category_id      = row.product_id.is_category_id
-                        cout.is_gestionnaire_id  = row.product_id.is_gestionnaire_id
-                        cout.is_mold_id          = row.product_id.is_mold_id
-                        cout.is_mold_dossierf    = row.product_id.is_mold_dossierf
-                        cout.uom_id              = row.product_id.uom_id
-                        cout.lot_mini            = row.product_id.lot_mini
-                        cout.cout_act_prix_vente = cout.prix_vente-cout.amortissement_moule-cout.surcout_pre_serie
-
-                        row.cout_act_matiere     = cout_act_matiere
-                        row.cout_act_machine     = cout_act_machine
-                        row.cout_act_mo          = cout_act_mo
-                        row.cout_act_machine_pk  = cout_act_machine_pk
-                        row.cout_act_mo_pk       = cout_act_mo_pk
-
-                        row.cout_act_st          = cout_act_st
-                        row.cout_act_total       = cout_act_total
+                vals={}
+                #Client par défaut
+                for row in product.is_client_ids:
+                    if row.client_defaut:
+                        vals['partner_id']=row.client_id.id
+                vals['nb_err'] = nb_err
+                if nb_err>0:
+                    cout_act_matiere=0
+                cout_act_total=cout_act_matiere+cout_act_machine+cout_act_mo+cout_act_st
+                vals['cout_act_matiere']    = cout_act_matiere
+                vals['cout_act_condition']  = cout_act_condition
+                vals['cout_act_machine']    = cout_act_machine
+                vals['cout_act_mo']         = cout_act_mo
+                vals['cout_act_machine_pk'] = cout_act_machine_pk
+                vals['cout_act_mo_pk']      = cout_act_mo_pk
+                vals['cout_act_st']         = cout_act_st
+                vals['cout_act_total']      = cout_act_total
+                vals['is_category_id']      = product.is_category_id.id
+                vals['is_gestionnaire_id']  = product.is_gestionnaire_id.id
+                vals['is_mold_id']          = product.is_mold_id.id
+                vals['is_mold_dossierf']    = product.is_mold_dossierf
+                vals['uom_id']              = product.uom_id.id
+                vals['lot_mini']            = product.lot_mini
+                vals['cout_act_prix_vente'] = cout.prix_vente-cout.amortissement_moule-cout.surcout_pre_serie
+                cout.write(vals)
+            self._write_resultats()
             obj.state="termine"
-
             self._log("## FIN Calcul des prix de revient")
 
-
         #pr.disable()
-        #pr.dump_stats('/tmp/action_calcul_prix_revient.cProfile')
+        #pr.dump_stats('/tmp/analyse.cProfile')
 
 
 
@@ -815,7 +856,7 @@ class is_cout(models.Model):
                 'multiniveaux' : False,
             }
             cout_calcul=self.env['is.cout.calcul'].create(vals)
-            cout_calcul.action_calcul_prix_achat()
+            cout_calcul.action_calcul_prix_achat_thread(nb_threads=0)
             cout_calcul.action_calcul_prix_revient()
             
             return {
@@ -836,7 +877,7 @@ class is_cout(models.Model):
                 'multiniveaux' : False,
             }
             cout_calcul=self.env['is.cout.calcul'].create(vals)
-            cout_calcul.action_calcul_prix_achat()
+            cout_calcul.action_calcul_prix_achat_thread(nb_threads=0)
             cout_calcul.action_calcul_prix_revient()
             dummy, view_id = self.env['ir.model.data'].get_object_reference('is_plastigray', 'is_cout_pk_form_view')
             return {

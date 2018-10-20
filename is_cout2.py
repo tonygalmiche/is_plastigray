@@ -81,11 +81,12 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
-    def _creation_couts_thread(self,obj_id,rows,thread):
+    def _creation_couts_thread(self,obj_id,rows,thread,nb_threads=0):
         with api.Environment.manage():
-            new_cr = registry(self._cr.dbname).cursor()
-            self.cursors.append(new_cr)
-            self = self.with_env(self.env(cr=new_cr))
+            if nb_threads>0:
+                new_cr = registry(self._cr.dbname).cursor()
+                self.cursors.append(new_cr)
+                self = self.with_env(self.env(cr=new_cr))
             obj=self.env['is.cout.calcul'].search([('id', '=', obj_id)])[0]
             nb=len(rows)
             ct=0
@@ -100,7 +101,7 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
-    def _creation_couts(self,nb_threads=1):
+    def _creation_couts(self,nb_threads=0):
         cr = self._cr
         for obj in self:
             SQL="""
@@ -130,9 +131,12 @@ class is_cout_calcul(models.Model):
             ct=0
             for r in res:
                 rows=res[r]
-                t = threading.Thread(target=self._creation_couts_thread, args=[obj.id,rows,r])
-                t.start()
-                threads.append(t)
+                if nb_threads>0:
+                    t = threading.Thread(target=self._creation_couts_thread, args=[obj.id,rows,r,nb_threads])
+                    t.start()
+                    threads.append(t)
+                else:
+                    self._creation_couts_thread(obj.id,rows,r,nb_threads)
             #*******************************************************************
 
             #** Attente de la fin des threads et fermeture des cursors *********
@@ -147,9 +151,6 @@ class is_cout_calcul(models.Model):
     @api.multi
     def _get_pricelist(self,product):
         """Recherche pricelist du fournisseur par défaut"""
-        #pricelist=self.env['product.pricelist'].browse(573)
-        #print pricelist
-        #return pricelist
         seller=False
         if product.seller_ids:
             seller=product.seller_ids[0]
@@ -242,7 +243,7 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
-    def _maj_couts_thread(self,obj_id,rows,thread):
+    def _maj_couts_thread(self,obj_id,rows,thread,nb_threads):
 
 
         #pr=cProfile.Profile()
@@ -250,9 +251,10 @@ class is_cout_calcul(models.Model):
 
 
         with api.Environment.manage():
-            new_cr = registry(self._cr.dbname).cursor()
-            self.cursors.append(new_cr)
-            self = self.with_env(self.env(cr=new_cr))
+            if nb_threads>0:
+                new_cr = registry(self._cr.dbname).cursor()
+                self.cursors.append(new_cr)
+                self = self.with_env(self.env(cr=new_cr))
             obj=self.env['is.cout.calcul'].search([('id', '=', obj_id)])[0]
             nb=len(rows)
             ct=0
@@ -317,7 +319,7 @@ class is_cout_calcul(models.Model):
 
 
     @api.multi
-    def _maj_couts(self,nb_threads=1):
+    def _maj_couts(self,nb_threads=0):
         """Mise à jour des couts en threads"""
         for obj in self:
             #** Répartition des lignes dans le nombre de threads indiqué *******
@@ -325,8 +327,9 @@ class is_cout_calcul(models.Model):
             res={}
             #TODO : Nouvelle environnement pour avoir un cr  contenant les dernières modifications des threads précédents
             with api.Environment.manage():
-                new_cr = registry(self._cr.dbname).cursor()
-                self = self.with_env(self.env(cr=new_cr))
+                if nb_threads>0:
+                    new_cr = registry(self._cr.dbname).cursor()
+                    self = self.with_env(self.env(cr=new_cr))
                 couts=self.env['is.cout'].search([('cout_calcul_id', '=', obj.id)])
                 for cout in couts:
                     if not t in res:
@@ -335,8 +338,9 @@ class is_cout_calcul(models.Model):
                     t=t+1
                     if t>=nb_threads:
                         t=0
-                new_cr.commit()
-                new_cr.close()
+                if nb_threads>0:
+                    new_cr.commit()
+                    new_cr.close()
             #*******************************************************************
 
             #** Lancement des threads ******************************************
@@ -345,9 +349,13 @@ class is_cout_calcul(models.Model):
             ct=0
             for r in res:
                 rows=res[r]
-                t = threading.Thread(target=self._maj_couts_thread, args=[obj.id,rows,r])
-                t.start()
-                threads.append(t)
+                if nb_threads>0:
+                    t = threading.Thread(target=self._maj_couts_thread, args=[obj.id,rows,r,nb_threads])
+                    t.start()
+                    threads.append(t)
+                else:
+                    self._maj_couts_thread(obj.id,rows,r,nb_threads)
+
             #*******************************************************************
 
 
@@ -363,17 +371,19 @@ class is_cout_calcul(models.Model):
     @api.multi
     def action_calcul_prix_achat2(self):
         """Fonction initiale appellée au début du calcul"""
+        self.action_calcul_prix_achat_thread()
 
 
-        #pr=cProfile.Profile()
-        #pr.enable()
-
+    @api.multi
+    def action_calcul_prix_achat_thread(self,nb_threads=""):
+        """Début du calcul en déterminant les threads à utiliser"""
         cr = self._cr
         uid=self._uid
         user=self.env['res.users'].browse(uid)
-        nb_threads=user.company_id.is_nb_threads
-        if nb_threads==0 or nb_threads>10:
-            nb_threads=1
+        if nb_threads=="":
+            nb_threads=user.company_id.is_nb_threads
+            if nb_threads>10:
+                nb_threads=0
         debut=datetime.datetime.now()
         for obj in self:
             obj.niveau_ids.unlink()
