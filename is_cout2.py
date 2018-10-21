@@ -148,16 +148,38 @@ class is_cout_calcul(models.Model):
             #*******************************************************************
 
 
+#    @api.multi
+#    def _get_pricelist(self,product):
+#        """Recherche pricelist du fournisseur par défaut"""
+#        seller=False
+#        if product.seller_ids:
+#            seller=product.seller_ids[0]
+#        pricelist=False
+#        if seller:
+#            partner=seller.name
+#            pricelist=partner.property_product_pricelist_purchase
+#        return pricelist
+
+
     @api.multi
     def _get_pricelist(self,product):
         """Recherche pricelist du fournisseur par défaut"""
+        cr = self._cr
         seller=False
         if product.seller_ids:
             seller=product.seller_ids[0]
         pricelist=False
         if seller:
             partner=seller.name
-            pricelist=partner.property_product_pricelist_purchase
+            SQL="""
+                SELECT get_product_pricelist_purchase(id)
+                FROM res_partner
+                WHERE id="""+str(partner.id)+"""
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            for row in result:
+                pricelist=self.env['product.pricelist'].browse(row[0])
         return pricelist
 
 
@@ -237,19 +259,10 @@ class is_cout_calcul(models.Model):
         return prix_facture
 
 
-
-
-
-
-
     @api.multi
     def _maj_couts_thread(self,obj_id,rows,thread,nb_threads):
-
-
         #pr=cProfile.Profile()
         #pr.enable()
-
-
         with api.Environment.manage():
             if nb_threads>0:
                 new_cr = registry(self._cr.dbname).cursor()
@@ -311,11 +324,8 @@ class is_cout_calcul(models.Model):
                     'ecart_calcule_matiere': ecart_calcule_matiere,
                 })
                 cout.write(vals)
-
-
         #pr.disable()
-        #pr.dump_stats('/tmp/maj_couts_thread_'+str(thread)+'.cProfile')
-
+        #pr.dump_stats('/tmp/analyse.cProfile')
 
 
     @api.multi
@@ -377,6 +387,7 @@ class is_cout_calcul(models.Model):
     @api.multi
     def action_calcul_prix_achat_thread(self,nb_threads=""):
         """Début du calcul en déterminant les threads à utiliser"""
+        self.mem_couts={}
         cr = self._cr
         uid=self._uid
         user=self.env['res.users'].browse(uid)

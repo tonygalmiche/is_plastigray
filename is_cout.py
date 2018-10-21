@@ -63,7 +63,6 @@ class is_cout_calcul(models.Model):
 
     mem_couts={}
 
-
     @api.multi
     @api.multi
     def nomenclature(self, cout_calcul_obj, product, niveau, multiniveaux=True):
@@ -127,7 +126,6 @@ class is_cout_calcul(models.Model):
                 vals['name'] = product_id
                 cout=cout_obj.create(vals)
             self.mem_couts[product_id]=cout
-        #print action,cout.name.is_code
         return cout
 
 
