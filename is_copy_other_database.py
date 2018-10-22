@@ -605,9 +605,10 @@ class is_mold_project(models.Model):
             'name': project.name,
             'client_id'             : self._get_client_id(project, DB, USERID, USERPASS, sock),
             'chef_projet_id'        : self._get_chef_projet_id(project, DB, USERID, USERPASS, sock),
+            'choix_modele'          : project.choix_modele,
             'mold_ids'              : self._get_mold_ids(project, DB, USERID, USERPASS, sock),
             'is_database_origine_id': project.id,
-            'commentaire'           : project.commentaire
+            'commentaire'           : project.commentaire,
         }
         return project_vals
 
