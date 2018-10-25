@@ -1,3 +1,5 @@
+
+/*
 openerp.is_plastigray = function(instance) {
     var _t = instance.web._t,
         _lt = instance.web._lt,
@@ -15,3 +17,4 @@ openerp.is_plastigray = function(instance) {
         })
     });
 };
+*/

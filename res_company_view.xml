@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-
         <record id="is_view_company_form" model="ir.ui.view">
             <field name="name">is_view_company_form</field>
             <field name="model">res.company</field>
             <field name="inherit_id" ref="base.view_company_form" />
             <field name="arch" type="xml">
-                <field name="website" position="after">
-                    <field name="is_nb_threads"/>
-                </field>
                 <notebook position="inside">
-                    <page string="Web Menu Color" position="inside">
+                    <page string="Configuration Plastigray" position="inside">
                         <group>
-                            <field name="bg_color" widget="color"/>
-                            <field name="text_color" widget="color"/>
+                            <group string="Couleurs de l'interface">
+                                <field name="bg_color" widget="color"/>
+                                <field name="text_color" widget="color"/>
+                            </group>
+                            <group string="Multi-coeurs">
+                                <field name="is_nb_threads"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Mots de passe">
+                                <field name="is_mysql_pwd"    password="True"/>
+                                <field name="is_dynacase_pwd" password="True"/>
+                                <field name="is_cpta_pwd"     password="True"/>
+                            </group>
+                            <group string="Programmes externes">
+                                <field name="is_url_intranet_odoo"/>
+                                <field name="is_url_intranet_theia"/>
+                                <field name="is_url_odoo_theia"/>
+                            </group>
                         </group>
                     </page>
                 </notebook>
                 <field name="logo" position="after">
                     <field name="is_logo" widget="image"  class="oe_avatar oe_left"/>
                 </field>
-                <xpath expr="//page[@string='Configuration']" position="inside">
-                    <group>
-                        <group string="MySQL">
-                            <field name="is_mysql_pwd"    password="True"/>
-                            <field name="is_dynacase_pwd" password="True"/>
-                            <field name="is_cpta_pwd"     password="True"/>
-                        </group>
-                    </group>
-                </xpath>
             </field>
         </record>
-
     </data>
 </openerp>

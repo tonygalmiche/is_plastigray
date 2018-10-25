@@ -16,3 +16,7 @@ class res_company(models.Model):
     text_color      = fields.Char('Text color')
     is_nb_threads   = fields.Integer('Nombre de coeurs à utiliser dans les programmes', default=1)
 
+    is_url_intranet_odoo  = fields.Char('URL Intranet Odoo' , default='http://odoo')
+    is_url_intranet_theia = fields.Char('URL Intranet THEIA', default='http://raspberry-cpi')
+    is_url_odoo_theia     = fields.Char('URL Odoo THEIA')
+
