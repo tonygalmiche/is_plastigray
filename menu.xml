@@ -1401,6 +1401,7 @@
     </record>
     -->
 
+    <!--
     <record id="is_analyse_cbn_action" model="ir.actions.client">
         <field name="name">Analyse du CBN</field>
         <field name="tag">is_plastigray.is_analyse_cbn_tag</field>
@@ -1415,15 +1416,15 @@
             ref('is_rsp_achats_group'),
         ])]"/>
     </record>
-
+    -->
 
 
     <record id="is_analyse_cbn2_action" model="ir.actions.client">
-        <field name="name">Analyse du CBN (v2)</field>
+        <field name="name">Analyse du CBN</field>
         <field name="tag">is_plastigray.is_analyse_cbn2_tag</field>
     </record>
     <record id="is_analyse_cbn2_menu" model="ir.ui.menu" >
-        <field name="name">Analyse du CBN (v2)</field>
+        <field name="name">Analyse du CBN</field>
         <field name="sequence">40</field>
         <field name="parent_id" eval="ref('menu_is_production_cbn')"/>
         <field name="action"    ref="is_analyse_cbn2_action"/>
