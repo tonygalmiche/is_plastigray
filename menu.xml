@@ -38,9 +38,9 @@
     </record>
 
 
-    <!-- Analyse du CBN -->
+    <!-- PIC à 3 mois -->
     <record model="ir.actions.act_url" id="is_url_pic_3_mois">
-        <field name="name">http://odoo/odoo-erp/analyses/pic-3-mois.php</field>
+        <field name="name">is_url_pic_3_mois</field>
         <field name="url">http://odoo/odoo-erp/analyses/pic-3-mois.php</field>
         <field name="type">ir.actions.act_url</field>
     </record>

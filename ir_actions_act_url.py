@@ -49,6 +49,14 @@ class ir_actions_act_url(models.Model):
                     url=url+'/odoo-erp/analyses/pic-3-ans.php?Soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
 
+                if results[0]['name']==u'is_url_pic_3_mois':
+                    ip   = request.httprequest.environ['REMOTE_ADDR'] 
+                    company=self.get_company(cr,uid)
+                    soc=company.partner_id.is_code
+                    url=company.is_url_intranet_odoo or ''
+                    url=url+'/odoo-erp/analyses/pic-3-mois.php?Soc='+str(soc)+'&uid='+str(uid)
+                    results[0].update({'url': url})
+
                 if results[0]['name']==u'is_url_theia':
                     company=self.get_company(cr,uid)
                     soc=company.partner_id.is_code
