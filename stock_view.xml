@@ -441,6 +441,26 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+
+
+
+
+        <record id="is_liste_stock_detaille_negatif_action" model="ir.actions.act_window">
+            <field name="name">Stock détaillé (quant) négatif</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.quant</field>
+            <field name="domain">[('qty','&lt;', 0),('location_id.usage','=', 'internal')]</field>
+            <field name="context">{} </field>
+            <field name="limit">200</field>
+            <field name="view_id" ref="is_liste_stock_sans_lot_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+
         <!-- Livraisons à traiter -->
         <record id="is_livraisons_a_traiter_action" model="ir.actions.act_window">
             <field name="name">Livraisons à traiter</field>

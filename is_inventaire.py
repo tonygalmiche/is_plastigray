@@ -11,7 +11,6 @@ _logger = logging.getLogger(__name__)
 
 
 def _date_creation():
-    #print datetime.datetime.now()
     return datetime.date.today() # Date du jour
 
 
@@ -26,10 +25,8 @@ class is_inventaire(models.Model):
     line_ids      = fields.One2many('is.inventaire.feuille'  , 'inventaire_id', u"Lignes")
     inventory_ids = fields.One2many('is.inventaire.inventory', 'inventaire_id', u"Inventaires Odoo")
     ecart_ids     = fields.One2many('is.inventaire.ecart'    , 'inventaire_id', u"Ecarts")
+    anomalie_ids  = fields.One2many('is.inventaire.anomalie' , 'inventaire_id', u"Anomalies")
     state         = fields.Selection([('creation', u'Création'),('cloture', u'Cloturé'),('traite', u'Traité')], u"État", readonly=True, select=True)
-
-    #def _date_creation():
-    #    return datetime.date.today() # Date du jour
 
     _defaults = {
         'date_creation': lambda *a: _date_creation(),
@@ -447,7 +444,6 @@ class is_inventaire(models.Model):
                         tmp=self.env['is.inventaire.ecart'].create(vals)
 
 
-
     @api.multi
     def action_valide_inventaire(self):
         for obj in self:
@@ -463,6 +459,109 @@ class is_inventaire(models.Model):
 
 
 
+    @api.multi
+    def action_ecarts_inventaire(self):
+        for obj in self:
+            return {
+                'name': u'Ecarts inventaire '+obj.name,
+                'view_mode': 'tree,form',
+                'view_type': 'form',
+                'res_model': 'is.inventaire.ecart',
+                'domain': [
+                    ('inventaire_id','=',obj.id),
+                ],
+                'type': 'ir.actions.act_window',
+            }
+
+
+
+    @api.multi
+    def action_anomalies_import_inventaire(self):
+        cr=self._cr
+        for obj in self:
+            SQL="""
+                select
+                    sl.id,
+                    iie.product_id,
+                    iie.code,
+                    iie.designation,
+                    iie.qt_odoo::Numeric(16,2),
+                    iie.qt_inventaire::Numeric(16,2),
+                    iie.ecart::Numeric(16,2),
+                    (
+                        select sum(sil1.theoretical_qty)::Numeric(16,2) 
+                        from stock_inventory_line sil1
+                        where 
+                            sil1.location_id=iie.location_id and 
+                            sil1.product_id=iie.product_id and
+                            sil1.inventory_id=iii.inventory_id
+                    ) theoretical_qty,
+                    (
+                        select sum(sil2.product_qty)::Numeric(16,2) 
+                        from stock_inventory_line sil2
+                        where 
+                            sil2.location_id=iie.location_id and 
+                            sil2.product_id=iie.product_id and
+                            sil2.inventory_id=iii.inventory_id
+                    ) product_qty,
+                    (
+                        select (sum(sil3.product_qty)-sum(sil3.theoretical_qty))::Numeric(16,2) 
+                        from stock_inventory_line sil3
+                        where 
+                            sil3.location_id=iie.location_id and 
+                            sil3.product_id=iie.product_id and
+                            sil3.inventory_id=iii.inventory_id
+                    ) ecart_odoo,
+                    (iie.ecart-(
+                        select (sum(sil3.product_qty)-sum(sil3.theoretical_qty))::Numeric(16,2) 
+                        from stock_inventory_line sil3
+                        where 
+                            sil3.location_id=iie.location_id and 
+                            sil3.product_id=iie.product_id and
+                            sil3.inventory_id=iii.inventory_id
+                    ))::Numeric(16,2) anomalie
+                from is_inventaire_ecart iie inner join stock_location           sl on iie.location_id=sl.id
+                                             inner join is_inventaire_inventory iii on iie.inventaire_id=iii.inventaire_id
+                                             inner join stock_inventory          si on iii.inventory_id=si.id and iie.location_id=si.location_id
+                where iie.inventaire_id="""+str(obj.id)+""" and
+                    (
+                        select (sum(sil3.product_qty)-sum(sil3.theoretical_qty))::Numeric(16,2) 
+                        from stock_inventory_line sil3
+                        where 
+                            sil3.location_id=iie.location_id and 
+                            sil3.product_id=iie.product_id and
+                            sil3.inventory_id=iii.inventory_id
+                    ) <> iie.ecart::Numeric(16,2)
+            """
+            cr.execute(SQL)
+            res=cr.fetchall()
+            obj.anomalie_ids.unlink()
+            for row in res:
+                vals={
+                    'inventaire_id'  : obj.id,
+                    'location_id'    : row[0],
+                    'product_id'     : row[1],
+                    'code'           : row[2],
+                    'designation'    : row[3],
+                    'qt_odoo'        : row[4],
+                    'qt_inventaire'  : row[5],
+                    'ecart'          : row[6],
+                    'theoretical_qty': row[7],
+                    'product_qty'    : row[8],
+                    'ecart_odoo'     : row[9],
+                    'anomalie'       : row[10],
+                }
+                self.env['is.inventaire.anomalie'].create(vals)
+            return {
+                'name': u'Anomalies inventaire '+obj.name,
+                'view_mode': 'tree,form',
+                'view_type': 'form',
+                'res_model': 'is.inventaire.anomalie',
+                'domain': [
+                    ('inventaire_id','=',obj.id),
+                ],
+                'type': 'ir.actions.act_window',
+            }
 
 
 class is_inventaire_feuille(models.Model):
@@ -480,16 +579,11 @@ class is_inventaire_feuille(models.Model):
 
     sequence=1
 
-    #def _date_creation():
-    #    return datetime.date.today() # Date du jour
-
     _defaults = {
         'createur_id': lambda obj, cr, uid, ctx=None: uid,
         'date_creation': lambda *a: _date_creation(),
         'state': 'creation',
     }
-
-
 
 
     def calculer_encours(self):
@@ -825,7 +919,7 @@ class is_inventaire_ecart(models.Model):
     _name='is.inventaire.ecart'
     _order='inventaire_id,location_id,code'
 
-    inventaire_id     = fields.Many2one('is.inventaire', 'Inventaire', select=True)
+    inventaire_id   = fields.Many2one('is.inventaire', 'Inventaire', select=True)
     location_id     = fields.Many2one('stock.location', 'Emplacement', required=True, select=True)
     product_id      = fields.Many2one('product.product', 'Article' , required=True, select=True)
     code            = fields.Char("Article")
@@ -835,6 +929,26 @@ class is_inventaire_ecart(models.Model):
     qt_inventaire   = fields.Float("Qt Inventaire")
     ecart           = fields.Float("Ecart", help="Qt Inventaire - Qt Odoo")
     lieu            = fields.Text('Lieu')
+
+
+class is_inventaire_anomalie(models.Model):
+    _name='is.inventaire.anomalie'
+    _order='inventaire_id,location_id,code'
+
+    inventaire_id   = fields.Many2one('is.inventaire', 'Inventaire', select=True)
+    location_id     = fields.Many2one('stock.location', 'Emplacement', required=True, select=True)
+    product_id      = fields.Many2one('product.product', 'Article' , required=True, select=True)
+    code            = fields.Char("Article")
+    designation     = fields.Char("Désignation")
+    qt_odoo         = fields.Float("Qt Odoo"                 , digits=(12, 2), help="Qt dans Odoo dans le programme 'Import inventaire'")
+    qt_inventaire   = fields.Float("Qt saisie inventaire"    , digits=(12, 2), help="Qt saisie (compté) dans le programme 'Import inventaire'")
+    ecart           = fields.Float("Ecart"                   , digits=(12, 2), help="Ecart calculé par le programme 'Import inventaire'")
+    theoretical_qty = fields.Float('Qt Odoo fiche inventaire', digits=(12, 2), help="Qt dans Odoo dans la fiche d'inventaire")
+    product_qty     = fields.Float("Qt fiche inventaire"     , digits=(12, 2), help="Qt à mettre à jour (nouvelle quantité) dans la fiche d'inventaire")
+    ecart_odoo      = fields.Float("Ecart Odoo"              , digits=(12, 2), help="Ecart de la fiche d'inventaire")
+    anomalie        = fields.Float("Anomalie"                , digits=(12, 2), help="Différence entre l'écart du programme 'Import inventaire' et l’écart calculé par Odoo dans la fiche d'inventaire")
+
+
 
 
 

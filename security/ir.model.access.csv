@@ -188,7 +188,6 @@ access_is_deb,access_is_deb,model_is_deb,base.group_user,1,1,1,1
 access_is_deb_line,access_is_deb_line,model_is_deb_line,base.group_user,1,1,1,1
 access_is_deb_synthese,access_is_deb_synthese,model_is_deb_synthese,base.group_user,1,1,1,1
 access_is_cde_ouverte_fournisseur_message,access_is_cde_ouverte_fournisseur_message,model_is_cde_ouverte_fournisseur_message,base.group_user,1,1,1,1
-
 access_is_badge_user,is.badge.user,model_is_badge,base.group_user,1,0,0,0
 access_is_badge_manager,is.badge.manager,model_is_badge,base.group_hr_manager,1,1,1,1
 access_is_pointage_user,is.pointage.user,model_is_pointage,base.group_user,1,0,0,0
@@ -198,25 +197,21 @@ access_is_jour_ferie_manager,is.jour.ferie.manager,model_is_jour_ferie,base.grou
 access_is_pointage_commentaire,access_is_pointage_commentaire,model_is_pointage_commentaire,base.group_hr_manager,1,1,1,1
 access_is_employe_horaire,access_is_employe_horaire,model_is_employe_horaire,base.group_hr_manager,1,1,1,1
 access_is_employe_absence,access_is_employe_absence,model_is_employe_absence,base.group_hr_manager,1,1,1,1
-
 access_is_reach,access_is_reach,model_is_reach,base.group_user,1,1,1,1
 access_is_reach_product,access_is_reach_product,model_is_reach_product,base.group_user,1,1,1,1
 access_is_reach_product_cas,access_is_reach_product_cas,model_is_reach_product_cas,base.group_user,1,1,1,1
 access_is_reach_product_matiere,access_is_reach_product_matiere,model_is_reach_product_matiere,base.group_user,1,1,1,1
-
 access_is_rgpd_service,access_is_rgpd_service,model_is_rgpd_service,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 access_is_rgpd_traitement,access_is_rgpd_traitement,model_is_rgpd_traitement,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 access_is_rgpd_lieu_stockage,access_is_rgpd_lieu_stockage,model_is_rgpd_lieu_stockage,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 access_is_rgpd_action,access_is_rgpd_action,model_is_rgpd_action,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
 access_is_rgpd_donnee_personnelle,access_is_rgpd_donnee_personnelle,model_is_rgpd_donnee_personnelle,is_plastigray.is_gestionnaire_rgpd_group,1,1,1,1
-
 access_is_jour_ferie_country,access_is_jour_ferie_country,model_is_jour_ferie_country,base.group_user,1,1,1,1
 access_is_res_country,access_is_res_country,model_res_country,base.group_user,1,1,0,0
-
 access_is_mini_delta_dore,access_is_mini_delta_dore,model_is_mini_delta_dore,base.group_user,1,1,1,1
 access_is_mini_delta_dore_line,access_is_mini_delta_dore_line,model_is_mini_delta_dore_line,base.group_user,1,1,1,1
 access_is_mini_delta_dore_besoin,access_is_mini_delta_dore_besoin,model_is_mini_delta_dore_besoin,base.group_user,1,1,1,1
-
 access_is_cout_calcul_niveau,access_is_cout_calcul_niveau,model_is_cout_calcul_niveau,base.group_user,1,1,1,1
+access_is_inventaire_anomalie,access_is_inventaire_anomalie,model_is_inventaire_anomalie,base.group_user,1,1,1,1
 
 

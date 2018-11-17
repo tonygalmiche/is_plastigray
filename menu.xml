@@ -1711,7 +1711,7 @@
 
     <menuitem id="is_analyse_stock_menu" sequence="30" name="Analyses Stocks" parent="menu_is_analyse"/>
     <record id="is_liste_stock_negatif_menu" model="ir.ui.menu" >
-        <field name="name">Liste stocks négatifs</field>
+        <field name="name">Stocks négatifs</field>
         <field name="sequence">20</field>
         <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
         <field name="action"    ref="is_liste_stock_negatif_action"/>
@@ -1720,8 +1720,18 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
+    <record id="is_liste_stock_detaille_negatif_menu" model="ir.ui.menu" >
+        <field name="name">Stocks détaillé négatif</field>
+        <field name="sequence">25</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_liste_stock_detaille_negatif_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
     <record id="is_liste_stock_sans_lot_menu" model="ir.ui.menu" >
-        <field name="name">Liste stocks sans lot</field>
+        <field name="name">Stocks sans lot</field>
         <field name="sequence">30</field>
         <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
         <field name="action"    ref="is_liste_stock_sans_lot_action"/>
@@ -1730,6 +1740,11 @@
             ref('is_rsp_production_group'),
         ])]"/>
     </record>
+
+
+
+
+
     <record id="is_stock_valorise_menu" model="ir.ui.menu" >
         <field name="name">Stocks valorisés</field>
         <field name="sequence">40</field>

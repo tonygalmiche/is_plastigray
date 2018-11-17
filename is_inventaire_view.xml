@@ -3,10 +3,6 @@
 <openerp>
     <data>
 
-
-
-
-
         <!-- is.inventaire --> 
         <record model="ir.ui.view" id="is_inventaire_form_view">
             <field name="name">is_inventaire_form_view</field>
@@ -15,7 +11,9 @@
             <field name="arch" type="xml">
                 <form string="Form">  
                     <header>
-                        <button name="action_creer_feuille"     type="object" string="Nouvelle feuille"         class="oe_highlight" states="creation" />
+                        <button name="action_creer_feuille"               type="object" string="Nouvelle feuille"            states="creation" class="oe_highlight"/>
+                        <button name="action_ecarts_inventaire"           type="object" string="Ecarts inventaire"           states="traite"/>
+                        <button name="action_anomalies_import_inventaire" type="object" string="Anomalies import inventaire" states="traite"/>
                         <field name="state" widget="statusbar"  clickable="True" />
                     </header>
 
@@ -30,7 +28,7 @@
                         </group>
                         <group string="Feuilles" attrs="{'invisible': [('line_ids', '=', [])]}">
                             <field name="line_ids" nolabel="1" readonly="1" >
-                                <tree>
+                                <tree limit="200">
                                     <button string="Feuille"   name="action_acceder_feuille"  type="object" icon="gtk-zoom-in" />
                                     <field name="name"/>
                                     <field name="date_creation"/>
@@ -46,6 +44,7 @@
                                 </tree>
                             </field>
                         </group>
+                        <!--
                         <group string="Ecarts" states="cloture,traite">
                             <field name="ecart_ids" nolabel="1" >
                                 <tree editable="bottom" colors="red:ecart &lt; 0">
@@ -59,6 +58,24 @@
                                 </tree>
                             </field>
                         </group>
+                        -->
+                        <!--
+                        <group string="Anomalies" states="traite">
+                            <field name="anomalie_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="location_id"/>
+                                    <field name="product_id"/>
+                                    <field name="qt_odoo"/>
+                                    <field name="qt_inventaire"/>
+                                    <field name="ecart"/>
+                                    <field name="theoretical_qty"/> 
+                                    <field name="product_qty"/> 
+                                    <field name="ecart_odoo"/> 
+                                    <field name="anomalie"/> 
+                                </tree>
+                            </field>
+                        </group>
+                        -->
                     </sheet>
 
                     <footer>
@@ -307,6 +324,124 @@
             </field>
         </record>
 
+
+        <!-- is.inventaire.ecart --> 
+        <record model="ir.ui.view" id="is_inventaire_ecart_tree_view">
+            <field name="name">is_inventaire_ecart_tree_view</field>
+            <field name="model">is.inventaire.ecart</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="false" editable="false" >
+                    <field name="location_id"/>
+                    <field name="code"/>
+                    <field name="designation"/>
+                    <field name="us_id"/>
+                    <field name="qt_odoo"/>
+                    <field name="qt_inventaire"/>
+                    <field name="ecart"/>
+                    <field name="lieu"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_ecart_form_view">
+            <field name="name">is_inventaire_ecart_form_view</field>
+            <field name="model">is.inventaire.ecart</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form create="false" editable="false">
+                    <sheet>
+                        <group>
+                            <field name="location_id"/>
+                            <field name="product_id"/>
+                            <field name="us_id"/>
+                            <field name="qt_odoo"/>
+                            <field name="qt_inventaire"/>
+                            <field name="ecart"/>
+                            <field name="lieu"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_ecart_search_view" >
+            <field name="name">is_inventaire_ecart_search_view</field>
+            <field name="model">is.inventaire.ecart</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="location_id"/>
+                    <field name="product_id"/>
+                    <field name="lieu"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_inventaire_ecart_action">
+            <field name="name">Ecarts Inventaire</field>
+            <field name="res_model">is.inventaire.ecart</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+
+
+        <!-- is.inventaire.anomalie --> 
+        <record model="ir.ui.view" id="is_inventaire_anomalie_tree_view">
+            <field name="name">is_inventaire_anomalie_tree_view</field>
+            <field name="model">is.inventaire.anomalie</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="location_id"/>
+                    <field name="code"/>
+                    <field name="designation"/>
+                    <field name="qt_odoo"/>
+                    <field name="qt_inventaire"/>
+                    <field name="ecart"/>
+                    <field name="theoretical_qty"/>
+                    <field name="product_qty"/>
+                    <field name="ecart_odoo"/>
+                    <field name="anomalie"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_anomalie_form_view">
+            <field name="name">is_inventaire_anomalie_form_view</field>
+            <field name="model">is.inventaire.anomalie</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form create="false" editable="false">
+                    <sheet>
+                        <group>
+                            <field name="location_id"/>
+                            <field name="product_id"/>
+                            <field name="qt_odoo"/>
+                            <field name="qt_inventaire"/>
+                            <field name="ecart"/>
+                            <field name="theoretical_qty"/>
+                            <field name="product_qty"/>
+                            <field name="ecart_odoo"/>
+                            <field name="anomalie"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_inventaire_anomalie_search_view" >
+            <field name="name">is_inventaire_anomalie_search_view</field>
+            <field name="model">is.inventaire.anomalie</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="location_id"/>
+                    <field name="product_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_inventaire_anomalie_action">
+            <field name="name">Anomalies Inventaire</field>
+            <field name="res_model">is.inventaire.anomalie</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
 
 
 
