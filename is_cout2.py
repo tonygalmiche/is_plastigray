@@ -17,7 +17,7 @@ import logging
 _logger = logging.getLogger(__name__)
 #import cProfile
 
-
+ 
 #TODO Nombre de threads
 nb_threads=4
 

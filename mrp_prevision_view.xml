@@ -178,7 +178,20 @@
         </record>
 
 
-
+        <!-- convertir les SA (Optimisation temps de calcul) -->
+        <!--
+        <record id="convertir_sa2_action_server" model="ir.actions.server">
+             <field name="name">Convertir SA en commande fournisseur (Optimisé)</field>
+            <field name="model_id" ref="model_mrp_prevision"/>
+            <field name="code">action = self.convertir_sa2(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="convertir_sa2_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'mrp.prevision'" name="model"/>
+            <field name="name">Convertir SA en commande fournisseur (Optimisé)</field>
+            <field eval="'ir.actions.server,%d'%convertir_sa2_action_server" name="value"/>
+        </record>
+        -->
 
 
 

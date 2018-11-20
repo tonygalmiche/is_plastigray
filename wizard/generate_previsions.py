@@ -5,6 +5,7 @@ import pytz
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp import netsvc
+#import cProfile
 
 import logging
 _logger = logging.getLogger(__name__)
@@ -301,6 +302,10 @@ class mrp_generate_previsions(models.TransientModel):
 
     @api.multi
     def generate_previsions(self):
+
+        #pr=cProfile.Profile()
+        #pr.enable()
+
         cr=self._cr
         debut=datetime.datetime.now()
         _logger.info(_now(debut) + "## DEBUT")
@@ -411,7 +416,6 @@ class mrp_generate_previsions(models.TransientModel):
             _logger.info(_now(debut) + "## Fin du CBN")
 
 
-
             ##** Regroupement des FS et SA par semaine *************************
             _logger.info(_now(debut) + "## Debut du regroupement des SA et FS par semaine")
             dates = self._dates(obj.max_date, 7)
@@ -450,6 +454,12 @@ class mrp_generate_previsions(models.TransientModel):
             #*******************************************************************
 
         _logger.info(_now(debut) + "## FIN")
+
+
+        #pr.disable()
+        #pr.dump_stats('/tmp/analyse.cProfile')
+
+
 
         #** Action pour retourner à la liste des prévisions ********************
         action =  {

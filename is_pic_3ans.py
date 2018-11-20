@@ -7,6 +7,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import math
 import logging
+#import cProfile
+
 _logger = logging.getLogger(__name__)
 
 
@@ -329,6 +331,13 @@ class is_pic_3ans_saisie(models.Model):
 
     @api.multi
     def run_cbb(self):
+
+
+        #pr=cProfile.Profile()
+        #pr.enable()
+
+
+
         cr = self._cr
         _logger.info("#### Début du CBB ####")
         _logger.info("Année de début du PIC = "+str(annee_debut_pic))
@@ -366,6 +375,11 @@ class is_pic_3ans_saisie(models.Model):
         #*******************************************************************
         _logger.info("#### Fin du CBB ####")
 
+        #pr.disable()
+        #pr.dump_stats('/tmp/analyse.cProfile')
+
+
+        return True
 
 
     @api.multi
@@ -373,6 +387,9 @@ class is_pic_3ans_saisie(models.Model):
 
         #self.run_cbb()
         #return
+
+
+
 
         if len(self)>1:
             raise Warning("Calcul multiple non autorisé")
@@ -405,6 +422,10 @@ class is_pic_3ans_saisie(models.Model):
                 ordre=0
                 self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
             #*******************************************************************
+
+
+
+
 
 
     @api.multi
