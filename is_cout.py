@@ -889,20 +889,28 @@ class is_cout(models.Model):
             }
 
 
-
-
+    @api.multi
+    def _copie_cout_actualise_dans_cout_standard(self,obj):
+        vals={
+            'cout_std_matiere'    : obj.cout_act_matiere,
+            'cout_std_condition'  : obj.cout_act_condition,
+            'cout_std_machine'    : obj.cout_act_machine,
+            'cout_std_mo'         : obj.cout_act_mo,
+            'cout_std_st'         : obj.cout_act_st,
+            'cout_std_total'      : obj.cout_act_total,
+            'cout_std_prix_vente' : obj.cout_act_prix_vente,
+        }
+        obj.write(vals)
 
 
     @api.multi
     def copie_cout_actualise_dans_cout_standard(self):
+        #pr=cProfile.Profile()
+        #pr.enable()
         for obj in self:
-            obj.cout_std_matiere    = obj.cout_act_matiere
-            obj.cout_std_condition  = obj.cout_act_condition
-            obj.cout_std_machine    = obj.cout_act_machine
-            obj.cout_std_mo         = obj.cout_act_mo
-            obj.cout_std_st         = obj.cout_act_st
-            obj.cout_std_total      = obj.cout_act_total
-            obj.cout_std_prix_vente = obj.cout_act_prix_vente
+            self._copie_cout_actualise_dans_cout_standard(obj)
+        #pr.disable()
+        #pr.dump_stats('/tmp/analyse.cProfile')
 
 
     @api.multi
