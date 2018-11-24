@@ -422,7 +422,7 @@
             <field name="arch" type="xml">
                 <tree colors="red:True">
                     <field name="product_id"/>
-                    <field name="qty"/>
+                    <field name="qty" sum="Total"/>
                     <field name="location_id"/>
                     <field name="in_date"/>
                     <field name="lot_id"/>
@@ -504,6 +504,16 @@
                 <button name="action_done" position="replace">
                     <button name="action_done" states="confirm" string="Validate Inventory" type="object" class="oe_highlight"  groups="is_plastigray.is_rsp_production_group"/>
                 </button>
+            </field>
+        </record>
+        <record id="is_view_inventory_tree" model="ir.ui.view">
+            <field name="name">is_view_inventory_tree</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="product_id"/>
+                </field>
             </field>
         </record>
 

@@ -88,6 +88,46 @@ class product_template(models.Model):
         return um
 
 
+    @api.multi
+    def corriger_stock_negatif_action(self):
+        for obj in self:
+            products=self.env['product.product'].search([('product_tmpl_id','=',obj.id)])
+            for product in products:
+                quants=self.env['stock.quant'].search([('product_id','=',product.id)])
+                locations=[]
+                for quant in quants:
+                    if quant.location_id.usage=='internal' and quant.qty<0:
+                        location=quant.location_id
+                        if location not in locations:
+                            locations.append(location)
+                for location in locations:
+                    vals={
+                        'name': product.is_code+u' (Correction stock négatif)',
+                        'location_id': location.id,
+                        'filter':'product',
+                        'product_id': product.id,
+                    }
+                    inventory=self.env['stock.inventory'].create(vals)
+                    inventory.prepare_inventory()
+                    create_date=False
+                    qty=0
+                    for line in inventory.line_ids:
+                        if line.product_qty<0:
+                            qty=qty-line.product_qty
+                            line.product_qty=0
+                    for line in inventory.line_ids:
+                        if line.product_qty>0:
+                            if line.product_qty>=qty:
+                                line.product_qty=line.product_qty-qty
+                                qty=0
+                            else:
+                                qty=qty-line.product_qty
+                                line.product_qty=0
+                            if qty<=0:
+                                break
+                    inventory.action_done()
+
+
 class product_product(models.Model):
     _name = "product.product"
     _inherit = "product.product"

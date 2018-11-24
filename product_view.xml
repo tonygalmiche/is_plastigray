@@ -2,6 +2,20 @@
 <openerp>
     <data>
 
+        <!-- Corriger stock négatif -->
+        <record id="corriger_stock_negatif_action_server" model="ir.actions.server">
+             <field name="name">Corriger stock négatif</field>
+            <field name="model_id" ref="model_product_template"/>
+            <field name="code">action = self.corriger_stock_negatif_action(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="corriger_stock_negatif_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'product.template'" name="model"/>
+            <field name="name">Corriger stock négatif</field>
+            <field eval="'ir.actions.server,%d'%corriger_stock_negatif_action_server" name="value"/>
+        </record>
+
+
         <!-- Unités de mesures -->
         <record id="product.product_uom_tree_view" model="ir.ui.view">
             <field name="name">product.uom.tree</field>

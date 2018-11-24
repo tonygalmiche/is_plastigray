@@ -32,10 +32,16 @@ class is_stock_move(models.Model):
 
 
     def init(self, cr):
+
+        #    DROP MATERIALIZED VIEW IF EXISTS is_stock_move;
+        #    CREATE MATERIALIZED view is_stock_move AS (
+
+        #tools.drop_view_if_exists(cr, 'is_stock_move')
+        #    CREATE OR REPLACE view is_stock_move AS (
+
         tools.drop_view_if_exists(cr, 'is_stock_move')
         cr.execute("""
             CREATE OR REPLACE view is_stock_move AS (
-
                 select 
                         row_number() over(order by sm.id )  as id,
                         sm.id                               as move_id,
