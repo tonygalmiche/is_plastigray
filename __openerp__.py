@@ -123,6 +123,7 @@ Module principal du projet Plastigray
         "views/report_paperformat.xml",
         "views/report_liste_servir.xml",
         "views/report_inventaire.xml",
+        "views/report_inventaire_ecart.xml",
         "views/report_stockpicking.xml",
         "views/report_invoice.xml",
         "views/report_cde_ouverte_fournisseur.xml",

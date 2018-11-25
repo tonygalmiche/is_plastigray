@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_inventaire_ecart_style">
+            .header {
+                font-size:11pt;
+            }
+            .footer {
+                font-size:10pt;
+            }
+            .page {
+                font-size:14pt;
+            }
+            .titre {
+                font-size:16pt;
+                font-weight: bold;
+            }
+            h2 {
+                font-size:16pt;
+                font-weight: bold;
+            }
+
+            .page table {
+                border-collapse: collapse;
+            }
+            .page table, .page th, .page td {
+               border: 1px solid black;
+            }
+            .page td {
+                height: 10mm;
+            }
+
+
+        </template>
+
+        <template id="report_inventaire_ecart_layout" inherit_id="web.layout" primary="True">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_inventaire_ecart_style"/>
+                </style>
+            </xpath>
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+        <template id="report_inventaire_ecart_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_inventaire_ecart_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+        <template id="report_inventaire_ecart_external_layout_header">
+            <div class="header">
+                <div class="row">
+                    <div class="col-xs-4  text-left">
+                        <img t-if="company.is_logo" t-att-src="'data:image/png;base64,%s' % company.is_logo" style="max-height: 30mm;"/>
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="titre text-right">
+                            <span>Contrôle des écarts d'inventaire</span><br />
+                            <span t-field="company.street"/><br />
+                            <span t-field="o.name"/> du <span t-field="o.date_creation"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="report_inventaire_ecart_external_layout_footer">
+            <div class="footer" style="font-size:8pt;">
+                <div class="text-center" style="border-top: 1px solid black">
+                    <table style="width:100%">
+                        <tr>
+                            <td class="text-left" style="width:80%">
+                                S.A.S. au capital de 2 102 400 € - Siège social : ZAC de Gray Sud - CS 10133 - 70104 GRAY Cedex<br />
+                                Siret B 377 846 381 00020 - Code NAF 2229 A - Registre du Commerce GRAY - N°Identification T.V.A. FR 65 377 846 381
+                            </td>
+                            <td class="text-right">
+                                Page <span class="page" style="font-size:10pt;"/> / <span class="topage"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <br />
+        </template>
+
+        <template id="report_inventaire_ecart_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <t t-call="is_plastigray.report_inventaire_ecart_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_inventaire_ecart_external_layout_footer"/>
+        </template>
+
+        <template id="report_inventaire_ecart_document">
+            <t t-call="is_plastigray.report_inventaire_ecart_external_layout">
+                <div class="page">
+                    <t t-foreach="o.get_products_ecarts()" t-as="product">
+                        <div class="row">
+                            <h2>Article : <span t-field="product.is_code"/> - <span t-field="product.name"/></h2>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <table style="width:100%" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width:30%">Magasin</th>
+                                        <th class="text-center" style="width:30%">Lieu</th>
+                                        <th class="text-center" style="width:40%">Quantité recontrôlée</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tbody">
+                                    <t t-foreach="o.get_emplacement_ecarts(product.id)" t-as="e">
+                                        <tr>
+                                            <td class="text-center"><span t-esc="e['magasin']"/></td>
+                                            <td class="text-center"><span t-esc="e['lieu']"/></td>
+                                            <td class="text-center"></td>
+                                        </tr>
+                                    </t>
+                                    <tr><td> </td><td> </td><td> </td></tr>
+                                    <tr><td> </td><td> </td><td> </td></tr>
+                                    <tr><td> </td><td> </td><td> </td></tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2" class="text-right">Total : </th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <h2>Nom du contrôleur : </h2>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <h2>Validation : </h2>
+                        </div>
+                        <div style="page-break-after:always;"/>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_inventaire_ecart">
+            <t t-call="is_plastigray.report_inventaire_ecart_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.report_inventaire_ecart_document" />
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

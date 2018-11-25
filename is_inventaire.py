@@ -27,6 +27,7 @@ class is_inventaire(models.Model):
     ecart_ids     = fields.One2many('is.inventaire.ecart'    , 'inventaire_id', u"Ecarts")
     anomalie_ids  = fields.One2many('is.inventaire.anomalie' , 'inventaire_id', u"Anomalies")
     state         = fields.Selection([('creation', u'Création'),('cloture', u'Cloturé'),('traite', u'Traité')], u"État", readonly=True, select=True)
+    selection     = fields.Boolean('Imprimer uniquement les écarts à controler', default=True)
 
     _defaults = {
         'date_creation': lambda *a: _date_creation(),
@@ -37,7 +38,6 @@ class is_inventaire(models.Model):
 
     @api.model
     def create(self, vals):
-
         #Blocage si inventaire existe déja
         inventaires=self.env['is.inventaire'].search([ ['state', '=', 'creation'] ])
         if len(inventaires)>1:
@@ -51,6 +51,40 @@ class is_inventaire(models.Model):
         new_id = super(is_inventaire, self).create(vals)
         return new_id
 
+
+    @api.multi
+    def get_products_ecarts(self):
+        for obj in self:
+            res=[]
+            products=[]
+            for line in obj.ecart_ids:
+                if line.selection:
+                    if line.product_id not in products:
+                        products.append(line.product_id)
+            return products
+
+
+    @api.multi
+    def get_emplacement_ecarts(self,product_id):
+        cr=self._cr
+        emplacements=[]
+        for obj in self:
+            SQL="""
+                select distinct sl.name,iil.lieu
+                from is_inventaire_line iil inner join stock_location sl on iil.location_id=sl.id
+                where 
+                    iil.product_id='"""+str(product_id)+"""' and 
+                    iil.inventaire_id="""+str(obj.id)+""" 
+            """
+            cr.execute(SQL)
+            res=cr.fetchall()
+            for row in res:
+                vals={
+                    'magasin': row[0],
+                    'lieu'   : row[1],
+                }
+                emplacements.append(vals)
+        return emplacements
 
 
     @api.multi
@@ -402,46 +436,46 @@ class is_inventaire(models.Model):
                 for row2 in res2:
                     ct=ct+1
                     #_logger.info('action_calcul_ecart : location_id='+str(location_id)+' : '+str(ct)+'/'+str(nb)+' : '+str(row2[0]))
-
                     qt_odoo       = row2[3] or 0
                     qt_inventaire = row2[4] or 0
                     ecart         = qt_inventaire-qt_odoo
                     product_id    = row2[5]
-                    if ecart!=0:
+                    product=self.env['product.product'].browse(product_id)
+                    if product and product.is_category_id.a_inventorier:
+                        if ecart!=0:
+                            #** Recherche de la liste des lieux ********************
+                            SQL="""
+                                select iil.lieu
+                                from is_inventaire_line iil
+                                where iil.location_id='"""+str(location_id)+"""' and
+                                      iil.product_id="""+str(product_id)+""" and 
+                                      iil.inventaire_id='"""+str(obj.id)+"""' and
+                                      iil.encours!=True
+                            """
+                            cr.execute(SQL)
+                            res3=cr.fetchall()
+                            lieux=[]
+                            for row3 in res3:
+                                lieu=row3[0] or '#N/A'
+                                if lieu not in lieux:
+                                    lieux.append(lieu)
+                            lieux='\n'.join(lieux)
+                            #*******************************************************
 
-                        #** Recherche de la liste des lieux ********************
-                        SQL="""
-                            select iil.lieu
-                            from is_inventaire_line iil
-                            where iil.location_id='"""+str(location_id)+"""' and
-                                  iil.product_id="""+str(product_id)+""" and 
-                                  iil.inventaire_id='"""+str(obj.id)+"""' and
-                                  iil.encours!=True
-                        """
-                        cr.execute(SQL)
-                        res3=cr.fetchall()
-                        lieux=[]
-                        for row3 in res3:
-                            lieu=row3[0] or '#N/A'
-                            if lieu not in lieux:
-                                lieux.append(lieu)
-                        lieux='\n'.join(lieux)
-                        #*******************************************************
+                            vals={
+                                'inventaire_id': obj.id,
+                                'location_id'  : location_id,
+                                'product_id'   : row2[5],
+                                'code'         : row2[0],
+                                'designation'  : row2[1],
+                                'us_id'        : row2[2],
+                                'qt_odoo'      : qt_odoo,
+                                'qt_inventaire': qt_inventaire,
+                                'lieu'         : lieux,
+                                'ecart'        : ecart,
 
-                        vals={
-                            'inventaire_id': obj.id,
-                            'location_id'  : location_id,
-                            'product_id'   : row2[5],
-                            'code'         : row2[0],
-                            'designation'  : row2[1],
-                            'us_id'        : row2[2],
-                            'qt_odoo'      : qt_odoo,
-                            'qt_inventaire': qt_inventaire,
-                            'lieu'         : lieux,
-                            'ecart'        : ecart,
-
-                        }
-                        tmp=self.env['is.inventaire.ecart'].create(vals)
+                            }
+                            tmp=self.env['is.inventaire.ecart'].create(vals)
 
 
     @api.multi
@@ -458,6 +492,20 @@ class is_inventaire(models.Model):
             obj.state="traite"
 
 
+    @api.multi
+    def action_lignes_inventaire(self):
+        for obj in self:
+            return {
+                'name': u'Lignes inventaire '+obj.name,
+                'view_mode': 'tree,form',
+                'view_type': 'form',
+                'res_model': 'is.inventaire.line',
+                'domain': [
+                    ('inventaire_id','=',obj.id),
+                ],
+                'type': 'ir.actions.act_window',
+            }
+
 
     @api.multi
     def action_ecarts_inventaire(self):
@@ -472,7 +520,6 @@ class is_inventaire(models.Model):
                 ],
                 'type': 'ir.actions.act_window',
             }
-
 
 
     @api.multi
@@ -813,13 +860,13 @@ class is_inventaire_line(models.Model):
     inventaire_id     = fields.Many2one('is.inventaire', 'Inventaire', store=True, compute='_compute')
     feuille_id        = fields.Many2one('is.inventaire.feuille', 'Feuille Inventaire', required=True, ondelete='cascade')
     sequence          = fields.Integer('Séquence')
-    product_id        = fields.Many2one('product.product', 'Article' , required=True)
+    product_id        = fields.Many2one('product.product', 'Article' , required=True,select=1)
     encours           = fields.Boolean('Encours')
     composant_encours = fields.Boolean('Composant', help='Composant encours')
     us_id             = fields.Many2one('product.uom','US', store=True, compute='_compute')
     uc                = fields.Char('UC', store=True, compute='_compute')
     uc_us             = fields.Integer('US par UC', store=True, compute='_compute')
-    location_id       = fields.Many2one('stock.location', 'Emplacement', required=True)
+    location_id       = fields.Many2one('stock.location', 'Emplacement', required=True,select=1)
     qt_us             = fields.Float("Qt US saisie")
     qt_uc             = fields.Float("Qt UC saisie")
     qt_us_calc        = fields.Float('Qt US', store=True, compute='_compute')
@@ -917,10 +964,10 @@ class is_inventaire_inventory(models.Model):
 
 class is_inventaire_ecart(models.Model):
     _name='is.inventaire.ecart'
-    _order='inventaire_id,location_id,code'
+    _order='inventaire_id,code,location_id'
 
     inventaire_id   = fields.Many2one('is.inventaire', 'Inventaire', select=True)
-    location_id     = fields.Many2one('stock.location', 'Emplacement', required=True, select=True)
+    location_id     = fields.Many2one('stock.location', 'Magasin', required=True, select=True)
     product_id      = fields.Many2one('product.product', 'Article' , required=True, select=True)
     code            = fields.Char("Article")
     designation     = fields.Char("Désignation")
@@ -928,7 +975,25 @@ class is_inventaire_ecart(models.Model):
     qt_odoo         = fields.Float("Qt Odoo")
     qt_inventaire   = fields.Float("Qt Inventaire")
     ecart           = fields.Float("Ecart", help="Qt Inventaire - Qt Odoo")
-    lieu            = fields.Text('Lieu')
+    lieu            = fields.Text('Emplacement')
+    selection       = fields.Boolean('Ecart à controler')
+
+
+    @api.multi
+    def get_feuilles(self):
+        for obj in self:
+            filtre=[
+                ('inventaire_id','=', obj.inventaire_id.id),
+                ('product_id'   ,'=', obj.product_id.id),
+                ('location_id'  ,'=', obj.location_id.id),
+            ]
+            lines = self.env['is.inventaire.line'].search(filtre)
+            feuilles=[]
+            for line in lines:
+                feuille=line.feuille_id.name
+                if feuille not in feuilles:
+                    feuilles.append(feuille)
+            return u', '.join(feuilles)
 
 
 class is_inventaire_anomalie(models.Model):

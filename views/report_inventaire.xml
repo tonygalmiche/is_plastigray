@@ -46,32 +46,44 @@
                             <table style="width:100%" class="table table-condensed">
                                 <thead>
                                     <tr>
-                                        <th>Emp</th>
                                         <th>Article</th>
                                         <th>Désignation</th>
+                                        <th>Segment</th>
                                         <th>US</th>
+                                        <th>Magasin</th>
                                         <th>Qt Odoo</th>
                                         <th>Qt Inv</th>
                                         <th>Ecart</th>
-                                        <th>Lieu</th>
+                                        <th>Feuille</th>
+                                        <th>Emplacement</th>
                                         <th>Qt recontrôlée</th>
                                         <th>Commentaire</th>
                                     </tr>
                                 </thead>
                                 <tbody class="sale_tbody">
                                     <t t-foreach="o.ecart_ids" t-as="l">
-                                        <tr>
-                                            <td class="text-center"> <span t-field="l.location_id"/></td>
-                                            <td class="text-left">   <span t-field="l.code"/></td>
-                                            <td class="text-left">   <small><span t-field="l.designation"/></small></td>
-                                            <td class="text-center"> <span t-field="l.us_id"/></td>
-                                            <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_odoo"/></td>
-                                            <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_inventaire"/></td>
-                                            <td class="text-right">  <span style="white-space: nowrap;" t-field="l.ecart" /></td>
-                                            <td class="text-left">   <span t-field="l.lieu" /></td>
-                                            <td class="text-right"></td>
-                                            <td class="text-left"></td>
-                                        </tr>
+                                        <t t-set="test" t-value="1"/>
+                                        <t t-if="l.inventaire_id.selection">
+                                            <t t-if="not l.selection">
+                                                <t t-set="test" t-value="0"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="test">
+                                            <tr>
+                                                <td class="text-left">   <span t-field="l.code"/></td>
+                                                <td class="text-left">   <small><span t-field="l.designation"/></small></td>
+                                                <td class="text-left">   <small><span t-field="l.product_id.segment_id.name"/></small></td>
+                                                <td class="text-center"> <span t-field="l.us_id"/></td>
+                                                <td class="text-center"> <span t-field="l.location_id"/></td>
+                                                <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_odoo"/></td>
+                                                <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_inventaire"/></td>
+                                                <td class="text-right">  <span style="white-space: nowrap;" t-field="l.ecart" /></td>
+                                                <td class="text-left"><span t-esc="l.get_feuilles()" /></td>
+                                                <td class="text-left">   <span t-field="l.lieu" /></td>
+                                                <td class="text-right"></td>
+                                                <td class="text-left"></td>
+                                            </tr>
+                                        </t>
                                     </t>
                                 </tbody>
                             </table>

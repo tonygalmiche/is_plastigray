@@ -27,7 +27,6 @@
         </record>
 
 
-
         <report 
             id="report_inventaires"
             model="is.inventaire"
@@ -40,6 +39,18 @@
             <field name="paperformat_id" ref="is_plastigray.inventaire_paperformat"/>
         </record>
 
+
+        <report 
+            id="report_inventaire_ecarts"
+            model="is.inventaire"
+            string="Feuilles écarts d'inventaire"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_inventaire_ecart"
+            file="is_plastigray.report_inventaire_ecart"
+        />
+        <record id="report_inventaire_ecarts" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.inventaire_ecart_paperformat"/>
+        </record>
 
 
         <report 

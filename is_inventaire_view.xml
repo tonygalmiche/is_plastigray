@@ -12,6 +12,7 @@
                 <form string="Form">  
                     <header>
                         <button name="action_creer_feuille"               type="object" string="Nouvelle feuille"            states="creation" class="oe_highlight"/>
+                        <button name="action_lignes_inventaire"           type="object" string="Lignes inventaire"/>
                         <button name="action_ecarts_inventaire"           type="object" string="Ecarts inventaire"           states="traite"/>
                         <button name="action_anomalies_import_inventaire" type="object" string="Anomalies import inventaire" states="traite"/>
                         <field name="state" widget="statusbar"  clickable="True" />
@@ -22,7 +23,8 @@
                             <group>
                                 <field name="name"/> 
                                 <field name="date_creation"/> 
-                                <field name="createur_id"/> 
+                                <field name="createur_id"/>
+                                <field name="selection"/> 
                                 <field name="commentaire"/> 
                             </group>
                         </group>
@@ -236,7 +238,7 @@
                     <field name="inventaire_id"/> 
                     <field name="feuille_id"  readonly="1"/> 
                     <field name="sequence"    readonly="1"/> 
-                    <field name="product_id"  readonly="1"/> 
+                    <field name="product_id"  readonly="1" widget="many2one_clickable"/> 
                     <field name="encours"    readonly="1"/> 
                     <field name="composant_encours"    readonly="1"/> 
                     <field name="uc"          readonly="1"/> 
@@ -332,14 +334,16 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree create="false" editable="false" >
-                    <field name="location_id"/>
-                    <field name="code"/>
-                    <field name="designation"/>
-                    <field name="us_id"/>
-                    <field name="qt_odoo"/>
-                    <field name="qt_inventaire"/>
-                    <field name="ecart"/>
-                    <field name="lieu"/>
+                    <field name="product_id"    readonly="1" widget="many2one_clickable"/>
+                    <field name="code"          readonly="1"/>
+                    <field name="designation"   readonly="1"/>
+                    <field name="location_id"   readonly="1"/>
+                    <field name="us_id"         readonly="1"/>
+                    <field name="qt_odoo"       readonly="1"/>
+                    <field name="qt_inventaire" readonly="1"/>
+                    <field name="ecart"         readonly="1"/>
+                    <field name="lieu"          readonly="1"/>
+                    <field name="selection"/>
                 </tree>
             </field>
         </record>
@@ -368,9 +372,12 @@
             <field name="model">is.inventaire.ecart</field>
             <field name="arch" type="xml">
                 <search>
-                    <field name="location_id"/>
                     <field name="product_id"/>
+                    <field name="location_id"/>
                     <field name="lieu"/>
+                    <group expand="1" string="Regrouper par">
+                        <filter string="Article"   context="{'group_by':'product_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
