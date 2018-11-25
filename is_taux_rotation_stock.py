@@ -64,6 +64,7 @@ class is_taux_rotation_stock_view(models.Model):
     stock_valorise  = fields.Float('Stock valorisé'      , digits=(14,0))
 
 
+#                where product_id=pp_id and type_donnee='pic' and annee=CAST(date_part('year', CURRENT_DATE) AS text)
 
 
     def init(self, cr):
@@ -92,7 +93,7 @@ BEGIN
             (
                 select sum(quantite) 
                 from is_pic_3ans
-                where product_id=pp_id and type_donnee='pic' and annee=CAST(date_part('year', CURRENT_DATE) AS text)
+                where product_id=pp_id and type_donnee='pic' and annee='2019'
             )
         ,0)
     );
