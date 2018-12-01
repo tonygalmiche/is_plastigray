@@ -837,7 +837,8 @@ class product_product(models.Model):
 
             #** Génération du fichier CSV **************************************
             attachment_id=''
-            if valorisation:
+
+            if valorisation and Tab:
                 csv={};
                 for lig in range(0,len(Tab[0])):
                     #** Recherche du CodePG et de la désignation ***************
