@@ -15,7 +15,7 @@ class is_taux_rotation_stock_new(models.Model):
     gest            = fields.Char('Gest')
     cout_act        = fields.Float('Coût actualisé'      , digits=(14,2))
     stock           = fields.Float('Stock'               , digits=(14,0))
-    pic_12mois      = fields.Float('PIC 12 Mois'         , digits=(14,0))
+    pic_12mois      = fields.Float('PIC/PDP 12 Mois'     , digits=(14,0))
     pic_3mois_ferme = fields.Float('PIC 3 mois ferme'    , digits=(14,0))
     pic_3mois_prev  = fields.Float('PIC 3 mois prev'     , digits=(14,0))
     fm_3mois        = fields.Float('FM 3 mois'           , digits=(14,0))
@@ -94,6 +94,21 @@ BEGIN
                 select sum(quantite) 
                 from is_pic_3ans
                 where product_id=pp_id and type_donnee='pic' and annee='2019'
+            )
+        ,0)
+    );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION get_pic_pdp_12mois(pp_id  integer) RETURNS float AS $$
+BEGIN
+    RETURN (
+        COALESCE(
+            (
+                select sum(quantite) 
+                from is_pic_3ans
+                where product_id=pp_id and annee='2019'
             )
         ,0)
     );
@@ -180,7 +195,7 @@ CREATE OR REPLACE VIEW is_taux_rotation_stock_view AS (
         ig.name                             gest,
         get_cout_act_total(pp.id)           cout_act,
         is_stock(pp.id)                     stock,
-        get_pic_12mois(pp.id)               pic_12mois,
+        get_pic_pdp_12mois(pp.id)           pic_12mois,
         get_pic_3mois(pp.id,'ferme')        pic_3mois_ferme,
         get_pic_3mois(pp.id,'previsionnel') pic_3mois_prev,
         get_fm_3mois(pp.id)                 fm_3mois,
