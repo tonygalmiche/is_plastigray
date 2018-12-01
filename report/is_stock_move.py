@@ -3,6 +3,8 @@
 from openerp import tools
 from openerp import models,fields,api
 from openerp.tools.translate import _
+import datetime
+import pytz
 
 
 class is_stock_move(models.Model):
@@ -29,6 +31,21 @@ class is_stock_move(models.Model):
     raw_material_production_id = fields.Many2one('mrp.production'     , 'Composant ordre de fabrication')
     production_id              = fields.Many2one('mrp.production'     , 'Ordre de fabrication')
     is_sale_line_id            = fields.Many2one('sale.order.line'    , 'Ligne commande vente')
+
+
+    @api.multi
+    def refresh_stock_move_action(self):
+        cr = self._cr
+        cr.execute("REFRESH MATERIALIZED VIEW is_stock_move;")
+
+        now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
+        return {
+            'name': u'Mouvements de stocks actualisés à '+str(now),
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'is.stock.move',
+            'type': 'ir.actions.act_window',
+        }
 
 
     def init(self, cr):
