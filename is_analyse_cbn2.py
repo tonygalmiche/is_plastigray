@@ -1080,7 +1080,7 @@ class product_product(models.Model):
                 StockA=StocksA[product_id]
             if product_id in StocksQ:
                 StockQ=StocksQ[product_id]
-            if typeod=='stock' and StockA==0:
+            if typeod=='stock' and StockA==0 and StockQ==0:
                 test=False
 
             if test:

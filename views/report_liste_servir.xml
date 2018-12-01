@@ -202,7 +202,7 @@
                 </t>
 
                 <t t-if="not t and pas_aqp"> 
-                    <h2>Articles à livrer hors AQP</h2>
+                    <h2>Articles à livrer non AQP</h2>
                 </t>
 
                 <t t-if="(t and aqp) or (not t and pas_aqp)"> 
