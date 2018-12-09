@@ -82,11 +82,13 @@ class is_cout_calcul(models.Model):
 
     @api.multi
     def _creation_couts_thread(self,obj_id,rows,thread,nb_threads=0):
+        #_logger.info('len(mem_couts)='+str(len(self.mem_couts))+', thread='+str(thread))
         with api.Environment.manage():
             if nb_threads>0:
                 new_cr = registry(self._cr.dbname).cursor()
                 self.cursors.append(new_cr)
                 self = self.with_env(self.env(cr=new_cr))
+                self.mem_couts={}
             obj=self.env['is.cout.calcul'].search([('id', '=', obj_id)])[0]
             nb=len(rows)
             ct=0
@@ -103,6 +105,7 @@ class is_cout_calcul(models.Model):
     @api.multi
     def _creation_couts(self,nb_threads=0):
         cr = self._cr
+        self.mem_couts={}
         for obj in self:
             SQL="""
                 select product_id,max(niveau) 
@@ -263,6 +266,7 @@ class is_cout_calcul(models.Model):
     def _maj_couts_thread(self,obj_id,rows,thread,nb_threads):
         #pr=cProfile.Profile()
         #pr.enable()
+
         with api.Environment.manage():
             if nb_threads>0:
                 new_cr = registry(self._cr.dbname).cursor()

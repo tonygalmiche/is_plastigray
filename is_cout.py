@@ -106,6 +106,7 @@ class is_cout_calcul(models.Model):
     @api.multi
     def creation_cout(self, cout_calcul_obj, product, type_article, niveau=0):
         product_id=product.id
+        #_logger.info('creation_cout : len(mem_couts)='+str(len(self.mem_couts)))
         if product_id in self.mem_couts:
             action='trouvé'
             cout=self.mem_couts[product_id]
