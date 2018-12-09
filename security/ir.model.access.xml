@@ -573,6 +573,24 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+    <record id="is_sale_order_line_gest_donnees_technique_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_line_gest_donnees_technique_access</field>
+        <field name="model_id"    eval="ref('model_sale_order_line')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_sale_order_gest_donnees_technique_access"  model="ir.model.access" >
+        <field name="name">is_sale_order_gest_donnees_technique_access</field>
+        <field name="model_id"    eval="ref('model_sale_order')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_donnees_techniques_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
 
 
 
