@@ -24,6 +24,7 @@ class product_pricelist_item(models.Model):
 
     date_start         = fields.Date('Date de début de validité')
     date_end           = fields.Date('Date de fin de validité')
+    justification      = fields.Char('Justification du prix')
     product_uom_id     = fields.Many2one('product.uom', 'Unité'        , related='product_id.uom_id'   , readonly=True)
     product_po_uom_id  = fields.Many2one('product.uom', "Unité d'achat", related='product_id.uom_po_id', readonly=True)
     is_ref_client      = fields.Char("Référence client"  , related='product_id.is_ref_client', readonly=True)
@@ -122,6 +123,7 @@ class product_pricelist_version(models.Model):
                     'sequence': item.sequence,
                     'date_start': item.date_start,
                     'date_end': item.date_end,
+                    'justification': item.justification,
                     'price_surcharge': item.price_surcharge,
                 }
                 id = model.create(cr, uid, vals, context=context)

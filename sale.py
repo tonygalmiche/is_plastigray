@@ -400,6 +400,13 @@ class sale_order_line(models.Model):
                 price = self.pool.get('product.pricelist').price_get(self._cr, self._uid, [pricelist],
                         product_id, qty or 1.0, partner_id, ctx)[pricelist]
                 v['price_unit'] = price
+                # mettre à jour is_justification
+                if product_id is not False and pricelist is not False and date_livraison is not False:
+                    SQL="SELECT get_pricelist_justif('sale', {}, {}, {}, '{}') FROM product_product WHERE id={}".format(pricelist, product_id, qty or 1.0, date_livraison, product_id)
+                    self._cr.execute(SQL)
+                    result = self._cr.fetchone()
+
+                    v['is_justification'] = result[0];
             #*******************************************************************
 
         
@@ -438,5 +445,12 @@ class sale_order_line(models.Model):
                             product_id, qty or 1.0, partner_id, ctx)[pricelist_id]
         #*******************************************************************
         vals['value']['price_unit'] = price
+        # mettre à jour is_justification
+        if product_id is not False and pricelist_id is not False and date_order is not False:
+            SQL="SELECT get_pricelist_justif('sale', {}, {}, {}, '{}') FROM product_product WHERE id={}".format(pricelist_id, product_id, qty, date_order, product_id)
+            self._cr.execute(SQL)
+            result = self._cr.fetchone()
+
+            vals['value']['is_justification'] = result[0];
         return vals
 

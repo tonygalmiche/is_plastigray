@@ -121,6 +121,7 @@
                 <field name="min_quantity"    required="1" digits="(14, 4)"/>
                 <field name="product_uom_id"/>
                 <field name="price_surcharge" required="1" string="Prix" />
+                <field name="justification"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
                 <field name="base" invisible="1"/>
@@ -150,6 +151,7 @@
                 <field name="min_quantity"    required="1" digits="(14, 4)"/>
                 <field name="product_po_uom_id"/>
                 <field name="price_surcharge" required="1" string="Prix" />
+                <field name="justification"/>
                 <field name="date_start"/>
                 <field name="date_end"/>
                 <field name="base" invisible="1"/>

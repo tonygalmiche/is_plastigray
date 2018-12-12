@@ -14,6 +14,28 @@ class purchase_order_line(models.Model):
     is_justification = fields.Char("Justification" , help="Ce champ est obligatoire si l'article n'est pas renseigné ou le prix à 0")
     is_num_chantier  = fields.Char("N° du chantier", help="Champ utilisé pour la gestion des investissements sous la forme Mxxxx/xxxxx")
 
+    def init(self, cr):
+        cr.execute("""
+CREATE OR REPLACE FUNCTION get_pricelist_justif(pricelisttype text, pricelistid integer, productid integer, qt float, date date) RETURNS text AS $$
+BEGIN
+    RETURN (
+        select justification
+        from product_pricelist ppl inner join product_pricelist_version ppv on ppv.pricelist_id=ppl.id
+                                   inner join product_pricelist_item    ppi on ppi.price_version_id=ppv.id
+        where ppi.product_id=productid
+            and ppl.id=pricelistid
+            and min_quantity<=qt
+            and ppl.type=pricelisttype and ppl.active='t'
+            and (ppv.date_end   is null or ppv.date_end   >= date)
+            and (ppv.date_start is null or ppv.date_start <= date)
+
+            and (ppi.date_end   is null or ppi.date_end   >= date)
+            and (ppi.date_start is null or ppi.date_start <= date)
+        order by ppi.sequence limit 1
+    );
+END;
+$$ LANGUAGE plpgsql;
+        """)
 
     @api.multi
     def onchange_product_id(self, pricelist_id, product_id, qty, uom_id,
@@ -38,7 +60,15 @@ class purchase_order_line(models.Model):
                 delta=round(qty-lot,8)
                 qty=lot+multiple*ceil(delta/multiple)
             qty = product_uom_obj._compute_qty(product.uom_id.id, qty, uom_id)
-            res['value'].update({'product_qty': qty })
+            res['value']['product_qty'] = qty
+            if pricelist_id is not False and date_order is not False:
+                # supression de l'heure à la date
+                date = date_order.split()[0]
+                SQL="SELECT get_pricelist_justif('purchase', {}, {}, {}, '{}') FROM product_product WHERE id={}".format(pricelist_id, product_id, qty, date, product_id)
+                self._cr.execute(SQL)
+                result = self._cr.fetchone()
+
+                res['value']['is_justification'] = result[0];
         return res
 
 
@@ -268,7 +298,7 @@ class purchase_order(models.Model):
     def test_prix0(self,obj):
         for line in obj.order_line:
             if not line.is_justification and not line.price_unit:
-                raise Warning(u"Prix à 0 sans justifcation pour l'article "+str(line.product_id.is_code))
+                raise Warning(u"Prix à 0 sans justification pour l'article "+str(line.product_id.is_code))
 
 
     @api.multi
