@@ -40,10 +40,102 @@ class sale_order(models.Model):
     is_liste_servir_id     = fields.Many2one('is.liste.servir', 'Liste à servir')
     is_info_client         = fields.Text("Information client complèmentaire")
     is_nb_lignes           = fields.Integer("Nb lignes", store=True, compute='_compute')
+    is_date_envoi_mail     = fields.Datetime("Mail envoyé le", readonly=False)
 
     _defaults = {
         'is_type_commande': 'standard',
     }
+
+
+    @api.multi
+    def envoyer_par_mail(self):
+        cr , uid, context = self.env.args
+        modele_mail = u"""
+        <html>
+            <head>
+                <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+            </head>
+            <body>
+                <font>Bonjour, </font>
+                <br><br>
+                <font> Veuillez trouver ci-joint notre AR de commande.</font>
+                <br><br>
+                Cordialement <br><br>
+                [from]<br>
+            </body>
+        </html>
+        """
+
+        for obj in self:
+            for c in obj.partner_id.child_ids:
+                if c.is_type_contact.name == 'Approvisionneur':
+                    email_contact = c.name + u' <' + c.email + u'>'
+                    break
+            else:
+                raise Warning(u"Aucun mail de type 'Approvisionneur' pour ce client !")
+            user  = self.env['res.users'].browse(uid)
+            email = user.email
+            nom   = user.name
+            if email==False:
+                raise Warning(u"Votre mail n'est pas renseigné !")
+
+
+            #** Génération du PDF **********************************************
+            name=u'commande-'+obj.name+u'.pdf'
+            pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_ar_commande')
+            #*******************************************************************
+
+            # ** Recherche si une pièce jointe est déja associèe ***************
+            model=self._name
+            attachment_obj = self.env['ir.attachment']
+            attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+            # ******************************************************************
+
+            # ** Creation ou modification de la pièce jointe *******************
+            vals = {
+                'name':        name,
+                'datas_fname': name,
+                'type':        'binary',
+                'res_model':   model,
+                'res_id':      obj.id,
+                'datas':       pdf.encode('base64'),
+            }
+            attachment_id=False
+            if attachments:
+                for attachment in attachments:
+                    attachment.write(vals)
+                    attachment_id=attachment.id
+            else:
+                attachment = attachment_obj.create(vals)
+                attachment_id=attachment.id
+            #*******************************************************************
+
+            email_cc      = nom + u' <'+email+u'>'
+
+            email_from    = email_cc
+
+            subject    = u'Commande Plastigray '+obj.name+' pour '+obj.partner_id.name
+            #subject    = u'Commande Plastigray '+obj.name+' pour '+obj.partner_id.name+u' (to='+email_contact+u')'
+
+            email_to = email_contact
+            #email_to = email_cc
+
+            body_html = modele_mail.replace('[from]', user.name)
+            email_vals = {
+                'subject'       : subject,
+                'email_to'      : email_to,
+                'email_cc'      : email_cc,
+                'email_from'    : email_from, 
+                'body_html'     : body_html.encode('utf-8'), 
+                'attachment_ids': [(6, 0, [attachment_id])] 
+            }
+
+            email_id = self.env['mail.mail'].create(email_vals)
+            if email_id:
+                self.env['mail.mail'].send(email_id)
+
+            obj.message_post(u'Commande envoyée par mail à '+ email_contact)
+            obj.is_date_envoi_mail=datetime.datetime.now()
 
 
     @api.multi

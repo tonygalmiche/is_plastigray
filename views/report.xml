@@ -186,7 +186,17 @@
             <field name="paperformat_id" ref="is_plastigray.purchaseorder_paperformat"/>
         </record>
 
-
+        <report 
+            id="report_devis_commandes" 
+            string="Devis de commande" 
+            model="sale.order" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_devis_commande" 
+            file="is_plastigray.report_devis_commande" 
+        />
+        <record id="report_devis_commandes" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.devis_commandes_paperformat"/>
+        </record>
         <report 
             id="report_ar_commandes" 
             string="AR de commande" 

@@ -2,7 +2,7 @@
 <openerp>
 <data>
 
-        <template id="report_ar_commande_style">
+        <template id="report_devis_commande_style">
             .header {
                 font-size:10pt;
             }
@@ -10,10 +10,10 @@
                 font-size:7pt;
             }
             .page {
-                font-size:8pt;
+                font-size:10pt;
             }
             .titre {
-                font-size:11pt;
+                font-size:13pt;
                 font-weight: bold;
             }
             .expediteur {
@@ -23,15 +23,14 @@
             .client {
                 text-align:left;
                 border: 1px solid black;
-                padding:2mm;
+                padding:5mm;
             }
             .nowrap{
                 white-space: nowrap;
             }
         </template>
 
-
-        <template id="report_ar_commande_layout" inherit_id="web.layout" primary="True">
+        <template id="report_devis_commande_layout" inherit_id="web.layout" primary="True">
             <!-- Add report attributes -->
             <xpath expr="//html" position="attributes">
                 <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
@@ -45,7 +44,7 @@
                 <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
                 <style type="text/css">
                     <t t-call="report.style"/>
-                    <t t-call="is_plastigray.report_ar_commande_style"/>
+                    <t t-call="is_plastigray.report_devis_commande_style"/>
                 </style>
             </xpath>
             <!-- Remove conflicting style -->
@@ -54,16 +53,16 @@
 
 
 
-        <template id="report_ar_commande_html_container">
+        <template id="report_devis_commande_html_container">
             <t t-set="body_classname" t-value="'container'"/>
-            <t t-call="is_plastigray.report_ar_commande_layout">
+            <t t-call="is_plastigray.report_devis_commande_layout">
                 <t t-raw="0"/>
             </t>
         </template>
 
 
         <!-- Entête personnalisé Plastigray -->
-        <template id="report_ar_commande_external_layout_header">
+        <template id="report_devis_commande_external_layout_header">
             <div class="header">
                 <div class="row">
                     <div class="col-xs-5  text-center">
@@ -79,19 +78,19 @@
                             Registre du Commerce GRAY <br />
                             N°Identification T.V.A. FR 65 377 846 381 <br />
                             <span t-if="o.partner_id.is_cofor">
-                                <span t-if="o.partner_id.lang == 'fr_FR'">Fournisseur N°<span t-field="o.partner_id.is_cofor" /></span>
+                                <span t-if="o.partner_id.lang == 'fr_FR'">Fournisseur N°</span>
                                 <span t-if="o.partner_id.lang != 'fr_FR'">Supplier N°</span>
                             </span>
                         </div>
                     </div>
                     <div class="col-xs-7">
                         <div class="titre">
-                            <span>AR de Commande</span>
+                            <span>Devis / Commande</span>
                             <span style="font-size:12pt;" t-field="o.name"/>
                              du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
                         </div><br />
                         <div class="client">
-                            Adresse de livraison : <br />
+                            Client à livrer : <br />
                             <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)<br />
                             <span t-field="o.partner_id.street" /><br />
                             <t t-if="o.partner_id.street2">
@@ -99,23 +98,7 @@
                             </t>
                             <span t-field="o.partner_id.zip" /> - 
                             <span t-field="o.partner_id.city" /><br />
-                            <span t-field="o.partner_id.country_id.name" /><br />
-                            <span t-if="o.partner_id.vat">
-                                Numéro fiscal : <span t-field="o.partner_id.vat" /><br />
-                            </span>
-                            <br />
-                            Adresse de facturation : <br />
-                            <b><span t-field="o.partner_shipping_id.name"/></b> (<span t-field="o.partner_shipping_id.is_code"/>/<span t-field="o.partner_shipping_id.is_adr_code"/>)<br />
-                            <span t-field="o.partner_shipping_id.street" /><br />
-                            <t t-if="o.partner_shipping_id.street2">
-                                <span t-field="o.partner_shipping_id.street2" /><br />
-                            </t>
-                            <span t-field="o.partner_shipping_id.zip" /> - 
-                            <span t-field="o.partner_shipping_id.city" /><br />
-                            <span t-field="o.partner_shipping_id.country_id.name" /><br />
-                            <span t-if="o.partner_id.vat">
-                                Numéro fiscal : <span t-field="o.partner_id.vat" />
-                            </span>
+                            <span t-field="o.partner_id.country_id.name" />
                         </div>
                     </div>
                 </div>
@@ -125,7 +108,7 @@
 
 
         <!-- Pied de page personnalisé Plastigray -->
-        <template id="report_ar_commande_external_layout_footer">
+        <template id="report_devis_commande_external_layout_footer">
             <div class="footer">
                 <div class="text-center" style="border-top: 1px solid black">
                     <table>
@@ -149,22 +132,22 @@
         </template>
 
         <!-- Squelette de la page personnalisé pour Plastigray -->
-        <template id="report_ar_commande_external_layout">
+        <template id="report_devis_commande_external_layout">
             <t t-if="o and 'company_id' in o">
                 <t t-set="company" t-value="o.company_id"/>
             </t>
             <t t-if="not o or not 'company_id' in o">
                 <t t-set="company" t-value="res_company"/>
             </t>
-            <t t-call="is_plastigray.report_ar_commande_external_layout_header"/>
+            <t t-call="is_plastigray.report_devis_commande_external_layout_header"/>
             <t t-raw="0"/>
-            <t t-call="is_plastigray.report_ar_commande_external_layout_footer"/>
+            <t t-call="is_plastigray.report_devis_commande_external_layout_footer"/>
         </template>
 
 
 
-        <template id="report_ar_commande_document">
-            <t t-call="is_plastigray.report_ar_commande_external_layout">
+        <template id="report_devis_commande_document">
+            <t t-call="is_plastigray.report_devis_commande_external_layout">
                 <div class="page">
                     <div class="row">
                         <div class="col-xs-12">
@@ -175,13 +158,11 @@
                                         <th class="text-left"   style="vertical-align:top">Code PG</th>
                                         <th class="text-left"   style="vertical-align:top">Désignation</th>
                                         <th class="text-left"   style="vertical-align:top">Réf Client</th>
-                                        <th class="text-left"   style="vertical-align:top">Indice<br />Plan</th>
                                         <th class="text-left"   style="vertical-align:top">Commande<br />Client</th>
                                         <th class="text-right"  style="vertical-align:top">Quantité<br />en US</th>
                                         <th class="text-right"  style="vertical-align:top">Quantité<br />en UC</th>
-                                        <th class="text-right"  style="vertical-align:top">Prix unitaire confirmé</th>
                                         <th class="text-left"   style="vertical-align:top">Conditionnement</th>
-                                        <th class="text-center" style="vertical-align:top">Date de livraison confirmée</th>
+                                        <th class="text-center" style="vertical-align:top">Date de<br />livraison</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -190,11 +171,9 @@
                                         <td class="text-left">   <span t-field="l.product_id.is_code"/></td>
                                         <td class="text-left">   <span t-field="l.product_id.name"/></td>
                                         <td class="text-left">   <span t-field="l.product_id.is_ref_client"/></td>
-                                        <td class="text-left">   <span t-field="l.product_id.is_ind_plan"/></td>
                                         <td class="text-left">   <span t-field="l.is_client_order_ref"/></td>
                                         <td class="text-right nowrap">  <span t-field="l.product_uom_qty"/></td>
                                         <td class="text-right nowrap">  <t t-esc='"{:,.1f}".format(nb_uc).replace(","," ").replace(".",",")'/></td>
-                                        <td class="text-right">   <span t-field="l.price_unit"/></td>
                                         <td class="text-left">   <span t-field="l.product_id.is_uc"/></td>
                                         <td class="text-center"> <span t-field="l.is_date_livraison"/></td>
                                     </tr>
@@ -202,52 +181,15 @@
                             </table>
                         </div>
                     </div>
-		    <div class="row">
-		        <div class="col-xs-4 pull-right">
-		            <table class="table table-condensed">
-		        	<tr class="border-black">
-		        	    <td><strong>Total HT</strong></td>
-		        	    <td class="text-right">
-		        		<span t-field="o.amount_untaxed"
-		        		    t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
-		        	    </td>
-		        	</tr>
-		        	<tr>
-		        	    <td>Taxes</td>
-		        	    <td class="text-right">
-		        		<span t-field="o.amount_tax"
-		        		    t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
-		        	    </td>
-		        	</tr>
-		        	<tr class="border-black">
-		        	    <td><strong>Total</strong></td>
-		        	    <td class="text-right">
-		        		<span t-field="o.amount_total"
-		        		    t-field-options='{"widget": "monetary", "display_currency": "o.pricelist_id.currency_id"}'/>
-		        	    </td>
-		        	</tr>
-		            </table>
-		        </div>
-		    </div>
-		    <p t-field="o.note" />
-		    <p t-if="o.payment_term.note">
-		        <strong>Condition de règlement :</strong>
-		        <span t-field="o.payment_term.note"/>
-		    </p>
-		    <p t-if="o.partner_id.is_type_reglement">
-		        <strong>Type règlement :</strong>
-		        <span t-field="o.partner_id.is_type_reglement"/>
-		    </p>
-		    <div class="oe_structure"/>
                 </div>
             </t>
         </template>
 
 
-        <template id="report_ar_commande">
-            <t t-call="is_plastigray.report_ar_commande_html_container">
+        <template id="report_devis_commande">
+            <t t-call="is_plastigray.report_devis_commande_html_container">
                 <t t-foreach="doc_ids" t-as="doc_id">
-                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'is_plastigray.report_ar_commande_document')"/>
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'is_plastigray.report_devis_commande_document')"/>
                 </t>
             </t>
         </template>
