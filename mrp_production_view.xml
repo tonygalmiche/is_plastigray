@@ -17,22 +17,6 @@
     </record>
 
 
-    <!-- Confirmer de nouveau la production (suite bug lors de la transformation des FS en OF) -->
-    <!--
-    <record id="confirmer_production_action_server" model="ir.actions.server">
-         <field name="name">Confirmer de nouveau la production</field>
-        <field name="model_id" ref="model_mrp_production"/>
-        <field name="code">action = self.action_confirm_a_nouveau(cr, uid, context.get('active_ids', []), context=context)</field>
-    </record>
-    <record id="confirmer_production_ir_value" model="ir.values">
-        <field eval="'client_action_multi'" name="key2"/>
-        <field eval="'mrp.production'" name="model"/>
-        <field name="name">Confirmer de nouveau la production</field>
-        <field eval="'ir.actions.server,%d'%confirmer_production_action_server" name="value"/>
-    </record>
-    -->
-
-
     <!-- Ordre de fabrication -->
         <record model="ir.ui.view" id="view_mrp_production_form_view_extended_form">
             <field name="name">mrp.production.form</field>
@@ -106,22 +90,23 @@
                     />
                 </xpath>
                 <field name="date_planned" position="after">
-                    <field name="is_num_essai" />
-                    <field name="is_qt_fabriquee_uom" />
-                    <field name="is_qt_reste_uom" />
-                    <field name="is_qt_rebut_uom" />
+                    <field name="is_prioritaire"/>
+                    <field name="is_num_essai"/>
+                    <field name="is_qt_fabriquee_uom"/>
+                    <field name="is_qt_reste_uom"/>
+                    <field name="is_qt_rebut_uom"/>
                 </field>
                 <field name="origin" position="after">
-                    <field name="product_package" />
-                    <field name="package_qty" />
-                    <field name="is_qt_prevue" />
-                    <field name="is_qt_fabriquee" />
-                    <field name="is_qt_reste" />
-                    <field name="is_qt_rebut" />
-                    <field name="is_done" invisible="1" />
+                    <field name="product_package"/>
+                    <field name="package_qty"/>
+                    <field name="is_qt_prevue"/>
+                    <field name="is_qt_fabriquee"/>
+                    <field name="is_qt_reste"/>
+                    <field name="is_qt_rebut"/>
+                    <field name="is_done" invisible="1"/>
                 </field>
-                <button icon="terp-gtk-jump-to-ltr" position="before" > 
-                    <button string="Ligne" name="action_acceder_mouvement_stock" type="object" icon="gtk-zoom-in" />
+                <button icon="terp-gtk-jump-to-ltr" position="before"> 
+                    <button string="Ligne" name="action_acceder_mouvement_stock" type="object" icon="gtk-zoom-in"/>
                 </button>
                 <button icon="terp-gtk-jump-to-ltr" position="attributes" > 
                     <attribute name="invisible">1</attribute>
@@ -194,12 +179,13 @@
                     <attribute name="invisible">1</attribute>
                 </field>
                 <field name="product_id" position="after">
-                    <field name="is_mold_dossierf" />
+                    <field name="is_mold_dossierf"/>
+                    <field name="is_prioritaire"/>
                 </field>
                 <field name="product_qty" position="after">
-                    <field name="is_qt_fabriquee_uom" />
-                    <field name="is_qt_reste_uom" />
-                    <field name="is_qt_rebut_uom" />
+                    <field name="is_qt_fabriquee_uom"/>
+                    <field name="is_qt_reste_uom"/>
+                    <field name="is_qt_rebut_uom"/>
                 </field>
             </field>
         </record>
@@ -214,7 +200,8 @@
                     <field name="name"/>
                 </field>
                 <field name="product_id" position="after">
-                    <field name="is_mold_dossierf" />
+                    <field name="is_mold_dossierf"/>
+                    <field name="is_prioritaire"/>
                 </field>
             </field>
         </record>

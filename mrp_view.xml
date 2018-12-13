@@ -1,449 +1,420 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <openerp>
-<data>
+    <data>
 
-
-    <!-- Entêtes des gammes -->
-    <record model="ir.ui.view" id="is_mrp_routing_form_view" >
-        <field name="name">is_mrp_routing_form_view</field>
-        <field name="model">mrp.routing</field>
-        <field name="type">form</field>
-        <field name="inherit_id" ref="mrp.mrp_routing_form_view" />
-        <field name="arch" type="xml">
-            <field name="code" position="after" > 
-                <field name="is_nb_empreintes" />
-                <field name="is_coef_theia" />
-            </field>
-            <field name="location_id" position="replace" > 
-                <field name="location_id" invisible="1" /> 
-            </field>
-            <field name="code" position="replace" > 
-                <field name="code" invisible="1" /> 
-            </field>
-
-            <field name="active" position="after" > 
-                <field name="is_presse_affectee" />
-                <field name="is_presse_generique" />
-            </field>
-
-
-            <field name="workcenter_lines" position="replace" > 
-                <field name="workcenter_lines">
-                    <tree editable="bottom">
-                        <field name="sequence"/>
-                        <field name="name"/>
-                        <field name="workcenter_id" widget="many2one_clickable"/>
-                        <field name="cycle_nbr" invisible="1"/>
-                        <field name="is_nb_secondes" />
-                        <field name="hour_nbr" widget="float_time" invisible="1" />
-                        <field name="is_nb_mod" /> 
-                        <field name="company_id" widget="selection" groups="base.group_multi_company"/>
-                        <field name="note" invisible="1"/>
-                    </tree>
+        <!-- Entêtes des gammes -->
+        <record model="ir.ui.view" id="is_mrp_routing_form_view" >
+            <field name="name">is_mrp_routing_form_view</field>
+            <field name="model">mrp.routing</field>
+            <field name="type">form</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_form_view"/>
+            <field name="arch" type="xml">
+                <field name="code" position="after"> 
+                    <field name="is_nb_empreintes"/>
+                    <field name="is_coef_theia"/>
+                    <field name="is_reprise_humidite"/>
+                </field>
+                <field name="location_id" position="replace"> 
+                    <field name="location_id" invisible="1"/> 
+                </field>
+                <field name="code" position="replace"> 
+                    <field name="code" invisible="1"/> 
+                </field>
+                <field name="active" position="after"> 
+                    <field name="is_presse_affectee"/>
+                    <field name="is_presse_generique"/>
+                </field>
+                <field name="workcenter_lines" position="replace"> 
+                    <field name="workcenter_lines">
+                        <tree editable="bottom">
+                            <field name="sequence"/>
+                            <field name="name"/>
+                            <field name="workcenter_id" widget="many2one_clickable"/>
+                            <field name="cycle_nbr" invisible="1"/>
+                            <field name="is_nb_secondes"/>
+                            <field name="hour_nbr" widget="float_time" invisible="1"/>
+                            <field name="is_nb_mod"/> 
+                            <field name="company_id" widget="selection" groups="base.group_multi_company"/>
+                            <field name="note" invisible="1"/>
+                        </tree>
+                    </field>
                 </field>
             </field>
-        </field>
-    </record>
-    <record id="is_mrp_routing_tree_view" model="ir.ui.view">
-        <field name="name">is_mrp_routing_tree_view</field>
-        <field name="model">mrp.routing</field>
-        <field name="inherit_id" ref="mrp.mrp_routing_tree_view" />
-        <field name="arch" type="xml">
-            <field name="location_id" position="replace" > 
-                <field name="location_id" invisible="1" /> 
+        </record>
+        <record id="is_mrp_routing_tree_view" model="ir.ui.view">
+            <field name="name">is_mrp_routing_tree_view</field>
+            <field name="model">mrp.routing</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="location_id" position="replace"> 
+                    <field name="location_id" invisible="1"/> 
+                </field>
+                <field name="code" position="replace"> 
+                    <field name="code" invisible="1"/> 
+                </field>
+                <field name="name" position="after"> 
+                    <field name="is_presse_affectee"/>
+                    <field name="is_presse_generique"/>
+                    <field name="is_nb_empreintes"/>
+                    <field name="is_coef_theia"/>
+                    <field name="is_reprise_humidite"/>
+                </field>
             </field>
-            <field name="code" position="replace" > 
-                <field name="code" invisible="1" /> 
+        </record>
+
+        <record id="is_mrp_routing_search_view" model="ir.ui.view">
+            <field name="name">is_mrp_routing_search_view</field>
+            <field name="model">mrp.routing</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_search_view"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <filter string="avec Reprise d'humidité" name="avec_reprise_humidite" domain="[('is_reprise_humidite','=',True)]"/>
+                </field>
             </field>
-            <field name="name" position="after" > 
-                <field name="is_presse_affectee" />
-                <field name="is_presse_generique" />
-                <field name="is_nb_empreintes" />
-                <field name="is_coef_theia" />
+        </record>
+
+
+        <!-- Lignes des gammes -->
+        <record model="ir.ui.view" id="is_mrp_routing_workcenter_tree_view">
+            <field name="name">is.mrp.routing.workcenter.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="/tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+                <field name="sequence" position="before"> 
+                    <field name="routing_id"/> 
+                </field>
+                <field name="cycle_nbr" position="replace"> 
+                    <field name="cycle_nbr" invisible="1"/> 
+                </field>
+                <field name="hour_nbr" position="replace"> 
+                    <field name="is_nb_secondes"/> 
+                    <field name="hour_nbr" readonly="1"/> 
+                    <field name="is_nb_mod"/> 
+                </field>
             </field>
-        </field>
-    </record>
+        </record>    
 
-
-
-    <!-- Lignes des gammes -->
-    <record model="ir.ui.view" id="is_mrp_routing_workcenter_tree_view" >
-        <field name="name">is.mrp.routing.workcenter.tree</field>
-        <field name="model">mrp.routing.workcenter</field>
-        <field name="type">tree</field>
-        <field name="inherit_id" ref="mrp.mrp_routing_workcenter_tree_view" />
-        <field name="arch" type="xml">
-            <xpath expr="/tree" position="attributes">
-                <attribute name="editable">bottom</attribute>
-            </xpath>
-            <field name="sequence" position="before" > 
-                <field name="routing_id" /> 
-            </field>
-            <field name="cycle_nbr" position="replace" > 
-                <field name="cycle_nbr" invisible="1" /> 
-            </field>
-            <field name="hour_nbr" position="replace" > 
-                <field name="is_nb_secondes" /> 
-                <field name="hour_nbr" readonly="1" /> 
-                <field name="is_nb_mod" /> 
-            </field>
-        </field>
-    </record>    
-
-    <record id="is_mrp_routing_workcenter_search_view" model="ir.ui.view">
-        <field name="name">is_mrp_routing_workcenter_search_view</field>
-        <field name="model">mrp.routing.workcenter</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="routing_id"/>
-                <field name="workcenter_id"/>
-                <group expand="1" string="Regroupé par">
-                    <filter string="Gamme"           context="{'group_by':'routing_id'}"/>
-                    <filter string="Poste de charge" context="{'group_by':'workcenter_id'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-    <record model="ir.actions.act_window" id="action_is_mrp_routing_workcenter">
-        <field name="name">Lignes des gammes</field>
-        <field name="res_model">mrp.routing.workcenter</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-
-
-
-    <!-- Nomenclatures -->
-    <record id="is_mrp_bom_form_view" model="ir.ui.view">
-        <field name="name">is_mrp_bom_form_view</field>
-        <field name="model">mrp.bom</field>
-        <field name="inherit_id" ref="mrp.mrp_bom_form_view" />
-        <field name="arch" type="xml">
-            <xpath expr="/form/group/group/div[@groups='mrp.group_mrp_routings']" position="after">
-                <label for="is_gamme_generique_id" class="oe_inline" groups="mrp.group_mrp_routings"/>
-                <div groups="mrp.group_mrp_routings">
-                    <field name="is_gamme_generique_id" class="oe_inline"/>
-                </div>
-            </xpath>
-            <field name="name" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="product_id" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="product_qty" position="attributes" > 
-                <attribute name="readonly">1</attribute>
-            </field>
-            <field name="product_uom" position="attributes" > 
-                <attribute name="readonly">1</attribute>
-            </field>
-            <field name="code" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="type" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="product_tmpl_id" position="after" > 
-                <field name="segment_id" />
-                <field name="is_gestionnaire_id" />
-                <field name="is_qt_uc" />
-                <field name="is_qt_um" />
-            </field>
-
-            <field name="name" position="after" > 
-                <field name="is_sous_traitance" />
-                <field name="is_negoce" />
-                <field name="is_inactive" />
-            </field>
-            <xpath expr="/form/notebook/page/field/tree/field[@name='sequence']" position="replace">
-                <field name="sequence" />
-                <field name="is_bom" invisible="1"/>
-                <button string="Nomenclature" name= "action_acces_nomenclature" 
-                        type="object" icon="gtk-justify-fill"
-                        attrs="{'invisible': [('is_bom', '=', False)]}"/>
-            </xpath>
-
-            <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="attributes">
-                <attribute name="readonly">1</attribute>
-            </xpath>
-            <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="after">
-                <field name="is_article_fourni"/> 
-            </xpath>
-
-            <xpath expr="/form/notebook/page/field/tree/field[@name='product_uom']" position="after">
-                <field name="is_qt_uc"/> 
-                <field name="is_qt_um"/> 
-            </xpath>
-
-            <xpath expr="/form/notebook/page/field/tree/field[@name='product_rounding']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="/form/notebook/page/field/tree/field[@name='attribute_value_ids']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-            <xpath expr="/form/notebook/page/field/tree/field[@name='property_ids']" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </xpath>
-
-        </field>
-    </record>
-    <record id="is_mrp_bom_tree_view" model="ir.ui.view">
-        <field name="name">is_mrp_bom_tree_view</field>
-        <field name="model">mrp.bom</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="product_tmpl_id"       widget="many2one_clickable"/>
-                <field name="sequence"/>
-                <field name="segment_id"/>
-                <field name="is_gestionnaire_id"/>
-                <field name="is_sous_traitance"/>
-                <field name="is_negoce"/>
-                <field name="is_inactive"/>
-                <field name="routing_id"            widget="many2one_clickable"/>
-                <field name="is_gamme_generique_id" widget="many2one_clickable"/>
-            </tree>
-        </field>
-    </record>
-    <record id="is_view_mrp_bom_filter" model="ir.ui.view">
-        <field name="name">is_view_mrp_bom_filter</field>
-        <field name="model">mrp.bom</field>
-        <field name="inherit_id" ref="mrp.view_mrp_bom_filter" />
-        <field name="arch" type="xml">
-            <field name="product_tmpl_id" position="after" > 
-                <field name="segment_id" /> 
-                <field name="is_gestionnaire_id" /> 
-                <field name="routing_id" /> 
-                <field name="is_gamme_generique_id" /> 
-
-                <filter string="Gestionnaire 4"         name="gest4"      domain="[('is_gestionnaire_id','=','04')]"/>
-                <filter string="Gestionnaires 3,6,7,12" name="gest36712"  domain="[('is_gestionnaire_id','in',['03','06','07','12'])]"/>
-                <filter string="Gestionnaires 10,11,14" name="gest101114" domain="[('is_gestionnaire_id','in',['10','11','14'])]"/>
-            </field>
-            <field name="product_id" position="replace" /> 
-        </field>
-    </record>
-
-
-
-
-    <!-- Lignes des nomenclatures -->
-    <record model="ir.actions.act_window" id="is_mrp_bom_line_action">
-        <field name="name">Lignes des nomenclatures</field>
-        <field name="res_model">mrp.bom.line</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-    <record id="is_mrp_bom_component_tree_view" model="ir.ui.view">
-        <field name="name">is_mrp_bom_component_tree_view</field>
-        <field name="model">mrp.bom.line</field>
-        <field name="inherit_id" ref="mrp.mrp_bom_component_tree_view" />
-        <field name="arch" type="xml">
-
-            <field name="bom_id" position="attributes" > 
-                <attribute name="readonly">1</attribute>
-            </field>
-
-            <field name="type" position="attributes" > 
-                <attribute name="readonly">1</attribute>
-            </field>
-            <field name="type" position="after" > 
-                <field name="is_article_fourni"/> 
-            </field>
-            <field name="product_rounding" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="routing_id" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="attribute_value_ids" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="property_ids" position="attributes" > 
-                <attribute name="invisible">1</attribute>
-            </field>
-
-        </field>
-    </record>
-
-
-
-
-
-    <!-- Liste nomenclatures sans gamme -->
-<!--
-    <record id="is_liste_nomenclature_sans_gamme_tree_view" model="ir.ui.view">
-        <field name="name">is_liste_nomenclature_sans_gamme_tree_view</field>
-        <field name="model">mrp.bom</field>
-        <field name="arch" type="xml">
-            <tree colors="red:True">
-                <field name="product_tmpl_id"/>
-                <field name="is_sous_traitance"/>
-                <field name="is_negoce"/>
-                <field name="is_inactive"/>
-                <field name="routing_id"/>
-                <field name="is_gamme_generique_id"/>
-            </tree>
-        </field>
-    </record>
-    <record id="is_liste_nomenclature_sans_gamme_action" model="ir.actions.act_window">
-        <field name="name">Nomenclatures sans gamme</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">mrp.bom</field>
-        <field name="domain">['&amp;','&amp;',('is_negoce','=', False),('is_sous_traitance','=', False), '|', ('routing_id','=', False),('is_gamme_generique_id','=', False)]</field>
-        <field name="limit">500</field>
-        <field name="view_id" ref="is_liste_nomenclature_sans_gamme_tree_view"/>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form</field>
-    </record>
--->
-
-
-
-
-
-    <!-- Atelier -->
-    <record id="is_atelier_tree_view" model="ir.ui.view">
-        <field name="name">is_atelier_tree_view</field>
-        <field name="model">is.atelier</field>
-        <field name="arch" type="xml">
-            <tree editable="top">
-                <field name="name" />
-            </tree>
-        </field>
-    </record>
-    <record id="is_atelier_action" model="ir.actions.act_window">
-        <field name="name">Atelier</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">is.atelier</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree</field>
-    </record>
-
-
-    <!-- Ilot -->
-    <record id="is_ilot_tree_view" model="ir.ui.view">
-        <field name="name">is_ilot_tree_view</field>
-        <field name="model">is.ilot</field>
-        <field name="arch" type="xml">
-            <tree editable="top">
-                <field name="name" />
-            </tree>
-        </field>
-    </record>
-    <record id="is_ilot_action" model="ir.actions.act_window">
-        <field name="name">Ilot</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">is.ilot</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree</field>
-    </record>
-
-
-    <!-- Poste de charges -->
-    <record id="mrp.mrp_workcenter_tree_view" model="ir.ui.view">
-        <field name="name">mrp.workcenter.tree</field>
-        <field name="model">mrp.workcenter</field>
-        <field name="arch" type="xml">
-            <tree string="Work Center">
-                <field name="code"/>
-                <field name="name"/>
-                <field name="resource_type"/>
-                <field name="is_atelier_id"/>
-                <field name="is_ilot_id"/>
-                <field name="is_ordre"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-            </tree>
-        </field>
-    </record>
-    <record id="mrp.mrp_workcenter_view" model="ir.ui.view">
-        <field name="name">mrp.workcenter.form</field>
-        <field name="model">mrp.workcenter</field>
-        <field name="arch" type="xml">
-            <form string="Work Center">
-                <sheet>
-                    <group col="4">
-                        <group string="Description du poste de charge">
-                            <field name="code"/>
-                            <field name="name"/>
-                            <field name="resource_type"/>
-                            <field name="calendar_id" widget="selection"/>
-                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-                            <field name="active"/>
-                        </group>
-                        <group string="Configuration pour le Planning">
-                            <field name="is_atelier_id"/>
-                            <field name="is_ilot_id"/>
-                            <field name="is_ordre"/>
-                        </group>
+        <record id="is_mrp_routing_workcenter_search_view" model="ir.ui.view">
+            <field name="name">is_mrp_routing_workcenter_search_view</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="routing_id"/>
+                    <field name="workcenter_id"/>
+                    <group expand="1" string="Regroupé par">
+                        <filter string="Gamme"           context="{'group_by':'routing_id'}"/>
+                        <filter string="Poste de charge" context="{'group_by':'workcenter_id'}"/>
                     </group>
-                    <group>
-                        <group string="Capacity Information">
-                            <field name="time_efficiency"                 invisible="1"/>
-                            <field name="capacity_per_cycle"              invisible="1"/>
-                            <field name="time_cycle" widget="float_time"  invisible="1"/>
-                            <field name="time_start" widget="float_time"/>
-                            <field name="time_stop" widget="float_time"/>
-                        </group>
-                        <group string="Costing Information">
-                            <field name="product_id" on_change="on_change_product_cost(product_id)"  invisible="1"/>
-                            <field name="costs_hour"/>
-                            <field name="is_cout_pk"/>
-                            <field name="costs_hour_account_id" groups="analytic.group_analytic_accounting"  invisible="1"/>
-                            <field name="costs_cycle"/>
-                            <field name="costs_cycle_account_id" groups="analytic.group_analytic_accounting"  invisible="1"/>
-                            <field name="costs_journal_id" attrs="{'required':['|',('costs_hour_account_id', '=', True),('costs_cycle_account_id', '=', True)]}" groups="analytic.group_analytic_accounting"  invisible="1"/>
-                            <field name="costs_general_account_id" attrs="{ 'required':['|',('costs_cycle_account_id', '=', True),('costs_hour_account_id', '=', True)]}" groups="analytic.group_analytic_accounting"  invisible="1"/>
-                        </group>
-                    </group>
-                    <label for="note"/>
-                    <field name="note"/>
-                </sheet>
-            </form>
-        </field>
-    </record>
-    <record id="mrp.view_mrp_workcenter_search" model="ir.ui.view">
-        <field name="name">mrp.workcenter.search</field>
-        <field name="model">mrp.workcenter</field>
-        <field name="arch" type="xml">
-            <search string="Search for mrp workcenter">
-                <field name="name" string="Mrp Workcenter" filter_domain="['|',('name','ilike',self),('code','ilike',self)]"/>
-                <field name="resource_type"/>
-                <field name="is_atelier_id"/>
-                <field name="is_ilot_id"/>
-                <filter string="Inactive" icon="terp-gdu-smart-failing" domain="[('active','=',False)]"/>
-                <group expand="0" string="Group By...">
-                    <filter string="Type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'resource_type'}"/>
-                    <filter string="Atelier" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'is_atelier_id'}"/>
-                    <filter string="Ilot"    icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'is_ilot_id'}"/>
-                    <filter string="Company" icon="terp-go-home"                domain="[]" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
-                </group>
-            </search>
-        </field>
-    </record>
-
-
-
-
-    <record model="ir.ui.view" id="is_mrp_production_workcenter_form_view_inherit">
-        <field name="name">mrp.production.workcenter.line.form</field>
-        <field name="model">mrp.production.workcenter.line</field>
-        <field name="inherit_id" ref="mrp_operations.mrp_production_workcenter_form_view_inherit" />
-        <field name="arch" type="xml">
-            <field name="date_planned_end" position="after" > 
-                <field name="is_ordre" />
-                <field name="is_qt_restante" />
-                <field name="is_tps_restant" widget="float_time" />
-                <field name="is_date_tri" />
+                </search>
             </field>
-        </field>
-    </record>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_is_mrp_routing_workcenter">
+            <field name="name">Lignes des gammes</field>
+            <field name="res_model">mrp.routing.workcenter</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
 
 
 
-</data>
+        <!-- Nomenclatures -->
+        <record id="is_mrp_bom_form_view" model="ir.ui.view">
+            <field name="name">is_mrp_bom_form_view</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_form_view" />
+            <field name="arch" type="xml">
+                <xpath expr="/form/group/group/div[@groups='mrp.group_mrp_routings']" position="after">
+                    <label for="is_gamme_generique_id" class="oe_inline" groups="mrp.group_mrp_routings"/>
+                    <div groups="mrp.group_mrp_routings">
+                        <field name="is_gamme_generique_id" class="oe_inline"/>
+                    </div>
+                </xpath>
+                <field name="name" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="product_id" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="product_qty" position="attributes" > 
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="product_uom" position="attributes" > 
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="code" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="type" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="product_tmpl_id" position="after" > 
+                    <field name="segment_id" />
+                    <field name="is_gestionnaire_id" />
+                    <field name="is_qt_uc" />
+                    <field name="is_qt_um" />
+                </field>
+
+                <field name="name" position="after" > 
+                    <field name="is_sous_traitance" />
+                    <field name="is_negoce" />
+                    <field name="is_inactive" />
+                </field>
+                <xpath expr="/form/notebook/page/field/tree/field[@name='sequence']" position="replace">
+                    <field name="sequence" />
+                    <field name="is_bom" invisible="1"/>
+                    <button string="Nomenclature" name= "action_acces_nomenclature" 
+                            type="object" icon="gtk-justify-fill"
+                            attrs="{'invisible': [('is_bom', '=', False)]}"/>
+                </xpath>
+
+                <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="/form/notebook/page/field/tree/field[@name='type']" position="after">
+                    <field name="is_article_fourni"/> 
+                </xpath>
+
+                <xpath expr="/form/notebook/page/field/tree/field[@name='product_uom']" position="after">
+                    <field name="is_qt_uc"/> 
+                    <field name="is_qt_um"/> 
+                </xpath>
+
+                <xpath expr="/form/notebook/page/field/tree/field[@name='product_rounding']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="/form/notebook/page/field/tree/field[@name='attribute_value_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="/form/notebook/page/field/tree/field[@name='property_ids']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="is_mrp_bom_tree_view" model="ir.ui.view">
+            <field name="name">is_mrp_bom_tree_view</field>
+            <field name="model">mrp.bom</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="product_tmpl_id"       widget="many2one_clickable"/>
+                    <field name="sequence"/>
+                    <field name="segment_id"/>
+                    <field name="is_gestionnaire_id"/>
+                    <field name="is_sous_traitance"/>
+                    <field name="is_negoce"/>
+                    <field name="is_inactive"/>
+                    <field name="routing_id"            widget="many2one_clickable"/>
+                    <field name="is_gamme_generique_id" widget="many2one_clickable"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_view_mrp_bom_filter" model="ir.ui.view">
+            <field name="name">is_view_mrp_bom_filter</field>
+            <field name="model">mrp.bom</field>
+            <field name="inherit_id" ref="mrp.view_mrp_bom_filter" />
+            <field name="arch" type="xml">
+                <field name="product_tmpl_id" position="after" > 
+                    <field name="segment_id" /> 
+                    <field name="is_gestionnaire_id" /> 
+                    <field name="routing_id" /> 
+                    <field name="is_gamme_generique_id" /> 
+
+                    <filter string="Gestionnaire 4"         name="gest4"      domain="[('is_gestionnaire_id','=','04')]"/>
+                    <filter string="Gestionnaires 3,6,7,12" name="gest36712"  domain="[('is_gestionnaire_id','in',['03','06','07','12'])]"/>
+                    <filter string="Gestionnaires 10,11,14" name="gest101114" domain="[('is_gestionnaire_id','in',['10','11','14'])]"/>
+                </field>
+                <field name="product_id" position="replace" /> 
+            </field>
+        </record>
+
+
+
+
+        <!-- Lignes des nomenclatures -->
+        <record model="ir.actions.act_window" id="is_mrp_bom_line_action">
+            <field name="name">Lignes des nomenclatures</field>
+            <field name="res_model">mrp.bom.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="is_mrp_bom_component_tree_view" model="ir.ui.view">
+            <field name="name">is_mrp_bom_component_tree_view</field>
+            <field name="model">mrp.bom.line</field>
+            <field name="inherit_id" ref="mrp.mrp_bom_component_tree_view" />
+            <field name="arch" type="xml">
+
+                <field name="bom_id" position="attributes" > 
+                    <attribute name="readonly">1</attribute>
+                </field>
+
+                <field name="type" position="attributes" > 
+                    <attribute name="readonly">1</attribute>
+                </field>
+                <field name="type" position="after" > 
+                    <field name="is_article_fourni"/> 
+                </field>
+                <field name="product_rounding" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="routing_id" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="attribute_value_ids" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="property_ids" position="attributes" > 
+                    <attribute name="invisible">1</attribute>
+                </field>
+
+            </field>
+        </record>
+
+
+        <!-- Atelier -->
+        <record id="is_atelier_tree_view" model="ir.ui.view">
+            <field name="name">is_atelier_tree_view</field>
+            <field name="model">is.atelier</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_atelier_action" model="ir.actions.act_window">
+            <field name="name">Atelier</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.atelier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <!-- Ilot -->
+        <record id="is_ilot_tree_view" model="ir.ui.view">
+            <field name="name">is_ilot_tree_view</field>
+            <field name="model">is.ilot</field>
+            <field name="arch" type="xml">
+                <tree editable="top">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_ilot_action" model="ir.actions.act_window">
+            <field name="name">Ilot</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">is.ilot</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <!-- Poste de charges -->
+        <record id="mrp.mrp_workcenter_tree_view" model="ir.ui.view">
+            <field name="name">mrp.workcenter.tree</field>
+            <field name="model">mrp.workcenter</field>
+            <field name="arch" type="xml">
+                <tree string="Work Center">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="resource_type"/>
+                    <field name="is_atelier_id"/>
+                    <field name="is_ilot_id"/>
+                    <field name="is_ordre"/>
+                    <field name="is_prioritaire"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+        <record id="mrp.mrp_workcenter_view" model="ir.ui.view">
+            <field name="name">mrp.workcenter.form</field>
+            <field name="model">mrp.workcenter</field>
+            <field name="arch" type="xml">
+                <form string="Work Center">
+                    <sheet>
+                        <group col="4">
+                            <group string="Description du poste de charge">
+                                <field name="code"/>
+                                <field name="name"/>
+                                <field name="resource_type"/>
+                                <field name="calendar_id" widget="selection"/>
+                                <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                                <field name="active"/>
+                            </group>
+                            <group string="Configuration pour le Planning">
+                                <field name="is_atelier_id"/>
+                                <field name="is_ilot_id"/>
+                                <field name="is_ordre"/>
+                                <field name="is_prioritaire"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Capacity Information">
+                                <field name="time_efficiency"                 invisible="1"/>
+                                <field name="capacity_per_cycle"              invisible="1"/>
+                                <field name="time_cycle" widget="float_time"  invisible="1"/>
+                                <field name="time_start" widget="float_time"/>
+                                <field name="time_stop" widget="float_time"/>
+                            </group>
+                            <group string="Costing Information">
+                                <field name="product_id" on_change="on_change_product_cost(product_id)"  invisible="1"/>
+                                <field name="costs_hour"/>
+                                <field name="is_cout_pk"/>
+                                <field name="costs_hour_account_id" groups="analytic.group_analytic_accounting"  invisible="1"/>
+                                <field name="costs_cycle"/>
+                                <field name="costs_cycle_account_id" groups="analytic.group_analytic_accounting"  invisible="1"/>
+                                <field name="costs_journal_id" attrs="{'required':['|',('costs_hour_account_id', '=', True),('costs_cycle_account_id', '=', True)]}" groups="analytic.group_analytic_accounting"  invisible="1"/>
+                                <field name="costs_general_account_id" attrs="{ 'required':['|',('costs_cycle_account_id', '=', True),('costs_hour_account_id', '=', True)]}" groups="analytic.group_analytic_accounting"  invisible="1"/>
+                            </group>
+                        </group>
+                        <label for="note"/>
+                        <field name="note"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="mrp.view_mrp_workcenter_search" model="ir.ui.view">
+            <field name="name">mrp.workcenter.search</field>
+            <field name="model">mrp.workcenter</field>
+            <field name="arch" type="xml">
+                <search string="Search for mrp workcenter">
+                    <field name="name" string="Mrp Workcenter" filter_domain="['|',('name','ilike',self),('code','ilike',self)]"/>
+                    <field name="resource_type"/>
+                    <field name="is_atelier_id"/>
+                    <field name="is_ilot_id"/>
+                    <field name="is_prioritaire"/>
+                    <filter string="Inactive" icon="terp-gdu-smart-failing" domain="[('active','=',False)]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Type" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'resource_type'}"/>
+                        <filter string="Atelier" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'is_atelier_id'}"/>
+                        <filter string="Ilot"    icon="terp-stock_symbol-selection" domain="[]" context="{'group_by':'is_ilot_id'}"/>
+                        <filter string="Company" icon="terp-go-home"                domain="[]" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="is_mrp_production_workcenter_form_view_inherit">
+            <field name="name">mrp.production.workcenter.line.form</field>
+            <field name="model">mrp.production.workcenter.line</field>
+            <field name="inherit_id" ref="mrp_operations.mrp_production_workcenter_form_view_inherit" />
+            <field name="arch" type="xml">
+                <field name="date_planned_end" position="after" > 
+                    <field name="is_ordre" />
+                    <field name="is_qt_restante" />
+                    <field name="is_tps_restant" widget="float_time" />
+                    <field name="is_date_tri" />
+                </field>
+            </field>
+        </record>
+
+    </data>
 </openerp>

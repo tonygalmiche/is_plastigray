@@ -49,14 +49,11 @@ class MrpProduction(models.Model):
 
     product_qty               = fields.Float('Product Quantity', digits_compute=dp.get_precision('Product Unit of Measure'), required=True, readonly=False)
     product_lines             = fields.One2many('mrp.production.product.line', 'production_id', 'Scheduled goods', readonly=False)
-
     is_qt_fabriquee_uom       = fields.Float(string="Qt fabriquée"     , compute="_compute")
     is_qt_rebut_uom           = fields.Float(string="Qt rebut"         , compute="_compute")
     is_qt_reste_uom           = fields.Float(string="Qt reste"         , compute="_compute")
-
     product_package           = fields.Many2one('product.ul'           , compute="_compute", string="Unité de conditionnement")
     package_qty               = fields.Float(string='Qt par UC'        , compute="_compute")
-
     is_qt_prevue              = fields.Float(string="Qt prévue (UC)"   , compute="_compute")
     is_qt_fabriquee           = fields.Float(string="Qt fabriquée (UC)", compute="_compute")
     is_qt_rebut               = fields.Float(string="Qt rebut (UC)"    , compute="_compute")
@@ -67,23 +64,8 @@ class MrpProduction(models.Model):
     is_mold_id                = fields.Many2one('is.mold', 'Moule', related='product_id.is_mold_id'      , readonly=True)
     is_mold_dossierf          = fields.Char('Moule ou Dossier F'  , related='product_id.is_mold_dossierf', readonly=True)
     is_num_essai              = fields.Char("N°Essai")
-
-    move_lines2 = fields.One2many('stock.move', 'raw_material_production_id', 'Consumed Products',domain=[('state', '=', 'done')], readonly=True)
-
-
-#    @api.multi
-#    def url_planning_action(self):
-#        cr , uid, context = self.env.args
-#        ip=request.httprequest.environ['REMOTE_ADDR'] 
-#        return {
-#            'type' : 'ir.actions.act_url',
-#            'url': 'http://odoo/odoo-erp/planning/index.php&uid='+str(uid),
-#            'target': '_blank',
-#        }
-
-
-
-
+    is_prioritaire            = fields.Boolean("Ordre de fabrication prioritaire")
+    move_lines2               = fields.One2many('stock.move', 'raw_material_production_id', 'Consumed Products',domain=[('state', '=', 'done')], readonly=True)
 
 
     @api.multi
@@ -295,9 +277,7 @@ class MrpProduction(models.Model):
                 line['product_qty']   = qty*production.product_qty
                 line['is_bom_qty']    = qty
                 prod_line_obj.create(cr, uid, line)
-
             production.recreer_mouvements()
-
 
 
 class mrp_production_product_line(models.Model):

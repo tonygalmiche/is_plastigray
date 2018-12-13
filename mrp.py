@@ -4,7 +4,6 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 
 
-
 class mrp_bom(models.Model):
     _name     = 'mrp.bom'
     _inherit  = 'mrp.bom'
@@ -64,16 +63,12 @@ class mrp_bom_line(models.Model):
         for obj in self:
             obj.is_qt_uc = obj.product_qty*obj.bom_id.product_tmpl_id.get_uc()
             obj.is_qt_um = obj.product_qty*obj.bom_id.product_tmpl_id.get_um()
-
             product_tmpl_id=obj.product_id.product_tmpl_id.id
             nomenclatures=self.env['mrp.bom'].search([['product_tmpl_id', '=', product_tmpl_id]])
             is_bom=False
             if len(nomenclatures)>0:
                 is_bom=True
             obj.is_bom=is_bom
-
-
-
 
 
     @api.multi
@@ -95,13 +90,10 @@ class mrp_bom_line(models.Model):
                 }
 
 
-
-
 class mrp_routing(models.Model):
     _name = 'mrp.routing'
     _inherit = 'mrp.routing'
     
-
     @api.depends('name')
     def _compute(self):
         for obj in self:
@@ -116,11 +108,11 @@ class mrp_routing(models.Model):
                 val=True
             obj.is_presse_generique=val
 
-
     is_presse_affectee  = fields.Boolean("Presse affectée" , store=False, readonly=True, compute='_compute')
     is_presse_generique = fields.Boolean("Presse générique", store=False, readonly=True, compute='_compute')
     is_nb_empreintes    = fields.Integer("Nombre d'empreintes par pièce", help="Nombre d'empreintes pour cette pièce dans le moule")
     is_coef_theia       = fields.Float("Coefficient Theia", help="Nombre de pièces différentes dans le moule", digits=(14,1))
+    is_reprise_humidite = fields.Boolean("Reprise d'humidité")
 
     _defaults = {
         'is_nb_empreintes': 1,
@@ -133,7 +125,6 @@ class mrp_routing_workcenter(models.Model):
     _inherit = 'mrp.routing.workcenter'
     _order   = 'routing_id,sequence'
     
-
     @api.depends('is_nb_secondes')
     def _hour_nbr(self):
         for obj in self:
@@ -158,7 +149,6 @@ class mrp_routing_workcenter(models.Model):
     ], 'Nombre de MOD', help='Donnée utilisée en particlier pour le planning')
 
 
-
 class is_atelier(models.Model):
     _name='is.atelier'
     _order='name'
@@ -175,11 +165,11 @@ class mrp_workcenter(models.Model):
     _inherit = 'mrp.workcenter'
     _order   = 'code,name'
 
-    is_atelier_id = fields.Many2one('is.atelier', 'Atelier')
-    is_ilot_id    = fields.Many2one('is.ilot'   , 'Ilot')
-    is_ordre      = fields.Integer("Ordre")
-    is_cout_pk    = fields.Float("Coût horaire Plasti-ka")
-
+    is_atelier_id  = fields.Many2one('is.atelier', 'Atelier')
+    is_ilot_id     = fields.Many2one('is.ilot'   , 'Ilot')
+    is_ordre       = fields.Integer("Ordre")
+    is_cout_pk     = fields.Float("Coût horaire Plasti-ka")
+    is_prioritaire = fields.Boolean("Poste de charge prioritaire")
 
 
 class mrp_production_workcenter_line(models.Model):
@@ -190,7 +180,4 @@ class mrp_production_workcenter_line(models.Model):
     is_tps_restant   = fields.Float("Temps restant", help="Temps restant pour le planning")
     is_date_planning = fields.Datetime('Date planning', help="Date plannifiée sur le planning")
     is_date_tri      = fields.Datetime('Date tri', help="Date de tri du planning")
-
-
-
 
