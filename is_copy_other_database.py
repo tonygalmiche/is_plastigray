@@ -1264,9 +1264,11 @@ class is_norme_certificats(models.Model):
     @api.model
     def get_is_norme_certificats_vals(self, norme_certificats, DB, USERID, USERPASS, sock):
         norme_certificats_vals ={
-                     'name' : tools.ustr(norme_certificats.name),
-                     'is_database_origine_id':norme_certificats.id,
-                     }
+            'name'                  : tools.ustr(norme_certificats.name),
+            'notation_fournisseur'  : norme_certificats.notation_fournisseur,
+            'commentaire'           : tools.ustr(norme_certificats.commentaire or ''),
+            'is_database_origine_id': norme_certificats.id,
+        }
         return norme_certificats_vals
     
     

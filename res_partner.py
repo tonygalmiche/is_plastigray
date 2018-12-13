@@ -73,8 +73,9 @@ class is_norme_certificats(models.Model):
     _name = 'is.norme.certificats'
     _description = u'Norme Certificat qualité'
     
-    name        = fields.Char('Nome certificat', required=True)
-    commentaire = fields.Char('Commentaire')
+    name                 = fields.Char('Nome certificat', required=True)
+    notation_fournisseur = fields.Integer('Coefficient notation fournisseur')
+    commentaire          = fields.Char('Commentaire')
 
 
 class is_certifications_qualite(models.Model):
@@ -87,47 +88,12 @@ class is_certifications_qualite(models.Model):
     is_certificat_ids  = fields.Many2many('ir.attachment', 'is_certificat_attachment_rel', 'certificat_id', 'attachment_id', u'Pièces jointes')
     partner_id         = fields.Many2one('res.partner', 'Client/Fournisseur')
 
-
-    # La fonction name_get est une fonction standard d'Odoo permettant de définir le nom des fiches (dans les relations x2x)
-    # La fonction name_search permet de définir les résultats des recherches dans les relations x2x. En général, elle appelle la fonction name_get
     @api.multi
     def name_get(self):
         res=[]
         for obj in self:
             res.append((obj.id, obj.is_norme.name))
         return res
-
-
-#        context=self._context
-#        if not len(self.ids):
-#            return []
-#        res = []
-#        if context is None:
-#            context = {}
-#        for record in self:
-#            name = record.name
-#            if record.parent_id and not record.is_company:
-#                name =  "%s, %s" % (record.parent_id.name, name)
-#            if record.is_company:
-#                if record.is_code and record.is_adr_code:
-#                    name =  "%s (%s/%s)" % (name, record.is_code, record.is_adr_code)
-#                if record.is_code and not record.is_adr_code:
-#                    name =  "%s (%s)" % (name, record.is_code)
-#            if context.get('show_address_only'):
-#                name = self._display_address(record, without_company=True, context=context)
-#            #Affiche l'adresse complète (ex dans les commandes)
-#            if context.get('show_address'):
-#                name = name + "\n" + self._display_address(record, without_company=True, context=context)
-#            name = name.replace('\n\n','\n')
-#            name = name.replace('\n\n','\n')
-#            if context.get('show_email') and record.email:
-#                name = "%s <%s>" % (name, record.email)
-#            res.append((record.id, name))
-#        return res
-
-
-
-
 
 
 class is_secteur_activite(models.Model):
@@ -168,8 +134,7 @@ class res_partner(models.Model):
         location = warehouse_id.out_type_id and  warehouse_id.out_type_id.default_location_src_id
         return location and location or False
 
-    display_name          = fields.Char(string='Name', compute='_compute_display_name')
-
+    display_name            = fields.Char(string='Name', compute='_compute_display_name')
     is_transporteur_id      = fields.Many2one('res.partner', 'Transporteur')
     is_delai_transport      = fields.Integer('Delai de transport (jour)')
     is_livre_a_id           = fields.Many2one('res.partner', 'Livrer à', help="Indiquez l'adresse de livraison si celle-ci est différente de celle de la société")
@@ -237,8 +202,6 @@ class res_partner(models.Model):
         self.display_name = r[0][1]
 
 
-    # La fonction name_get est une fonction standard d'Odoo permettant de définir le nom des fiches (dans les relations x2x)
-    # La fonction name_search permet de définir les résultats des recherches dans les relations x2x. En général, elle appelle la fonction name_get
     @api.multi
     def name_get(self):
         context=self._context
@@ -283,18 +246,6 @@ class res_partner(models.Model):
             'res_id': partner.id,
             'domain': '[]',
         }
-
-
-
-
-#    @api.multi
-#    def action_ecrire_email(self):
-#        for obj in self:
-#            return {
-#                'type' : 'ir.actions.act_url',
-#                'url': 'mailto:'+str(obj.email),
-#                'target': 'new',
-#            }
 
 
     #TODO : Suite à l'installation du module 'project', j'ai du remettre l'ancienne api sinon plantage
@@ -492,9 +443,6 @@ class res_partner(models.Model):
         return new_date.strftime('%Y-%m-%d')
 
 
-
-
-
     @api.multi
     def bon_sortie_matiere(self, filename):
         '''
@@ -524,79 +472,3 @@ class res_partner(models.Model):
             return {'pdf': base64.b64encode(pdf)}
 
 
-#    @api.multi
-#    def imprimer_commande_ouverte(self):
-#        '''
-#        Action pour imprimer les commandes ouvertes depuis la fiche du fournisseur
-#        '''
-#        for obj in self:
-#            orders=self.env['is.cde.ouverte.fournisseur'].search([('partner_id','=',obj.id)])
-#            ids=[]
-#            for order in orders:
-#                ids.append(order.id)
-
-#            # ** Récupération du fichier PDF du rapport indiqué ****************
-#            pdf = self.pool.get('report').get_pdf(self._cr, self._uid, ids, 'is_plastigray.report_cde_ouverte_fournisseur', context=self._context)
-#            # ******************************************************************
-
-#            # Enregistrement du PDF sur le serveur *****************************
-#            path="/tmp/commande_ouverte.pdf"
-#            err=""
-#            try:
-#                fichier = open(path, "w")
-#            except IOError, e:
-#                err="Problème d'accès au fichier '"+path+"' => "+ str(e)
-#            if err=="":
-#                fichier.write(pdf)
-#                fichier.close()
-#                #Envoi du fichier dans l'imprimante
-#                cmd="lpr -h -PSamsung-M2070-Raspberry "+path
-#                #os.system(cmd)
-#            # ******************************************************************
-
-#            # ** Creation ou modification de la pièce jointe *******************
-#            if err=="":
-#                r = open(path,'rb').read().encode('base64')
-#                name='Commande ouverte.pdf'
-#                model='res.partner'
-#                vals = {
-#                    'name':        name,
-#                    'datas_fname': name,
-#                    'type':        'binary',
-#                    'res_model':   model,
-#                    'res_id':      obj.id,
-#                    'datas':       r,
-#                }
-#                res_model_ids = self.env['ir.attachment'].search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
-#                if res_model_ids:
-#                    res_model_ids.write(vals)
-#                else:
-#                    attachment_id = self.env['ir.attachment'].create(vals)
-#                #os.system("rm -f "+path)
-#            #*******************************************************************
-
-#            #** Envoi d'un mail avec le PDF en pièce jointe ********************
-#            if err=="":
-#                email = self.env['res.users'].browse(self._uid).email
-#                if email:
-#                    attachment_id = self.env['ir.attachment'].search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
-#                    email_vals = {}
-#                    msg = u"Voici les commandes ouvertes <br>sur deux lignes avec des accents é@€"
-#                    email_vals.update({
-#                        'subject':"Commande ouverte éà",
-#                        'email_to':email, 
-#                        'email_from': email, 
-#                        'body_html':msg.encode('utf-8'), 
-#                        'attachment_ids': [(6, 0, [attachment_id.id])] 
-#                    })
-#                    email_id=self.env['mail.mail'].create(email_vals)
-#                    if email_id:
-#                        self.env['mail.mail'].send(email_id)
-#            #*******************************************************************
-
-#            #** Envoie du fichier PDF dans le navigateur ***********************
-#            pdf=self.pool['report'].get_action(self._cr, self._uid, ids, 'is_plastigray.report_cde_ouverte_fournisseur', context=self._context)
-#            return pdf
-#            #*******************************************************************
-
-#Testing
