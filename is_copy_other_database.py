@@ -9,20 +9,9 @@ from openerp import SUPERUSER_ID
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
 import logging
 _logger = logging.getLogger(__name__)
 
-
-#TODO
-# Si le client ou le chef de projet n'existe pas, il faut le créer => Et mettre en relation les bons id ce qui n'est pas le cas actuellement
-
-#- Cela devra également fonctionner lors de la duplication d'un objet
-#- Ajouter un champ 'Société' pour indiquer les bases de données dans lesquelles cet objet sera copié
-#- Ajouter un champ 'active' pour désactier l'objet dans une société ou il n'apparait plus
-
-
-#test_recursive=0
 
 class is_database(models.Model):
     _name = 'is.database'
@@ -39,7 +28,6 @@ class is_database(models.Model):
 
     @api.multi
     def copy_other_database(self, obj):
-        #global test_recursive 
         try:
             cr , uid, context = self.env.args
             class_name=obj.__class__.__name__
@@ -60,12 +48,8 @@ class is_database(models.Model):
                     vals=False
                     if class_name=='res.partner':
                         vals = self.get_partner_vals(obj, DB, USERID, USERPASS, sock)
-    #                     if database.id not in obj.is_database_line_ids.mapped('is_database_origine_id'):
-    #                         vals.update({'active':False})
                     if vals:
                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
-    #                     if not ids:
-    #                         ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
                         if not ids:
                             if class_name=='res.partner':
                                 search=[
@@ -83,11 +67,6 @@ class is_database(models.Model):
                             created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
         except Exception as e:
             raise osv.except_osv('Client recursif !','')
-
-#            raise osv.except_osv(_('Recursive Client!'),
-#                             _('(%s).') % str(e).decode('utf-8'))
-
-
         return True
 
     @api.model
@@ -120,7 +99,6 @@ class is_database(models.Model):
             return ids[0]
         return False
             
-
     @api.model
     def create_check_categ(self, category, DB, USERID, USERPASS, sock):
         category_ids = sock.execute(DB, USERID, USERPASS, 'res.partner.category', 'search', [('name', '=', category.name)], {})
@@ -165,8 +143,6 @@ class is_database(models.Model):
             return False
         except Exception as e:
             raise osv.except_osv('Client recursif !','')
-#            raise osv.except_osv(_('Client!'),
-#                             _('(%s).') % str(e).decode('utf-8'))
 
     @api.model
     def get_partner_parent_id(self, partner, DB, USERID, USERPASS, sock):
@@ -190,7 +166,6 @@ class is_database(models.Model):
             vals = self.get_partner_vals(partner, DB, USERID, USERPASS, sock)
             id = sock.execute(DB, USERID, USERPASS, 'res.partner', 'create', vals, {})
         return id
-
 
     def get_is_transporteur_id(self, obj, DB, USERID, USERPASS, sock):
         ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', obj.id),'|',('active','=',True),('active','=',False)], {})
@@ -239,7 +214,6 @@ class is_database(models.Model):
             return user_id[0]
         return False
 
-
     def get_is_segment_achat(self, obj , DB, USERID, USERPASS, sock):
         is_segment_achat_ids = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'search', [('is_database_origine_id', '=', obj.id)], {})
         if is_segment_achat_ids:
@@ -249,7 +223,6 @@ class is_database(models.Model):
             is_segment_achat = sock.execute(DB, USERID, USERPASS, 'is.segment.achat', 'create', vals, {})
             return is_segment_achat
         
-
     def get_is_famille_achat_ids(self, obj_ids , DB, USERID, USERPASS, sock):
         lst_is_famille_achat_ids = []
         for obj in obj_ids:
@@ -304,8 +277,6 @@ class is_database(models.Model):
                 vals = {'is_norme':obj.is_norme and self.get_is_norme(obj.is_norme, DB, USERID, USERPASS, sock) or False,
                         'is_date_validation':obj.is_date_validation,
                         'is_database_origine_id':obj.id,
-#                         'is_certificat':obj.is_certificat,
-#                         'partner_id':obj.partner_id and  self.get_is_transporteur_id(obj.partner_id, DB, USERID, USERPASS, sock) or False
                         }
                 is_certifications = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'create', vals, {})
                 lst_is_certifications.append(is_certifications)
@@ -314,8 +285,6 @@ class is_database(models.Model):
     def get_is_database_line_ids(self, partner , DB, USERID, USERPASS, sock):
         lst_is_database_line_ids = []
         obj_ids = partner.is_database_line_ids
-#         if not obj_ids:
-#             obj_ids = partner.parent_id and partner.parent_id.is_database_line_ids
         for obj in obj_ids:
             is_database_line_ids = sock.execute(DB, USERID, USERPASS, 'is.database', 'search', [('is_database_origine_id', '=', obj.id)], {})
             if is_database_line_ids:
@@ -332,7 +301,6 @@ class is_database(models.Model):
     def get_partner_vals(self, partner, DB, USERID, USERPASS, sock):
         partner_vals = {
             'name': tools.ustr(partner.name),
-            #'parent_id'          : partner.parent_id and self.get_partner_parent_id(partner.parent_id, DB, USERID, USERPASS, sock) or False,
             'is_raison_sociale2' : partner.is_raison_sociale2,
             'is_code'            : partner.is_code,
             'is_adr_code'        : partner.is_adr_code,
@@ -357,12 +325,6 @@ class is_database(models.Model):
             'customer'           : partner.customer,
             'supplier'           : partner.supplier,
             'is_database_origine_id': partner.id,
-            
-            
-            #'is_transporteur_id' : partner.is_transporteur_id and self.get_is_transporteur_id(partner.is_transporteur_id, DB, USERID, USERPASS, sock) or False,
-            #'is_delai_transport':partner.is_delai_transport,
-            #'is_certificat_matiere' :  partner.is_certificat_matiere,
-            #'is_import_function'    :  partner.is_import_function,
             'is_raison_sociale2'    :  partner.is_raison_sociale2,
             'is_code'               :  partner.is_code,
             'is_adr_code'           :  partner.is_adr_code,
@@ -370,7 +332,6 @@ class is_database(models.Model):
             'is_type_contact'       :  partner.is_type_contact and self.get_is_type_contact(partner.is_type_contact , DB, USERID, USERPASS, sock) or False,
             'is_adr_groupe'         :  partner.is_adr_groupe,
             'is_cofor'              :  partner.is_cofor,
-            #'is_incoterm'           :  partner.is_incoterm and self.get_is_incoterm(partner.is_incoterm , DB, USERID, USERPASS, sock) or False,        
             'is_num_siret'          :  partner.is_num_siret,
             'is_code_client'        :  partner.is_code_client,
             'is_segment_achat'      :  partner.is_segment_achat and self.get_is_segment_achat(partner.is_segment_achat , DB, USERID, USERPASS, sock) or False,
@@ -387,21 +348,15 @@ class is_database(models.Model):
             'is_num_autorisation_tva': partner.is_num_autorisation_tva,
             'is_caracteristique_bl'  : partner.is_caracteristique_bl,
             'is_mode_envoi_facture'  : partner.is_mode_envoi_facture,
-            #'is_type_cde_fournisseur': partner.is_type_cde_fournisseur,
             'is_database_line_ids'   : self.get_is_database_line_ids(partner, DB, USERID, USERPASS, sock) or False,
-
             'vat'                            : partner.vat,
             'property_account_position'      : partner.property_account_position.id,
             'property_payment_term'          : partner.property_payment_term.id,
             'property_supplier_payment_term' : partner.property_supplier_payment_term.id,
             'is_escompte'                    : partner.is_escompte.id,
-
             'is_type_reglement'              : partner.is_type_reglement and self.get_is_type_reglement(partner, DB, USERID, USERPASS, sock) or False,
-
             'is_rib_id'                      : partner.is_rib_id and self.get_is_rib_id(partner, DB, USERID, USERPASS, sock) or False,
             'user_id'                        : partner.user_id and self.get_user_id(partner, DB, USERID, USERPASS, sock) or False,
-
-
             'active'                 : True,
         }
         db_ids = self.env['is.database'].search([('database','=',DB)])
@@ -418,7 +373,6 @@ class is_database(models.Model):
         if partner.is_company:
             partner_vals.update({'child_ids':partner.child_ids and self._get_child_ids(partner.child_ids, DB, USERID, USERPASS, sock) or [] })
         return partner_vals
-
 
 
     @api.multi
@@ -482,24 +436,6 @@ class is_database(models.Model):
         return vals
 
 
-#    @api.multi
-#    def write(self, vals):
-#        for obj in self:
-#            res=super(is_database, self).write(vals)
-#            class_name=self.__class__.__name__
-#            champs=self.get_fields_model(class_name, include=['name'])
-#            self.copy_other_database(obj, champs)
-#            return res
-
-#    @api.model
-#    def create(self, vals):
-#        obj=super(is_database, self).create(vals)
-#        class_name=self.__class__.__name__
-#        champs=self.get_fields_model(class_name, include=['name'])
-#        self.copy_other_database(obj, champs)
-#        return obj
-
-
 class res_partner(models.Model):
     _inherit = 'res.partner'
 
@@ -520,13 +456,9 @@ class res_partner(models.Model):
             for obj in self:
                 res=super(res_partner, self).write(vals)
                 self.env['is.database'].copy_other_database(obj)
-                #global test_recursive
-                #test_recursive=0
                 return res
         except Exception as e:
             raise osv.except_osv('Client recursif !','')
-#            raise osv.except_osv(_('Client!'),
-#                             _('(%s).') % tools.ustr(e).decode('utf-8'))
 
     @api.model
     def create(self, vals):
@@ -535,11 +467,6 @@ class res_partner(models.Model):
             self.env['is.database'].copy_other_database(obj)
         except Exception as e:
             raise osv.except_osv('Client recursif !','')
-#            raise osv.except_osv(_('Client!'),
-#                             _('(%s).') % str(e).decode('utf-8'))
-        #global test_recursive
-        #test_recursive=0
-
         return obj
 
 
@@ -616,9 +543,6 @@ class is_mold_project(models.Model):
     def _get_client_id(self, project, DB, USERID, USERPASS, sock):
         if project.client_id:
             client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
-            #if not client_ids:
-            #    self.env['is.database'].copy_other_database( project.client_id)
-            #    client_ids = sock.execute(DB, USERID, USERPASS, 'res.partner', 'search', [('is_database_origine_id', '=', project.client_id.id),'|',('active','=',True),('active','=',False)], {})
             if client_ids:
                 return client_ids[0]
         return False
@@ -635,9 +559,6 @@ class is_mold_project(models.Model):
         list_mold_ids =[]
         for mold in project.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-#             if not dest_mold_ids:
-#                 mold.copy_other_database_mold()
-#                 dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
@@ -719,9 +640,6 @@ class is_dossierf(models.Model):
         list_mold_ids =[]
         for mold in dossierf.mold_ids:
             dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
-#             if not dest_mold_ids:
-#                 mold.copy_other_database_mold()
-#                 dest_mold_ids = sock.execute(DB, USERID, USERPASS, 'is.mold', 'search', [('is_database_origine_id', '=', mold.id)], {})
             if dest_mold_ids:
                 list_mold_ids.append(dest_mold_ids[0])
         
@@ -737,16 +655,11 @@ class is_dossierf(models.Model):
         return False
 
 
-
-
-
-
 class is_mold(models.Model):
     _inherit = 'is.mold'
 
     is_database_id         = fields.Many2one('is.database', "Site")
     is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
-
 
     @api.multi
     def write(self, vals):
@@ -806,6 +719,7 @@ class is_mold(models.Model):
         'date_fin'         : mold.date_fin,
         'mouliste_id'      : self._get_mouliste_id(mold, DB, USERID, USERPASS, sock),
         'carcasse'         : mold.carcasse,
+        'emplacement'      : mold.emplacement or '',
         'type_dateur'      : mold.type_dateur,
         'dateur_specifique': mold.dateur_specifique,
         'date_peremption'  : mold.date_peremption,
@@ -860,61 +774,6 @@ class is_mold(models.Model):
         return False
 
 
-
-
-
-#class is_copy_partner(models.Model):
-#    _name = 'is.copy.partner'
-
-
-
-#    @api.multi
-#    def get_fields_model(self, model, exclude=[], include=False):
-#        search=[
-#            ('model_id.model', '=',model),
-#            ('name','not in', ['create_date','create_uid','display_name','id','__last_update','write_date','write_uid']),
-#        ]
-#        if include:
-#            search.append(('name','in', include))
-#        res = self.env['ir.model.fields'].search(search)
-#        champs=[]
-#        for champ in res:
-#            if champ.name not in exclude:
-#                champs.append(champ)
-#        return champs
-
-#    @api.multi
-#    def copy_other_database(self, obj, champs):
-#        cr , uid, context = self.env.args
-#        class_name=obj.__class__.__name__
-#        database_obj   = self.env['is.database']
-#        database_lines = database_obj.search([])
-#        for database in database_lines:
-#            if database.database:
-#                DB           = database.database
-#                USERID       = uid
-#                DBLOGIN      = database.login
-#                USERPASS     = database.password
-#                DB_SERVER    = database.ip_server
-#                DB_PORT      = database.port_server
-#                sock         = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
-#                vals={}
-#                for champ in champs:
-#                    val=getattr(obj, champ.name) 
-#                    if champ.ttype=='many2one':
-#                        val=val.id
-#                    vals[champ.name]=val
-#                vals['is_database_origine_id']=obj.id
-#                dest_ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('is_database_origine_id', '=', obj.id)], {})
-#                if not dest_ids:
-#                    dest_ids = sock.execute(DB, USERID, USERPASS, class_name, 'search', [('name', '=', obj.name)], {})
-#                if dest_ids:
-#                    sock.execute(DB, USERID, USERPASS, class_name, 'write', dest_ids, vals, {})
-#                    created_id = dest_ids[0]
-#                else:
-#                    created_id = sock.execute(DB, USERID, USERPASS, class_name, 'create', vals, {})
-
-
 class is_segment_achat(models.Model):
     _inherit = 'is.segment.achat'
 
@@ -931,7 +790,6 @@ class is_segment_achat(models.Model):
             raise osv.except_osv(_('Segment!'),
                              _('(%s).') % str(e).decode('utf-8'))
 
-
     @api.model
     def create(self, vals):
         try:
@@ -942,8 +800,6 @@ class is_segment_achat(models.Model):
             raise osv.except_osv(_('Segment!'),
                              _('(%s).') % str(e).decode('utf-8'))
 
-    
-    
     @api.multi
     def copy_other_database_segment_achat(self):
         cr , uid, context = self.env.args
@@ -976,12 +832,6 @@ class is_segment_achat(models.Model):
         lines = []
         for family_line in segment.family_line:
             lines.append(((0, 0, {'name':tools.ustr(family_line.name), 'description': family_line.description,})))
-#             family_line_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', family_line.id)], {})
-#             if not family_line_ids:
-#                 family_line.copy_other_database_famille_achat()
-#                 family_line_ids = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'search', [('is_database_origine_id', '=', family_line.id)], {})
-#             if family_line_ids:
-#                 lines.append(family_line_ids[0]) 
         return lines
     
     @api.model
@@ -990,8 +840,6 @@ class is_segment_achat(models.Model):
                              'name'       : tools.ustr(segment.name),
                              'description': tools.ustr(segment.description),
                              'is_database_origine_id':segment.id,
-#                             'family_line': self._get_family_line(segment, DB, USERID, USERPASS, sock)
-                             
                              }
         return segment_achat_vals
         
@@ -1020,8 +868,7 @@ class is_famille_achat(models.Model):
         except Exception as e:
             raise osv.except_osv(_('Famille!'),
                              _('(%s).') % str(e).decode('utf-8'))
-#     
-#     
+
     @api.multi
     def copy_other_database_famille_achat(self):
         cr , uid, context = self.env.args
@@ -1049,7 +896,6 @@ class is_famille_achat(models.Model):
                 else:
                     famille_achat_created_id = sock.execute(DB, USERID, USERPASS, 'is.famille.achat', 'create', famille_achat_vals, {})
         return True
-# 
  
     @api.model
     def get_segment_id(self, famille, DB, USERID, USERPASS, sock):
@@ -1061,7 +907,7 @@ class is_famille_achat(models.Model):
             if segment_ids:
                 return segment_ids[0]
         return False
-#         
+
     @api.model
     def get_famille_achat_vals(self, famille, DB, USERID, USERPASS, sock):
         famille_achat_vals ={
@@ -1070,7 +916,6 @@ class is_famille_achat(models.Model):
                             'segment_id' : self.get_segment_id(famille, DB, USERID, USERPASS, sock),
                               'is_database_origine_id':famille.id,
                              }
-         
         return famille_achat_vals
     
     
@@ -1204,7 +1049,6 @@ class is_transmission_cde(models.Model):
         return is_transmission_vals
     
 
-
 class is_norme_certificats(models.Model):
     _inherit = 'is.norme.certificats'
 
@@ -1319,8 +1163,6 @@ class is_certifications_qualite(models.Model):
                 sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
                 certifications_qualite_vals = self.get_is_certifications_qualite_vals(certifications_qualite, DB, USERID, USERPASS, sock)
                 dest_certifications_qualite_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_database_origine_id', '=', certifications_qualite.id)], {})
-#                 if not dest_certifications_qualite_ids:
-#                     dest_certifications_qualite_ids = sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'search', [('is_norme', '=', certifications_qualite.is_norme.id)], {})
                 if dest_certifications_qualite_ids:
                     sock.execute(DB, USERID, USERPASS, 'is.certifications.qualite', 'write', dest_certifications_qualite_ids, certifications_qualite_vals, {})
                     certifications_qualite_created_id = dest_certifications_qualite_ids[0]
@@ -2323,112 +2165,3 @@ class is_prechauffeur(models.Model):
         return False
     
  
-
-#class is_historique_controle(models.Model):
-#    _inherit='is.historique.controle'
-#    
-#    is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
-#    active = fields.Boolean('Active', default=True)
-#    
-#    @api.multi
-#    def write(self, vals):
-#        try:
-#            res=super(is_historique_controle, self).write(vals)
-#            for obj in self:
-#                obj.copy_other_database_historique_controle()
-#            return res
-#        except Exception as e:
-#            raise osv.except_osv(_('Historique Controle!'),
-#                             _('(%s).') % str(e).decode('utf-8'))
-
-
-#    @api.model
-#    def create(self, vals):
-#        try:
-#            obj=super(is_historique_controle, self).create(vals)
-#            obj.copy_other_database_historique_controle()
-#            return obj
-#        except Exception as e:
-#            raise osv.except_osv(_('Historique Controle!'),
-#                             _('(%s).') % str(e).decode('utf-8'))
-#            
-#    @api.multi
-#    def copy_other_database_historique_controle(self):
-#        cr , uid, context = self.env.args
-#        context = dict(context)
-#        database_obj = self.env['is.database']
-#        database_lines = database_obj.search([])
-#        for controle in self:
-#            for database in database_lines:
-#                if not database.ip_server or not database.database or not database.port_server or not database.login or not database.password:
-#                    continue
-#                DB = database.database
-#                USERID = SUPERUSER_ID
-#                DBLOGIN = database.login
-#                USERPASS = database.password
-#                DB_SERVER = database.ip_server
-#                DB_PORT = database.port_server
-#                sock = xmlrpclib.ServerProxy('http://%s:%s/xmlrpc/object' % (DB_SERVER, DB_PORT))
-#                historique_controle_vals = self.get_historique_controle_vals(controle, DB, USERID, USERPASS, sock)
-#                dest_historique_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', controle.id),
-#                                                                                                '|',('active','=',True),('active','=',False)], {})
-#                if dest_historique_controle_ids:
-#                    sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'write', dest_historique_controle_ids, historique_controle_vals, {})
-#                    historique_controle_created_id = dest_historique_controle_ids[0]
-#                else:
-#                    historique_controle_created_id = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'create', historique_controle_vals, {})
-#        return True
-
-#    @api.model
-#    def get_historique_controle_vals(self, controle, DB, USERID, USERPASS, sock):
-#        historique_controle_vals ={
-#                    'plaquette_id':self._get_plaquette_id(controle, DB, USERID, USERPASS, sock),
-#                    'instrument_id':self._get_instrument_id(controle, DB, USERID, USERPASS, sock),
-#                    'gabarit_id':self._get_gabarit_id(controle, DB, USERID, USERPASS, sock),
-#                    'date_controle':controle.date_controle,
-#                    'affectation':tools.ustr(controle.affectation or ''),
-#                    'operation':controle.operation,
-#                    'organisme' : tools.ustr(controle.organisme or ''),
-#                    'resultat':tools.ustr(controle.resultat or ''),
-#                    'commentaire': tools.ustr(controle.commentaire or ''),
-#                    'classe': tools.ustr(controle.classe or ''),
-#                    
-#                    'active':controle.site_id and controle.site_id.database == DB and True or False,
-#                    'is_database_origine_id':controle.id,
-#                     }
-#        return historique_controle_vals
-    
-#    @api.model
-#    def _get_plaquette_id(self, controle, DB, USERID, USERPASS, sock):
-#        if controle.plaquette_id:
-#            is_plaquette_ids = sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'search', [('is_database_origine_id', '=', controle.plaquette_id.id)], {})
-#            if not is_plaquette_ids:
-#                controle.plaquette_id.copy_other_database_plaquette_etalon()
-#                is_plaquette_ids = sock.execute(DB, USERID, USERPASS, 'is.plaquette.etalon', 'search', [('is_database_origine_id', '=', controle.plaquette_id.id)], {})
-#            if is_plaquette_ids:
-#                return is_plaquette_ids[0]
-#        return False
-
-#    @api.model
-#    def _get_instrument_id(self, controle, DB, USERID, USERPASS, sock):
-#        if controle.instrument_id:
-#            is_instrument_ids = sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'search', [('is_database_origine_id', '=', controle.instrument_id.id)], {})
-#            if not is_instrument_ids:
-#                controle.instrument_id.copy_other_database_instrument_mesure()
-#                is_instrument_ids = sock.execute(DB, USERID, USERPASS, 'is.instrument.mesure', 'search', [('is_database_origine_id', '=', controle.instrument_id.id)], {})
-#            if is_instrument_ids:
-#                return is_instrument_ids[0]
-#        return False
-#    
-#    @api.model
-#    def _get_gabarit_id(self, controle, DB, USERID, USERPASS, sock):
-#        if controle.gabarit_id:
-#            is_gabarit_ids = sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'search', [('is_database_origine_id', '=', controle.gabarit_id.id)], {})
-#            if not is_gabarit_ids:
-#                controle.gabarit_id.copy_other_database_gabarit_controle()
-#                is_gabarit_ids = sock.execute(DB, USERID, USERPASS, 'is.gabarit.controle', 'search', [('is_database_origine_id', '=', controle.gabarit_id.id)], {})
-#            if is_gabarit_ids:
-#                return is_gabarit_ids[0]
-#        return False
-
-
