@@ -444,6 +444,17 @@ class res_partner(models.Model):
 
 
     @api.multi
+    def get_messages(self,partner_id):
+        """Recherche des messages pour les mettre sur les appels de livraison et commande des fourniseurs"""
+
+        where=['|',('name','=',partner_id),('name','=',False)]
+        messages=[]
+        for row in self.env['is.cde.ouverte.fournisseur.message'].search(where):
+            messages.append(row.message)
+        return messages
+
+
+    @api.multi
     def bon_sortie_matiere(self, filename):
         '''
         Test génération 'Bon de sortie matière' pour être utilisée en PHP

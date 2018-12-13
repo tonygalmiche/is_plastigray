@@ -139,8 +139,10 @@
                     <div class="col-xs-4">
                         <t t-if="o.message">
                             <p>
-                                Message :<br />
-                                <b><span t-field="o.message"/></b>
+                                Message :
+                                <t t-foreach="o.partner_id.get_messages(o.partner_id.id)" t-as="m">
+                                    <b><div t-raw="m"/></b>
+                                </t>
                             </p>
                         </t>
                     </div>

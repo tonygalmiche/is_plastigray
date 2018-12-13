@@ -196,10 +196,6 @@ class is_cde_ouverte_fournisseur(models.Model):
             raise Warning(u"Une commande ouverte existe déjà pour ce fournisseur !")
 
 
-
-
-
-
     @api.multi
     def _merge_pdf(self, documents):
         """Merge PDF files into one.
