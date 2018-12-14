@@ -111,7 +111,7 @@ class purchase_order(models.Model):
     is_date_confirmation = fields.Date("Date de confirmation du fournisseur")
     is_commentaire       = fields.Text("Commentaire")
     is_acheteur_id       = fields.Many2one('res.users','Acheteur')
-    is_date_envoi_mail   = fields.Datetime("Mail envoyé le")
+    is_date_envoi_mail   = fields.Datetime("Mail envoyé le", readonly=True)
     is_cfc_id            = fields.Many2one('is.cde.ferme.cadencee', 'Commande ferme cadencée', readonly=True)
     is_date_end_cfc      = fields.Date("Date de fin de la cde ferme cadencée", readonly=True)
 
