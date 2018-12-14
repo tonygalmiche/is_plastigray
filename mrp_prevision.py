@@ -264,9 +264,6 @@ class mrp_prevision(models.Model):
                         unlink=False
                         note='\n'.join(sys.exc_info()[1])
                     # si le prix est nul ou s'il y a une justification du prix nul
-
-                    print vals
-
                     if vals and (vals['price_unit'] or vals.get('is_justification')):
                         #** Création d'une commande ****************************
                         vals['order_id']=order.id
