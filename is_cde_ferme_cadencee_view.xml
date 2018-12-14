@@ -49,6 +49,7 @@
                             <group>
                                 <field name="demandeur_id"/> 
                                 <field name="is_livre_a_id"/> 
+                                <field name="is_date_end"/>
                             </group>
                         </group>
                         <notebook>

@@ -12,6 +12,7 @@ class is_purchase_order_line(models.Model):
 
     order_line_id        = fields.Many2one('purchase.order.line', 'Ligne de commande')
     order_id             = fields.Many2one('purchase.order', 'Commande')
+    is_cfc_id            = fields.Many2one('is.cde.ferme.cadencee', 'Cde ferme cadencée')
     partner_id           = fields.Many2one('res.partner', 'Fournisseur')
     date_order           = fields.Date('Date de commande')
     minimum_planned_date = fields.Date('Date prévue entête')
@@ -43,6 +44,7 @@ class is_purchase_order_line(models.Model):
                 select  pol.id,
                         pol.id                  as order_line_id,
                         po.id                   as order_id,
+                        po.is_cfc_id            as is_cfc_id,
                         po.partner_id           as partner_id, 
                         po.date_order,
                         po.minimum_planned_date,

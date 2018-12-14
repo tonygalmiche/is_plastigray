@@ -37,6 +37,7 @@
                             <field name="picking_id"/>
                             <field name="order_id"/>
                             <field name="order_line_id"/>
+                            <field name="is_cfc_id"/>
                             <field name="move_id"/>
                             <field name="user_id"/>
                             <field name="is_facturable"/>
@@ -54,6 +55,7 @@
                 <field name="date_planned"/>
                 <field name="picking_id"     widget="many2one_clickable"/>
                 <field name="order_id"       widget="many2one_clickable"/>
+                <field name="is_cfc_id"      widget="many2one_clickable"/>
                 <field name="commande_ouverte"/>
                 <field name="partner_id"     widget="many2one_clickable"/>
                 <field name="product_id"     widget="many2one_clickable"/>
@@ -79,6 +81,7 @@
                 <field name="product_id"/>
                 <field name="is_ctrl_rcp"/>
                 <field name="ref_fournisseur"/>
+                <field name="is_cfc_id"/>
                 <field name="commande_ouverte"/>
                 <field name="lot_fournisseur"/>
                 <field name="picking_state"/>
@@ -111,6 +114,7 @@
                 <field name="picking_id"     widget="many2one_clickable"/>
                 <field name="num_bl"/>
                 <field name="order_id"       widget="many2one_clickable"/>
+                <field name="is_cfc_id"/>
                 <field name="commande_ouverte"/>
                 <field name="partner_id"     widget="many2one_clickable"/>
                 <field name="product_id"     widget="many2one_clickable"/>

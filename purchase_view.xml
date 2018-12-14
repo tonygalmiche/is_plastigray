@@ -65,6 +65,8 @@
                 <field name="date_order" position="after">
                     <field name="is_date_envoi_mail"/>
                     <field name="is_livre_a_id"  domain="[('is_company','=',True)]"/>
+                    <field name="is_cfc_id"/>
+                    <field name="is_date_end_cfc"/>
                 </field>
                 <field name="picking_type_id" position="replace"/>
                 <field name="location_id" position="after">

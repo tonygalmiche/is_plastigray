@@ -29,6 +29,7 @@ class is_cde_ferme_cadencee(models.Model):
     is_livre_a_id  = fields.Many2one('res.partner', 'Livrer à', related='partner_id.is_livre_a_id')
     product_id     = fields.Many2one('product.product', u"Article"   , required=True)
     demandeur_id   = fields.Many2one('res.users', 'Demandeur', readonly=True)
+    is_date_end    = fields.Date("Date de fin de la cde ferme cadencée")
     order_ids      = fields.One2many('is.cde.ferme.cadencee.order', 'cfc_id', u"Commandes")
     historique_ids = fields.One2many('is.cde.ferme.cadencee.histo'  , 'order_id', u"Historique")
 
@@ -94,6 +95,9 @@ class is_cde_ferme_cadencee(models.Model):
             self.set_histo(obj.id, u'Actualisation des commandes')
             obj.demandeur_id=uid
             for order in obj.order_ids:
+                #** Met à jour le lien vers la CFC et la date de fin du CFC dans la commande **********
+                order.order_id.is_date_end_cfc = obj.is_date_end
+                order.order_id.is_cfc_id = obj.id
                 #** Recherche du dernier numéro de BL **************************
                 SQL="""
                     select sp.is_num_bl, sp.is_date_reception, sm.product_uom_qty

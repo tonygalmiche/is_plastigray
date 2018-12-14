@@ -13,6 +13,7 @@ class is_ligne_reception(models.Model):
     picking_id           = fields.Many2one('stock.picking', 'Réception')
     num_bl               = fields.Char('N°BL fournisseur')
     order_id             = fields.Many2one('purchase.order', 'Commande')
+    is_cfc_id            = fields.Many2one('is.cde.ferme.cadencee', 'Cde ferme cadencée')
     order_line_id        = fields.Many2one('purchase.order.line', 'Ligne de Commande')
     partner_id           = fields.Many2one('res.partner', 'Fournisseur')
     is_demandeur_id      = fields.Many2one('res.users', 'Demandeur')
@@ -72,6 +73,7 @@ class is_ligne_reception(models.Model):
                         sp.is_date_reception  as date_reception,
                         sm.date               as date_mouvement,
                         po.id                 as order_id,  
+                        po.is_cfc_id          as is_cfc_id,
                         pol.id                as order_line_id,
                         pol.price_unit        as price_unit,
                         pol.price_unit*sm.product_uom_qty as montant_reception,
