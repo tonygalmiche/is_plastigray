@@ -183,7 +183,7 @@
                                 </t>
                             </td>
                             <td class="text-right">
-                                <t t-esc='"{:,.0f}".format(line.qt_livree).replace(","," ").replace(".",",")'/> 
+                                <t t-esc='"{:,.2f}".format(line.qt_livree).replace(","," ").replace(".",",")'/> 
                             </td>
                             <td class="text-left">
                                 <span t-field="line.uom_id"/>
