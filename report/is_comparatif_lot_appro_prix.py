@@ -12,6 +12,7 @@ class is_comparatif_lot_appro_prix(models.Model):
 
     product_id             = fields.Many2one('product.template', 'Article')
     is_category_id         = fields.Many2one('is.category', 'Catégorie')
+    is_gestionnaire_id     = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     partner_id             = fields.Many2one('res.partner', 'Fournisseur')
     pricelist_id           = fields.Many2one('product.pricelist', 'Liste de prix')
     uom_id                 = fields.Many2one('product.uom', 'US')
@@ -41,6 +42,7 @@ class is_comparatif_lot_appro_prix(models.Model):
                     pt.id         id,
                     pt.id         product_id,
                     ic.id         is_category_id,
+                    pt.is_gestionnaire_id,
                     pt_tmp2.partner_id,
                     get_product_pricelist_purchase(pt_tmp2.partner_id) pricelist_id,
                     pt.uom_id,
@@ -48,7 +50,7 @@ class is_comparatif_lot_appro_prix(models.Model):
                     is_unit_coef(pt.uom_id, pt.uom_po_id) coef,
                     pt.lot_mini lot_mini_product,
                     is_mini_liste_prix(pp.id, get_product_pricelist_purchase(pt_tmp2.partner_id))*is_unit_coef(pt.uom_id, pt.uom_po_id) min_quantity_pricelist,
-                    is_prix_achat(get_product_pricelist_purchase(pt_tmp2.partner_id),pp.id, pt.lot_mini,CURRENT_DATE) prix_lot
+                    is_prix_achat(get_product_pricelist_purchase(pt_tmp2.partner_id),pp.id, pt.lot_mini/is_unit_coef(pt.uom_id, pt.uom_po_id),CURRENT_DATE) prix_lot
                 from (
                     select
                         pt_tmp1.id,
@@ -66,7 +68,7 @@ class is_comparatif_lot_appro_prix(models.Model):
                     pt.purchase_ok='t' and 
                     ic.name::int<70 and 
                     pt.active='t' and
-                    is_prix_achat(get_product_pricelist_purchase(pt_tmp2.partner_id),pp.id, pt.lot_mini,CURRENT_DATE) is null
+                    is_prix_achat(get_product_pricelist_purchase(pt_tmp2.partner_id),pp.id, pt.lot_mini/is_unit_coef(pt.uom_id, pt.uom_po_id),CURRENT_DATE) is null
             )
 
         """)
