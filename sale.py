@@ -47,6 +47,22 @@ class sale_order(models.Model):
     }
 
 
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False,submenu=False):
+        res = super(sale_order, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar,submenu=submenu)
+
+        #** Suppression des rapports indiqués **********************************
+        indexes=[]
+        for idx, print_submenu in enumerate(res.get('toolbar', {}).get('print', [])):
+            if print_submenu['display_name'] in ["Devis / Commande"]:
+                indexes.append(idx)
+        for idx in reversed(indexes):
+            res['toolbar']['print'].pop(idx)
+        #***********************************************************************
+
+        return res
+
+
     @api.multi
     def envoyer_par_mail(self):
         cr , uid, context = self.env.args
