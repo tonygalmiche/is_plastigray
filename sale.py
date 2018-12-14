@@ -64,7 +64,7 @@ class sale_order(models.Model):
 
 
     @api.multi
-    def envoyer_par_mail(self):
+    def envoyer_ar_par_mail(self):
         cr , uid, context = self.env.args
         modele_mail = u"""
         <html>
@@ -97,7 +97,7 @@ class sale_order(models.Model):
 
 
             #** Génération du PDF **********************************************
-            name=u'commande-'+obj.name+u'.pdf'
+            name=u'ar_commande-' + obj.client_order_ref + u'.pdf'
             pdf = self.env['report'].get_pdf(obj, 'is_plastigray.report_ar_commande')
             #*******************************************************************
 
@@ -130,8 +130,8 @@ class sale_order(models.Model):
 
             email_from    = email_cc
 
-            subject    = u'Commande Plastigray '+obj.name+' pour '+obj.partner_id.name
-            #subject    = u'Commande Plastigray '+obj.name+' pour '+obj.partner_id.name+u' (to='+email_contact+u')'
+            subject    = u'AR de commande Plastigray ' + obj.client_order_ref + ' pour ' + obj.partner_id.name
+            #subject    = u'AR de commande Plastigray '+obj.client_order_ref+' pour '+obj.partner_id.name+u' (to='+email_contact+u')'
 
             email_to = email_contact
             #email_to = email_cc

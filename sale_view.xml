@@ -39,8 +39,8 @@
             <field name="arch" type="xml">
                 <xpath expr="//header/button[@name='action_button_confirm']" position="after">
                     <button
-                        name="envoyer_par_mail"
-                        string="Envoyer par mail"
+                        name="envoyer_ar_par_mail"
+                        string="Envoyer AR par mail"
                         type="object"
                         confirm="Voulez-vous vraiment envoyer ce document par mail ?"
                     />
