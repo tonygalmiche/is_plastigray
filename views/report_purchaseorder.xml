@@ -39,13 +39,11 @@
 
 
 <template id="report_purchaseorder_layout" inherit_id="web.layout" primary="True">
-    <!-- Add report attributes -->
     <xpath expr="//html" position="attributes">
         <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
         <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
         <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
     </xpath>
-    <!-- Add report style -->
     <xpath expr="//head" position="inside">
         <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
         <link href="/website/static/src/css/website.css" rel="stylesheet"/>
@@ -55,7 +53,6 @@
             <t t-call="is_plastigray.report_purchaseorder_style"/>
         </style>
     </xpath>
-    <!-- Remove conflicting style -->
     <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
 </template>
 
@@ -97,6 +94,15 @@
                         PLASTIGRAY SAS <br />
                         ZAC de Gray Sud CS 10133 <br />
                         70104 GRAY Cedex
+                    </div>
+                    <br />
+                    <div>
+                        <t t-if="o.partner_id.get_messages(o.partner_id.id)">
+                            <div>Message :</div>
+                            <t t-foreach="o.partner_id.get_messages(o.partner_id.id)" t-as="m">
+                                <b><div t-raw="m"/></b>
+                            </t>
+                        </t>
                     </div>
                 </td>
                 <td style="width:5%;border:0pt">
@@ -142,7 +148,6 @@
         </table>
     </div>
 </template>
-
 
 
 <!-- Pied de page personnalisé Plastigray -->
@@ -195,8 +200,6 @@
     <t t-call="is_plastigray.report_purchaseorder_external_layout">
         <div class="page">
             <div class="oe_structure"/>
-
-
             <table class="table table-condensed">
                 <thead>
                     <tr >
@@ -272,7 +275,6 @@
                     </tr>
                 </tbody>
             </table>
-
             <div class="row">
                 <div class="col-xs-4 pull-right">
                     <table class="table table-condensed">

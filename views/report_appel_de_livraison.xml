@@ -2,7 +2,6 @@
 <openerp>
 <data>
 
-
         <template id="report_appel_de_livraison_style">
             .header {
                 font-size:10pt;
@@ -35,15 +34,12 @@
             }
         </template>
 
-
         <template id="report_appel_de_livraison_layout" inherit_id="web.layout" primary="True">
-            <!-- Add report attributes -->
             <xpath expr="//html" position="attributes">
                 <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
                 <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
                 <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
             </xpath>
-            <!-- Add report style -->
             <xpath expr="//head" position="inside">
                 <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
                 <link href="/website/static/src/css/website.css" rel="stylesheet"/>
@@ -53,11 +49,8 @@
                     <t t-call="is_plastigray.report_appel_de_livraison_style"/>
                 </style>
             </xpath>
-            <!-- Remove conflicting style -->
             <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
         </template>
-
-
 
         <template id="report_appel_de_livraison_html_container">
             <t t-set="body_classname" t-value="'container'"/>
@@ -65,7 +58,6 @@
                 <t t-raw="0"/>
             </t>
         </template>
-
 
         <!-- Entête personnalisé Plastigray -->
         <template id="report_appel_de_livraison_external_layout_header">
@@ -86,14 +78,6 @@
                                 <span t-field="o.is_livre_a_id.zip"/> <span t-field="o.is_livre_a_id.city"/><br /><br />
                             </t>
                         </div>
-                        <!--
-                        <div class="livraison">
-                            Adresse de livraison : <br />
-                            <span t-field="company.name"/> <span t-field="company.street"/><br />
-                            <span t-field="company.street2"/><br />
-                            <span t-field="company.zip"/> <span t-field="company.city"/><br /><br />
-                        </div>
-                        -->
                         <div class="facturation">
                             Adrese de facturation : PLASTIGRAY SAS <br />
                             ZAC de Gray Sud CS 10133 <br />
@@ -137,20 +121,16 @@
                         </i>
                     </div>
                     <div class="col-xs-4">
-                        <t t-if="o.message">
-                            <p>
-                                Message :
-                                <t t-foreach="o.partner_id.get_messages(o.partner_id.id)" t-as="m">
-                                    <b><div t-raw="m"/></b>
-                                </t>
-                            </p>
+                        <t t-if="o.partner_id.get_messages(o.partner_id.id)">
+                            <div>Message :</div>
+                            <t t-foreach="o.partner_id.get_messages(o.partner_id.id)" t-as="m">
+                                <b><div t-raw="m"/></b>
+                            </t>
                         </t>
                     </div>
                 </div>
             </div>
         </template>
-
-
 
         <!-- Pied de page personnalisé Plastigray -->
         <template id="report_appel_de_livraison_external_layout_footer">
@@ -186,9 +166,6 @@
             <t t-raw="0"/>
             <t t-call="is_plastigray.report_appel_de_livraison_external_layout_footer"/>
         </template>
-
-
-
 
 
 <template id="report_appel_de_livraison_external_layout">
@@ -260,10 +237,6 @@
                                     <td class="text-center"><span t-field="l.type_cde"/></td>
                                     <td class="text-center"><span t-field="p.product_id.is_ind_plan"/> </td>
                                     <td class="text-center"><span t-field="p.product_id.is_couleur"/> </td>
-                                    <!--
-                                    <td class="text-right"><span t-field="l.quantite"/></td>
-                                    <td class="text-right"><span t-field="l.quantite_rcp"/></td>
-                                    -->
                                     <td class="text-right"><span t-esc='"{:,.4f}".format(l.quantite).replace(".",",")'/></td>
                                     <td class="text-right"><span t-esc='"{:,.4f}".format(l.quantite_rcp).replace(".",",")'/></td>
                                     <td class="text-right"><span t-field="l.uom_id"/></td>
@@ -281,7 +254,6 @@
         </div>
     </t>
 </template>
-
 
 <template id="report_appel_de_livraison">
     <t t-call="is_plastigray.report_appel_de_livraison_html_container">
