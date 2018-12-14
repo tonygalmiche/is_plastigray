@@ -87,7 +87,7 @@
                     <div class="col-xs-7">
                         <div class="titre">
                             <span>AR de Commande</span>
-                            <span style="font-size:12pt;" t-field="o.name"/>
+                            <span style="font-size:12pt;" t-field="o.client_order_ref"/>
                              du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
                         </div><br />
                         <div class="client">
