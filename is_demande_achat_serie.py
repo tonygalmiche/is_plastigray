@@ -119,10 +119,14 @@ class is_demande_achat_serie(models.Model):
     @api.multi
     def vers_transmis_achat_action(self):
         for obj in self:
-            subject=u'['+obj.name+u'] Transmis achat'
+            article=u''
+            for line in obj.line_ids:
+                article=u' ('+line.product_id.is_code+u' / '+line.product_id.name+u')'
+            subject=u'['+obj.name+u'] Transmis achat'+article
             email_to=obj.acheteur_id.email
             user  = self.env['res.users'].browse(self._uid)
             email_from = user.email
+            email_cc   = email_from
             nom   = user.name
             base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
             url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.serie'
@@ -131,7 +135,7 @@ class is_demande_achat_serie(models.Model):
                 <p>"""+nom+""" vient de passer la demande d'achat série <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Transmis achat'.</p>
                 <p>Merci d'en prendre connaissance.</p>
             """
-            self.envoi_mail(email_from,email_to,subject,body_html)
+            self.envoi_mail(email_from,email_to,email_cc,subject,body_html)
             obj.state="transmis_achat"
 
 
@@ -192,6 +196,20 @@ class is_demande_achat_serie(models.Model):
                     order.wkf_approve_order()
                     obj.state="solde"
 
+                    subject=u'['+obj.name+u'] Soldé ('+line.product_id.is_code+u' / '+line.product_id.name+u')'
+                    email_to=obj.createur_id.email
+                    user  = self.env['res.users'].browse(self._uid)
+                    email_from = user.email
+                    nom   = user.name
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.achat.serie'
+                    body_html=u"""
+                        <p>Bonjour,</p>
+                        <p>"""+nom+""" vient de passer la demande d'achat série <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Soldé'.</p>
+                        <p>Merci d'en prendre connaissance.</p>
+                    """
+                    self.envoi_mail(email_from,email_to,'',subject,body_html)
+
 
     @api.multi
     def vers_annule_action(self):
@@ -201,12 +219,12 @@ class is_demande_achat_serie(models.Model):
 
 
     @api.multi
-    def envoi_mail(self, email_from,email_to,subject,body_html):
+    def envoi_mail(self, email_from,email_to,email_cc,subject,body_html):
         for obj in self:
             vals={
                 'email_from'    : email_from, 
                 'email_to'      : email_to, 
-                'email_cc'      : email_from,
+                'email_cc'      : email_cc,
                 'subject'       : subject,
                 'body_html'     : body_html, 
             }
