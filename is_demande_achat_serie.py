@@ -14,6 +14,8 @@ class is_demande_achat_serie(models.Model):
     def _compute(self):
         uid=self._uid
         for obj in self:
+            for line in obj.line_ids:
+                obj.product_id=line.product_id.id
             nb_lignes=len(obj.line_ids)
             if nb_lignes>1:
                 raise Warning('Une seule ligne autorisée !')
@@ -60,10 +62,10 @@ class is_demande_achat_serie(models.Model):
         ('solde'         , 'Soldé'),
         ('annule'        , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes", copy=True)
-    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
-    nb_lignes            = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
-
+    line_ids                = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes", copy=True)
+    order_id                = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
+    nb_lignes               = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
+    product_id              = fields.Many2one('product.product', 'Article', compute='_compute', readonly=True, store=True)
     vers_brouillon_vsb      = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_transmis_achat_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_solde_vsb          = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
