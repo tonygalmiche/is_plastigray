@@ -144,7 +144,7 @@ class is_liste_servir(models.Model):
     _defaults = {
         'state': 'creation',
         'date_fin':  _date_fin(),
-        'livrable':  'livrable',
+        'livrable':  False,
     }
 
 

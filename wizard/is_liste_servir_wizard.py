@@ -33,7 +33,7 @@ class is_liste_servir_wizard(osv.osv_memory):
 
 
     _defaults={
-        'livrable': True,
+        'livrable': False,
         'date_fin': _date_fin(),
     }
 

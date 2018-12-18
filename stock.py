@@ -201,6 +201,34 @@ class stock_picking(models.Model):
         self.write(cr, uid, picking_ids, {'recompute_pack_op': False}, context=context)
  
 
+    #TODO : Fonction reprise complètement le 18/12/2018 pour gérer l'emplacement de destination
+    @api.multi
+    def do_enter_transfer_details(self):
+        cr , uid, context = self.env.args
+        for picking in self:
+            if picking.is_purchase_order_id:
+                location_id=picking.is_purchase_order_id.location_id.id
+                for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
+                    if move.product_id.is_ctrl_rcp=='bloque':
+                        res = self.pool.get('stock.location').search(cr, uid, [
+                                ('name','=', 'Q2'),
+                            ], context=context)
+                        if res:
+                            location_id=res[0]
+                    move.location_dest_id=location_id
+            if not context:
+                context = {}
+            else:
+                context = context.copy()
+            context.update({
+                'active_model': self._name,
+                'active_ids': [picking.id],
+                'active_id': picking.id
+            })
+            created_id = self.pool['stock.transfer_details'].create(cr, uid, {'picking_id': picking.id}, context)
+            return self.pool['stock.transfer_details'].wizard_view(cr, uid, created_id, context)
+
+
     #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
     def _prepare_pack_ops(self, cr, uid, picking, quants, forced_qties, context=None):
         """ returns a list of dict, ready to be used in create() of stock.pack.operation.
@@ -225,14 +253,14 @@ class stock_picking(models.Model):
         location_id = None
         for move in [x for x in picking.move_lines if x.state not in ('done', 'cancel')]:
 
-            #TODO : Le 11/02/2018 : Les articles bloqués sont réceptionnés en Q2
-            if picking.is_purchase_order_id:
-                if move.product_id.is_ctrl_rcp=='bloque':
-                    res = self.pool.get('stock.location').search(cr, uid, [
-                            ('name','=', 'Q2'),
-                        ], context=context)
-                    if res:
-                        move.location_dest_id=res[0]
+#            #TODO : Le 11/02/2018 : Les articles bloqués sont réceptionnés en Q2
+#            if picking.is_purchase_order_id:
+#                if move.product_id.is_ctrl_rcp=='bloque':
+#                    res = self.pool.get('stock.location').search(cr, uid, [
+#                            ('name','=', 'Q2'),
+#                        ], context=context)
+#                    if res:
+#                        move.location_dest_id=res[0]
 
             if not product_uom.get(move.product_id.id):
                 product_uom[move.product_id.id] = move.product_id.uom_id
@@ -246,9 +274,6 @@ class stock_picking(models.Model):
                 if location_id and move.location_id.id != location_id:
                     raise Warning(_('The source location must be the same for all the moves of the picking.'))
                 location_id = move.location_id.id
-
-
-
 
         pack_obj = self.pool.get("stock.quant.package")
         quant_obj = self.pool.get("stock.quant")
