@@ -86,9 +86,10 @@
     <menuitem id="menu_is_moules_20" sequence="20" name="Dossiers F" parent="menu_is_moules" action="is_mold.is_dossierf_action" />
     <menuitem id="menu_is_moules_30" sequence="30" name="Moules"     parent="menu_is_moules" action="is_mold.is_mold_action" />
 
-    <menuitem id="menu_is_articles"     sequence="15" name="Articles"           parent="menu_is_donnees_techniques"/>
-    <menuitem id="menu_is_articles_10"  sequence="10" name="Articles"           parent="menu_is_articles" action="is_pg_product.is_product_action" />
-    <menuitem id="menu_is_articles_20"  sequence="20" name="Logistique article" parent="menu_is_articles" action="is_product_packaging_action" />
+    <menuitem id="menu_is_articles"       sequence="15" name="Articles"           parent="menu_is_donnees_techniques"/>
+    <menuitem id="menu_is_articles_10"    sequence="10" name="Articles"           parent="menu_is_articles" action="is_pg_product.is_product_action"/>
+    <menuitem id="is_article_achete_menu" sequence="15" name="Articles achetés"   parent="menu_is_articles" action="is_article_achete_action"/>
+    <menuitem id="menu_is_articles_20"    sequence="20" name="Logistique article" parent="menu_is_articles" action="is_product_packaging_action"/>
     <record id="is_url_articles_prodstar_odoo_menu" model="ir.ui.menu" >
         <field name="name">Articles de tous les sites</field>
         <field name="sequence">30</field>
@@ -97,10 +98,6 @@
         <field name="groups_id" eval="[(6,0,[
         ])]"/>
     </record>
-
-
-
-
 
 
     <menuitem id="menu_is_nomenclatures"    sequence="20" name="Nomenclatures"            parent="menu_is_donnees_techniques"/>
