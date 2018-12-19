@@ -71,7 +71,7 @@
                         <div class="expediteur">
                             <b><span t-field="o.company_id.partner_id.name" /> <span t-field="o.company_id.partner_id.street" /></b><br />
                             <span t-field="o.company_id.partner_id.zip" /> <span t-field="o.company_id.partner_id.city" /><br />
-                            S.A.S. au capital de 2 102 400 € <br />
+                            S.A.S. au capital de 2 200 000 € <br />
                             Siège social : ZAC de Gray Sud <br />
                             CS 10133 - 70104 GRAY Cedex<br />
                             Tél. : 03 84 64 77 00 - Fax : 03 84 65 51 09 <br />
