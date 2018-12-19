@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_is_livraison_gefbox_tree">
+            <t t-call="report.html_container">
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+            
+                        <h2>Livraison GEFBOX</h2>
+            
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th><strong>Date d'expédition</strong></th>
+                                    <th><strong>Client</strong></th>
+                                    <th><strong>Livraison</strong></th>
+                                    <th><strong>Commande Client</strong></th>
+                                    <th><strong>Moule ou Dossier F</strong></th>
+                                    <th><strong>Article</strong></th>
+                                    <th><strong>UC</strong></th>
+                                    <th><strong>Quantité</strong></th>
+                                    <th><strong>Nb UC</strong></th>
+                                    <th><strong>Nb UM</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="old_bl" t-value="''"/>
+                                <t t-foreach="docs" t-as="o">
+                                    <t t-if="old_bl != ''">
+                                        <tr t-if="old_bl != o.name">
+                                            <td colspan='10' style='background-color: #FFFF00'> </td>
+                                        </tr>
+                                    </t>
+                                    <tr>
+                                        <td><span t-field="o.is_date_expedition"/> </td>
+                                        <td><span t-field="o.partner_id"/> </td>
+                                        <td><span t-field="o.picking_id"/></td>
+                                        <td><span t-field="o.client_order_ref"/> </td>
+                                        <td><span t-field="o.is_mold_dossierf"/> </td>
+                                        <td><span t-field="o.product_id"/> </td>
+                                        <td><span t-field="o.uc"/> </td>
+                                        <td><span t-field="o.product_uom_qty"/> </td>
+                                        <td><span t-field="o.nb_uc"/> </td>
+                                        <td><span t-field="o.nb_um"/> </td>
+                                    </tr>
+                                    <t t-set="old_bl" t-value="o.name"/>
+                                </t>
+                            </tbody>
+                        </table>
+            
+            
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

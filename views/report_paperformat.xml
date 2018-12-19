@@ -153,6 +153,24 @@
 
 
 
+        <record id="document_livraison_gefbox" model="report.paperformat">
+            <field name="name">Document de fabrication</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">20</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">15</field>
+            <field name="dpi">90</field>
+        </record>
+
+
+
 
         <record id="plan_de_charge_portrait_paperformat" model="report.paperformat">
             <field name="name">Plan de charge Portrait</field>

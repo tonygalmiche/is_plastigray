@@ -394,8 +394,17 @@
             <field name="paperformat_id" ref="is_plastigray.reach_paperformat"/>
         </record>
 
-
-
+        <report
+            id="is_livraison_gefbox_reports"
+            string="Livraison GEFBOX"
+            model="is.livraison.gefco"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_is_livraison_gefbox_tree"
+            file="is_plastigray.report_is_livraison_gefbox_tree"
+        />
+        <record id="is_livraison_gefbox_reports" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.document_livraison_gefbox"/>
+        </record>
 
     </data>
 </openerp>
