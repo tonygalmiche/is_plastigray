@@ -382,6 +382,19 @@
         </record>
 
 
+        <report 
+            id="is_reach_reports" 
+            string="REACH" 
+            model="is.reach" 
+            report_type="qweb-pdf"
+            name="is_plastigray.report_is_reach"
+            file="is_plastigray.report_is_reach"
+        />
+        <record id="is_reach_reports" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.reach_paperformat"/>
+        </record>
+
+
 
 
     </data>

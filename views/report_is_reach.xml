@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+        <template id="report_devis_commande_style">
+            .header {
+                font-size:10pt;
+            }
+            .footer {
+                font-size:7pt;
+            }
+            .page {
+                font-size:10pt;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-top: 1em;
+            }
+            .titre {
+                font-size:13pt;
+                font-weight: bold;
+            }
+            .titre2 {
+                font-weight: bold;
+                text-decoration: underline;
+                text-align: center;
+                font-size: 13pt;
+            }
+            .expediteur {
+                font-size:9pt;
+                text-align:center;
+            }
+            .destinataire {
+                text-align:left;
+                border: 1px solid black;
+                padding:5mm;
+            }
+            .nowrap{
+                white-space: nowrap;
+            }
+            th, td {
+                font-size:8pt;
+            }
+        </template>
+
+        <template id="report_devis_commande_layout" inherit_id="web.layout" primary="True">
+            <!-- Add report attributes -->
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <!-- Add report style -->
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_devis_commande_style"/>
+                </style>
+            </xpath>
+            <!-- Remove conflicting style -->
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+
+
+        <template id="report_devis_commande_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_devis_commande_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+
+
+        <!-- Entête personnalisé Plastigray -->
+        <template id="report_devis_commande_external_layout_header">
+            <div class="header">
+                <div class="row">
+                    <div class="col-xs-5  text-center">
+                        <img t-if="res_company.is_logo" t-att-src="'data:image/png;base64,%s' % res_company.is_logo" style="max-height: 60px;"/>
+                        <div class="expediteur">
+                            S.A.S. au capital de 2 200 000 € <br />
+                            Siège social : ZAC de Gray Sud <br />
+                            CS 10133 - 70104 GRAY Cedex<br />
+                            Tél. : 03 84 64 77 00 - Fax : 03 84 65 51 09 <br />
+                            Siret B 377 846 381 00020 - Code NAF 2229 A <br />
+                            Registre du Commerce GRAY <br />
+                            N°Identification T.V.A. FR 65 377 846 381 <br />
+                        </div>
+                    </div>
+                    <div class="col-xs-7">
+                        <div class="destinataire">
+                            Destinataire : <br />
+                            <b><span t-field="partner.name"/></b> (<span t-field="partner.is_code"/>/<span t-field="partner.is_adr_code"/>)<br />
+                            <span t-field="partner.street" /><br />
+                            <t t-if="partner.street2">
+                                <span t-field="partner.street2" /><br />
+                            </t>
+                            <span t-field="partner.zip" /> - 
+                            <span t-field="partner.city" /><br />
+                            <span t-field="partner.country_id.name" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header">
+                FIXME
+            </div>
+        </template>
+
+
+
+        <!-- Pied de page personnalisé Plastigray -->
+        <template id="report_devis_commande_external_layout_footer">
+            <div class="footer">
+            </div>
+            <br />
+        </template>
+
+        <!-- Squelette de la page personnalisé pour Plastigray -->
+        <template id="report_devis_commande_external_layout">
+            <t t-call="is_plastigray.report_devis_commande_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_devis_commande_external_layout_footer"/>
+        </template>
+
+
+
+        <template id="report_devis_commande_document">
+            <t t-call="is_plastigray.report_devis_commande_external_layout">
+                <div class="page">
+                    <div style="page-break-after:always;margin-right: 8em;margin-left: 8em;">
+                        <p class="text-center">Règlement REACH (CE) N° 1907/2006 et N° 1272/2013</p>
+                        <p class="text-center">Certificat sur la présence de SVHC</p>
+                        La société PLASTIGRAY SAS, ZAC de Gray Sud, 70104 GRAY Cedex, certifie que :
+                        <p>
+                            <ol style="margin-left: 3em;">
+                                <li>Les articles livrés actuellement à la société <span t-field="partner.name"/> ne contiennent pas à notre connaissance et suivant les informations de nos fournisseurs, de substances extrêmement préoccupantes (SVHC) figurant dans la dernière version de la « Candidate list » de l'ECHA, dans une concentration supérieure à 0,1% en masse et de l'annexe XVII du règlement n° 1907/2006 pour le PAH limite.<br/>
+                                La dernière version de cette liste peut être consultable sur le lien suivant : <a href='http://echa.europa.eu/candidate-list-table'>http://echa.europa.eu/candidate-list-table</a></li>
+                                <li>Détail par article des substances livrées : annexe 1</li>
+                                <li>Cumul par code CAS des substances livrées : annexe 2</li>
+                            </ol>
+                        </p>
+                        <p style='margin-top: 3em;'>Fait à Gray, le :<br /><br />Nom :<br />Fonction<br />Signature :</p>
+                    </div>
+                    <div style="page-break-after:always;">
+                        <p class='titre2'>ANNEXE 1</p>
+                        <p class='titre2'>DETAIL PAR ARTICLE DES SUBSTANCES LIVREES</p>
+                        <p><span style='text-decoration:underline;'>Période</span> : du <span t-field='o.date_debut'/> au <span t-field='o.date_fin'/></p>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr >
+                                            <th class="text-left"   style="vertical-align:top;width: 20%;">Réf Client</th>
+                                            <th class="text-left"   style="vertical-align:top;width: 46%;">Produit livré</th>
+                                            <th class="text-left"   style="vertical-align:top;width: 0%;">Substances présentes</th>
+                                            <th class="text-left"   style="vertical-align:top;width: 0%;">Substances réglementée</th>
+                                            <th class="text-right"  style="vertical-align:top;width: 0%;">% substances</th>
+                                            <th class="text-right"  style="vertical-align:top;width: 0%;">Poids de la<br />substances<br />livrée (kg)</th>
+                                            <th class="text-left"   style="vertical-align:top;width: 33%;">Désignation matière</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.product_ids" t-as="l">
+                                            <!--cas_ids peut etre vide, dans ce cas ne pas afficher-->
+                                            <t t-if="l.cas_ids">
+                                                <tr>
+                                                    <t t-set="cas_ids" t-value="l.get_cas_unique()"/>
+                                                    <td class="text-left"><span t-field="l.ref_client"/></td>
+                                                    <td class="text-left"><span t-field="l.name"/></td>
+                                                    <td class="text-left">
+                                                        <p t-foreach="cas_ids" t-as="c">
+                                                           <span t-esc='c["name"]'/>
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <p t-foreach="cas_ids" t-as="c">
+                                                           <span t-esc='c["interdit"]'/>
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <p t-foreach="cas_ids" t-as="c">
+                                                           <t t-esc='"{:,.2f}".format(c["pourcentage_substance"]).replace(","," ").replace(".",",")'/>
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-right">
+                                                        <p t-foreach="cas_ids" t-as="c">
+                                                           <t t-esc='"{:,.2f}".format(c["poids"]).replace(","," ").replace(".",",")'/>
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-left">
+                                                        <p t-foreach="l.get_matiere_unique()" t-as="m">
+                                                           <span t-field='m.product_id'/>
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="page-break-after:always;">
+                        <p class='titre2'>ANNEXE 2</p>
+                        <p class='titre2'>CUMUL PAR CODE CAS DES SUBSTANCES LIVREES</p>
+                        <p><span style='text-decoration:underline;'>Période</span> : du <span t-field='o.date_debut'/> au <span t-field='o.date_fin'/></p>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr >
+                                            <th class="text-center"   style="vertical-align:top">Substances présentes</th>
+                                            <th class="text-center"   style="vertical-align:top">Substances réglementée</th>
+                                            <th class="text-center"   style="vertical-align:top">Poids total des substances livrées (kg)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="o.get_poids_substances()" t-as="l">
+                                            <tr>
+                                                <td class="text-center"><span t-esc="l['name']"/></td>
+                                                <td class="text-center"><span t-esc="l['interdit']"/></td>
+                                                <td class="text-center">
+                                                    <t t-esc='"{:,.2f}".format(l["poids"]).replace(","," ").replace(".",",")'/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="report_is_reach">
+            <t t-call="is_plastigray.report_devis_commande_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="partner" t-value="o.get_partner()"/>
+                    <t t-call="is_plastigray.report_devis_commande_document"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

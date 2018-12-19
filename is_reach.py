@@ -142,6 +142,20 @@ class is_reach(models.Model):
 
             #*******************************************************************
 
+    def get_partner(self):
+        partner = self.env['res.partner'].search([('is_code', '=', self.clients.split(' ')[0])], limit=1)
+        return partner
+
+    def get_poids_substances(self):
+        ret = {}
+        for product in self.product_ids:
+            for cas in product.get_cas_unique():
+                name = cas['name']
+                ret.setdefault(name, {'name': name,
+                                      'interdit': cas['interdit'],
+                                      'poids': 0})
+                ret[name]['poids'] += cas['poids']
+        return ret.values()
 
     @api.multi
     def cbb_multi_niveaux(self, reach_product,product, quantite=1, niveau=1):
@@ -265,7 +279,7 @@ class is_reach_product(models.Model):
     category_id      = fields.Many2one('is.category', 'Catégorie')
     gestionnaire_id  = fields.Many2one('is.gestionnaire', 'Gestionnaire')
     qt_livree        = fields.Integer("Quantité livrée", required=True)
-    interdit         = fields.Char("Substance interdite")
+    interdit         = fields.Char("Substance réglementée")
     poids_substances       = fields.Float("Poids total des substances à risque")
     poids_produit_unitaire = fields.Float("Poids unitaire des matières", digits=(14,4))
     poids_produit          = fields.Float("Poids des matières livrées")
@@ -293,6 +307,24 @@ class is_reach_product(models.Model):
                 'type': 'ir.actions.act_window',
                 'limit': 1000,
             }
+
+    def get_matiere_unique(self):
+        matiere_ids = []
+        for matiere_id in self.matiere_ids:
+            if matiere_id.product_id.id not in matiere_ids:
+                matiere_ids.append(matiere_id.product_id.id)
+                yield matiere_id
+
+    def get_cas_unique(self):
+        ret = {}
+        for cas in self.cas_ids:
+            name = cas.name.code_cas
+            ret.setdefault(name, {'name': name,
+                                  'interdit': cas.interdit,
+                                  'pourcentage_substance': cas.pourcentage_substance,
+                                  'poids': 0})
+            ret[name]['poids'] += cas.poids_substance
+        return ret.values()
 
 
 class is_reach_product_matiere(models.Model):
@@ -325,10 +357,10 @@ class is_reach_product_cas(models.Model):
     interdit         = fields.Selection([ 
         ('Oui','Oui'),
         ('Non','Non'),
-    ], "Substance interdite")
+    ], "Substance réglementée")
     poids_substance        = fields.Float("Poids total substance à risque")
     poids_produit_unitaire = fields.Float("Poids produit unitaire", digits=(14,4))
     poids_produit          = fields.Float("Poids produit livré")
-    pourcentage_substance  = fields.Float("% du poids de cete substance à risque", digits=(14,4))
+    pourcentage_substance  = fields.Float("% du poids de cette substance à risque", digits=(14,4))
     poids_autorise         = fields.Float('% de poids autorisé')
 
