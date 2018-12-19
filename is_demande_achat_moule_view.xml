@@ -2,7 +2,6 @@
 <openerp>
     <data>
 
-
         <record id="is_demande_achat_moule_type_seq" model="ir.sequence.type">
             <field name="name">Demande d'achat Moule</field>
             <field name="code">is.demande.achat.moule</field>
@@ -22,8 +21,6 @@
             <field name="arch" type="xml">
                 <form string="Form">
                     <header>
-
-                        <!--
                         <field name="vers_brouillon_vsb" invisible="1"/>
                         <button 
                             name="vers_brouillon_action"
@@ -32,56 +29,6 @@
                             type="object"
                             confirm="Voulez-vous vraiment revenir à l'état brouillon ?"
                         />
-
-                        <field name="vers_validation_rsp_vsb" invisible="1"/>
-                        <button 
-                            name="vers_validation_rsp_action"
-                            string="Vers validation responsable"
-                            attrs="{'invisible': [('vers_validation_rsp_vsb', '!=', True)]}"
-                            class="oe_highlight" type="object"
-                        />
-
-                        <field name="vers_transmis_achat_vsb" invisible="1"/>
-                        <button 
-                            name="vers_transmis_achat_action"
-                            string="Vers transmis achat"
-                            attrs="{'invisible': [('vers_transmis_achat_vsb', '!=', True)]}"
-                            class="oe_highlight" type="object"
-                        />
-
-                        <field name="vers_solde_vsb" invisible="1"/>
-                        <button 
-                            name="vers_solde_action"
-                            string="Générer la commande et solder cette DA"
-                            attrs="{'invisible': [('vers_solde_vsb', '!=', True)]}"
-                            class="oe_highlight" type="object"
-                        />
-
-                        <field name="vers_annule_vsb" invisible="1"/>
-                        <button 
-                            name="vers_annule_action"
-                            string="Vers annulé"
-                            attrs="{'invisible': [('vers_annule_vsb', '!=', True)]}"
-                            type="object"
-                        />
-                        <field 
-                            name="state" 
-                            widget="statusbar" 
-                            statusbar_visible="brouillon,validation_rsp,transmis_achat,solde" 
-                            statusbar_colors='{"annule":"red"}'
-                        />
-                        -->
-
-
-                        <field name="vers_brouillon_vsb" invisible="1"/>
-                        <button 
-                            name="vers_brouillon_action"
-                            string="Vers brouillon"
-                            attrs="{'invisible': [('vers_brouillon_vsb', '!=', True)]}"
-                            type="object"
-                            confirm="Voulez-vous vraiment revenir à l'état brouillon ?"
-                        />
-
                         <field name="vers_validation_rsp_vsb" invisible="1"/>
                         <button 
                             name="vers_validation_rsp_action"
@@ -89,7 +36,6 @@
                             attrs="{'invisible': [('vers_validation_rsp_vsb', '!=', True)]}"
                             class="oe_highlight" type="object"
                         />
-
                         <field name="vers_validation_direction_vsb" invisible="1"/>
                         <button 
                             name="vers_validation_direction_action"
@@ -97,7 +43,6 @@
                             attrs="{'invisible': [('vers_validation_direction_vsb', '!=', True)]}"
                             class="oe_highlight" type="object"
                         />
-
                         <field name="vers_transmis_achat_vsb" invisible="1"/>
                         <button 
                             name="vers_transmis_achat_action"
@@ -105,7 +50,6 @@
                             attrs="{'invisible': [('vers_transmis_achat_vsb', '!=', True)]}"
                             class="oe_highlight" type="object"
                         />
-
                         <field name="vers_solde_vsb" invisible="1"/>
                         <button 
                             name="vers_solde_action"
@@ -113,7 +57,6 @@
                             attrs="{'invisible': [('vers_solde_vsb', '!=', True)]}"
                             class="oe_highlight" type="object"
                         />
-
                         <field name="vers_annule_vsb" invisible="1"/>
                         <button 
                             name="vers_annule_action"
@@ -189,6 +132,7 @@
                     <field name="chef_service_id"/>
                     <field name="acheteur_id"/>
                     <field name="fournisseur_id"  widget="many2one_clickable"/>
+                    <field name="num_chantier"/>
                     <field name="delai_livraison"/>
                     <field name="lieu_livraison_id"/>
                     <field name="num_devis"/>
@@ -208,6 +152,7 @@
                     <field name="chef_service_id"/>
                     <field name="acheteur_id"/>
                     <field name="fournisseur_id"/>
+                    <field name="num_chantier" />
                     <field name="lieu_livraison_id"/>
                     <field name="num_devis"/>
                     <field name="state"/>

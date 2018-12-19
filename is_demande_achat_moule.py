@@ -10,35 +10,6 @@ class is_demande_achat_moule(models.Model):
     _order='name desc'
 
 
-#    def _compute(self):
-#        uid=self._uid
-#        for obj in self:
-#            vsb=False
-#            if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
-#                vsb=True
-#            obj.vers_brouillon_vsb=vsb
-#            vsb=False
-#            if obj.state=='brouillon' and uid==obj.createur_id.id:
-#                vsb=True
-#            obj.vers_validation_rsp_vsb=vsb
-#            vsb=False
-#            if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
-#                vsb=True
-#            obj.vers_transmis_achat_vsb=vsb
-#            vsb=False
-#            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
-#                vsb=True
-#            obj.vers_solde_vsb=vsb
-#            vsb=False
-#            if obj.state=='brouillon' and uid==obj.createur_id.id:
-#                vsb=True
-#            if obj.state=='validation_rsp' and uid==obj.chef_service_id.id:
-#                vsb=True
-#            if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
-#                vsb=True
-#            obj.vers_annule_vsb=vsb
-
-
     def _compute(self):
         uid=self._uid
         for obj in self:
@@ -75,6 +46,13 @@ class is_demande_achat_moule(models.Model):
             obj.vers_annule_vsb=vsb
 
 
+    @api.depends('line_ids')
+    def _compute_num_chantier(self):
+        for obj in self:
+            for line in obj.line_ids:
+                obj.num_chantier=line.num_chantier
+
+
     name                 = fields.Char("N°DA FG", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
     chef_service_id      = fields.Many2one('res.users', 'Chef de projet', required=True)
@@ -98,9 +76,9 @@ class is_demande_achat_moule(models.Model):
         ('solde'               , 'Soldé'),
         ('annule'              , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.moule.line'  , 'da_id', u"Lignes", copy=True)
-    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
-
+    line_ids                      = fields.One2many('is.demande.achat.moule.line'  , 'da_id', u"Lignes", copy=True)
+    order_id                      = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
+    num_chantier                  = fields.Char("N° du chantier", compute='_compute_num_chantier', readonly=True, store=True)
     vers_brouillon_vsb            = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_rsp_vsb       = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_direction_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
@@ -391,7 +369,5 @@ class is_demande_achat_moule_line(models.Model):
         self._test_num_chantier(vals)
         obj = super(is_demande_achat_moule_line, self).write(vals)
         return obj
-
-
 
 
