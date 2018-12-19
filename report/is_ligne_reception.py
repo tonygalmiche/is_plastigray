@@ -35,6 +35,7 @@ class is_ligne_reception(models.Model):
     date_reception       = fields.Date('Date réception')
     date_mouvement       = fields.Datetime('Date mouvement')
     lot_fournisseur      = fields.Char('Lot fournisseur')
+    is_dosmat_ctrl_qual  = fields.Char('Contrôle qualité Dynacase')
     user_id              = fields.Many2one('res.users', 'Utilisateur')
     move_id              = fields.Many2one('stock.move', 'Mouvement de stock')
     picking_state        = fields.Selection([
@@ -95,6 +96,7 @@ class is_ligne_reception(models.Model):
                         sm.invoice_state      as invoice_state,
                         sm.write_uid          as user_id,
                         sm.id                 as move_id,
+                        sm.is_dosmat_ctrl_qual as is_dosmat_ctrl_qual,
                         (select icof.name from is_cde_ouverte_fournisseur icof where sp.partner_id=icof.partner_id limit 1) as commande_ouverte,
                         (
                             select spl.is_lot_fournisseur 
