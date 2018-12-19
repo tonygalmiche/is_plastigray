@@ -89,17 +89,17 @@
                             N°Identification T.V.A. FR 65 377 846 381 <br />
                         </div>
                     </div>
-                    <div class="col-xs-7">
+                    <div class="col-xs-7" t-if="o.partner_id">
                         <div class="destinataire">
                             Destinataire : <br />
-                            <b><span t-field="partner.name"/></b> (<span t-field="partner.is_code"/>/<span t-field="partner.is_adr_code"/>)<br />
-                            <span t-field="partner.street" /><br />
-                            <t t-if="partner.street2">
-                                <span t-field="partner.street2" /><br />
+                            <b><span t-field="o.partner_id.name"/></b> (<span t-field="o.partner_id.is_code"/>/<span t-field="o.partner_id.is_adr_code"/>)<br />
+                            <span t-field="o.partner_id.street" /><br />
+                            <t t-if="o.partner_id.street2">
+                                <span t-field="o.partner_id.street2" /><br />
                             </t>
-                            <span t-field="partner.zip" /> - 
-                            <span t-field="partner.city" /><br />
-                            <span t-field="partner.country_id.name" />
+                            <span t-field="o.partner_id.zip" /> - 
+                            <span t-field="o.partner_id.city" /><br />
+                            <span t-field="o.partner_id.country_id.name" />
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                         La société PLASTIGRAY SAS, ZAC de Gray Sud, 70104 GRAY Cedex, certifie que :
                         <p>
                             <ol style="margin-left: 3em;">
-                                <li>Les articles livrés actuellement à la société <span t-field="partner.name"/> ne contiennent pas à notre connaissance et suivant les informations de nos fournisseurs, de substances extrêmement préoccupantes (SVHC) figurant dans la dernière version de la « Candidate list » de l'ECHA, dans une concentration supérieure à 0,1% en masse et de l'annexe XVII du règlement n° 1907/2006 pour le PAH limite.<br/>
+                                <li>Les articles livrés actuellement à la société <span t-field="o.partner_id.name"/> ne contiennent pas à notre connaissance et suivant les informations de nos fournisseurs, de substances extrêmement préoccupantes (SVHC) figurant dans la dernière version de la « Candidate list » de l'ECHA, dans une concentration supérieure à 0,1% en masse et de l'annexe XVII du règlement n° 1907/2006 pour le PAH limite.<br/>
                                 La dernière version de cette liste peut être consultable sur le lien suivant : <a href='http://echa.europa.eu/candidate-list-table'>http://echa.europa.eu/candidate-list-table</a></li>
                                 <li>Détail par article des substances livrées : annexe 1</li>
                                 <li>Cumul par code CAS des substances livrées : annexe 2</li>
@@ -240,7 +240,6 @@
         <template id="report_is_reach">
             <t t-call="is_plastigray.report_devis_commande_html_container">
                 <t t-foreach="docs" t-as="o">
-                    <t t-set="partner" t-value="o.get_partner()"/>
                     <t t-call="is_plastigray.report_devis_commande_document"/>
                 </t>
             </t>

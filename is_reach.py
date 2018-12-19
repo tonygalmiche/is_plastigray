@@ -16,6 +16,7 @@ class is_reach(models.Model):
     date_debut   = fields.Date("Date de début" , required=True, help="Date de début des livraisons")
     date_fin     = fields.Date("Date de fin"   , required=True, help="Date de fin des livraisons")
     clients      = fields.Char("Clients", help="Codes des clients à 6 chiffres séparés par un espace")
+    partner_id   = fields.Many2one("res.partner", 'Client pour rapport', domain=[('customer','=',True),('is_company','=',True)])
     product_ids  = fields.One2many('is.reach.product', 'reach_id', u"Produits livrés")
 
     _defaults = {
@@ -141,10 +142,6 @@ class is_reach(models.Model):
                 #***************************************************************
 
             #*******************************************************************
-
-    def get_partner(self):
-        partner = self.env['res.partner'].search([('is_code', '=', self.clients.split(' ')[0])], limit=1)
-        return partner
 
     def get_poids_substances(self):
         ret = {}
