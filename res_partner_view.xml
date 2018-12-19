@@ -8,12 +8,10 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter" />
             <field name="arch" type="xml">
-
                 <field name="user_id" position="before">
                    <field name="is_code"/>
                    <field name="is_segment_achat"/>
                 </field>
-
             </field>
         </record>
 
@@ -116,12 +114,6 @@
                                 <field name="phone"/>
                                 <field name="mobile"/>
                                 <field name="email"/>
-                                <!--
-                                <button 
-                                    string="Ecrire un mail" 
-                                    name= "action_ecrire_email" type="object" icon="terp-mail-message-new"
-                                />
-                                -->
                                 <field name="is_database_line_ids" widget="many2many_tags"/>
                                 <field name="use_parent_address" invisible="1" />
                             </tree>
@@ -131,13 +123,14 @@
                         <group>
                             <field name="is_segment_achat"     on_change="onchange_segment_id(is_segment_achat)"/>
                             <field name="is_famille_achat_ids" context="{'default_segment_id':is_segment_achat}" widget="many2many_tags" />
-                            <field name="is_fournisseur_imp" />
+                            <field name="is_fournisseur_imp"/>
+                            <field name="is_fournisseur_da_fg"/>
                             <field name="is_site_livre_ids" widget="many2many_tags" />
                         </group>
                         <group string="Conditions Logistiques">
-                            <field name="is_groupage" />
-                            <field name="is_tolerance_quantite" />
-                            <field name="is_transmission_cde" />
+                            <field name="is_groupage"/>
+                            <field name="is_tolerance_quantite"/>
+                            <field name="is_transmission_cde"/>
                         </group>
                         <group>
                             <group>

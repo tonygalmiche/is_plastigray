@@ -337,6 +337,7 @@ class is_database(models.Model):
             'is_segment_achat'      :  partner.is_segment_achat and self.get_is_segment_achat(partner.is_segment_achat , DB, USERID, USERPASS, sock) or False,
             'is_famille_achat_ids'  :  partner.is_famille_achat_ids and self.get_is_famille_achat_ids(partner.is_famille_achat_ids , DB, USERID, USERPASS, sock) or False,
             'is_fournisseur_imp'    :  partner.is_fournisseur_imp,
+            'is_fournisseur_da_fg'  :  partner.is_fournisseur_da_fg,
             'is_site_livre_ids'     :  partner.is_site_livre_ids and self.get_is_site_livre_ids(partner.is_site_livre_ids , DB, USERID, USERPASS, sock) or False,
             'is_groupage'           :  partner.is_groupage,
             'is_tolerance_delai'    :  partner.is_tolerance_delai,

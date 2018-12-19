@@ -158,6 +158,7 @@ class res_partner(models.Model):
     is_segment_achat        = fields.Many2one('is.segment.achat', "Segment d'achat")
     is_famille_achat_ids    = fields.Many2many('is.famille.achat', id1='partner_id', id2='famille_id', string=u"Famille d'achat")
     is_fournisseur_imp      = fields.Boolean(u'Fournisseur imposé')
+    is_fournisseur_da_fg    = fields.Boolean(u'Fournisseur pour DA-FG')
     is_site_livre_ids       = fields.Many2many('is.site', id1='partner_id', id2='site_id', string=u'sites livrés')
     is_groupage             = fields.Boolean('Groupage')
     is_tolerance_delai      = fields.Boolean('Tolérance sur délai')
@@ -184,8 +185,9 @@ class res_partner(models.Model):
     is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", readonly=True)
 
     _defaults = {
-        'delai_transport': 0,
-        'is_adr_code': 0,
+        'delai_transport'     : 0,
+        'is_adr_code'         : 0,
+        'is_fournisseur_da_fg': False,
     }
 
     _sql_constraints = [
