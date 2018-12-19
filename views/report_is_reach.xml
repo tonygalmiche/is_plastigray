@@ -2,7 +2,7 @@
 <openerp>
 <data>
 
-        <template id="report_devis_commande_style">
+        <template id="report_reach_style">
             .header {
                 font-size:10pt;
             }
@@ -42,7 +42,7 @@
             }
         </template>
 
-        <template id="report_devis_commande_layout" inherit_id="web.layout" primary="True">
+        <template id="report_reach_layout" inherit_id="web.layout" primary="True">
             <!-- Add report attributes -->
             <xpath expr="//html" position="attributes">
                 <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
@@ -56,7 +56,7 @@
                 <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
                 <style type="text/css">
                     <t t-call="report.style"/>
-                    <t t-call="is_plastigray.report_devis_commande_style"/>
+                    <t t-call="is_plastigray.report_reach_style"/>
                 </style>
             </xpath>
             <!-- Remove conflicting style -->
@@ -65,16 +65,16 @@
 
 
 
-        <template id="report_devis_commande_html_container">
+        <template id="report_reach_html_container">
             <t t-set="body_classname" t-value="'container'"/>
-            <t t-call="is_plastigray.report_devis_commande_layout">
+            <t t-call="is_plastigray.report_reach_layout">
                 <t t-raw="0"/>
             </t>
         </template>
 
 
         <!-- Entête personnalisé Plastigray -->
-        <template id="report_devis_commande_external_layout_header">
+        <template id="report_reach_external_layout_header">
             <div class="header">
                 <div class="row">
                     <div class="col-xs-5  text-center">
@@ -112,23 +112,23 @@
 
 
         <!-- Pied de page personnalisé Plastigray -->
-        <template id="report_devis_commande_external_layout_footer">
+        <template id="report_reach_external_layout_footer">
             <div class="footer">
             </div>
             <br />
         </template>
 
         <!-- Squelette de la page personnalisé pour Plastigray -->
-        <template id="report_devis_commande_external_layout">
-            <t t-call="is_plastigray.report_devis_commande_external_layout_header"/>
+        <template id="report_reach_external_layout">
+            <t t-call="is_plastigray.report_reach_external_layout_header"/>
             <t t-raw="0"/>
-            <t t-call="is_plastigray.report_devis_commande_external_layout_footer"/>
+            <t t-call="is_plastigray.report_reach_external_layout_footer"/>
         </template>
 
 
 
-        <template id="report_devis_commande_document">
-            <t t-call="is_plastigray.report_devis_commande_external_layout">
+        <template id="report_reach_document">
+            <t t-call="is_plastigray.report_reach_external_layout">
                 <div class="page">
                     <div style="page-break-after:always;margin-right: 8em;margin-left: 8em;">
                         <p class="text-center">Règlement REACH (CE) N° 1907/2006 et N° 1272/2013</p>
@@ -238,9 +238,9 @@
 
 
         <template id="report_is_reach">
-            <t t-call="is_plastigray.report_devis_commande_html_container">
+            <t t-call="is_plastigray.report_reach_html_container">
                 <t t-foreach="docs" t-as="o">
-                    <t t-call="is_plastigray.report_devis_commande_document"/>
+                    <t t-call="is_plastigray.report_reach_document"/>
                 </t>
             </t>
         </template>
