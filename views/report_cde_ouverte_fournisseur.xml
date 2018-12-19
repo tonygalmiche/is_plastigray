@@ -128,6 +128,9 @@
                         Conditions de paiement :  <span t-field="o.partner_id.property_supplier_payment_term.name"/> <br />
                         Type de réglement :       <span t-field="o.partner_id.is_type_reglement.name"/> <br />
                         Incoterm :                <span t-field="o.partner_id.is_incoterm.name"/> <br />
+                        <t t-if="o.partner_id.is_lieu">
+				Lieu :                    <span t-field="o.partner_id.is_lieu"/> <br />
+			</t>
                         </i>
                     </div>
                 </div>

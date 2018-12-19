@@ -133,7 +133,10 @@
                             <span t-field="o.partner_id.is_type_reglement.name"/> 
                         </i>
                         <br />
-                        <p t-if="o.partner_id.is_incoterm">Incoterm : <span t-field="o.partner_id.is_incoterm.name"/></p>
+                        <p>
+                            <t t-if="o.partner_id.is_incoterm">Incoterm : <span t-field="o.partner_id.is_incoterm.name"/><br/></t>
+                            <t t-if="o.partner_id.is_lieu">Lieu : <span t-field="o.partner_id.is_lieu"/></t>
+                        </p>
                         <br />
                         <p t-if="o.get_da()">Devis : <t t-esc="o.get_da()"/></p>
                     </div>
