@@ -47,6 +47,22 @@ class sale_order(models.Model):
     }
 
 
+    @api.multi
+    def onchange_client_order_ref(self, client_order_ref,partner_id):
+        warning = {}
+        if client_order_ref and partner_id:
+            orders = self.env['sale.order'].search([('client_order_ref','=',client_order_ref),('partner_id','=',partner_id)],limit=1)
+            if orders:
+                warning = {
+                    'title': _('Warning!'),
+                    'message' : u"La commande "+orders[0].name+u" a déjà ce même numéro de commande client !"
+                }
+        return {
+            'value'  : {},
+            'warning': warning,
+        }
+
+
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False,submenu=False):
         res = super(sale_order, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar,submenu=submenu)
