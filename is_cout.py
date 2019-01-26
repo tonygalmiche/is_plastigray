@@ -954,7 +954,7 @@ class is_cout(models.Model):
                 finally:
                     os.close(fd)
             filename="/var/www/odoo/couts/"+db+".zip"
-            cde="rm -f " + filename + " && cd /tmp && zip -r " + filename + " couts-" +db
+            cde="rm -f " + filename + " && cd /tmp && zip -r " + filename + " couts-" +db+" && chmod 755 "+filename
             os.popen(cde).readlines()
             self.send_mail_notyfy_user()
             new_cr.close()

@@ -67,7 +67,6 @@ $$ LANGUAGE plpgsql;
                 SQL="SELECT get_pricelist_justif('purchase', {}, {}, {}, '{}') FROM product_product WHERE id={}".format(pricelist_id, product_id, qty, date, product_id)
                 self._cr.execute(SQL)
                 result = self._cr.fetchone()
-
                 res['value']['is_justification'] = result[0];
         return res
 
@@ -184,7 +183,6 @@ class purchase_order(models.Model):
 
             #** Demandeur en copie *********************************************
             if obj.is_demandeur_id.email:
-                print obj.is_demandeur_id.name, obj.is_demandeur_id.email
                 email_cc = email_cc + ',' + obj.is_demandeur_id.name + u' <'+obj.is_demandeur_id.email+u'>'
             #*******************************************************************
 

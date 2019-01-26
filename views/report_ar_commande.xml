@@ -105,16 +105,16 @@
                             </span>
                             <br />
                             Adresse de facturation : <br />
-                            <b><span t-field="o.partner_shipping_id.name"/></b> (<span t-field="o.partner_shipping_id.is_code"/>/<span t-field="o.partner_shipping_id.is_adr_code"/>)<br />
-                            <span t-field="o.partner_shipping_id.street" /><br />
-                            <t t-if="o.partner_shipping_id.street2">
-                                <span t-field="o.partner_shipping_id.street2" /><br />
+                            <b><span t-field="o.partner_invoice_id.name"/></b> (<span t-field="o.partner_invoice_id.is_code"/>/<span t-field="o.partner_invoice_id.is_adr_code"/>)<br />
+                            <span t-field="o.partner_invoice_id.street" /><br />
+                            <t t-if="o.partner_invoice_id.street2">
+                                <span t-field="o.partner_invoice_id.street2" /><br />
                             </t>
-                            <span t-field="o.partner_shipping_id.zip" /> - 
-                            <span t-field="o.partner_shipping_id.city" /><br />
-                            <span t-field="o.partner_shipping_id.country_id.name" /><br />
-                            <span t-if="o.partner_id.vat">
-                                Numéro fiscal : <span t-field="o.partner_id.vat" />
+                            <span t-field="o.partner_invoice_id.zip" /> - 
+                            <span t-field="o.partner_invoice_id.city" /><br />
+                            <span t-field="o.partner_invoice_id.country_id.name" /><br />
+                            <span t-if="o.partner_invoice_id.vat">
+                                Numéro fiscal : <span t-field="o.partner_invoice_id.vat" />
                             </span>
                         </div>
                     </div>

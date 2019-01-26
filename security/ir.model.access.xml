@@ -254,7 +254,7 @@
     <record id="is_code_cas_access"  model="ir.model.access" >
         <field name="name">is_code_cas_access</field>
         <field name="model_id"    eval="ref('is_pg_product.model_is_code_cas')"/>
-        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_articles_group')"/>
         <field name="perm_read"   eval="True"/>
         <field name="perm_write"  eval="True"/>
         <field name="perm_unlink" eval="True"/>
@@ -263,7 +263,7 @@
     <record id="is_product_code_cas_access"  model="ir.model.access" >
         <field name="name">is_product_code_cas_access</field>
         <field name="model_id"    eval="ref('is_pg_product.model_is_product_code_cas')"/>
-        <field name="group_id"    eval="ref('is_gestionnaire_tables_group')"/>
+        <field name="group_id"    eval="ref('is_gestionnaire_articles_group')"/>
         <field name="perm_read"   eval="True"/>
         <field name="perm_write"  eval="True"/>
         <field name="perm_unlink" eval="True"/>
@@ -1132,6 +1132,26 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+    <record id="is_cde_ferme_cadencee_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_cde_ferme_cadencee_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_cde_ferme_cadencee')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_cde_ferme_cadencee_order_rsp_production_access"  model="ir.model.access" >
+        <field name="name">is_cde_ferme_cadencee_order_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_cde_ferme_cadencee_order')"/>
+        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
 
 
 

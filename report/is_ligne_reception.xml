@@ -18,6 +18,7 @@
                             <field name="is_commentaire"/>
                             <field name="partner_id"/>
                             <field name="product_id"/>
+                            <field name="description"/>
                             <field name="is_ctrl_rcp"/>
                             <field name="ref_fournisseur"/>
                             <field name="commande_ouverte"/>
@@ -59,7 +60,7 @@
                 <field name="is_cfc_id"      widget="many2one_clickable"/>
                 <field name="commande_ouverte"/>
                 <field name="partner_id"     widget="many2one_clickable"/>
-                <field name="product_id"     widget="many2one_clickable"/>
+                <field name="description"/>
                 <field name="ref_fournisseur"/>
                 <field name="qt_receptionnee" string="Quantité à réceptionner"/>
                 <field name="product_uom"/>
@@ -81,6 +82,7 @@
                 <field name="order_id"/>
                 <field name="partner_id"/>
                 <field name="product_id"/>
+                <field name="description"/>
                 <field name="is_ctrl_rcp"/>
                 <field name="is_dosmat_ctrl_qual"/>
                 <field name="ref_fournisseur"/>
@@ -120,7 +122,7 @@
                 <field name="is_cfc_id"/>
                 <field name="commande_ouverte"/>
                 <field name="partner_id"     widget="many2one_clickable"/>
-                <field name="product_id"     widget="many2one_clickable"/>
+                <field name="description"/>
                 <field name="ref_fournisseur"/>
                 <field name="product_uom"/>
                 <field name="price_unit"/>

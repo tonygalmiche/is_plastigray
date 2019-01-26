@@ -29,6 +29,11 @@
                                 <field name="is_url_odoo_theia"/>
                             </group>
                         </group>
+                        <group>
+                            <group string="Achats">
+                                <field name="is_acheteur_id"/>
+                            </group>
+                        </group>
                     </page>
                 </notebook>
                 <field name="logo" position="after">

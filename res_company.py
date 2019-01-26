@@ -20,3 +20,5 @@ class res_company(models.Model):
     is_url_intranet_theia = fields.Char('URL Intranet THEIA', default='http://raspberry-cpi')
     is_url_odoo_theia     = fields.Char('URL Odoo THEIA')
 
+    is_acheteur_id = fields.Many2one('res.users', 'Acheteur', help="Utilisé en particulier pour transformer les SA en DAS")
+
