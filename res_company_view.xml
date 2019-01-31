@@ -30,8 +30,15 @@
                             </group>
                         </group>
                         <group>
-                            <group string="Achats">
-                                <field name="is_acheteur_id"/>
+                            <group>
+                                <group string="Achats">
+                                    <field name="is_acheteur_id"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Base principale (Primaire)">
+                                    <field name="is_base_principale"/>
+                                </group>
                             </group>
                         </group>
                     </page>

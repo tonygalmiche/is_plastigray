@@ -22,3 +22,5 @@ class res_company(models.Model):
 
     is_acheteur_id = fields.Many2one('res.users', 'Acheteur', help="Utilisé en particulier pour transformer les SA en DAS")
 
+    is_base_principale = fields.Boolean('Base principale (Primaire)', help="Cette case permet de masquer certains champs sur les bases répliquées si elle n'est pas cochée")
+
