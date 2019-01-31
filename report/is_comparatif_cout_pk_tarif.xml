@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+       <record id="is_comparatif_cout_pk_tarif_form_view" model="ir.ui.view">
+            <field name="name">is_comparatif_cout_pk_tarif_form_view</field>
+            <field name="model">is.comparatif.cout.pk.tarif</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="product_id"/>
+                                <field name="gest"/>
+                                <field name="lot_mini"/>
+                                <field name="partner_id"/>
+                                <field name="cout_id"/>
+                                <field name="cout_ma"/>
+                                <field name="cout_mo"/>
+                                <field name="cout_total"/>
+                                <field name="prix_achat"/>
+                            </group>
+                         </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_comparatif_cout_pk_tarif_search_view" model="ir.ui.view">
+            <field name="name">is_comparatif_cout_pk_tarif_search_view</field>
+            <field name="model">is.comparatif.cout.pk.tarif</field>
+            <field name="arch" type="xml">
+                <search string="Recherche">
+                    <field name="product_id"/>
+                    <field name="gest"/>
+                    <field name="partner_id"/>
+                </search>
+            </field>
+        </record>
+        <record id="is_comparatif_cout_pk_tarif_tree_view" model="ir.ui.view">
+            <field name="name">is_comparatif_cout_pk_tarif_tree_view</field>
+            <field name="model">is.comparatif.cout.pk.tarif</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="cout_id"    widget="many2one_clickable"/>
+                    <field name="gest"/>
+                    <field name="lot_mini"/>
+                    <field name="partner_id" widget="many2one_clickable"/>
+                    <field name="cout_ma"/>
+                    <field name="cout_mo"/>
+                    <field name="cout_total"/>
+                    <field name="prix_achat"/>
+               </tree>
+            </field>
+        </record>
+        <record id="is_comparatif_cout_pk_tarif_action" model="ir.actions.act_window">
+            <field name="name">Comparatif Coût PK Tarif Achat</field>
+            <field name="res_model">is.comparatif.cout.pk.tarif</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

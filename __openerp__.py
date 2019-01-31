@@ -200,6 +200,7 @@ Module principal du projet Plastigray
         "report/is_livraison_gefco.xml",
         "report/is_certifications_qualite_suivi.xml",
         "report/is_anomalie_declar_prod.xml",
+        "report/is_comparatif_cout_pk_tarif.xml",
         "menu.xml",
     ], 
     "qweb": [

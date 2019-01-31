@@ -213,5 +213,5 @@ access_is_mini_delta_dore_line,access_is_mini_delta_dore_line,model_is_mini_delt
 access_is_mini_delta_dore_besoin,access_is_mini_delta_dore_besoin,model_is_mini_delta_dore_besoin,base.group_user,1,1,1,1
 access_is_cout_calcul_niveau,access_is_cout_calcul_niveau,model_is_cout_calcul_niveau,base.group_user,1,1,1,1
 access_is_inventaire_anomalie,access_is_inventaire_anomalie,model_is_inventaire_anomalie,base.group_user,1,1,1,1
-
+access_is_comparatif_cout_pk_tarif,access_is_comparatif_cout_pk_tarif,model_is_comparatif_cout_pk_tarif,base.group_user,1,0,0,0
 

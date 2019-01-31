@@ -1813,7 +1813,15 @@
             ref('is_gestionnaire_donnees_techniques_group'),
         ])]"/>
     </record>
-
+    <record id="is_comparatif_cout_pk_tarif_menu" model="ir.ui.menu" >
+        <field name="name">Comparatif Coût PK Tarif</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_analyse_cout_menu')"/>
+        <field name="action"    ref="is_comparatif_cout_pk_tarif_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
 
 
     <!-- Suivi d'activité -->
