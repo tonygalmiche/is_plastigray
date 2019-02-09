@@ -162,14 +162,22 @@
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
-
-
     <record model="res.groups" id="is_administration_vente_group" >
         <field name="name">ADV - Expéditions</field>
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
 
+    <record model="res.groups" id="is_gestionnaire_ot_group" >
+        <field name="name">Maintenance - Gestionnaire des OT</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
+    <record model="res.groups" id="is_technicien_maintenance_group" >
+        <field name="name">Maintenance - Technicien maintenance</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
 
 
     <!-- Catégories de groupes -->

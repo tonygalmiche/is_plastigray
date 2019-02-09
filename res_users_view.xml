@@ -22,6 +22,7 @@
             <field name="inherit_id" ref="base.view_users_form"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
+                    <field name="is_site_id"/>
                     <field name="is_service_id"/>
                 </field>
             </field>
@@ -32,6 +33,7 @@
             <field name="inherit_id" ref="base.view_users_tree"/>
             <field name="arch" type="xml">
                 <field name="login" position="after">
+                    <field name="is_site_id"/>
                     <field name="is_service_id"/>
                 </field>
             </field>

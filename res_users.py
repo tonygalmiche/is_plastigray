@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from openerp import models,fields,api, SUPERUSER_ID
 from openerp.tools.translate import _
 from openerp.http import request
@@ -22,6 +24,7 @@ class is_service(models.Model):
 class res_users(models.Model):
     _inherit = "res.users"
 
+    is_site_id    = fields.Many2one("is.database", "Site de production", help=u"Ce champ est utilisé en particulier pour la gestion des OT dans odoo0")
     is_service_id = fields.Many2one('is.service', 'Service')
     is_adresse_ip = fields.Char('Adresse IP')
 
