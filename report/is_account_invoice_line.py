@@ -3,6 +3,8 @@
 from openerp import tools
 from openerp import models,fields,api
 from openerp.tools.translate import _
+import datetime
+import pytz
 
 
 class is_account_invoice_line(models.Model):
@@ -62,10 +64,46 @@ class is_account_invoice_line(models.Model):
         ], u"État", readonly=True, select=True)
 
 
+    @api.multi
+    def refresh_ligne_facture_client_action(self):
+        cr = self._cr
+        cr.execute("REFRESH MATERIALIZED VIEW is_account_invoice_line;")
+        now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
+        view_id=self.env.ref('is_plastigray.is_account_invoice_line_customer_tree_view').id
+        return {
+            'name': u'Lignes des factures client actualisées à '+str(now),
+            'view_mode': 'tree,form,graph',
+            'view_type': 'form',
+            'view_id'  : False,
+            'views'    : [(view_id, 'tree'),(False, 'form'),(False, 'graph')],
+            'res_model': 'is.account.invoice.line',
+            'domain'   : [('type','=', 'out_invoice')],
+            'type': 'ir.actions.act_window',
+        }
+
+    @api.multi
+    def refresh_ligne_facture_fournisseur_action(self):
+        cr = self._cr
+        cr.execute("REFRESH MATERIALIZED VIEW is_account_invoice_line;")
+        now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
+        view_id=self.env.ref('is_plastigray.is_account_invoice_line_supplier_tree_view').id
+        return {
+            'name': u'Lignes des factures fournisseur actualisées à '+str(now),
+            'view_mode': 'tree,form,graph',
+            'view_type': 'form',
+            'view_id'  : False,
+            'views'    : [(view_id, 'tree'),(False, 'form'),(False, 'graph')],
+            'res_model': 'is.account.invoice.line',
+            'domain'   : [('type','=', 'in_invoice')],
+            'type': 'ir.actions.act_window',
+        }
+
+
     def init(self, cr):
-        tools.drop_view_if_exists(cr, 'is_account_invoice_line')
+        #tools.drop_view_if_exists(cr, 'is_account_invoice_line')
         cr.execute("""
-            CREATE OR REPLACE view is_account_invoice_line AS (
+            DROP MATERIALIZED VIEW IF EXISTS is_account_invoice_line;
+            CREATE MATERIALIZED view is_account_invoice_line AS (
                 select 
                     ail.id,
                     ail.id invoice_line_id,

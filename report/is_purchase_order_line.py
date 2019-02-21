@@ -3,6 +3,9 @@
 from openerp import tools
 from openerp import models,fields,api
 from openerp.tools.translate import _
+import datetime
+import pytz
+
 
 
 class is_purchase_order_line(models.Model):
@@ -37,10 +40,26 @@ class is_purchase_order_line(models.Model):
     qt_reste             = fields.Float('Qt Reste (UA)', digits=(14,3))
     commande_ouverte     = fields.Char('Commande ouverte')
 
+
+    @api.multi
+    def refresh_purchase_order_line_action(self):
+        cr = self._cr
+        cr.execute("REFRESH MATERIALIZED VIEW is_purchase_order_line;")
+        now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
+        return {
+            'name': u'Lignes des commandes actualisées à '+str(now),
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'views'    : [(False, 'tree'),(False, 'form')],
+            'res_model': 'is.purchase.order.line',
+            'type': 'ir.actions.act_window',
+        }
+
+
     def init(self, cr):
-        tools.drop_view_if_exists(cr, 'is_purchase_order_line')
         cr.execute("""
-            CREATE OR REPLACE view is_purchase_order_line AS (
+            DROP MATERIALIZED VIEW IF EXISTS is_purchase_order_line;
+            CREATE MATERIALIZED view is_purchase_order_line AS (
                 select  pol.id,
                         pol.id                  as order_line_id,
                         po.id                   as order_id,
@@ -88,37 +107,4 @@ class is_purchase_order_line(models.Model):
                 where po.state!='draft' 
             )
         """)
-
-
-
-
-#        cr.execute("""
-#            CREATE OR REPLACE view is_purchase_order_line AS (
-#                select  pol.id,
-#                        po.id                   as order_id,
-#                        po.partner_id           as partner_id, 
-#                        po.date_order,
-#                        po.minimum_planned_date,
-#                        po.is_date_confirmation,
-#                        po.is_commentaire,
-#                        po.is_num_da            as is_num_da,
-#                        po.is_document          as is_document,
-#                        po.is_demandeur_id      as is_demandeur_id,
-#                        pt.id                   as product_id, 
-#                        pt.is_ref_fournisseur   as is_ref_fournisseur,
-
-#                        pol.date_planned,
-#                        pol.product_qty,
-#                        pol.product_uom,
-#                        pol.price_unit,
-#                        pol.is_justification
-#                from purchase_order po inner join purchase_order_line pol on po.id=pol.order_id
-#                                       inner join product_product      pp on pol.product_id=pp.id
-#                                       inner join product_template     pt on pp.product_tmpl_id=pt.id
-#                where po.state!='draft' 
-#            )
-#        """)
-
-
-
 

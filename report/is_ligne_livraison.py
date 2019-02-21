@@ -3,6 +3,8 @@
 from openerp import tools
 from openerp import models,fields,api
 from openerp.tools.translate import _
+import datetime
+import pytz
 
 
 class is_ligne_livraison(models.Model):
@@ -45,8 +47,23 @@ class is_ligne_livraison(models.Model):
         ('assigned' , u'Disponible'),
         ('done'     , u'Terminé')], u"État", readonly=True, select=True)
 
+
+    @api.multi
+    def refresh_materialized_view_action(self):
+        cr = self._cr
+        cr.execute("REFRESH MATERIALIZED VIEW is_ligne_livraison;")
+        now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
+        return {
+            'name': u'Lignes des livraisons actualisées à '+str(now),
+            'view_mode': 'tree,form',
+            'view_type': 'form',
+            'res_model': 'is.ligne.livraison',
+            'type': 'ir.actions.act_window',
+        }
+
+
     def init(self, cr):
-        tools.drop_view_if_exists(cr, 'is_ligne_livraison')
+        #tools.drop_view_if_exists(cr, 'is_ligne_livraison')
         cr.execute("""
             CREATE OR REPLACE FUNCTION get_amortissement_moule(code_client char, pt_id  integer) RETURNS float AS $$
             BEGIN
@@ -78,7 +95,8 @@ class is_ligne_livraison(models.Model):
             $$ LANGUAGE plpgsql;
 
 
-            CREATE OR REPLACE view is_ligne_livraison AS (
+            DROP MATERIALIZED VIEW IF EXISTS is_ligne_livraison;
+            CREATE MATERIALIZED view is_ligne_livraison AS (
                 select  sm.id,
                         sp.is_date_expedition   as date_expedition,
                         sp.is_date_livraison    as date_livraison,

@@ -496,7 +496,7 @@
         ])]"/>
     </record>
     <record id="is_ligne_facture_fournisseur_menu" model="ir.ui.menu" >
-        <field name="name">Lignes de factures</field>
+        <field name="name">Lignes des factures</field>
         <field name="sequence">35</field>
         <field name="parent_id" eval="ref('menu_is_achats_fac')"/>
         <field name="action"    ref="is_ligne_facture_fournisseur_action"/>
@@ -797,10 +797,10 @@
         ])]"/>
     </record>
     <record id="is_ligne_livraison_menu" model="ir.ui.menu" >
-        <field name="name">Lignes de livraisons</field>
+        <field name="name">Lignes des livraisons</field>
         <field name="sequence">30</field>
         <field name="parent_id" eval="ref('menu_is_ventes_liv')"/>
-        <field name="action"    ref="is_ligne_livraison_action"/>
+        <field name="action"    ref="is_refresh_ligne_livraison_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_rsp_production_group'),
             ref('is_homme_flux_group'),
@@ -810,6 +810,7 @@
             ref('is_chef_projet_group'),
         ])]"/>
     </record>
+
     <record id="is_livraison_gefco_menu" model="ir.ui.menu" >
         <field name="name">Livraison GEFBOX</field>
         <field name="sequence">40</field>
@@ -921,7 +922,7 @@
         ])]"/>
     </record>
     <record id="is_ligne_facture_client_menu" model="ir.ui.menu" >
-        <field name="name">Lignes de factures</field>
+        <field name="name">Lignes des factures</field>
         <field name="sequence">45</field>
         <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
         <field name="action"    ref="is_ligne_facture_client_action"/>
@@ -931,6 +932,7 @@
             ref('is_administration_vente_group'),
         ])]"/>
     </record>
+
     <record id="is_export_ventes_seriem_menu" model="ir.ui.menu" >
         <field name="name">Export Série-M</field>
         <field name="sequence">50</field>
