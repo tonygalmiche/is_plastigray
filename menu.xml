@@ -832,6 +832,7 @@
             ref('is_comptable_group'),
             ref('is_commerciaux_group'),
             ref('is_administration_vente_group'),
+            ref('is_qualite_group'),
         ])]"/>
     </record>
     <record id="is_livraisons_a_facturer_menu" model="ir.ui.menu" >
@@ -919,6 +920,7 @@
         <field name="groups_id" eval="[(6,0,[
             ref('is_comptable_group'),
             ref('is_administration_vente_group'),
+            ref('is_qualite_group'),
         ])]"/>
     </record>
     <record id="is_ligne_facture_client_menu" model="ir.ui.menu" >
@@ -930,6 +932,7 @@
             ref('is_comptable_group'),
             ref('is_commerciaux_group'),
             ref('is_administration_vente_group'),
+            ref('is_qualite_group'),
         ])]"/>
     </record>
 
