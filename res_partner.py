@@ -178,7 +178,9 @@ class res_partner(models.Model):
     ], 'Caractéristique des BL')
     is_mode_envoi_facture   = fields.Selection([
         ('courrier'      , 'Envoi par courrier'),
+        ('courrier2'     , 'Envoi par courrier en double exemplaire'),
         ('mail'          , 'Envoi par mail (1 mail par facture)'),
+        ('mail2'         , 'Envoi par mail (1 mail par facture en double exemplaire)'),
         ('mail_client'   , 'Envoi par mail (1 mail par client)'),
         ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
     ], "Mode d'envoi des factures")

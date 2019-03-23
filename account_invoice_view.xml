@@ -17,6 +17,19 @@
         </record>
 
 
+        <!-- Imprimer en simple ou double exemplaire -->
+        <record id="imprimer_simple_double_action_server" model="ir.actions.server">
+             <field name="name">Imprimer en simple ou double exemplaire</field>
+            <field name="model_id" ref="model_account_invoice"/>
+            <field name="code">action = self.imprimer_simple_double(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="imprimer_simple_double_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'account.invoice'" name="model"/>
+            <field name="name">Imprimer en simple ou double exemplaire</field>
+            <field eval="'ir.actions.server,%d'%imprimer_simple_double_action_server" name="value"/>
+        </record>
+
 
         <!-- Folio -->
         <record id="is_account_folio_tree_view" model="ir.ui.view">

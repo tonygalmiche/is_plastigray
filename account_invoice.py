@@ -8,7 +8,11 @@ import time
 from datetime import date, datetime
 from ftplib import FTP
 import os
-
+import tempfile
+from pyPdf import PdfFileWriter, PdfFileReader
+from contextlib import closing
+import logging
+_logger = logging.getLogger(__name__)
 
 
 modele_mail=u"""
@@ -82,7 +86,9 @@ class account_invoice(models.Model):
     is_origine_id     = fields.Many2one('account.invoice', "Facture d'origine")
     is_mode_envoi_facture = fields.Selection([
         ('courrier'      , 'Envoi par courrier'),
+        ('courrier2'     , 'Envoi par courrier en double exemplaire'),
         ('mail'          , 'Envoi par mail (1 mail par facture)'),
+        ('mail2'         , 'Envoi par mail (1 mail par facture en double exemplaire)'),
         ('mail_client'   , 'Envoi par mail (1 mail par client)'),
         ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
     ], "Mode d'envoi de la facture")
@@ -105,7 +111,101 @@ class account_invoice(models.Model):
     def invoice_print(self):
         assert len(self) == 1, 'This option should only be used for a single id at a time.'
         self.sent = True
-        return self.env['report'].get_action(self, 'is_plastigray.is_report_invoice')
+        res = self.env['report'].get_action(self, 'is_plastigray.is_report_invoice')
+        return res
+
+
+    @api.multi
+    def _merge_pdf(self, documents):
+        """Merge PDF files into one.
+        :param documents: list of path of pdf files
+        :returns: path of the merged pdf
+        """
+        writer = PdfFileWriter()
+        streams = []  # We have to close the streams *after* PdfFilWriter's call to write()
+        for document in documents:
+            pdfreport = file(document, 'rb')
+            streams.append(pdfreport)
+            reader = PdfFileReader(pdfreport)
+            for page in range(0, reader.getNumPages()):
+                writer.addPage(reader.getPage(page))
+        merged_file_fd, merged_file_path = tempfile.mkstemp(suffix='.pdf', prefix='report.merged.tmp.')
+        with closing(os.fdopen(merged_file_fd, 'w')) as merged_file:
+            writer.write(merged_file)
+        for stream in streams:
+            stream.close()
+        return merged_file_path
+
+
+    @api.multi
+    def imprimer_simple_double(self):
+        """Imprimer en simple ou double exemplaire"""
+        cr , uid, context = self.env.args
+        db = self._cr.dbname
+        path="/tmp/factures-" + db + '-'+str(uid)
+        cde="rm -Rf " + path
+        os.popen(cde).readlines()
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        nb=len(self)
+        ct=1
+        paths=[]
+        for obj in self:
+            msg = str(ct)+'/'+str(nb)+' - Imprimer en simple ou double exemplaire : '+str(obj.number)
+            _logger.info(msg)
+            ct+=1
+            result = self.env['report'].get_pdf(obj, 'is_plastigray.is_report_invoice')
+            r = range(1, 2)
+            if obj.is_mode_envoi_facture=='courrier2':
+                r = range(1, 3)
+            for x in r:
+                file_name = path + '/'+str(obj.number) + '-' + str(x) + '.pdf'
+                fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
+                try:
+                    os.write(fd, result)
+                finally:
+                    os.close(fd)
+                paths.append(file_name)
+
+
+        # ** Merge des PDF *****************************************************
+        path_merged=self._merge_pdf(paths)
+        pdfs = open(path_merged,'rb').read().encode('base64')
+        # **********************************************************************
+
+
+        # ** Recherche si une pièce jointe est déja associèe *******************
+        attachment_obj = self.env['ir.attachment']
+        name = 'factures-' + db + '-' + str(uid) + '.pdf'
+        attachments = attachment_obj.search([('name','=',name)],limit=1)
+        # **********************************************************************
+
+
+        # ** Creation ou modification de la pièce jointe ***********************
+        vals = {
+            'name':        name,
+            'datas_fname': name,
+            'type':        'binary',
+            'datas':       pdfs,
+        }
+        if attachments:
+            for attachment in attachments:
+                attachment.write(vals)
+                attachment_id=attachment.id
+        else:
+            attachment = attachment_obj.create(vals)
+            attachment_id=attachment.id
+        #***********************************************************************
+
+        #** Envoi du PDF mergé dans le navigateur ******************************
+        if attachment_id:
+            return {
+                'type' : 'ir.actions.act_url',
+                'url': '/web/binary/saveas?model=ir.attachment&field=datas&id='+str(attachment_id)+'&filename_field=name',
+                'target': 'new',
+            }
+        #***********************************************************************
 
 
     @api.multi
@@ -169,9 +269,20 @@ class account_invoice(models.Model):
             #*******************************************************************
 
 
+            # ** Un mail par facture en double exemplaire **********************
+            for row in result:
+                if row[0]=='mail2':
+                    partner_id = row[1]
+                    id         = row[3]
+                    self._envoi_par_mail(partner_id, [id])
+            #*******************************************************************
+
+
+
+
     @api.multi
     def _envoi_par_mail(self, partner_id, ids):
-        cr = self._cr
+        cr , uid, context = self.env.args
         user = self.env['res.users'].browse(self._uid)
         if user.email==False:
             raise Warning(u"Votre mail n'est pas renseigné !")
@@ -184,8 +295,48 @@ class account_invoice(models.Model):
             ], order='id desc', limit=1)
             if len(attachments)==0:
                 raise Warning(u"Facture "+invoice.number+" non générée (non imprimée) !")
+
             for attachment in attachments:
-                attachment_ids.append(attachment.id)
+                if invoice.is_mode_envoi_facture=='mail2':
+                    # ** Duplication de la facture + fusion ********************
+                    db = self._cr.dbname
+                    path="/tmp/factures-" + db + '-'+str(uid)
+                    cde="rm -Rf " + path
+                    os.popen(cde).readlines()
+                    if not os.path.exists(path):
+                        os.makedirs(path)
+                    paths=[]
+                    for x in range(1, 3):
+                        file_name = path + '/'+str(invoice.number) + '-' + str(x) + '.pdf'
+                        fd = os.open(file_name,os.O_RDWR|os.O_CREAT)
+                        try:
+                            os.write(fd, attachment.datas.decode('base64'))
+                        finally:
+                            os.close(fd)
+                        paths.append(file_name)
+                    # ** Merge des PDF *****************************************
+                    path_merged=self._merge_pdf(paths)
+                    pdfs = open(path_merged,'rb').read().encode('base64')
+                    # **********************************************************
+
+
+                    # ** Création d'une piece jointe fusionnée *****************
+                    name = 'facture-' + str(invoice.number) + '-' + str(uid) + '.pdf'
+                    vals = {
+                        'name':        name,
+                        'datas_fname': name,
+                        'type':        'binary',
+                        'datas':       pdfs,
+                    }
+                    new = self.env['ir.attachment'].create(vals)
+                    attachment_id=new.id
+                    #***********************************************************
+                else:
+                    attachment_id=attachment.id
+
+                attachment_ids.append(attachment_id)
+
+
         partner = self.env['res.partner'].browse(partner_id)
         if partner.is_mode_envoi_facture=='mail_client_bl':
             attachment_obj = self.env['ir.attachment']
