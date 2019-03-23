@@ -98,6 +98,9 @@
                     <field name="is_date_confirmation" />
                     <field name="is_commentaire" />
                 </field>
+                <field name="incoterm_id" position="after">
+                    <field name="is_lieu"/>
+                </field>
             </field>
         </record>
 

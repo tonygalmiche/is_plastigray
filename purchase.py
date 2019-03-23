@@ -113,6 +113,8 @@ class purchase_order(models.Model):
     is_date_envoi_mail   = fields.Datetime("Mail envoyé le", readonly=True)
     is_cfc_id            = fields.Many2one('is.cde.ferme.cadencee', 'Commande ferme cadencée', readonly=True)
     is_date_end_cfc      = fields.Date("Date de fin de la cde ferme cadencée", readonly=True)
+    is_lieu              = fields.Char("Lieu")
+
 
     _defaults = {
         'is_demandeur_id': lambda obj, cr, uid, ctx=None: uid,
@@ -244,7 +246,9 @@ class purchase_order(models.Model):
         if 'value' in res:
             partner = self.env['res.partner'].browse(partner_id)
             res['value'].update({
-                'is_livre_a_id': partner.is_livre_a_id.id
+                'is_livre_a_id': partner.is_livre_a_id.id,
+                'incoterm_id'  : partner.is_incoterm.id,
+                'is_lieu'      : partner.is_lieu,
             })
         return res
 
