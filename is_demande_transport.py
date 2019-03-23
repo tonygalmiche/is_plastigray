@@ -56,8 +56,39 @@ class is_demande_transport(models.Model):
 
 
     @api.multi
+    def envoi_mail(self, email_from,email_to,email_cc,subject,body_html):
+        for obj in self:
+            vals={
+                'email_from'    : email_from, 
+                'email_to'      : email_to, 
+                'email_cc'      : email_cc,
+                'subject'       : subject,
+                'body_html'     : body_html, 
+            }
+            email=self.env['mail.mail'].create(vals)
+            if email:
+                self.env['mail.mail'].send(email)
+
+
+    @api.multi
     def vers_a_traiter_action(self):
         for obj in self:
+            company  = self.env.user.company_id
+            email_to = company.is_gest_demande_transport_id.email
+            if email_to:
+                subject=u'['+obj.name+u'] Demande de transport à traiter'
+                user  = self.env['res.users'].browse(self._uid)
+                email_from = user.email
+                email_cc   = email_from
+                nom   = user.name
+                base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.transport'
+                body_html=u"""
+                    <p>Bonjour,</p>
+                    <p>"""+nom+""" vient de passer la demande de transport <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'A traiter'.</p>
+                    <p>Merci d'en prendre connaissance.</p>
+                """
+                self.envoi_mail(email_from,email_to,email_cc,subject,body_html)
             obj.state="a_traiter"
 
     @api.multi
@@ -68,9 +99,22 @@ class is_demande_transport(models.Model):
     @api.multi
     def vers_termine_action(self):
         for obj in self:
+            email_to = obj.demandeur_id.email
+            if email_to:
+                subject=u'['+obj.name+u'] Demande de transport terminée'
+                user  = self.env['res.users'].browse(self._uid)
+                email_from = user.email
+                if email_from:
+                    email_cc   = email_from
+                    nom   = user.name
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    url=base_url+u'/web#id='+str(obj.id)+u'&view_type=form&model=is.demande.transport'
+                    body_html=u"""
+                        <p>Bonjour,</p>
+                        <p>"""+nom+""" vient de passer la demande de transport <a href='"""+url+"""'>"""+obj.name+"""</a> à l'état 'Terminé'.</p>
+                        <p>Merci d'en prendre connaissance.</p>
+                    """
+                    self.envoi_mail(email_from,email_to,email_cc,subject,body_html)
             obj.state="termine"
-
-
-
 
 

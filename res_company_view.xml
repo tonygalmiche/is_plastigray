@@ -31,8 +31,9 @@
                         </group>
                         <group>
                             <group>
-                                <group string="Achats">
+                                <group string="Gestionnaires">
                                     <field name="is_acheteur_id"/>
+                                    <field name="is_gest_demande_transport_id"/>
                                 </group>
                             </group>
                             <group>
