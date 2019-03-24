@@ -97,20 +97,20 @@ class sale_order(models.Model):
             </body>
         </html>
         """
-
         for obj in self:
+            mails=[]
             for c in obj.partner_id.child_ids:
                 if c.is_type_contact.name == 'Approvisionneur':
-                    email_contact = c.name + u' <' + c.email + u'>'
-                    break
-            else:
+                    mail = c.name + u' <' + c.email + u'>'
+                    mails.append(mail)
+            if not mails:
                 raise Warning(u"Aucun mail de type 'Approvisionneur' pour ce client !")
+            email_contact = ','.join(mails)
             user  = self.env['res.users'].browse(uid)
             email = user.email
             nom   = user.name
             if email==False:
                 raise Warning(u"Votre mail n'est pas renseigné !")
-
 
             #** Génération du PDF **********************************************
             name=u'ar_commande-' + obj.client_order_ref + u'.pdf'
