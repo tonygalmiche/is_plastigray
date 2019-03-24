@@ -40,7 +40,7 @@
                     <field name="date_livraison"      />
                     <field name="type_commande"       />
                     <field name="prix"                />
-                    <field name="order_id"            readonly="1" widget="many2one_clickable"/>
+                    <field name="order_id"            readonly="0" widget="many2one_clickable"/>
                     <field name="anomalie"/>
                     <field name="file_id"             readonly="1"/>
                     <field name="write_date"          readonly="1" string="Date de modification"/>

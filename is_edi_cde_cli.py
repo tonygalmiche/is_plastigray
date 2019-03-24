@@ -516,16 +516,17 @@ class is_edi_cde_cli(models.Model):
     def get_data_lacroix(self, attachment):
         nb_cols = 19
         col_ref = 1
-        col_qn = 13
+        #col_qn = 13
+        col_qn = 15
         col_type = None
-        col_date = 16
+        #col_date = 16
+        col_date = 18
         data_previsionnel = 'P'
         res = []
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
             csvfile = csvfile.split("\n")
             csvfile = csv.reader(csvfile)
-
             tab=[]
             try:
                 for ct, lig in enumerate(csvfile):
