@@ -1875,13 +1875,14 @@
     </record>
 
     <!-- Presses - Outillages Menu -->
+    <!--
     <menuitem 
         id="menu_press_outillages" 
         parent="menu_main_outillages"
         name="Presses"
         sequence="10" 
     />
-    <!-- Presses - Presses sub menu -->
+
     <menuitem 
         id="menu_is_press_press_outillages" 
         sequence="10" 
@@ -1889,6 +1890,7 @@
         parent="menu_press_outillages" 
         action="action_is_presse_plastigray" 
     />
+    -->
 
     <menuitem id="menu_sub_main_outillages"       sequence="20" parent="menu_main_outillages" name="Outillages"/>
     <menuitem id="menu_is_gabarit_controle" 
@@ -1947,11 +1949,10 @@
     />
 
     <!-- Préchauffeurs - Outillages Menu -->
+    <!--
     <menuitem id="menu_prechauffeurs_outillages" parent="menu_main_outillages" name="Préchauffeurs" sequence="10" />
-
-    <!-- Préchauffeurs - Préchauffeurs sub menu -->
     <menuitem id="menu_is_prechauffeurs_prechauffeurs_outillages" sequence="10" name="Préchauffeurs" parent="menu_prechauffeurs_outillages" action="action_is_prechauffeur_is_plastigray" />
-
+    -->
 
 
     <menuitem id="menu_type_equipement" sequence="45" name="Type Equipement"     parent="menu_sub_main_outillages_table" action="is_type_equipement_action" />
@@ -1959,12 +1960,12 @@
 
     <menuitem id="is_operation_controle_menu" sequence="46" name="Opération de contrôle"     parent="menu_sub_main_outillages_table" action="is_operation_controle_action" />
 
-
+    <!--
     <menuitem id="menu_sub_main_moyens_fabrication_table" sequence="30" parent="menu_main_outillages" name="Moyens Fabrication"/>
     <menuitem id="menu_moyens_fabrication" sequence="10" name="Moyens Fabrication"     parent="menu_sub_main_moyens_fabrication_table" action="is_moyen_fabrication_action" />
-
-    <!-- Autres Moyens Fabrication - Moyens Fabrication sub menu - Outillages -->
     <menuitem id="menu_autres_moyens_fabrication" sequence="10" name="Autres Moyens Fabrication" parent="menu_sub_main_moyens_fabrication_table" action="action_is_moyen_fabrication_autre_plastigray" />
+    -->
+
 
 	<menuitem id="menu_piece_de_montabilite" 
               sequence="34" 
