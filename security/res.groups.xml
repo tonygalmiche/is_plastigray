@@ -3,6 +3,25 @@
 <data noupdate="0">
 
 
+    <record model="ir.module.category" id="module_is_cpi_raspberry">
+        <field name="name">THEIA</field>
+        <field name="description">THEIA</field>
+        <field name="sequence">10</field>
+   </record>
+
+    <record id="group_gestionnaire_cpi_raspberry" model="res.groups">
+        <field name="name">Gestionnaire THEIA</field>
+        <field name="comment">Gestionnaire THEIA</field>
+        <field name="category_id" ref="module_is_cpi_raspberry"/>
+    </record>
+
+    <record id="group_gestionnaire_of" model="res.groups">
+        <field name="name">Gestionnaire des OF</field>
+        <field name="comment">Ce groupe peut modifier le nombre d'empreintes sur les OF</field>
+        <field name="category_id" ref="module_is_cpi_raspberry"/>
+    </record>
+
+
     <record model="ir.module.category" id="is_groupe_odoo_base_module_category">
         <field name="name">Groupes de base</field>
         <field name="description">Groupes Odoo de base</field>

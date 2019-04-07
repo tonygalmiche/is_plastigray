@@ -31,6 +31,7 @@ Module principal du projet Plastigray
         "auditlog",
         "web",
         "web_widget_color",
+#        "is_pg_2019",
     ], 
     "data" : [
         "security/res.groups.xml",
@@ -207,6 +208,7 @@ Module principal du projet Plastigray
         "static/src/xml/*.xml"
     ],
     "installable": True,
-    "active": False
+    "active": False,
+    #"auto_install": True,
 }
 

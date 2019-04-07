@@ -42,6 +42,12 @@
                                 </group>
                             </group>
                         </group>
+                        <group>
+                            <group string="THEIA">
+                                <field name="is_code_societe"/>
+                                <field name="is_dest_bilan_of_ids" widget="many2many_tags"/>
+                            </group>
+                        </group>
                     </page>
                 </notebook>
                 <field name="logo" position="after">

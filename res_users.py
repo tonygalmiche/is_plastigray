@@ -26,7 +26,7 @@ class res_users(models.Model):
 
     is_site_id    = fields.Many2one("is.database", "Site de production", help=u"Ce champ est utilisé en particulier pour la gestion des OT dans odoo0")
     is_service_id = fields.Many2one('is.service', 'Service')
-    is_adresse_ip = fields.Char('Adresse IP')
+    is_adresse_ip = fields.Char('Adresse IP', help='Adresse IP de cet utilisateur pour lui donner des accès spcécifiques dans THEIA')
 
 
     def _login(self, db, login, password):
