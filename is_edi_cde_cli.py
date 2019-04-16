@@ -514,7 +514,7 @@ class is_edi_cde_cli(models.Model):
 
     @api.multi
     def get_data_lacroix(self, attachment):
-        nb_cols = 19
+        nb_cols = 21
         col_ref = 1
         #col_qn = 13
         col_qn = 15
