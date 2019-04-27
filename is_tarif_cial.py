@@ -12,17 +12,19 @@ class is_tarif_cial(models.Model):
     _sql_constraints = [('is_indice_prix_uniq','UNIQUE(partner_id, product_id,indice_prix)', 'Cet indice de prix existe déja pour ce client et cet article')]
 
 
-    @api.depends('product_id','prix_vente','date_debut','date_fin')
-    def _ref_client(self):
-        for obj in self:
-            if obj.product_id:
-                obj.is_ref_client = obj.product_id.is_ref_client
-
+#    @api.depends('product_id','prix_vente','date_debut','date_fin')
+#    def _ref_client(self):
+#        for obj in self:
+#            if obj.product_id:
+#                obj.is_ref_client = obj.product_id.is_ref_client
 
     display_name        = fields.Char(string='Name', compute='_compute_display_name')
     partner_id          = fields.Many2one('res.partner', 'Client'      , required=True, select=True)
     product_id          = fields.Many2one('product.template', 'Article', required=True, select=True)
-    is_ref_client       = fields.Char("Référence client", store=True, compute='_ref_client')
+
+    #is_ref_client       = fields.Char("Référence client", store=True, compute='_ref_client')
+    is_ref_client       = fields.Char("Référence client", related='product_id.is_ref_client', readonly=True)
+
     is_mold_dossierf    = fields.Char('Moule', related='product_id.is_mold_dossierf', readonly=True)
     indice_prix         = fields.Integer("Indice Prix"                 , required=True, select=True)
     date_debut          = fields.Date("Date de début")

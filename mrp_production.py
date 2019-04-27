@@ -249,10 +249,18 @@ class MrpProduction(models.Model):
             for rec in self:
                 move_ids = stock_move_obj.search([('production_id','=', rec.id)])
                 move_ids += rec.move_lines
-                move_ids.write({
-                    'date'         : vals.get('date_planned'),
-                    'date_expected': vals.get('date_planned'),
-                })
+                for move in move_ids:
+                    if move.state not in ['cancel','done']:
+                        move.write({
+                            'date'         : vals.get('date_planned'),
+                            'date_expected': vals.get('date_planned'),
+                        })
+
+#                move_ids.write({
+#                    'date'         : vals.get('date_planned'),
+#                    'date_expected': vals.get('date_planned'),
+#                })
+
         res=super(MrpProduction, self).write(vals, update=update)
         if 'product_lines' in vals or 'product_qty' in vals:
             self.recreer_mouvements()
