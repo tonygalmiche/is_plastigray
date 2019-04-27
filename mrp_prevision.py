@@ -239,6 +239,8 @@ class mrp_prevision(models.Model):
                     'fiscal_position' : partner.property_account_position.id,
                     'payment_term_id' : partner.property_supplier_payment_term.id,
                     'pricelist_id'    : partner.property_product_pricelist_purchase.id,
+                    'incoterm_id'     : partner.is_incoterm.id,
+                    'is_lieu'         : partner.is_lieu,
                 }
                 order=order_obj.create(vals)
                 if order:
