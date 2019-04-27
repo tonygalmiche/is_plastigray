@@ -168,6 +168,8 @@ class is_demande_achat_fg(models.Model):
                     'currency_id'     : partner.property_product_pricelist_purchase.currency_id.id,
                     'is_num_da'       : obj.name,
                     'is_demandeur_id' : obj.createur_id.id,
+                    'incoterm_id'     : partner.is_incoterm.id,
+                    'is_lieu'         : partner.is_lieu,
                 }
                 order=order_obj.create(vals)
                 obj.order_id=order.id
