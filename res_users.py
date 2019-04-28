@@ -35,9 +35,9 @@ class res_users(models.Model):
 
         user_id = super(res_users, self)._login(db, login, password)
 
-        print request
-        print request.httprequest
-        print request.httprequest.environ
+        print 'request=',request
+        print 'request.httprequest=',request.httprequest
+        print 'request.httprequest.environ=',request.httprequest.environ
 
 
 #        ip=request.httprequest.environ.get('REMOTE_ADDR',False)
