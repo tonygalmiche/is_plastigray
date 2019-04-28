@@ -34,17 +34,18 @@ class res_users(models.Model):
         cela est utilise par les programmes externes"""
 
         user_id = super(res_users, self)._login(db, login, password)
-        ip=request.httprequest.environ['REMOTE_ADDR'] 
-        cr = self.pool.cursor()
-        cr.autocommit(True)
-        if user_id and ip:
-            SQL="""
-                INSERT INTO is_res_users (user_id, heure_connexion, adresse_ip)
-                VALUES ("""+str(user_id)+""", now() at time zone 'UTC', '"""+str(ip)+"""')
-            """
-            res=cr.execute(SQL)
-            #res=cr.execute("UPDATE res_users SET is_adresse_ip='"+str(ip)+"' WHERE id="+str(user_id))
-            cr.close()
+        ip=request.httprequest.environ.get('REMOTE_ADDR',False)
+        if ip:
+            cr = self.pool.cursor()
+            cr.autocommit(True)
+            if user_id and ip:
+                SQL="""
+                    INSERT INTO is_res_users (user_id, heure_connexion, adresse_ip)
+                    VALUES ("""+str(user_id)+""", now() at time zone 'UTC', '"""+str(ip)+"""')
+                """
+                res=cr.execute(SQL)
+                #res=cr.execute("UPDATE res_users SET is_adresse_ip='"+str(ip)+"' WHERE id="+str(user_id))
+                cr.close()
         return user_id
 
 
