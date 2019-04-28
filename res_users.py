@@ -34,6 +34,12 @@ class res_users(models.Model):
         cela est utilise par les programmes externes"""
 
         user_id = super(res_users, self)._login(db, login, password)
+
+        print request
+        print request.httprequest
+        print request.httprequest.environ
+
+
 #        ip=request.httprequest.environ.get('REMOTE_ADDR',False)
 #        if ip:
 #            cr = self.pool.cursor()
