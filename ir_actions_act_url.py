@@ -37,14 +37,14 @@ class ir_actions_act_url(models.Model):
                     user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
                     soc  = user.company_id.is_code_societe
                     ip   = request.httprequest.environ['REMOTE_ADDR'] 
-                    url='http://odoo/odoo-theia/rebuts.php?soc='+str(soc)+'&uid='+str(uid)
+                    url='http://odoo/odoo-cpi/rebuts.php?soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
 
                 if results[0]['name']==u'is_url_indicateur_trs_action':
                     user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
                     soc  = user.company_id.is_code_societe
                     ip   = request.httprequest.environ['REMOTE_ADDR'] 
-                    url='http://odoo/odoo-theia/trs.php?soc='+str(soc)+'&uid='+str(uid)
+                    url='http://odoo/odoo-cpi/trs.php?soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
 
 
