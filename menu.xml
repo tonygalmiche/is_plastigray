@@ -1177,6 +1177,7 @@
 
 
     <!-- Production / THEIA -->
+    <!--
     <record id="is_theia_main_menu" model="ir.ui.menu" >
         <field name="name">THEIA</field>
         <field name="sequence">15</field>
@@ -1211,7 +1212,7 @@
         <field name="action"    ref="is_url_theia_rebuts_action"/>
         <field name="groups_id" eval="[(6,0,[])]"/>
     </record>
-
+    -->
 
 
 
