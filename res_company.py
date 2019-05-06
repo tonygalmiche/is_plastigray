@@ -27,4 +27,4 @@ class res_company(models.Model):
 
     is_code_societe      = fields.Char('Code société')
     is_dest_bilan_of_ids = fields.Many2many('res.users', 'is_res_company_users_rel', 'res_company_id','user_id', string="Destinataires du bilan de fin d'OF")
-
+    is_cout_ctrl_qualite = fields.Float(u"Coût horaire vendu contrôle qualité", digits=(12, 2))

@@ -48,6 +48,12 @@
                                 <field name="is_dest_bilan_of_ids" widget="many2many_tags"/>
                             </group>
                         </group>
+                        <group>
+                            <group string="Autre">
+                                <field name="is_cout_ctrl_qualite"/>
+                            </group>
+                        </group>
+
                     </page>
                 </notebook>
                 <field name="logo" position="after">
