@@ -215,8 +215,10 @@ access_is_cout_calcul_niveau,access_is_cout_calcul_niveau,model_is_cout_calcul_n
 access_is_inventaire_anomalie,access_is_inventaire_anomalie,model_is_inventaire_anomalie,base.group_user,1,1,1,1
 access_is_comparatif_cout_pk_tarif,access_is_comparatif_cout_pk_tarif,model_is_comparatif_cout_pk_tarif,base.group_user,1,0,0,0
 
-
-
+access_is_export_cegid,access_is_export_cegid,model_is_export_cegid,base.group_user,1,0,0,0
+access_is_export_cegid_ligne,access_is_export_cegid_ligne,model_is_export_cegid_ligne,base.group_user,1,0,0,0
+access_is_export_cegid_compta,access_is_export_cegid_compta,model_is_export_cegid,is_plastigray.is_comptable_group,1,1,1,0
+access_is_export_cegid_ligne_compta,access_is_export_cegid_ligne_compta,model_is_export_cegid_ligne,is_plastigray.is_comptable_group,1,1,1,0
 
 
 

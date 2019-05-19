@@ -23,8 +23,10 @@ class is_badge(models.Model):
 
     _sql_constraints = [('name_uniq','UNIQUE(name)', u'Ce badge existe déjà')]
 
-    name     = fields.Char("Code",size=20,required=True, select=True)
-    employee = fields.Many2one('hr.employee', 'Employé', required=False, ondelete='set null', help="Sélectionnez un employé")
+    name       = fields.Char("Code",size=20,required=True, select=True)
+    employee   = fields.Many2one('hr.employee', 'Employé', required=False, ondelete='set null', help="Sélectionnez un employé")
+    code_theia = fields.Char("Code Lecteur RFID THEIA",size=20, select=True)
+
 
 
 class is_jour_ferie(models.Model):

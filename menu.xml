@@ -517,6 +517,19 @@
             ref('is_comptable_group'),
         ])]"/>
     </record>
+
+
+    <record id="is_export_cegid_achat_menu2" model="ir.ui.menu" >
+        <field name="name">Export Cegid</field>
+        <field name="sequence">48</field>
+        <field name="parent_id" eval="ref('menu_is_achats_fac')"/>
+        <field name="action"    ref="is_export_cegid_achat_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
+
+
     <record id="is_export_seriem_achats_menu" model="ir.ui.menu" >
         <field name="name">Export Série-M</field>
         <field name="sequence">50</field>
@@ -935,7 +948,15 @@
             ref('is_qualite_group'),
         ])]"/>
     </record>
-
+    <record id="is_export_cegid_vente_menu2" model="ir.ui.menu" >
+        <field name="name">Export Cegid</field>
+        <field name="sequence">48</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_export_cegid_vente_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
     <record id="is_export_ventes_seriem_menu" model="ir.ui.menu" >
         <field name="name">Export Série-M</field>
         <field name="sequence">50</field>
@@ -973,6 +994,7 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
+
 
 
 

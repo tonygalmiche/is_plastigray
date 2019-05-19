@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Folio Export Cegid -->
+        <record id="is_export_cegid_seq_type" model="ir.sequence.type">
+            <field name="name">Folio Export Cegid</field>
+            <field name="code">is.export.cegid</field>
+        </record>
+        <record id="is_export_cegid_seq" model="ir.sequence">
+            <field name="name">Folio Export Cegid</field>
+            <field name="code">is.export.cegid</field>
+            <field name="prefix"></field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <!-- Lignes -->
+        <record id="is_export_cegid_ligne_tree" model="ir.ui.view">
+            <field name="name">is.export.cegid.ligne.tree</field>
+            <field name="model">is.export.cegid.ligne</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="ligne"/>
+                    <field name="datecomptable"/>
+                    <field name="type_piece"/>
+                    <field name="general"/>
+                    <field name="type_cpte"/>
+                    <field name="auxilaire_section"/>
+                    <field name="refinterne"/>
+                    <field name="libelle"/>
+                    <field name="modepaie"/>
+                    <field name="echeance"/>
+                    <field name="sens"/>
+                    <field name="montant1"/>
+                    <field name="axe"/>
+                    <field name="affaire"/>
+                    <field name="reflibre"/>
+                    <field name="invoice_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_export_cegid_ligne_form" model="ir.ui.view">
+            <field name="name">is.export.cegid.ligne.form</field>
+            <field name="model">is.export.cegid.ligne</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="ligne"/>
+                                <field name="journal"/>
+                                <field name="datecomptable"/>
+                                <field name="type_piece"/>
+                                <field name="general"/>
+                                <field name="type_cpte"/>
+                                <field name="auxilaire_section"/>
+                                <field name="refinterne"/>
+                                <field name="libelle"/>
+                                <field name="modepaie"/>
+                                <field name="echeance"/>
+                                <field name="sens"/>
+                                <field name="montant1"/>
+                                <field name="devise"/>
+                                <field name="tauxdev"/>
+                                <field name="etablissement"/>
+                                <field name="axe"/>
+                                <field name="societe"/>
+                                <field name="affaire"/>
+                                <field name="reflibre"/>
+                                <field name="tvaencaissement"/>
+                                <field name="regimetva"/>
+                                <field name="tva"/>
+                                <field name="invoice_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_export_cegid_ligne_search" model="ir.ui.view">
+            <field name="name">is.export.cegid.ligne.search</field>
+            <field name="model">is.export.cegid.ligne</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="type_piece"/>
+                    <field name="general"/>
+                    <field name="type_cpte"/>
+                    <field name="auxilaire_section"/>
+                    <field name="refinterne"/>
+                    <field name="libelle"/>
+                    <field name="sens"/>
+                    <field name="axe"/>
+                    <field name="affaire"/>
+                    <field name="reflibre"/>
+                    <field name="invoice_id"/>
+                    <group expand="0" string="Regrouper par...">
+                        <filter string="Pièce"         context="{'group_by':'refinterne'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+        <record  id="is_export_cegid_ligne_action" model="ir.actions.act_window">
+            <field name="name">Détail des lignes à exporter</field>
+            <field name="res_model">is.export.cegid.ligne</field>
+            <field name="view_type">form</field>
+            <field name="limit">1000</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('export_cegid_id','=',active_id)]</field>
+            <field name="context">{'default_export_cegid_id': active_id}</field>
+        </record>
+
+
+        <record id="is_export_cegid_tree" model="ir.ui.view">
+            <field name="name">is.export.cegid.tree</field>
+            <field name="model">is.export.cegid</field>
+            <field name="arch" type="xml">
+                <tree >
+                    <field name="name"/>
+                    <field name="journal" />
+                    <field name="date_debut" />
+                    <field name="date_fin" />
+                </tree>
+            </field>
+        </record>
+        <record id="is_export_cegid_form" model="ir.ui.view">
+            <field name="name">is.export.cegid.form</field>
+            <field name="model">is.export.cegid</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button
+                            name="action_export_cegid"
+                            type="object"
+                            string="Générer les lignes"
+                        />
+                        <button 
+                            name="%(is_export_cegid_ligne_action)d"
+                            type="action"
+                            string="Voir les lignes"
+                            attrs="{'invisible': [('ligne_ids', '=', [])]}"
+                        />
+                        <button
+                            name="action_generer_fichier"
+                            type="object"
+                            string="Générer fichier à exporter"
+                        />
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="name" />
+                            <field name="journal" />
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                            <field name="ligne_ids" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="invoice_ids" >
+                                <tree>
+                                    <button string="Facture Client"      name="voir_facture_client_action"      type="object" icon="gtk-zoom-in" attrs="{'invisible': [('type', '!=', 'out_invoice')]}"/>
+                                    <button string="Facture Fournisseur" name="voir_facture_fournisseur_action" type="object" icon="gtk-zoom-in" attrs="{'invisible': [('type', '!=', 'in_invoice')]}"/>
+                                    <field name="number"  />
+                                    <field name="name"  />
+                                    <field name="partner_id"/>
+                                    <field name="state" invisible="1" />
+                                    <field name="type"  invisible="1" />
+                                </tree>
+                            </field>
+                        </group> 
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_export_cegid_search" model="ir.ui.view">
+            <field name="name">is.export.cegid.search</field>
+            <field name="model">is.export.cegid</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+               </search>
+            </field>
+        </record>
+
+
+        <!-- Export Cegid -->
+        <record id="is_export_cegid_vente_action" model="ir.actions.act_window">
+            <field name="name">Export Cegid Ventes</field>
+            <field name="res_model">is.export.cegid</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('journal','=','VTE')]</field>
+            <field name="context">{'default_journal': 'VTE'}</field>
+        </record>
+        <record id="is_export_cegid_achat_action" model="ir.actions.act_window">
+            <field name="name">Export Cegid Achats</field>
+            <field name="res_model">is.export.cegid</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('journal','=','ACH')]</field>
+            <field name="context">{'default_journal': 'ACH'}</field>
+        </record>
+
+    </data>
+</openerp>

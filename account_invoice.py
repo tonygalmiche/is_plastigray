@@ -70,14 +70,15 @@ class account_invoice(models.Model):
     _inherit = 'account.invoice'
     _order   = 'id desc'
 
-    is_document       = fields.Char('Document'     , help="Ce champ est utilisé dans les factures diverses pour saisir le moule ou le n° d'investissement")
-    is_num_cde_client = fields.Char('N° Cde Client', help="Ce champ est utilisé dans les factures diverses sans commande client dans Odoo")
-    is_num_bl_manuel  = fields.Char('N° BL manuel' , help="Ce champ est utilisé dans les factures diverses sans bon de livraison dans Odoo")
-    is_escompte       = fields.Float("Escompte", compute='_compute')
-    is_tva            = fields.Float("TVA"     , compute='_compute', help="Taxes sans l'escompte")
-    is_folio_id       = fields.Many2one('is.account.folio', 'Folio')
-    is_bon_a_payer    = fields.Boolean("Bon à payer", default=True)
-    is_type_facture   = fields.Selection([
+    is_document        = fields.Char('Document'     , help="Ce champ est utilisé dans les factures diverses pour saisir le moule ou le n° d'investissement")
+    is_num_cde_client  = fields.Char('N° Cde Client', help="Ce champ est utilisé dans les factures diverses sans commande client dans Odoo")
+    is_num_bl_manuel   = fields.Char('N° BL manuel' , help="Ce champ est utilisé dans les factures diverses sans bon de livraison dans Odoo")
+    is_escompte        = fields.Float("Escompte", compute='_compute')
+    is_tva             = fields.Float("TVA"     , compute='_compute', help="Taxes sans l'escompte")
+    is_folio_id        = fields.Many2one('is.account.folio', 'Folio')
+    is_export_cegid_id = fields.Many2one('is.export.cegid' , 'Folio Cegid')
+    is_bon_a_payer     = fields.Boolean("Bon à payer", default=True)
+    is_type_facture    = fields.Selection([
             ('standard'  , u'Standard'),
             ('diverse'   , u'Diverse'),
             ('avoir-qt'  , u'Avoir quantité'),
@@ -105,6 +106,42 @@ class account_invoice(models.Model):
                     tva=tva++tax.amount
             obj.is_escompte = escompte
             obj.is_tva      = tva
+
+
+    @api.multi
+    def voir_facture_client_action(self):
+        for obj in self:
+            view_id=self.env.ref('is_plastigray.is_invoice_form')
+            res= {
+                'name': 'Facture Client',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'account.invoice',
+                'res_id': obj.id,
+                'view_id': view_id.id,
+                'type': 'ir.actions.act_window',
+                'context': {'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale'},
+                'domain': [('type','=','out_invoice'),('journal_type','=','sale')],
+            }
+            return res
+
+
+    @api.multi
+    def voir_facture_fournisseur_action(self):
+        for obj in self:
+            view_id=self.env.ref('is_plastigray.is_invoice_supplier_form')
+            res= {
+                'name': 'Facture Client',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'res_model': 'account.invoice',
+                'res_id': obj.id,
+                'view_id': view_id.id,
+                'type': 'ir.actions.act_window',
+                'context': {'default_type':'in_invoice', 'type':'in_invoice'},
+                'domain': [('type','=','in_invoice')],
+            }
+            return res
 
 
     @api.multi

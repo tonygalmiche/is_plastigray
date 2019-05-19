@@ -60,6 +60,8 @@ import hr
 import is_pointage
 import is_reach
 import is_rgpd
+import is_export_cegid
+
 
 #TODO : Une fois la période de tests terminé, il faudra supprimer l'ancienne version
 import is_analyse_cbn
