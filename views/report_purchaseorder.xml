@@ -113,7 +113,6 @@
                         <span t-if="o.partner_id.lang != 'fr_FR'">Order N°</span>
                         <span style="font-size:12pt;" t-field="o.name"/> 
                         <span style="font-size:12pt;" t-esc="datetime.datetime.strptime(o.date_order, '%Y-%m-%d %H:%M:%S').strftime('%d/%m/%Y')"/>
-                        <br />
                     </div>
                     <div style="height:45mm;border:0px solid black">
                         <br />
@@ -135,10 +134,9 @@
                         <br />
                         <p>
                             <t t-if="o.partner_id.is_incoterm">Incoterm : <span t-field="o.partner_id.is_incoterm.name"/><br/></t>
-                            <t t-if="o.partner_id.is_lieu">Lieu : <span t-field="o.partner_id.is_lieu"/></t>
+                            <t t-if="o.partner_id.is_lieu">Lieu : <span t-field="o.partner_id.is_lieu"/><br/></t>
+                            <t t-if="o.get_da()">Devis : <t t-esc="o.get_da()"/><br/></t>
                         </p>
-                        <br />
-                        <p t-if="o.get_da()">Devis : <t t-esc="o.get_da()"/></p>
                     </div>
 
                     <div class="fournisseur">
