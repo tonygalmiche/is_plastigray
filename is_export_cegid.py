@@ -362,7 +362,10 @@ class is_export_cegid(models.Model):
                 f.write(float2txt(l.montant1,20))
 
                 f.write(s('N',1))
-                f.write(s('',8))
+
+                #f.write(s('',8))
+                f.write(s(l.refinterne,8)) # Pour pouvoir cocher "Conserver les rupture d pièces" lors de l'import
+
                 f.write(s(l.devise,3))
                 f.write(s('1,00000000',10))
                 f.write(s('E--',3))
