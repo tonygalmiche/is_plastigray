@@ -114,6 +114,7 @@ class purchase_order(models.Model):
     is_cfc_id            = fields.Many2one('is.cde.ferme.cadencee', 'Commande ferme cadencée', readonly=True)
     is_date_end_cfc      = fields.Date("Date de fin de la cde ferme cadencée", readonly=True)
     is_lieu              = fields.Char("Lieu")
+    is_modified          = fields.Boolean('Commande modifiée')
 
 
     _defaults = {

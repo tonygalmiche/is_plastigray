@@ -30,7 +30,7 @@
     .fournisseur {
         text-align:left;
         border: 1px solid black;
-        padding:5mm;
+        padding:2mm;
     }
     .nowrap {
         white-space: nowrap;
@@ -137,6 +137,9 @@
                             <t t-if="o.partner_id.is_lieu">Lieu : <span t-field="o.partner_id.is_lieu"/><br/></t>
                             <t t-if="o.get_da()">Devis : <t t-esc="o.get_da()"/><br/></t>
                         </p>
+                        <div style="padding-top: 2mm;border:0px solid black;font-weight:bold">
+                            <t t-if="o.is_modified">ATTENTION : COMMANDE MODIFIÉE</t>
+                        </div>
                     </div>
 
                     <div class="fournisseur">

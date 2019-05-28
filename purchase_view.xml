@@ -67,6 +67,7 @@
                     <field name="is_livre_a_id"  domain="[('is_company','=',True)]"/>
                     <field name="is_cfc_id" attrs="{'invisible': [('is_cfc_id', '=', False)]}"/>
                     <field name="is_date_end_cfc" attrs="{'invisible': [('is_cfc_id', '=', False)]}"/>
+                    <field name="is_modified"/>
                 </field>
                 <field name="picking_type_id" position="replace"/>
                 <field name="location_id" position="after">
