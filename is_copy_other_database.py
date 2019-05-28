@@ -716,6 +716,7 @@ class is_mold(models.Model):
         'moule_a_version'  : mold.moule_a_version,
         'lieu_changement'  : mold.lieu_changement,
         'temps_changement' : mold.temps_changement,
+        'nettoyer'         : mold.nettoyer,
         'date_creation'    : mold.date_creation,
         'date_fin'         : mold.date_fin,
         'mouliste_id'      : self._get_mouliste_id(mold, DB, USERID, USERPASS, sock),
