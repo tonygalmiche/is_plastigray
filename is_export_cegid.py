@@ -11,6 +11,8 @@ import csv, cStringIO
 
 
 def date2txt(date):
+    if not date:
+        return '        '
     txt=str(date)
     AAAA = txt[:4]
     MM   = txt[5:7]
@@ -25,14 +27,8 @@ def float2txt(val,lg):
 
 
 def s(txt,lg):
-
-    print type(txt),txt
-
     if type(txt)==int or type(txt)==float:
         txt=str(txt)
-
-    print type(txt),txt
-
     if type(txt)!=unicode:
         txt = unicode(txt,'utf-8')
     txt = unicodedata.normalize('NFD', txt).encode('ascii', 'ignore')
@@ -231,14 +227,14 @@ class is_export_cegid(models.Model):
                     ClientGroupe=row[14] or False
                     if ClientGroupe!=False:
                         CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
-                        print 'ClientGroupe=',ClientGroupe
+                        #print 'ClientGroupe=',ClientGroupe
 
                     auxilaire_section=''
                     if type_cpte=='X':
                         auxilaire_section = CodeAuxiliaire
 
 
-                    print general, type_cpte,CodeAuxiliaire,ClientGroupe
+                    #print general, type_cpte,CodeAuxiliaire,ClientGroupe
 
 
                     refinterne        = row[0]
@@ -299,8 +295,6 @@ class is_export_cegid(models.Model):
                     #TN	Taux normal
                     #TR	Taux réduit
                     tva = ''
-
-
                     invoice_id      = row[16]
 
                     vals={
@@ -333,7 +327,31 @@ class is_export_cegid(models.Model):
                     self.env['is.export.cegid.ligne'].create(vals)
 
 
+                    #print refinterne,echeance
 
+
+                    # A1 = Axe Analytique 1 = Section Analytique
+                    # Pas de section analytique pour les comptes 2xx (immo)
+                    A1=str(row[5] or False) 
+                    if general[:1]==u'2':
+                        A1=False
+
+                    # A2 = Axe Analytique 2 = Moule
+                    A2=False
+                    Affaire = row[15] or False
+                    if Affaire:
+                        A2=(Affaire[-5:]+u'    ')[:5]
+
+                    if A1 and A2:
+                        #print refinterne,A1,A2
+                        vals['echeance']          = False
+                        vals['type_cpte']         = 'A'
+                        vals['axe']               = 'A1'
+                        vals['auxilaire_section'] = A1
+                        self.env['is.export.cegid.ligne'].create(vals)
+                        vals['axe']               = 'A2'
+                        vals['auxilaire_section'] = A2
+                        self.env['is.export.cegid.ligne'].create(vals)
 
 
     @api.multi

@@ -112,6 +112,14 @@ class stock_picking(models.Model):
                 picking=p
             #*******************************************************************
 
+
+            #** Recherche si les lignes de cette réception son facturées *******
+            for line in obj.move_lines:
+                if line.invoice_state=='invoiced':
+                    raise Warning(u'Annulation impossible car la réception est déjà facturée !')
+            #*******************************************************************
+
+
             #** Copie de la réception pour pouvoir la réfaire ******************
             if not picking:
                 picking=obj.copy()
