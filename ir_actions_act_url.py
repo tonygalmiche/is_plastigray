@@ -47,6 +47,12 @@ class ir_actions_act_url(models.Model):
                     url='http://odoo/odoo-theia/trs.php?soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
 
+                if results[0]['name']==u'is_url_indicateur_trs_new_action':
+                    user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
+                    soc  = user.company_id.is_code_societe
+                    ip   = request.httprequest.environ['REMOTE_ADDR'] 
+                    url='http://odoo/odoo-theia/trs-new.php?soc='+str(soc)+'&uid='+str(uid)
+                    results[0].update({'url': url})
 
                 if results[0]['name']==u'is_url_planning_action':
                     ip = request.httprequest.environ['REMOTE_ADDR'] 
