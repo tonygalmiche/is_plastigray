@@ -342,18 +342,19 @@ class is_export_cegid(models.Model):
                     if Affaire:
                         A2=(Affaire[-5:]+u'    ')[:5]
 
-                    if A1:
-                        vals['echeance']          = False
-                        vals['type_cpte']         = 'A'
-                        vals['axe']               = 'A1'
-                        vals['auxilaire_section'] = A1
-                        self.env['is.export.cegid.ligne'].create(vals)
-                    if A2:
-                        vals['echeance']          = False
-                        vals['type_cpte']         = 'A'
-                        vals['axe']               = 'A2'
-                        vals['auxilaire_section'] = A2
-                        self.env['is.export.cegid.ligne'].create(vals)
+                    if general[0:1] in ['6','7']:
+                        if A1:
+                            vals['echeance']          = False
+                            vals['type_cpte']         = 'A'
+                            vals['axe']               = 'A1'
+                            vals['auxilaire_section'] = A1
+                            self.env['is.export.cegid.ligne'].create(vals)
+                        if A2:
+                            vals['echeance']          = False
+                            vals['type_cpte']         = 'A'
+                            vals['axe']               = 'A2'
+                            vals['auxilaire_section'] = A2
+                            self.env['is.export.cegid.ligne'].create(vals)
 
 
     @api.multi
