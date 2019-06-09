@@ -60,6 +60,7 @@ class is_export_cegid_ligne(models.Model):
     tauxdev           = fields.Float(u"Taux devise")
     etablissement     = fields.Char(u"Etablissement")
     axe               = fields.Char(u"Axe analytique")
+    refexterne        = fields.Char(u"Référence externe")
     societe           = fields.Char(u"Code société")
     affaire           = fields.Char(u"Code affaire")
     reflibre          = fields.Char(u"Folio")
@@ -200,10 +201,7 @@ class is_export_cegid(models.Model):
                     journal           = obj.journal
                     datecomptable     = row[1]
                     general           = row[4]
-
-
-
-
+                    refexterne        = row[13] or ''
 
                     tab={
                         'out_invoice': 'FC', # Facture Client
@@ -316,6 +314,7 @@ class is_export_cegid(models.Model):
                         'tauxdev'          : 1,
                         'etablissement'    : '001',
                         'axe'              : axe,
+                        'refexterne'       : refexterne,
                         'societe'          : '001',
                         'affaire'          : affaire,
                         'reflibre'         : reflibre,
@@ -395,7 +394,9 @@ class is_export_cegid(models.Model):
                 f.write(s(l.etablissement,3))
                 f.write(s(l.axe,2))
 
-                f.write(s('',2+35+8+8))
+                f.write(s('',2))
+                f.write(s(l.refexterne,35))
+                f.write(s('',8+8))
 
                 f.write(s(l.societe,3))
                 f.write(s(l.affaire,17))
