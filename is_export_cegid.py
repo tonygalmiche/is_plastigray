@@ -225,14 +225,13 @@ class is_export_cegid(models.Model):
                     ClientGroupe=row[14] or False
                     if ClientGroupe!=False:
                         CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
-                        #print 'ClientGroupe=',ClientGroupe
-
                     auxilaire_section=''
                     if type_cpte=='X':
                         auxilaire_section = CodeAuxiliaire
-
-
-                    #print general, type_cpte,CodeAuxiliaire,ClientGroupe
+                        if obj.journal=='VTE':
+                            auxilaire_section='C'+auxilaire_section
+                        else:
+                            auxilaire_section='F'+auxilaire_section
 
 
                     refinterne        = row[0]
