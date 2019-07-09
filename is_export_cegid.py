@@ -194,8 +194,11 @@ class is_export_cegid(models.Model):
                     if Affaire!='None':
                         Affaires[NumFacture]=Affaire
 
-                cr.execute(sql)
 
+                #print Affaires
+
+
+                cr.execute(sql)
                 for row in cr.fetchall():
                     ligne+=1
                     journal           = obj.journal
@@ -235,7 +238,20 @@ class is_export_cegid(models.Model):
 
 
                     refinterne        = row[0]
-                    libelle           = row[3]
+
+
+                    #** Ajout de l'affaire devant le libelle *******************
+                    libelle = row[3]
+                    Affaire = row[15] or False
+                    if obj.journal=='ACH':
+                        if general[:1]=='2' or general=='401000':
+                            if row[0] in Affaires:
+                                Affaire=Affaires[row[0]]
+                            if Affaire:
+                                if Affaire[:5]=='M0000' or Affaire[:5]=='m0000':
+                                    Affaire=Affaire[-5:]
+                                libelle=Affaire+u' '+libelle
+                    #***********************************************************
 
                     #Mode de paiement	
                     #BOR	Billet à ordre
