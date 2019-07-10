@@ -123,6 +123,7 @@ class is_export_cegid(models.Model):
                 ('date_invoice', '>=', obj.date_debut),
                 ('date_invoice', '<=', obj.date_fin),
                 ('is_export_cegid_id', '=' , False),
+                ('is_folio_id'      ,  '=' , False),
                 ('type'        , 'in', type_facture),
                 #('id'          , '=' , 12865),
             ], order='is_bon_a_payer, number')
