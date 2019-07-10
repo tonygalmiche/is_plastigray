@@ -32,6 +32,7 @@
 
 
         <!-- Folio -->
+        <!--
         <record id="is_account_folio_tree_view" model="ir.ui.view">
             <field name="name">is.account.folio.tree.view</field>
             <field name="model">is.account.folio</field>
@@ -77,6 +78,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+        -->
 
 
         <!-- account.view_account_invoice_filter -->
@@ -89,7 +91,6 @@
                     <field name="type"/> 
                     <field name="is_type_facture"/>
                     <field name="is_export_cegid_id"/> 
-                    <field name="is_folio_id"/> 
                 </field>
             </field>
         </record>
@@ -108,7 +109,6 @@
                 </xpath>
                 <xpath expr="//field[@name='state']" position="after" >
                     <field name="is_date_envoi_mail"/> 
-                    <field name="is_folio_id"/>
                     <field name="is_export_cegid_id"/> 
                 </xpath>
             </field>
@@ -134,7 +134,6 @@
                     <field name="is_date_envoi_mail" attrs="{'invisible':[('is_mode_envoi_facture', '!=', 'mail'),('is_mode_envoi_facture', '!=', 'mail_client')]}" />
                 </field>
                 <xpath expr="//field[@name='account_id']" position="after" >
-                    <field name="is_folio_id"/>
                     <field name="is_export_cegid_id"/> 
                 </xpath>
                 <xpath expr="//label[@for='amount_tax']"  position="attributes" >
@@ -233,7 +232,7 @@
             <field name="name">Factures à imprimer = Factures à comptabiliser</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">account.invoice</field>
-            <field name="domain">[('is_folio_id','=', False),('state','=', 'open'),'|',('type','=', 'out_invoice'),('type','=', 'out_refund')]</field>
+            <field name="domain">[('is_folio_id','=', False),('is_export_cegid_id','=', False),('state','=', 'open'),'|',('type','=', 'out_invoice'),('type','=', 'out_refund')]</field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -312,8 +311,6 @@
             <field name="inherit_id" ref="account.invoice_supplier_form" />
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='account_id']" position="after" >
-                    <field name="is_export_cegid_id"/> 
-                    <field name="is_folio_id"/> 
                     <field name="is_export_cegid_id"/> 
                     <field name="is_bon_a_payer"/> 
                     <field name="is_masse_nette"/> 

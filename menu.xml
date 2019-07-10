@@ -529,7 +529,7 @@
         ])]"/>
     </record>
 
-
+    <!--
     <record id="is_export_seriem_achats_menu" model="ir.ui.menu" >
         <field name="name">Export Série-M</field>
         <field name="sequence">50</field>
@@ -539,6 +539,7 @@
             ref('is_comptable_group'),
         ])]"/>
     </record>
+    -->
     <record id="is_suivi_budget_analytique_menu" model="ir.ui.menu" >
         <field name="name">Suivi budget analytique</field>
         <field name="sequence">60</field>
@@ -957,6 +958,7 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
+    <!--
     <record id="is_export_ventes_seriem_menu" model="ir.ui.menu" >
         <field name="name">Export Série-M</field>
         <field name="sequence">50</field>
@@ -966,6 +968,8 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
+    -->
+    <!--
     <record id="is_account_folio_menu" model="ir.ui.menu" >
         <field name="name">Folios</field>
         <field name="sequence">60</field>
@@ -975,6 +979,7 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
+    -->
 
     <record id="is_marge_contributive_menu" model="ir.ui.menu" >
         <field name="name">Marge contributive</field>
