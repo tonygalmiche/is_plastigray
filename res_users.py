@@ -25,6 +25,8 @@ class res_users(models.Model):
     _inherit = "res.users"
 
     is_site_id    = fields.Many2one("is.database", "Site de production", help=u"Ce champ est utilisé en particulier pour la gestion des OT dans odoo0")
+    is_site_ids   = fields.Many2many('is.database','res_users_site_rel','user_id','site_id', string=u"Sites autorisés")
+
     is_service_id = fields.Many2one('is.service', 'Service')
     is_adresse_ip = fields.Char('Adresse IP', help='Adresse IP de cet utilisateur pour lui donner des accès spcécifiques dans THEIA')
 
@@ -47,6 +49,13 @@ class res_users(models.Model):
                     #res=cr.execute("UPDATE res_users SET is_adresse_ip='"+str(ip)+"' WHERE id="+str(user_id))
                     cr.close()
         return user_id
+
+
+    def get_site_ids(self):
+        ids=[]
+        for site in self.is_site_ids:
+            ids.append(site.id)
+        return ids
 
 
 class res_groups(models.Model):

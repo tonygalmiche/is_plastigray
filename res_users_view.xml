@@ -23,6 +23,7 @@
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
                     <field name="is_site_id"/>
+                    <field name="is_site_ids" widget="many2many_tags"/>
                     <field name="is_service_id"/>
                     <field name="is_adresse_ip"/>
                 </field>
@@ -35,6 +36,7 @@
             <field name="arch" type="xml">
                 <field name="login" position="after">
                     <field name="is_site_id"/>
+                    <field name="is_site_ids"/>
                     <field name="is_service_id"/>
                 </field>
             </field>
