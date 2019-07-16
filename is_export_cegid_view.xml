@@ -38,6 +38,7 @@
                     <field name="refexterne"/>
                     <field name="affaire"/>
                     <field name="reflibre"/>
+                    <field name="bon_a_payer"/>
                     <field name="invoice_id"/>
                 </tree>
             </field>
@@ -74,6 +75,7 @@
                                 <field name="tvaencaissement"/>
                                 <field name="regimetva"/>
                                 <field name="tva"/>
+                                <field name="bon_a_payer"/>
                                 <field name="invoice_id"/>
                             </group>
                         </group>

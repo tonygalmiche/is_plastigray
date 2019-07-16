@@ -67,6 +67,7 @@ class is_export_cegid_ligne(models.Model):
     tvaencaissement   = fields.Char(u"TVA encaissement")
     regimetva         = fields.Char(u"Régime TVA")
     tva               = fields.Char(u"TVA")
+    bon_a_payer       = fields.Char(u"Bon à payer")
     invoice_id        = fields.Many2one('account.invoice', u"Facture")
 
     _defaults = {
@@ -246,8 +247,9 @@ class is_export_cegid(models.Model):
                     Affaire = row[15] or False
                     if obj.journal=='ACH':
                         if general[:1]=='2' or general=='401000':
-                            if row[0] in Affaires:
-                                Affaire=Affaires[row[0]]
+                            if not Affaire:
+                                if row[0] in Affaires:
+                                    Affaire=Affaires[row[0]]
                             if Affaire:
                                 if Affaire[:5]=='M0000' or Affaire[:5]=='m0000':
                                     Affaire=Affaire[-5:]
@@ -309,6 +311,20 @@ class is_export_cegid(models.Model):
                     #TN	Taux normal
                     #TR	Taux réduit
                     tva = ''
+
+
+                    #** Bon à payer (champ libre position 833) *****************
+                    BonAPayer = row[12]
+                    bon_a_payer = ''
+                    if obj.journal=='ACH':
+                        if not BonAPayer:
+                            bon_a_payer=u'L' # Litige
+
+                    TypeFacture=row[6]
+                    if TypeFacture=='in_refund':
+                        bon_a_payer=u'A'  # Avoir
+                    #***********************************************************
+
                     invoice_id      = row[16]
 
                     vals={
@@ -337,6 +353,7 @@ class is_export_cegid(models.Model):
                         'tvaencaissement'  : tvaencaissement,
                         'regimetva'        : regimetva,
                         'tva'              : tva,
+                        'bon_a_payer'      : bon_a_payer,
                         'invoice_id'       : invoice_id,
                     }
                     self.env['is.export.cegid.ligne'].create(vals)
@@ -424,6 +441,10 @@ class is_export_cegid(models.Model):
                 f.write(s(l.regimetva,3))
                 f.write(s(l.tva,3))
 
+                for i in range(1,441):
+                    f.write(s('',1))
+                f.write(s(l.bon_a_payer,1))
+
                 f.write('\r\n')
 
             f.close()
@@ -437,581 +458,6 @@ class is_export_cegid(models.Model):
                 'datas':       r,
             }
             id = self.env['ir.attachment'].create(vals)
-
-
-
-#                f.write('##Transfert\r\n')
-#                f.write('##Section\tDos\r\n')
-#                f.write('EUR\r\n')
-#                f.write('##Section\tMvt\r\n')
-#                for row in obj.ligne_ids:
-#                    if row.date_facture[0:7]==mois:
-#                        compte=str(row.account_id.code or '')
-#                        debit=row.debit
-#                        credit=row.debit
-#                        if row.credit>0.0:
-#                            montant=row.credit  
-#                            sens='C'
-#                        else:
-#                            montant=row.debit  
-#                            sens='D'
-#                        montant='%0.2f' % montant
-#                        date=row.date_facture
-#                        date=datetime.datetime.strptime(date, '%Y-%m-%d')
-#                        date=date.strftime('%d/%m/%Y')
-#                        f.write('"'+obj.name+'"\t')
-#                        f.write('"'+obj.journal+'"\t')
-#                        f.write('"'+date+'"\t')
-#                        f.write('"'+compte+'"\t')
-#                        f.write('"'+row.libelle[0:34]+'"\t')
-#                        f.write('"'+montant+'"\t')
-#                        f.write(sens+'\t')
-#                        f.write('B\t')
-#                        f.write('"'+(row.libelle_piece[0:34] or '')+'"\t')
-#                        f.write('"'+(row.piece or '')+'"\t')
-#                        f.write('\r\n')
-#                f.write('##Section\tJnl\r\n')
-#                f.write('"CAI"\t"Caisse"\t"T"\r\n')
-#                f.close()
-#                r = open(dest,'rb').read().encode('base64')
-#                vals = {
-#                    'name':        name,
-#                    'datas_fname': name,
-#                    'type':        'binary',
-#                    'res_model':   model,
-#                    'res_id':      obj.id,
-#                    'datas':       r,
-#                }
-#                id = self.env['ir.attachment'].create(vals)
-
-
-
-
-
-
-#                    CodeAuxiliaire = (u"000000"+str(row[2]))[-6:]
-#                    ClientGroupe   = str(row[14])
-#                    Affaire        = str(row[15])
-#                    if Affaire=='None':
-#                        Affaire=''
-
-#                    #Test si client ou fournisseur
-#                    if row[11]:
-#                        CompteCollectif = u'401000'
-#                    else:
-#                        CompteCollectif = u'411000'
-#                        if ClientGroupe!='None':
-#                            CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
-
-
-#                    NumCompte         = row[4]
-#                    Debit             = row[9]
-#                    Credit            = row[10]
-#                    BonAPayer         = row[12]
-#                    NumFacFournisseur = str(row[13])
-
-#                    if NumFacFournisseur=="None":
-#                        NumFacFournisseur="         "
-
-#                    Montant   = Credit - Debit
-#                    Sens=u"D"
-#                    if Montant>0:
-#                        Sens    = u"C"
-#                    else:
-#                        Sens    = u"D"
-
-#                    #CodeAuxiliaire =(u"000000"+str(row[2]))[-6:]
-#                    #ClientGroupe=row[14]
-#                    #if ClientGroupe!=False:
-#                    #    CodeAuxiliaire=(u"000000"+str(ClientGroupe))[-6:]
-
-#                    if NumCompte==u'411000' or NumCompte==u'401000':
-#                        #CompteCollectif = NumCompte
-#                        NumCompte       = CompteCollectif
-#                        CodeFournisseur = CodeAuxiliaire
-#                        TotalTTC=Montant
-#                    else:
-#                        CodeFournisseur = "      "
-#                        TotalTTC2 = TotalTTC2 + Montant
-
-#                    Montant=abs(int(round(100*Montant)))
-#                    Montant=(u"00000000000"+str(Montant))[-11:]
-#                    TypeFacture=row[6]
-#                    if TypeFacture=='out_refund' or TypeFacture=='in_refund':
-#                        TypeFacture=u'A'  # Avoir
-#                    else:
-#                        TypeFacture=u'F'  # Facture
-#                    if obj.journal=='achats' and not BonAPayer:
-#                        TypeFacture=u'L'  # Facture fournisseur en litige
-
-
-#                    #Intitule=
-
-
-
-
-#                    Intitule=(row[3]+u"                                ")[:26]
-#                    Moule=''
-
-#                    if Journal=="AC":
-#                        # Intitule SERIE-M : 10car dans Ref Fac + 16car dans Libelle
-#                        # Si Affaire n'existe pas               -> Intitule = N°Fac fournisseur sur 5car + Fournisseur
-#                        # Si Compte == 401000 et Affaire existe -> Intitule = N°Fac fournisseur + Affaire + Fournisseur
-#                        # Si Compte != 401000 et Affaire existe 
-#                        #       et si Compte == '2xx'           -> Intitule = Affaire sur 5car + Fournisseur
-#                        #       et si Compte != '2xx'           -> Intitule = Fournisseur sur 15car + Affaire complète
-#                        Fournisseur       = row[3]
-#                        NumFacFournisseur = (NumFacFournisseur+u'    ')[:5]
-
-
-#                        if NumCompte=='401000':
-#                            if row[0] in Affaires:
-#                                Affaire=Affaires[row[0]]
-#                        DossierModif=Affaire
-#                        if Affaire[:5]=='M0000':
-#                            DossierModif=u'M'+Affaire[-5:]
-#                        if Affaire=='':
-#                            Intitule=NumFacFournisseur+u' '+Fournisseur
-#                        else:
-#                            if NumCompte=='401000':
-#                                Intitule=NumFacFournisseur+u' '+DossierModif+u' '+Fournisseur
-#                            else:
-#                                if NumCompte[:1]=='2':
-#                                    Intitule=(Affaire[-5:]+u'    ')[:5]+u' '+NumFacFournisseur+u' '+Fournisseur
-#                                else:
-#                                    Intitule=NumFacFournisseur+u' '+(Fournisseur+u'               ')[:15]+DossierModif
-#                                    Moule=(Affaire[-5:]+u'    ')[:5]
-
-#                        Intitule=(Intitule+u"                                ")[:26]
-
-#                        #** Pour les investissements, remplacer la numéro de facture fournisseur par le numéro d'affaire
-#                        #if Affaire!='' and NumCompte[:1]=='2':
-#                        #    NumFacFournisseur=(Affaire[-5:]+u'    ')[:5]
-#                        #else:
-#                        #    NumFacFournisseur=(NumFacFournisseur+u'    ')[:5]
-#                        #Intitule=(NumFacFournisseur+u' '+Intitule)[:26]
-
-#                    NumFacture=(u"000000"+str(row[0]))[-6:]
-#                    DateEcheance=row[7]
-#                    DateEcheance=datetime.datetime.strptime(DateEcheance, '%Y-%m-%d')
-#                    DateEcheance=DateEcheance.strftime('%y%m%d')
-#                    TypeReglement='  '
-#                    if row[8]:
-#                        TypeReglement=(row[8]+"  ")[:2]
-#                    DateFacture=str(row[1])
-#                    JourFacture=(u"00"+DateFacture)[-2:]
-
-#                    #** Pas de section analytique pour les comptes 2xx (immo) **
-#                    SectionAnalytique=str(row[5] or u'    ')
-#                    if NumCompte[:1]==u'2':
-#                        SectionAnalytique=u'    '
-
-#                    if Journal=="VE":
-#                        if Affaire!='':
-#                            Intitule=Affaire+u' '+row[3]
-#                            Moule=(Affaire[-5:]+u'    ')[:5]
-#                        else:
-#                            Intitule=row[3]
-#                        Intitule=(Intitule+u"                                ")[:26]
-#                        if Affaire!='' and NumCompte[:3]=='707':
-#                            Moule=(Affaire[-5:]+u'    ')[:5]
-
-
-
-
-#                    Ligne=u"L" + \
-#                        NumCompte + \
-#                        CodeFournisseur + \
-#                        Montant + \
-#                        Sens + \
-#                        TypeFacture + \
-#                        Intitule + \
-#                        NumFacture + \
-#                        SectionAnalytique + \
-#                        JourFacture + \
-#                        u"   00000000000   00000000000" + \
-#                        Moule
-#                    res.append(Ligne)
-#                    print Ligne
-
-
-
-
-
-#                    #print Ligne
-
-#                # ** Ligne de fin type H *******************************************
-#                TotalTTC=int(round(100*TotalTTC))
-#                TotalTTC=(u"000000000"+str(TotalTTC))[-9:]
-#                Ligne=u'H'+Soc+CompteCollectif+CodeAuxiliaire+NumFacture+u'01'+TotalTTC+u' '+DateEcheance+TypeReglement+'  0000000 1'
-
-
-
-
-
-
-#                res.append(Ligne)
-#                #*******************************************************************
-
-
-
-#            # Enregistrement du fichier ****************************************
-#            os.chdir('/tmp')
-#            if obj.journal=='ventes':
-#                name='PGVMFCO'
-#            else:
-#                name='PGVMFCA'
-
-#            err=""
-#            try:
-#                fichier = open(name, "w")
-#            except IOError, e:
-#                err="Problème d'accès au fichier '"+name+"' => "+ str(e)
-#            if err=="":
-#                for row in res:
-#                    fichier.write(row+u'\n')
-#                fichier.close()
-#            else:
-#                raise Warning(err)
-
-#            # ******************************************************************
-
-            #raise Warning('test')
-
-#            # Envoi du fichier dans l'AS400 ************************************
-#            if err=="":
-#                uid=self._uid
-#                user=self.env['res.users'].browse(uid)
-#                pwd=user.company_id.is_cpta_pwd
-#                try:
-#                    ftp = FTP('192.0.0.99', 'qsecofr', pwd)  
-#                except Exception, e:
-#                    err=u"Problème d'accès à l'AS400 CPTA => "+ str(e)
-#                if err=="":
-#                    f = open(name, 'rb')
-#                    ftp.sendcmd('CWD FMPRO')
-#                    ftp.storlines('STOR ' + name, f)
-#                    f.close() 
-#                    ftp.quit() 
-#                else:
-#                    raise Warning(err)
-#            # ******************************************************************
-
-#            res= {
-#                'name': 'Folio',
-#                'view_mode': 'form, tree',
-#                'view_type': 'form',
-#                'res_model': 'is.account.folio',
-#                'type': 'ir.actions.act_window',
-#                'res_id': folio.id,
-#            }
-#            return res
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#    @api.multi
-#    def action_importer_fichier(self):
-#        cr=self._cr
-#        for obj in self:
-#            obj.ligne_ids.unlink()
-#            if obj.journal=='BQ':
-#                for attachment in obj.file_ids:
-#                    attachment=base64.decodestring(attachment.datas)
-#                    #conversion d'ISO-8859-1/latin1 en UTF-8
-#                    attachment=attachment.decode('iso-8859-1').encode('utf8')
-#                    csvfile=attachment.split("\r\n")
-#                    tab=[]
-#                    ct=0
-#                    for row in csvfile:
-#                        ct=ct+1
-#                        if ct>1:
-#                            lig=row.split(";")
-#                            if len(lig)>5:
-#                                date    = lig[0]
-#                                debit   = lig[2].replace(',', '.')
-#                                credit  = lig[3].replace(',', '.')
-#                                libelle = lig[4][0:29]
-#                                try:
-#                                    debit = -float(debit)
-#                                except ValueError:
-#                                    debit=0
-#                                try:
-#                                    credit = float(credit)
-#                                except ValueError:
-#                                    credit=0
-#                                vals={
-#                                    'export_compta_id'  : obj.id,
-#                                    'ligne'             : (ct-1),
-#                                    'date_facture'      : date,
-#                                    'libelle'           : libelle,
-#                                    'libelle_piece'     : libelle,
-#                                    'journal'           : obj.journal,
-#                                    'debit'             : debit,
-#                                    'credit'            : credit,
-#                                    'devise'            : u'EUR',
-#                                }
-#                                self.env['is.export.compta.ligne'].create(vals)
-#                self.generer_fichier()
-#            if obj.journal=='OD':
-#                for attachment in obj.file_ids:
-#                    attachment=base64.decodestring(attachment.datas)
-#                    csvfile=attachment.split("\n")
-#                    csvfile = attachment.split("\n")
-#                    csvfile = csv.reader(csvfile, delimiter=',')
-#                    for lig, row in enumerate(csvfile):
-#                        if lig>0 and len(row)>1:
-#                            ligne        = row[0]
-#                            date_facture = row[1]
-#                            compte       = row[2]
-#                            accounts   = self.env['account.account'].search([('code','=',compte)])
-#                            account_id=False
-#                            if len(accounts):
-#                                account_id=accounts[0].id
-#                            piece         = row[3]
-#                            libelle       = row[4]
-
-#                            debit = row[5].replace(',', '.').replace(' ', '')
-#                            try:
-#                                debit = float(debit)
-#                            except ValueError:
-#                                debit=0
-
-#                            credit  = row[6].replace(',', '.').replace(' ', '')
-#                            try:
-#                                credit = float(credit)
-#                            except ValueError:
-#                                credit=0
-#                            vals={
-#                                'export_compta_id'  : obj.id,
-#                                'ligne'             : ligne,
-#                                'date_facture'      : date_facture,
-#                                'account_id'        : account_id,
-#                                'libelle'           : libelle,
-#                                'piece'             : piece,
-#                                'libelle_piece'     : libelle,
-#                                'journal'           : obj.journal,
-#                                'debit'             : debit,
-#                                'credit'            : credit,
-#                                'devise'            : u'EUR',
-#                            }
-#                            self.env['is.export.compta.ligne'].create(vals)
-
-
-
-#    @api.multi
-#    def action_generer_fichier(self):
-#        for obj in self:
-#            ct=0
-#            for row in obj.ligne_ids:
-#                if not row.account_id.id:
-#                    ct=ct+1
-#            if ct:
-#                raise Warning('Compte non renseigné sur '+str(ct)+' lignes')
-#            #** Ajout des lignes en 512000
-#            if obj.journal=='BQ':
-#                account_id = self.env['account.account'].search([('code','=','512000')])[0].id
-#                self.env['is.export.compta.ligne'].search([('export_compta_id','=',obj.id),('account_id','=',account_id)]).unlink()
-#                for row in obj.ligne_ids:
-#                    vals={
-#                        'export_compta_id'  : obj.id,
-#                        'ligne'             : row.ligne,
-#                        'date_facture'      : row.date_facture,
-#                        'account_id'        : account_id,
-#                        'libelle'           : row.libelle,
-#                        'libelle_piece'     : row.libelle_piece,
-#                        'journal'           : obj.journal,
-#                        'debit'             : row.credit,
-#                        'credit'            : row.debit,
-#                        'devise'            : u'EUR',
-#                    }
-#                    self.env['is.export.compta.ligne'].create(vals)
-#            self.generer_fichier()
-
-
-#    @api.multi
-#    def action_export_compta(self):
-#        cr=self._cr
-#        for obj in self:
-#            obj.ligne_ids.unlink()
-
-#            if obj.journal=='CAI':
-#                sql="""
-#                    SELECT  
-#                        aml.date,
-#                        aa.code, 
-#                        aa.name,
-#                        '',
-#                        '',
-#                        '',
-#                        aml.account_id,
-#                        sum(aml.credit)-sum(aml.debit)
-#                    FROM account_move_line aml left outer join account_invoice ai        on aml.move_id=ai.move_id
-#                                               inner join account_account aa             on aml.account_id=aa.id
-#                                               left outer join res_partner rp            on aml.partner_id=rp.id
-#                                               inner join account_journal aj             on aml.journal_id=aj.id
-#                    WHERE 
-#                        aml.date>='"""+str(obj.date_debut)+"""' and 
-#                        aml.date<='"""+str(obj.date_fin)+"""' and 
-#                        ((aa.code>'411100' and aa.code not like '512%') or aa.code='411000') and 
-#                        aj.type in ('sale','bank','general','cash')
-#                    GROUP BY aml.date, aa.code, aa.name,aml.account_id
-#                    ORDER BY aml.date, aa.code, aa.name,aml.account_id
-#                """
-
-
-#            if obj.journal=='HA':
-#                sql="""
-#                    SELECT  
-#                        aml.date,
-#                        aa.code, 
-#                        aa.name,
-#                        aj.code,
-#                        ai.number,
-#                        rp.is_code,
-#                        aml.account_id,
-#                        sum(aml.credit)-sum(aml.debit)
-#                    FROM account_move_line aml left outer join account_invoice ai        on aml.move_id=ai.move_id
-#                                               inner join account_account aa             on aml.account_id=aa.id
-#                                               left outer join res_partner rp            on aml.partner_id=rp.id
-#                                               inner join account_journal aj             on aml.journal_id=aj.id
-#                    WHERE aj.code='FACTU' and ai.state not in ('draft','cancel','paid') 
-#                """
-#                if obj.facture_debut_id:
-#                    sql=sql+" and ai.number>='"+str(obj.facture_debut_id.number)+"' "
-#                if obj.facture_fin_id:
-#                    sql=sql+" and ai.number<='"+str(obj.facture_fin_id.number)+"' "
-#                sql=sql+"""
-#                    GROUP BY ai.number,aml.date, aa.code, aa.name,aj.code,rp.is_code,aml.account_id
-#                    ORDER BY ai.number,aml.date, aa.code, aa.name,aj.code,rp.is_code,aml.account_id
-#                """
-#            cr.execute(sql)
-#            ct=0
-#            for row in cr.fetchall():
-#                ct=ct+1
-#                montant=row[7]
-#                debit=0
-#                credit=0
-#                if montant<0:
-#                    debit=-montant
-#                else:
-#                    credit=montant
-
-
-#                date_facture=row[0]
-
-#                date=date_facture
-#                date=datetime.datetime.strptime(date, '%Y-%m-%d')
-#                date=date.strftime('%d/%m/%Y')
-
-#                libelle_piece='Caisse du '+date
-#                if obj.journal=='HA':
-#                    libelle_piece=row[5]
-
-#                if montant:
-#                    vals={
-#                        'export_compta_id'  : obj.id,
-#                        'ligne'             : ct,
-#                        'date_facture'      : date_facture,
-#                        'account_id'        : row[6],
-#                        'libelle'           : s(row[2][0:29]),
-#                        'piece'             : row[4],
-#                        'libelle_piece'     : libelle_piece[0:29],
-#                        'journal'           : obj.journal,
-#                        'debit'             : debit,
-#                        'credit'            : credit,
-#                        'devise'            : u'EUR',
-#                    }
-
-
-#                    self.env['is.export.compta.ligne'].create(vals)
-#            self.generer_fichier()
-
-
-#    def generer_fichier(self):
-#        cr=self._cr
-
-
-#        for obj in self:
-
-#            sql="""
-#                SELECT to_char(date_facture,'YYYY-MM')
-#                FROM is_export_compta_ligne
-#                WHERE export_compta_id="""+str(obj.id)+"""
-#                GROUP BY to_char(date_facture,'YYYY-MM')
-#                ORDER BY to_char(date_facture,'YYYY-MM')
-#            """
-#            cr.execute(sql)
-#            for row in cr.fetchall():
-#                mois=row[0]
-#                name='export-compta-'+mois+'.txt'
-#                model='is.export.compta'
-#                attachments = self.env['ir.attachment'].search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
-#                attachments.unlink()
-#                dest     = '/tmp/'+name
-#                f = codecs.open(dest,'wb',encoding='utf-8')
-#                f.write('##Transfert\r\n')
-#                f.write('##Section\tDos\r\n')
-#                f.write('EUR\r\n')
-#                f.write('##Section\tMvt\r\n')
-#                for row in obj.ligne_ids:
-#                    if row.date_facture[0:7]==mois:
-#                        compte=str(row.account_id.code or '')
-#                        debit=row.debit
-#                        credit=row.debit
-#                        if row.credit>0.0:
-#                            montant=row.credit  
-#                            sens='C'
-#                        else:
-#                            montant=row.debit  
-#                            sens='D'
-#                        montant='%0.2f' % montant
-#                        date=row.date_facture
-#                        date=datetime.datetime.strptime(date, '%Y-%m-%d')
-#                        date=date.strftime('%d/%m/%Y')
-#                        f.write('"'+obj.name+'"\t')
-#                        f.write('"'+obj.journal+'"\t')
-#                        f.write('"'+date+'"\t')
-#                        f.write('"'+compte+'"\t')
-#                        f.write('"'+row.libelle[0:34]+'"\t')
-#                        f.write('"'+montant+'"\t')
-#                        f.write(sens+'\t')
-#                        f.write('B\t')
-#                        f.write('"'+(row.libelle_piece[0:34] or '')+'"\t')
-#                        f.write('"'+(row.piece or '')+'"\t')
-#                        f.write('\r\n')
-#                f.write('##Section\tJnl\r\n')
-#                f.write('"CAI"\t"Caisse"\t"T"\r\n')
-#                f.close()
-#                r = open(dest,'rb').read().encode('base64')
-#                vals = {
-#                    'name':        name,
-#                    'datas_fname': name,
-#                    'type':        'binary',
-#                    'res_model':   model,
-#                    'res_id':      obj.id,
-#                    'datas':       r,
-#                }
-#                id = self.env['ir.attachment'].create(vals)
 
 
 
