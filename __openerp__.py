@@ -105,6 +105,8 @@ Module principal du projet Plastigray
         "is_rgpd_view.xml",
         "is_mini_delta_dore_view.xml",
         "is_export_cegid_view.xml",
+        "is_galia_base_view.xml",
+        "is_article_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

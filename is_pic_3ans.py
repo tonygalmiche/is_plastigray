@@ -369,6 +369,7 @@ class is_pic_3ans_saisie(models.Model):
         ct=0
         for pic in pics:
             ct=ct+1
+            pic._compute()
             _logger.info(str(ct)+'/'+str(nb)+' : '+str(pic.product_id.is_code) + ' : '+str(pic.mois)+ ' : '+str(pic.quantite))
             ordre=0
             self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
@@ -406,7 +407,7 @@ class is_pic_3ans_saisie(models.Model):
 
             #** Suppression des données du calcul précédent ********************
             for pic in pics:
-                _logger.info('unlink ' + str(pic))
+                _logger.info('unlink + compute ' + str(pic))
                 pic_obj.search([
                     ('annee'      ,'=',obj.annee),
                     ('origine_id' ,'=',pic.id),

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="is_galia_base_form_view">
+            <field name="name">is_galia_base_form_view</field>
+            <field name="model">is.galia.base</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <field name="num_eti"/>
+                            <field name="soc"/>
+                            <field name="type_eti"/>
+                            <field name="num_of"/>
+                            <field name="num_carton"/>
+                            <field name="qt_pieces"/>
+                            <field name="date_creation"/>
+                            <field name="login"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_galia_base_tree_view">
+            <field name="name">is_galia_base_tree_view</field>
+            <field name="model">is.galia.base</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="num_eti"/>
+                    <field name="soc"/>
+                    <field name="type_eti"/>
+                    <field name="num_of"/>
+                    <field name="num_carton"/>
+                    <field name="qt_pieces"/>
+                    <field name="date_creation"/>
+                    <field name="login"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_galia_base_search_view" >
+            <field name="name">is_galia_base_search_view</field>
+            <field name="model">is.galia.base</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="num_eti"/>
+                    <field name="soc"/>
+                    <field name="type_eti"/>
+                    <field name="num_of"/>
+                    <field name="num_carton"/>
+                    <field name="qt_pieces"/>
+                    <field name="date_creation"/>
+                    <field name="login"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_galia_base_action">
+            <field name="name">Etiquettes GALIA</field>
+            <field name="res_model">is.galia.base</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

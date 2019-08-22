@@ -22,6 +22,9 @@
                                 <field name="is_mysql_pwd"    password="True"/>
                                 <field name="is_dynacase_pwd" password="True"/>
                                 <field name="is_cpta_pwd"     password="True"/>
+                                <field name="is_postgres_host"/>
+                                <field name="is_postgres_user"/>
+                                <field name="is_postgres_pwd" password="True"/>
                             </group>
                             <group string="Programmes externes">
                                 <field name="is_url_intranet_odoo"/>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+
+        <!-- Wizard pour actualiser la liste des articles -->
+        <record id="is_article_actualiser_view" model="ir.ui.view">
+            <field name="name">is_article_actualiser_view</field>
+            <field name="model">is.article.actualiser</field>
+            <field name="arch" type="xml">
+                <form string="Actualiser la liste des articles">
+                    <footer>
+                        <button string='Actualiser la liste des articles' name="actualiser_liste_articles" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Annuler" class="oe_link" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+        <record id="is_article_actualiser_action" model="ir.actions.act_window">
+            <field name="name">Actualiser la liste des articles</field>
+            <field name="res_model">is.article.actualiser</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+           <field name="view_id" ref="is_article_actualiser_view"/>
+           <field name="target">new</field>
+        </record>
+        
+
+        <!-- is.article -->
+        <record model="ir.ui.view" id="is_article_form_view">
+            <field name="name">is_article_form_view</field>
+            <field name="model">is.article</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="designation"/>
+                            <field name="moule"/>
+                            <field name="famille"/>
+                            <field name="sous_famille"/>
+                            <field name="categorie"/>
+                            <field name="gestionnaire"/>
+                            <field name="ref_fournisseur"/>
+                            <field name="ref_plan"/>
+                            <field name="couleur"/>
+                            <field name="fournisseur"/>
+                            <field name="unite"/>
+                            <field name="societe"/>
+                            <field name="cout_standard"/>
+                            <field name="cout_actualise"/>
+                            <field name="prevision_annee_n"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_article_tree_view">
+            <field name="name">is_article_tree_view</field>
+            <field name="model">is.article</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="designation"/>
+                    <field name="moule"/>
+                    <field name="famille"/>
+                    <field name="sous_famille"/>
+                    <field name="categorie"/>
+                    <field name="gestionnaire"/>
+                    <field name="ref_fournisseur"/>
+                    <field name="ref_plan"/>
+                    <field name="couleur"/>
+                    <field name="fournisseur"/>
+                    <field name="unite"/>
+                    <field name="societe"/>
+                    <field name="cout_standard"/>
+                    <field name="cout_actualise"/>
+                    <field name="prevision_annee_n"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_article_search_view" >
+            <field name="name">is_article_search_view</field>
+            <field name="model">is.article</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="designation"/>
+                    <field name="moule"/>
+                    <field name="famille"/>
+                    <field name="sous_famille"/>
+                    <field name="categorie"/>
+                    <field name="gestionnaire"/>
+                    <field name="ref_fournisseur"/>
+                    <field name="ref_plan"/>
+                    <field name="couleur"/>
+                    <field name="fournisseur"/>
+                    <field name="societe"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_article_action">
+            <field name="name">Articles de tous les sites</field>
+            <field name="res_model">is.article</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>
