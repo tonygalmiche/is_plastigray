@@ -216,7 +216,13 @@ class is_export_cegid(models.Model):
                     }
                     type_piece = tab.get(row[6],'??')
 
-                    general           = row[4]
+
+                    #Test si client ou fournisseur
+                    if row[11]:
+                        CompteCollectif = u'401000'
+                    else:
+                        CompteCollectif = u'411000'
+
 
                     # X : Auxilaire
                     # A : Analytique
@@ -224,6 +230,7 @@ class is_export_cegid(models.Model):
                     type_cpte=' '
                     if general==u'411000' or general==u'401000':
                         type_cpte='X'
+                        general = CompteCollectif
 
 
                     CodeAuxiliaire =(u"000000"+str(row[2]))[-6:]
