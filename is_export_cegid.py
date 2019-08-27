@@ -441,7 +441,8 @@ class is_export_cegid(models.Model):
                 f.write(s(l.regimetva,3))
                 f.write(s(l.tva,3))
 
-                for i in range(1,441):
+                #for i in range(1,441):
+                for i in range(1,632):
                     f.write(s('',1))
                 f.write(s(l.bon_a_payer,1))
 
