@@ -220,7 +220,7 @@ class is_export_cegid(models.Model):
                     #Test si client ou fournisseur
                     if row[11]:
                         CompteCollectif = u'401000'
-                        if type_piece=='FC':
+                        if type_piece=='FC' or type_piece=='AC':
                             type_piece = 'OD'
                     else:
                         CompteCollectif = u'411000'
