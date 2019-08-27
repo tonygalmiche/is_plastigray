@@ -243,7 +243,10 @@ class is_export_cegid(models.Model):
                     if type_cpte=='X':
                         auxilaire_section = CodeAuxiliaire
                         if obj.journal=='VTE':
-                            auxilaire_section='C'+auxilaire_section
+                            if type_piece != 'OD':
+                                auxilaire_section='C'+auxilaire_section
+                            else:
+                                auxilaire_section='F'+auxilaire_section
                         else:
                             auxilaire_section='F'+auxilaire_section
 
