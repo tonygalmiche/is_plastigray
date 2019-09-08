@@ -7,6 +7,8 @@ import pytz
 import psycopg2
 import psycopg2.extras
 from openerp.exceptions import Warning
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class is_article_actualiser(models.TransientModel):
@@ -14,8 +16,13 @@ class is_article_actualiser(models.TransientModel):
     _description = u"Actualiser la liste des articles"
 
 
+    def run_actualiser_liste_articles(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
+        self.actualiser_liste_articles(cr, uid, context)
+
+
     @api.multi
     def actualiser_liste_articles(self):
+        annee = datetime.date.today().year
         user    = self.env['res.users'].browse(self._uid)
         company = user.company_id
         try:
@@ -48,13 +55,17 @@ class is_article_actualiser(models.TransientModel):
                         pt.is_ref_plan        as ref_plan,
                         pt.is_couleur         as couleur,
                         rp.name               as fournisseur,
-                        uom.name              as unite
+                        uom.name              as unite,
+                        (select cout_std_total from is_cout cout where cout.name=pp.id limit 1) as cout_standard,
+                        (select cout_act_total from is_cout cout where cout.name=pp.id limit 1) as cout_actualise,
+                        (select sum(quantite) from is_pic_3ans pic where pic.product_id=pp.id and annee='"""+str(annee)+"""') as prevision_annee_n
                     FROM product_template pt left outer join is_product_famille       ipf on pt.family_id=ipf.id
                                              left outer join is_product_sous_famille ipsf on pt.sub_family_id=ipsf.id
                                              left outer join is_category               ic on pt.is_category_id=ic.id
                                              left outer join is_gestionnaire           ig on pt.is_gestionnaire_id=ig.id
                                              left outer join res_partner               rp on pt.is_fournisseur_id=rp.id
                                              left outer join product_uom              uom on pt.uom_id=uom.id
+                                             left outer join product_product           pp on pp.product_tmpl_id=pt.id
                     WHERE 
                         pt.id>0
                     ORDER BY pt.is_code
@@ -62,6 +73,7 @@ class is_article_actualiser(models.TransientModel):
                 cur.execute(SQL)
                 rows = cur.fetchall()
                 for row in rows:
+                    _logger.info("actualiser_liste_articles : "+str(row['name']))
                     SQL="""
                         INSERT INTO is_article (
                             name,
@@ -76,8 +88,11 @@ class is_article_actualiser(models.TransientModel):
                             couleur,
                             fournisseur,
                             unite,
-                            societe
-                        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                            societe,
+                            cout_standard,
+                            cout_actualise,
+                            prevision_annee_n
+                        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                     """
                     values=(
                         row['name'],
@@ -92,7 +107,10 @@ class is_article_actualiser(models.TransientModel):
                         row['couleur'],
                         row['fournisseur'],
                         row['unite'],
-                        base.database
+                        base.database,
+                        str(row['cout_standard']     or 0),
+                        str(row['cout_actualise']    or 0),
+                        str(row['prevision_annee_n'] or 0),
                     )
                     cur0.execute(SQL,values)
                 cur.close()
