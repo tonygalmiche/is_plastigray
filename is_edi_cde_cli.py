@@ -636,55 +636,107 @@ class is_edi_cde_cli(models.Model):
     def get_data_903410(self, attachment):
         res = []
         for obj in self:
-            csvfile=base64.decodestring(attachment.datas)
-            csvfile=csvfile.split("\r")
-            tab=[]
-            ct=0
-            for row in csvfile:
-                ct=ct+1
-                if ct>1:
-                    lig=row.split("\t")
-                    ref_article_client=lig[5][2:]
-                    order=self.env['sale.order'].search([
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.decode("utf-16").encode("utf-8")
+            csvfile = csvfile.split("\r")
+            csvfile = csv.reader(csvfile, delimiter='\t')
+            for ct, lig in enumerate(csvfile):
+                if len(lig)>=10 and ct>0:
+                    ref_article_client = lig[5].replace("'","").strip()
+                    order = self.env['sale.order'].search([
                         ('partner_id.is_code'   , '=', obj.partner_id.is_code),
-                        ('is_ref_client', '=', ref_article_client)]
-                    )
-                    num_commande_client="??"
+                        ('is_ref_client', '=', ref_article_client),
+                        ('is_type_commande'  , '=', 'ouverte'),
+                    ])
+                    num_commande_client = "??"
                     if len(order):
-                        num_commande_client=order[0].client_order_ref
-                    val={
+                        num_commande_client = order[0].client_order_ref
+                    val = {
                         'num_commande_client' : num_commande_client,
                         'ref_article_client'  : ref_article_client,
                     }
-                    type_commande=lig[7]
-                    if type_commande=="P":
-                        type_commande="previsionnel"
-                    else:
-                        type_commande="ferme"
-                    date_livraison=lig[9].strip()
-                    d=datetime.strptime(date_livraison, '%d.%m.%Y')
-                    date_livraison=d.strftime('%Y-%m-%d')
-
-                    quantite=str(lig[12])
-                    quantite=quantite.replace(",", ".")
-                    quantite=quantite.replace(" ", "")
-                    if quantite=='':
-                        quantite=0
-                    qt=0
                     try:
-                        qt=float(quantite)
+                        date_livraison=lig[9][0:10]
+                        d=datetime.strptime(date_livraison, '%d.%m.%Y')
+                        date_livraison=d.strftime('%Y-%m-%d')
                     except ValueError:
-                        print '## ValueError', ref_article_client, date_livraison, lig[12]
-
-                    if qt!=0:
-                        ligne = {
-                            'quantite'      : qt,
-                            'type_commande' : type_commande,
-                            'date_livraison': date_livraison,
-                        }
-                        val.update({'lignes':[ligne]})
-                        res.append(val)
+                        date_livraison=False
+                    quantite = lig[10].replace(" ","").replace(",",".").strip()
+                    try:
+                        quantite = float(quantite)
+                    except ValueError:
+                        quantite=0
+                    type_commande="previsionnel"
+                    if lig[7].strip()==u'Finished Material':
+                        type_commande="ferme"
+                    ligne = {
+                        'quantite'      : quantite,
+                        'type_commande' : type_commande,
+                        'date_livraison': date_livraison,
+                    }
+                    val.update({'lignes': [ligne]})
+                    res.append(val)
         return res
+
+
+#    @api.multi
+#    def get_data_903410(self, attachment):
+#        res = []
+#        for obj in self:
+#            csvfile=base64.decodestring(attachment.datas)
+#            csvfile=csvfile.split("\r")
+#            tab=[]
+#            ct=0
+#            for row in csvfile:
+#                ct=ct+1
+#                if ct>1:
+#                    lig=row.split("\t")
+#                    ref_article_client=lig[5][2:]
+#                    order=self.env['sale.order'].search([
+#                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+#                        ('is_ref_client', '=', ref_article_client)]
+#                    )
+#                    num_commande_client="??"
+#                    if len(order):
+#                        num_commande_client=order[0].client_order_ref
+#                    val={
+#                        'num_commande_client' : num_commande_client,
+#                        'ref_article_client'  : ref_article_client,
+#                    }
+#                    type_commande=lig[7]
+#                    if type_commande=="P":
+#                        type_commande="previsionnel"
+#                    else:
+#                        type_commande="ferme"
+#                    date_livraison=lig[9].strip()
+#                    d=datetime.strptime(date_livraison, '%d.%m.%Y')
+#                    date_livraison=d.strftime('%Y-%m-%d')
+
+#                    quantite=str(lig[12])
+#                    quantite=quantite.replace(",", ".")
+#                    quantite=quantite.replace(" ", "")
+#                    if quantite=='':
+#                        quantite=0
+#                    qt=0
+#                    try:
+#                        qt=float(quantite)
+#                    except ValueError:
+#                        print '## ValueError', ref_article_client, date_livraison, lig[12]
+
+#                    if qt!=0:
+#                        ligne = {
+#                            'quantite'      : qt,
+#                            'type_commande' : type_commande,
+#                            'date_livraison': date_livraison,
+#                        }
+#                        val.update({'lignes':[ligne]})
+#                        res.append(val)
+#        return res
+
+
+
+
+
 
 
     @api.multi
