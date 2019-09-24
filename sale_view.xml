@@ -116,6 +116,8 @@
                         )"
                     />
                     <field name="is_ref_client" readonly="1"/>
+                    <field name="is_ref_plan" readonly="1"/>
+                    <field name="is_ind_plan" readonly="1"/>
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="replace">
                     <field 
