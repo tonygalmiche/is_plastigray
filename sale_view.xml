@@ -143,7 +143,7 @@
                             required="1"/>
                     <field name="is_date_expedition" readonly="1" />
                     <field name="is_type_commande" required="1"  />
-                    <field name="is_client_order_ref" readonly="1" />
+                    <field name="is_client_order_ref" readonly="1" invisible="1"/>
                 </xpath>
                 <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                     <field 
