@@ -19,6 +19,7 @@
                             <field name="partner_id"/>
                             <field name="product_id"/>
                             <field name="description"/>
+                            <field name="segment_id"/>
                             <field name="is_ctrl_rcp"/>
                             <field name="ref_fournisseur"/>
                             <field name="commande_ouverte"/>
@@ -61,6 +62,7 @@
                 <field name="commande_ouverte"/>
                 <field name="partner_id"     widget="many2one_clickable"/>
                 <field name="description"/>
+               <field name="segment_id"/>
                 <field name="ref_fournisseur"/>
                 <field name="qt_receptionnee" string="Quantité à réceptionner"/>
                 <field name="product_uom"/>
@@ -83,6 +85,7 @@
                 <field name="partner_id"/>
                 <field name="product_id"/>
                 <field name="description"/>
+               <field name="segment_id"/>
                 <field name="is_ctrl_rcp"/>
                 <field name="is_dosmat_ctrl_qual"/>
                 <field name="ref_fournisseur"/>
