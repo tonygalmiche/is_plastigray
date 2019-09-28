@@ -385,13 +385,6 @@ class is_pic_3ans_saisie(models.Model):
 
     @api.multi
     def cbb_article(self):
-
-        #self.run_cbb()
-        #return
-
-
-
-
         if len(self)>1:
             raise Warning("Calcul multiple non autorisé")
         for obj in self:
@@ -419,14 +412,11 @@ class is_pic_3ans_saisie(models.Model):
             global ordre
             _logger.info(str(len(pics)))
             for pic in pics:
+                pic._compute()
                 _logger.info(str(pic.product_id.is_code) + ' : ' + str(pic.quantite))
                 ordre=0
                 self.cbb_multi_niveaux(pic, pic.product_id, pic.quantite)
             #*******************************************************************
-
-
-
-
 
 
     @api.multi
