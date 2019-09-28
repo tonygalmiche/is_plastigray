@@ -15,6 +15,7 @@ import_function=[
     ('902810'         , '902810'),
     ('903410'         , '903410'),
     ('ACTIA'          , 'ACTIA'),
+    ('DARWIN'         , 'DARWIN'),
     ('eCar'           , 'eCar'),
     ('GXS'            , 'GXS'),
     ('John-Deere'     , 'John-Deere'),

@@ -332,6 +332,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_903410(attachment)
         if import_function=="ACTIA":
             datas=self.get_data_ACTIA(attachment)
+        if import_function=="DARWIN":
+            datas=self.get_data_DARWIN(attachment)
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
         if import_function=="GXS":
@@ -509,6 +511,50 @@ class is_edi_cde_cli(models.Model):
                         }
                         val.update({'lignes': [ligne]})
                         res.append(val)
+        return res
+
+
+
+
+
+
+    @api.multi
+    def get_data_DARWIN(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=',')
+            for ct, lig in enumerate(csvfile):
+                if ct>0 and len(lig)>=15:
+                    ref_article_client  = lig[2].strip()
+                    num_commande_client = lig[7].strip()
+                    try:
+                        date_livraison=lig[9][0:10]
+                        d=datetime.strptime(date_livraison, '%d/%m/%Y')
+                        date_livraison=d.strftime('%Y-%m-%d')
+                    except ValueError:
+                        date_livraison=False
+                    try:
+                        qt=float(lig[4])
+                    except ValueError:
+                        qt=0
+
+                    type_commande="previsionnel"
+                    if lig[14]=='Firm':
+                        type_commande='ferme'
+                    #print ct,ref_article_client,num_commande_client,date_livraison,qt,type_commande
+                    val = {
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    ligne = {
+                        'quantite'      : qt,
+                        'type_commande' : type_commande,
+                        'date_livraison': date_livraison,
+                    }
+                    val.update({'lignes': [ligne]})
+                    res.append(val)
         return res
 
 
