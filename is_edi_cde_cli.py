@@ -530,7 +530,7 @@ class is_edi_cde_cli(models.Model):
                     ref_article_client  = lig[2].strip()
                     num_commande_client = lig[7].strip()
                     try:
-                        date_livraison=lig[9][0:10]
+                        date_livraison=lig[10][0:10]
                         d=datetime.strptime(date_livraison, '%d/%m/%Y')
                         date_livraison=d.strftime('%Y-%m-%d')
                     except ValueError:
@@ -539,11 +539,9 @@ class is_edi_cde_cli(models.Model):
                         qt=float(lig[4])
                     except ValueError:
                         qt=0
-
                     type_commande="previsionnel"
-                    if lig[14]=='Firm':
+                    if lig[15]=='Firm':
                         type_commande='ferme'
-                    #print ct,ref_article_client,num_commande_client,date_livraison,qt,type_commande
                     val = {
                         'num_commande_client' : num_commande_client,
                         'ref_article_client'  : ref_article_client,
