@@ -352,6 +352,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_Odoo(attachment)
         if import_function=="Plasti-ka":
             datas=self.get_data_plastika(attachment)
+        if import_function=="THERMOR":
+            datas=self.get_data_THERMOR(attachment)
         if import_function=="Watts":
             datas=self.get_data_Watts(attachment)
 
@@ -1147,6 +1149,67 @@ class is_edi_cde_cli(models.Model):
                             val.update({'lignes':[ligne]})
                             res.append(val)
         return res
+
+
+    @api.multi
+    def get_data_THERMOR(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=';')
+            tab=[]
+            for ct, lig in enumerate(csvfile):
+                if len(lig)>37 and ct>0:
+                    x = lig[23]
+                    x = x.replace('="', '')
+                    ref_article_client = x.replace('"', '')
+                    order = self.env['sale.order'].search([
+                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                        ('is_ref_client', '=', ref_article_client)]
+                    )
+                    num_commande_client = "??"
+                    if len(order):
+                        num_commande_client = order[0].client_order_ref
+                    try:
+                        date_livraison = datetime.strptime(lig[33], "%d-%m-%Y")
+                        date_livraison = date_livraison.strftime('%Y-%m-%d')
+                    except:
+                        date_livraison = False
+                    if date_livraison == False:
+                        annee   = lig[34][0:4]
+                        semaine = lig[34][4:6]
+                        d = annee+'-W'+semaine
+                        try:
+                            date_livraison = datetime.strptime(d + '-1', "%Y-W%W-%w")
+                            date_livraison = date_livraison.strftime('%Y-%m-%d')
+                        except:
+                            date_livraison = False
+                    type_commande = lig[35][2:4]
+                    if type_commande=='CF':
+                        type_commande = 'ferme'
+                    else:
+                        type_commande = 'previsionnel'
+                    quantite = lig[37]
+                    try:
+                        quantite = float(quantite)
+                    except ValueError:
+                        quantite=0
+                    val = {
+                        'num_commande_client' : num_commande_client,
+                        'ref_article_client'  : ref_article_client,
+                    }
+                    ligne = {
+                        'quantite'      : quantite,
+                        'type_commande' : type_commande,
+                        'date_livraison': date_livraison,
+                    }
+                    val.update({'lignes': [ligne]})
+                    res.append(val)
+        return res
+
+
+
 
 
     @api.multi

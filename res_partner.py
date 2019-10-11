@@ -25,6 +25,7 @@ import_function=[
     ('Motus'          , 'Motus'),
     ('Odoo'           , 'Odoo'),
     ('Plasti-ka'      , 'Plasti-ka'),
+    ('THERMOR'        , 'THERMOR'),
     ('Watts'          , 'Watts'),
 ]
 # ******************************************************************************
