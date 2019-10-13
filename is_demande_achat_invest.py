@@ -7,11 +7,17 @@ import datetime
 
 class is_demande_achat_invest(models.Model):
     _name='is.demande.achat.invest'
+    _inherit=['mail.thread']
     _order='name desc'
 
+    @api.depends('line_ids')
     def _compute(self):
         uid=self._uid
         for obj in self:
+            montant_total = 0
+            for line in obj.line_ids:
+                montant_total+=line.montant
+            obj.montant_total = montant_total
             vsb=False
             if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
                 vsb=True
@@ -53,6 +59,8 @@ class is_demande_achat_invest(models.Model):
     fournisseur_autre    = fields.Char("Fournisseur autre")
     delai_livraison      = fields.Date("Délai de livraison", required=True)
     lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True)], required=True)
+    is_incoterm          = fields.Many2one('stock.incoterms', "Incoterm", related='fournisseur_id.is_incoterm', readonly=True)
+    is_lieu              = fields.Char("Lieu", related='fournisseur_id.is_lieu', readonly=True)
     num_devis            = fields.Char("N° du devis")
     date_devis           = fields.Date("Date du devis")
     commentaire          = fields.Text("Commentaire")
@@ -64,9 +72,9 @@ class is_demande_achat_invest(models.Model):
         ('solde'               , 'Soldé'),
         ('annule'              , 'Annulé'),
     ], "Etat")
-    line_ids             = fields.One2many('is.demande.achat.invest.line'  , 'da_id', u"Lignes", copy=True)
-    order_id             = fields.Many2one('purchase.order', 'Commande générée', readonly=True , copy=False)
-
+    line_ids                      = fields.One2many('is.demande.achat.invest.line'  , 'da_id', u"Lignes", copy=True)
+    montant_total                 = fields.Float("Montant Total", compute='_compute', readonly=True, store=True)
+    order_id                      = fields.Many2one('purchase.order', 'Commande générée', readonly=True , copy=False)
     vers_brouillon_vsb            = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_rsp_vsb       = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)
     vers_validation_direction_vsb = fields.Boolean('Champ technique', compute='_compute', readonly=True, store=False)

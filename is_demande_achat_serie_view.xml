@@ -69,8 +69,11 @@
                                     on_change="fournisseur_id_on_change(fournisseur_id)" 
                                 />
                                 <field name="pricelist_id"/>
+                                <field name="is_type_cde_fournisseur"/>
                                 <field name="delai_livraison"/>
                                 <field name="lieu_livraison_id"/>
+                                <field name="is_incoterm"/>
+                                <field name="is_lieu"/>
                                 <field name="motif"/>
                                 <field name="commentaire"/>
                             </group>
@@ -95,9 +98,14 @@
                             </field>
                         </group>
                         <group>
+                            <field name="montant_total"/>
                             <field name="order_id"/>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -113,6 +121,7 @@
                     <field name="acheteur_id"/>
                     <field name="fournisseur_id"  widget="many2one_clickable"/>
                     <field name="product_id"      widget="many2one_clickable"/>
+                    <field name="montant_total" sum="Total"/>
                     <field name="delai_livraison"/>
                     <field name="lieu_livraison_id"/>
                     <field name="motif"/>
@@ -130,10 +139,16 @@
                     <field name="createur_id"/>
                     <field name="acheteur_id"/>
                     <field name="fournisseur_id"/>
+                    <field name="is_type_cde_fournisseur"/>
                     <field name="product_id"/>
                     <field name="lieu_livraison_id"/>
+                    <field name="is_incoterm"/>
+                    <field name="is_lieu"/>
                     <field name="motif"/>
                     <field name="state"/>
+                    <group string="Regrouper par">
+                        <filter string="Fournisseur" context="{'group_by': 'fournisseur_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>

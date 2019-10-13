@@ -3,10 +3,12 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
 import datetime
+from res_partner import type_commande_list
 
 
 class is_demande_achat_serie(models.Model):
     _name='is.demande.achat.serie'
+    _inherit=['mail.thread']
     _order='name desc'
 
 
@@ -14,12 +16,15 @@ class is_demande_achat_serie(models.Model):
     def _compute(self):
         uid=self._uid
         for obj in self:
+            montant_total = 0
             for line in obj.line_ids:
                 obj.product_id=line.product_id.id
+                montant_total+=line.montant
             nb_lignes=len(obj.line_ids)
             if nb_lignes>1:
                 raise Warning('Une seule ligne autorisée !')
-            obj.nb_lignes=nb_lignes
+            obj.nb_lignes     = nb_lignes
+            obj.montant_total = montant_total
 
             vsb=False
             if obj.state!='brouillon' and uid==obj.acheteur_id.id:
@@ -41,14 +46,18 @@ class is_demande_achat_serie(models.Model):
             obj.vers_annule_vsb=vsb
 
 
+
     name                 = fields.Char("N° demande achat série", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
     date_creation        = fields.Date("Date de création", required=True)
     acheteur_id          = fields.Many2one('res.users', 'Acheteur', required=True)
     fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur', domain=[('is_company','=',True)], required=True)
     pricelist_id         = fields.Many2one('product.pricelist', "Liste de prix", related='fournisseur_id.property_product_pricelist_purchase', readonly=True)
+    is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", related='fournisseur_id.is_type_cde_fournisseur', readonly=True)
     delai_livraison      = fields.Date("Délai de livraison", required=True)
     lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True)], required=True)
+    is_incoterm          = fields.Many2one('stock.incoterms', "Incoterm", related='fournisseur_id.is_incoterm', readonly=True)
+    is_lieu              = fields.Char("Lieu", related='fournisseur_id.is_lieu', readonly=True)
     motif                = fields.Selection([
         ('pas_tarif'    , "Pas de tarif de créé"),
         ('fin_vie'      , "Produit en fin de vie (Lot trop important)"),
@@ -63,6 +72,7 @@ class is_demande_achat_serie(models.Model):
         ('annule'        , 'Annulé'),
     ], "Etat")
     line_ids                = fields.One2many('is.demande.achat.serie.line'  , 'da_id', u"Lignes", copy=True)
+    montant_total           = fields.Float("Montant Total", compute='_compute', readonly=True, store=True)
     order_id                = fields.Many2one('purchase.order', 'Commande générée', readonly=True, copy=False)
     nb_lignes               = fields.Integer("Nombre de lignes", compute='_compute', readonly=True, store=True)
     product_id              = fields.Many2one('product.product', 'Article', compute='_compute', readonly=True, store=True)

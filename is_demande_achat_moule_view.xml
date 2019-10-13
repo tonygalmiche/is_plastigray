@@ -88,6 +88,8 @@
                                 <field name="delai_livraison"/>
                                 <field name="lieu_livraison_id"/>
                                 <field name="lieu_autre"/>
+                                <field name="is_incoterm"/>
+                                <field name="is_lieu"/>
                                 <field name="commentaire"/>
                             </group>
                         </group>
@@ -117,6 +119,10 @@
                             <field name="order_id"/>
                         </group>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -132,6 +138,7 @@
                     <field name="chef_service_id"/>
                     <field name="acheteur_id"/>
                     <field name="fournisseur_id"  widget="many2one_clickable"/>
+                    <field name="montant_total" sum="Total"/>
                     <field name="num_chantier"/>
                     <field name="delai_livraison"/>
                     <field name="lieu_livraison_id"/>
@@ -154,8 +161,13 @@
                     <field name="fournisseur_id"/>
                     <field name="num_chantier" />
                     <field name="lieu_livraison_id"/>
+                    <field name="is_incoterm"/>
+                    <field name="is_lieu"/>
                     <field name="num_devis"/>
                     <field name="state"/>
+                    <group string="Regrouper par">
+                        <filter string="Fournisseur" context="{'group_by': 'fournisseur_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
