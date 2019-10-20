@@ -216,11 +216,6 @@ class is_edi_cde_cli(models.Model):
 
     @api.multi
     def action_importer_commandes(self):
-
-
-
-
-
         for obj in self:
             line_obj       = self.env['sale.order.line']
 
@@ -299,6 +294,19 @@ class is_edi_cde_cli(models.Model):
                             order=line.order_id
                             if order not in orders:
                                 orders.append(order)
+
+                            #** Pour THERMOR supprimer la ligne avant de la créer car ils envoient des commandes inférieures à la date du jour 
+                            if obj.import_function=='THERMOR':
+                                date_jour=time.strftime('%Y-%m-%d')
+                                filtre=[
+                                    ('order_id', '=', order.id),
+                                    ('is_date_livraison', '=', line.date_livraison),
+                                    ('is_type_commande','=',line.type_commande),
+                                ]
+                                lines=line_obj.search(filtre)
+                                lines.unlink()
+                            #***************************************************
+
                             sequence=sequence+10
                             vals={
                                 'sequence'            : sequence,
@@ -1177,11 +1185,13 @@ class is_edi_cde_cli(models.Model):
                     except:
                         date_livraison = False
                     if date_livraison == False:
-                        annee   = lig[34][0:4]
-                        semaine = lig[34][4:6]
-                        d = annee+'-W'+semaine
                         try:
-                            date_livraison = datetime.strptime(d + '-1', "%Y-W%W-%w")
+                            annee   = int(lig[34][0:4])
+                            semaine = int(lig[34][4:6])
+                            date_livraison = datetime.strptime('%04d-%02d-1' % (annee, semaine), '%Y-%W-%w')
+                            #Pour avoir la semaine en ISO car pas dispo en Python 2.7, uniqument avec Python 3
+                            if date(annee, 1, 4).isoweekday() > 4:
+                                date_livraison -= timedelta(days=7)
                             date_livraison = date_livraison.strftime('%Y-%m-%d')
                         except:
                             date_livraison = False
