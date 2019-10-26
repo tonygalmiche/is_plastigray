@@ -284,6 +284,19 @@ class is_edi_cde_cli(models.Model):
             #pr.enable()
             for line in lines:
                 if line.order_id:
+
+                    #** Pour THERMOR supprimer la ligne avant de la créer car ils envoient des commandes inférieures à la date du jour 
+                    if obj.import_function=='THERMOR':
+                        date_jour=time.strftime('%Y-%m-%d')
+                        filtre=[
+                            ('order_id', '=', line.order_id.id),
+                            ('is_date_livraison', '=', line.date_livraison),
+                            ('is_type_commande','=',line.type_commande),
+                        ]
+                        lines=line_obj.search(filtre)
+                        lines.unlink()
+                    #***************************************************
+
                     if line.quantite!=0 and order_id:
                         #Ne pas importer les commandes au dela de la date limite
                         test=True
@@ -295,17 +308,6 @@ class is_edi_cde_cli(models.Model):
                             if order not in orders:
                                 orders.append(order)
 
-                            #** Pour THERMOR supprimer la ligne avant de la créer car ils envoient des commandes inférieures à la date du jour 
-                            if obj.import_function=='THERMOR':
-                                date_jour=time.strftime('%Y-%m-%d')
-                                filtre=[
-                                    ('order_id', '=', order.id),
-                                    ('is_date_livraison', '=', line.date_livraison),
-                                    ('is_type_commande','=',line.type_commande),
-                                ]
-                                lines=line_obj.search(filtre)
-                                lines.unlink()
-                            #***************************************************
 
                             sequence=sequence+10
                             vals={
