@@ -54,6 +54,8 @@
                                         <th>Qt Odoo</th>
                                         <th>Qt Inv</th>
                                         <th>Ecart</th>
+                                        <th>Coût actualisé</th>
+                                        <th>Valorisation écart</th>
                                         <th>Feuille</th>
                                         <th>Emplacement</th>
                                         <th>Qt recontrôlée</th>
@@ -78,6 +80,8 @@
                                                 <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_odoo"/></td>
                                                 <td class="text-right">  <span style="white-space: nowrap;" t-field="l.qt_inventaire"/></td>
                                                 <td class="text-right">  <span style="white-space: nowrap;" t-field="l.ecart" /></td>
+                                                <td class="text-right">  <span style="white-space: nowrap;" t-field="l.cout_actualise" /></td>
+                                                <td class="text-right">  <span style="white-space: nowrap;" t-field="l.valorisation_ecart" /></td>
                                                 <td class="text-left"><span t-esc="l.get_feuilles()" /></td>
                                                 <td class="text-left">   <span t-field="l.lieu" /></td>
                                                 <td class="text-right"></td>

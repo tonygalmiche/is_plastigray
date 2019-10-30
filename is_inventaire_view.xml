@@ -334,15 +334,17 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <tree create="false" editable="false" >
-                    <field name="product_id"    readonly="1" widget="many2one_clickable"/>
-                    <field name="code"          readonly="1"/>
-                    <field name="designation"   readonly="1"/>
-                    <field name="location_id"   readonly="1"/>
-                    <field name="us_id"         readonly="1"/>
-                    <field name="qt_odoo"       readonly="1"/>
-                    <field name="qt_inventaire" readonly="1"/>
-                    <field name="ecart"         readonly="1"/>
-                    <field name="lieu"          readonly="1"/>
+                    <field name="product_id"         readonly="1" widget="many2one_clickable"/>
+                    <field name="code"               readonly="1"/>
+                    <field name="designation"        readonly="1"/>
+                    <field name="location_id"        readonly="1"/>
+                    <field name="us_id"              readonly="1"/>
+                    <field name="qt_odoo"            readonly="1" sum="Total"/>
+                    <field name="qt_inventaire"      readonly="1" sum="Total"/>
+                    <field name="ecart"              readonly="1" sum="Total"/>
+                    <field name="cout_actualise"     readonly="1"/>
+                    <field name="valorisation_ecart" readonly="1" sum="Total"/>
+                    <field name="lieu"               readonly="1"/>
                     <field name="selection"/>
                 </tree>
             </field>
@@ -361,6 +363,8 @@
                             <field name="qt_odoo"/>
                             <field name="qt_inventaire"/>
                             <field name="ecart"/>
+                            <field name="cout_actualise"/>
+                            <field name="valorisation_ecart"/>
                             <field name="lieu"/>
                         </group>
                     </sheet>

@@ -443,7 +443,7 @@ class is_inventaire(models.Model):
                     product=self.env['product.product'].browse(product_id)
                     if product and product.is_category_id.a_inventorier:
                         if ecart!=0:
-                            #** Recherche de la liste des lieux ********************
+                            #** Recherche de la liste des lieux ****************
                             SQL="""
                                 select iil.lieu
                                 from is_inventaire_line iil
@@ -460,19 +460,37 @@ class is_inventaire(models.Model):
                                 if lieu not in lieux:
                                     lieux.append(lieu)
                             lieux='\n'.join(lieux)
-                            #*******************************************************
+                            #***************************************************
+
+                            #** Recherche du coût actualisé ********************
+                            SQL="""
+                                select cout_act_total
+                                from is_cout
+                                where name="""+str(product_id)+"""
+                            """
+                            cr.execute(SQL)
+                            res4=cr.fetchall()
+                            cout_actualise = 0
+                            valorisation_ecart = 0
+                            for row4 in res4:
+                                if row4[0]:
+                                    cout_actualise = row4[0]
+                                    valorisation_ecart = cout_actualise * ecart
+                            #***************************************************
 
                             vals={
-                                'inventaire_id': obj.id,
-                                'location_id'  : location_id,
-                                'product_id'   : row2[5],
-                                'code'         : row2[0],
-                                'designation'  : row2[1],
-                                'us_id'        : row2[2],
-                                'qt_odoo'      : qt_odoo,
-                                'qt_inventaire': qt_inventaire,
-                                'lieu'         : lieux,
-                                'ecart'        : ecart,
+                                'inventaire_id'     : obj.id,
+                                'location_id'       : location_id,
+                                'product_id'        : row2[5],
+                                'code'              : row2[0],
+                                'designation'       : row2[1],
+                                'us_id'             : row2[2],
+                                'qt_odoo'           : qt_odoo,
+                                'qt_inventaire'     : qt_inventaire,
+                                'lieu'              : lieux,
+                                'ecart'             : ecart,
+                                'cout_actualise'    : cout_actualise,
+                                'valorisation_ecart': valorisation_ecart,
 
                             }
                             tmp=self.env['is.inventaire.ecart'].create(vals)
@@ -966,17 +984,19 @@ class is_inventaire_ecart(models.Model):
     _name='is.inventaire.ecart'
     _order='inventaire_id,code,location_id'
 
-    inventaire_id   = fields.Many2one('is.inventaire', 'Inventaire', select=True)
-    location_id     = fields.Many2one('stock.location', 'Magasin', required=True, select=True)
-    product_id      = fields.Many2one('product.product', 'Article' , required=True, select=True)
-    code            = fields.Char("Article")
-    designation     = fields.Char("Désignation")
-    us_id           = fields.Many2one('product.uom','US')
-    qt_odoo         = fields.Float("Qt Odoo")
-    qt_inventaire   = fields.Float("Qt Inventaire")
-    ecart           = fields.Float("Ecart", help="Qt Inventaire - Qt Odoo")
-    lieu            = fields.Text('Emplacement')
-    selection       = fields.Boolean('Ecart à controler')
+    inventaire_id      = fields.Many2one('is.inventaire', u'Inventaire', select=True)
+    location_id        = fields.Many2one('stock.location', u'Magasin', required=True, select=True)
+    product_id         = fields.Many2one('product.product', u'Article' , required=True, select=True)
+    code               = fields.Char(u"Article")
+    designation        = fields.Char(u"Désignation")
+    us_id              = fields.Many2one('product.uom',u'US')
+    qt_odoo            = fields.Float(u"Qt Odoo")
+    qt_inventaire      = fields.Float(u"Qt Inventaire")
+    ecart              = fields.Float(u"Ecart"             , digits=(12, 2), help="Qt Inventaire - Qt Odoo")
+    cout_actualise     = fields.Float(u"Coût actualisé"    , digits=(12, 4))
+    valorisation_ecart = fields.Float(u"Valorisation écart", digits=(12, 0))
+    lieu               = fields.Text(u'Emplacement')
+    selection          = fields.Boolean(u'Ecart à controler')
 
 
     @api.multi
