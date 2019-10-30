@@ -216,6 +216,11 @@
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
+    <record model="res.groups" id="is_inventaire_group" >
+        <field name="name">Inventaire</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
 
 
     <!-- Catégories de groupes -->

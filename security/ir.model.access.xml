@@ -939,60 +939,11 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
-    <record id="is_inventaire_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_inventaire_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_inventaire')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_inventaire_feuille_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_inventaire_feuille_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_inventaire_feuille')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_inventaire_line_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_inventaire_line_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_inventaire_line')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_inventaire_line_tmp_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_inventaire_line_tmp_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_inventaire_line_tmp')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_inventaire_ecart_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_inventaire_ecart_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_inventaire_ecart')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
-    <record id="is_inventaire_inventory_rsp_production_access"  model="ir.model.access" >
-        <field name="name">is_inventaire_inventory_rsp_production_access</field>
-        <field name="model_id"    eval="ref('model_is_inventaire_inventory')"/>
-        <field name="group_id"    eval="ref('is_rsp_production_group')"/>
-        <field name="perm_read"   eval="True"/>
-        <field name="perm_write"  eval="True"/>
-        <field name="perm_unlink" eval="True"/>
-        <field name="perm_create" eval="True"/>
-    </record>
+
+
+
+
+
     <record id="is_stock_inventory_rsp_production_access"  model="ir.model.access" >
         <field name="name">is_stock_inventory_rsp_production_access</field>
         <field name="model_id"    eval="ref('stock.model_stock_inventory')"/>
@@ -1155,6 +1106,99 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_create" eval="True"/>
     </record>
+
+
+
+
+
+    <!-- Groupe Inventaire --> 
+    <record id="is_inventaire_is_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_is_inventaire_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_feuille_is_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_feuille_is_inventaire_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_feuille')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_line_is_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_line_is_inventaire_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_line')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_line_tmp_is_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_line_tmp_rsp_production_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_line_tmp')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_ecart_is_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_ecart_is_inventaire_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_ecart')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_inventaire_inventory_is_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_inventaire_inventory_is_inventaire_access</field>
+        <field name="model_id"    eval="ref('model_is_inventaire_inventory')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <record id="is_stock_inventory_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_stock_inventory_inventaire_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_inventory')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="is_stock_inventory_line_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_stock_inventory_line_inventaire_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_inventory_line')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
+    <record id="is_stock_move_inventaire_access"  model="ir.model.access" >
+        <field name="name">is_stock_move_inventaire_access</field>
+        <field name="model_id"    eval="ref('stock.model_stock_move')"/>
+        <field name="group_id"    eval="ref('is_inventaire_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+
 
 
 
