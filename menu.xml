@@ -177,7 +177,7 @@
         ])]"/>
     </record>
     <menuitem id="menu_is_cout_40"     sequence="40" name="Coût article"   parent="menu_is_cout"  action="is_cout_action" />
-    <menuitem id="is_cout_export_menu" sequence="50" name="Coût Std / Act" parent="menu_is_cout"  action="is_cout_export_action" />
+    <menuitem id="is_cout_export_menu" sequence="50" name="Coût Std / Act / Budget" parent="menu_is_cout"  action="is_cout_export_action" />
 
     <record id="menu_sauvegarde_cout_pdf" model="ir.ui.menu" >
         <field name="name">Sauvegarde coûts en PDF</field>

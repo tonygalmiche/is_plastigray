@@ -785,13 +785,7 @@ class is_cout(models.Model):
     prix_calcule           = fields.Float("Prix calculé"                , digits=(12, 4))
     prix_sous_traitance    = fields.Float("Prix sous-traitance"         , digits=(12, 4))
     ecart_calcule_matiere  = fields.Float("Ecart Calculé/Matière"       , digits=(12, 4))
-    cout_std_matiere       = fields.Float("Coût std matière"         , digits=(12, 4))
-    cout_std_condition     = fields.Float("Coût std conditionnement" , digits=(12, 4))
-    cout_std_machine       = fields.Float("Coût std machine"         , digits=(12, 4))
-    cout_std_mo            = fields.Float("Coût std main d'oeuvre"   , digits=(12, 4))
-    cout_std_st            = fields.Float("Coût std sous-traitance"  , digits=(12, 4))
-    cout_std_total         = fields.Float("Coût std Total"           , digits=(12, 4))
-    cout_std_prix_vente    = fields.Float("Prix de vente standard"   , digits=(12, 4))
+
     cout_act_matiere       = fields.Float("Coût act matière"        , digits=(12, 4))
     cout_act_condition     = fields.Float("Coût act conditionnement", digits=(12, 4))
     cout_act_machine       = fields.Float("Coût act machine"        , digits=(12, 4))
@@ -801,6 +795,23 @@ class is_cout(models.Model):
     cout_act_st            = fields.Float("Coût act sous-traitance" , digits=(12, 4))
     cout_act_total         = fields.Float("Coût act Total"          , digits=(12, 4))
     cout_act_prix_vente    = fields.Float("Prix de vente actualisé" , digits=(12, 4))
+
+    cout_std_matiere       = fields.Float("Coût std matière"         , digits=(12, 4))
+    cout_std_condition     = fields.Float("Coût std conditionnement" , digits=(12, 4))
+    cout_std_machine       = fields.Float("Coût std machine"         , digits=(12, 4))
+    cout_std_mo            = fields.Float("Coût std main d'oeuvre"   , digits=(12, 4))
+    cout_std_st            = fields.Float("Coût std sous-traitance"  , digits=(12, 4))
+    cout_std_total         = fields.Float("Coût std Total"           , digits=(12, 4))
+    cout_std_prix_vente    = fields.Float("Prix de vente standard"   , digits=(12, 4))
+
+    cout_budget_matiere       = fields.Float("Coût budget matière"         , digits=(12, 4))
+    cout_budget_condition     = fields.Float("Coût budget conditionnement" , digits=(12, 4))
+    cout_budget_machine       = fields.Float("Coût budget machine"         , digits=(12, 4))
+    cout_budget_mo            = fields.Float("Coût budget main d'oeuvre"   , digits=(12, 4))
+    cout_budget_st            = fields.Float("Coût budget sous-traitance"  , digits=(12, 4))
+    cout_budget_total         = fields.Float("Coût budget Total"           , digits=(12, 4))
+    cout_budget_prix_vente    = fields.Float("Prix de vente budget"        , digits=(12, 4))
+
     amortissement_moule    = fields.Float("Amortissement Moule"     , digits=(12, 4), compute='_compute')
     surcout_pre_serie      = fields.Float("Surcôut pré-série"       , digits=(12, 4), compute='_compute')
     prix_vente             = fields.Float("Prix de Vente"           , digits=(12, 4), compute='_compute')
@@ -906,12 +917,38 @@ class is_cout(models.Model):
 
     @api.multi
     def copie_cout_actualise_dans_cout_standard(self):
-        #pr=cProfile.Profile()
-        #pr.enable()
         for obj in self:
             self._copie_cout_actualise_dans_cout_standard(obj)
-        #pr.disable()
-        #pr.dump_stats('/tmp/analyse.cProfile')
+
+
+
+
+    @api.multi
+    def _copie_cout_actualise_dans_cout_budget(self,obj):
+        vals={
+            'cout_budget_matiere'    : obj.cout_act_matiere,
+            'cout_budget_condition'  : obj.cout_act_condition,
+            'cout_budget_machine'    : obj.cout_act_machine,
+            'cout_budget_mo'         : obj.cout_act_mo,
+            'cout_budget_st'         : obj.cout_act_st,
+            'cout_budget_total'      : obj.cout_act_total,
+            'cout_budget_prix_vente' : obj.cout_act_prix_vente,
+        }
+        obj.write(vals)
+
+
+    @api.multi
+    def copie_cout_actualise_dans_cout_budget(self):
+        for obj in self:
+            self._copie_cout_actualise_dans_cout_budget(obj)
+
+
+
+
+
+
+
+
 
 
     @api.multi

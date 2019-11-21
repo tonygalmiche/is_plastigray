@@ -183,6 +183,15 @@
                             </group>
                         </group>
                         <group>
+                            <group string="Coût budget">
+                                <field name="cout_budget_matiere"/> 
+                                <field name="cout_budget_condition"     attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_budget_machine"       attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_budget_mo"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_budget_st"            attrs="{'invisible': [('type_article', '=', 'A')] }"/> 
+                                <field name="cout_budget_total"         attrs="{'invisible': [('type_article', '=', 'A')] }" readonly="1" sum="Total"/> 
+                                <field name="cout_budget_prix_vente"/> 
+                            </group>
                             <group string="Tarif commercial">
                                 <field name="amortissement_moule"/> 
                                 <field name="surcout_pre_serie"  /> 
@@ -441,8 +450,6 @@
         </record>
 
 
-
-
         <!-- Exportation des couts -->
         <record model="ir.ui.view" id="is_cout_export_tree_view">
             <field name="name">is_cout_export_tree_view</field>
@@ -455,18 +462,27 @@
                     <field name="designation"/> 
                     <field name="is_mold_dossierf"/> 
                     <field name="partner_id"/> 
+
                     <field name="cout_std_matiere"/> 
                     <field name="cout_std_machine"/> 
                     <field name="cout_std_mo"/> 
                     <field name="cout_std_st"/> 
                     <field name="cout_std_total"/> 
-                    <field name="cout_std_prix_vente"/> 
+                    <field name="cout_std_prix_vente"/>
+
                     <field name="cout_act_matiere"/> 
                     <field name="cout_act_machine"/> 
                     <field name="cout_act_mo"/> 
                     <field name="cout_act_st"/> 
                     <field name="cout_act_total"/> 
                     <field name="cout_act_prix_vente"/> 
+
+                    <field name="cout_budget_matiere"/> 
+                    <field name="cout_budget_machine"/> 
+                    <field name="cout_budget_mo"/> 
+                    <field name="cout_budget_st"/> 
+                    <field name="cout_budget_total"/> 
+                    <field name="cout_budget_prix_vente"/> 
                 </tree>
             </field>
         </record>
@@ -518,7 +534,18 @@
             <field eval="'ir.actions.server,%d'%copie_cout_actualise_dans_cout_standard_action_server" name="value"/>
         </record>
 
-
+        <!-- Copier coût actualisé dans coût budget -->
+        <record id="copie_cout_actualise_dans_cout_budget_action_server" model="ir.actions.server">
+             <field name="name">Copier coût actualisé dans coût budget</field>
+            <field name="model_id" ref="model_is_cout"/>
+            <field name="code">action = self.copie_cout_actualise_dans_cout_budget(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="copie_cout_actualise_dans_cout_budget_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.cout'" name="model"/>
+            <field name="name">Copier coût actualisé dans coût budget</field>
+            <field eval="'ir.actions.server,%d'%copie_cout_actualise_dans_cout_budget_action_server" name="value"/>
+        </record>
 
         <!-- Initialisation du prix de vente standard -->
         <record id="initialisation_prix_vente_standard_action_server" model="ir.actions.server">

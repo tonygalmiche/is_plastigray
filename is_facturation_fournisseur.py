@@ -61,7 +61,8 @@ class is_facturation_fournisseur(models.Model):
 
     _defaults = {
         'afficher_lignes': 'oui',
-        'date_fin'       :  _date(),
+        #'date_fin'       :  _date(),
+        'date_fin'       : lambda *a: fields.datetime.now(),
         'state'          : 'creation',
     }
 
