@@ -346,8 +346,8 @@
                     <tr>
                         <th>IBAN</th>
                         <th>Banque</th>
-                        <th>Code d'identification bancaire</th>
-                        <th>Code swift</th>
+                        <th>BIC</th>
+                        <th>SWIFT</th>
                     </tr>
                 </thead>
                 <tbody>
