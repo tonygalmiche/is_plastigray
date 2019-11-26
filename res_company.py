@@ -4,7 +4,6 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 
 
-
 class res_company(models.Model):
     _inherit = 'res.company'
 
@@ -33,3 +32,9 @@ class res_company(models.Model):
     is_code_societe      = fields.Char('Code société')
     is_dest_bilan_of_ids = fields.Many2many('res.users', 'is_res_company_users_rel', 'res_company_id','user_id', string="Destinataires du bilan de fin d'OF")
     is_cout_ctrl_qualite = fields.Float(u"Coût horaire vendu contrôle qualité", digits=(12, 2))
+
+
+class res_partner_bank(models.Model):
+    _inherit = 'res.partner.bank'
+
+    is_bank_swift = fields.Char('Code swift')
