@@ -68,10 +68,10 @@ class is_pricelist_item(models.Model):
             print obj.price_version_id.pricelist_id
 
             if obj.price_version_id.pricelist_id.type=='sale':
-                view_id=self.env.ref('is_plastigray.is_product_pricelist_item_sale_tree_view')
+                view_id=self.env.ref('is_plastigray.is_product_pricelist_item_sale_tree_view').id
                 pricelist_type='sale'
             else:
-                view_id=self.env.ref('is_plastigray.is_product_pricelist_item_purchase_tree_view')
+                view_id=self.env.ref('is_plastigray.is_product_pricelist_item_purchase_tree_view').id
                 pricelist_type='purchase'
 
             return {
@@ -80,13 +80,30 @@ class is_pricelist_item(models.Model):
                 'view_type': 'form',
                 'res_model': 'product.pricelist.item',
                 'type': 'ir.actions.act_window',
-                'view_id': view_id.id,
+                #'view_id': view_id.id,
+                'view_id'  : False,
+                'views'    : [(view_id, 'tree')],
                 'domain': [('price_version_id','=',obj.price_version_id.id)],
                 'context': {
                     'default_price_version_id': obj.price_version_id.id,
                     'type': pricelist_type,
                 }
             }
+
+
+#        return {
+#            'name': u'Lignes des factures client actualisées à '+str(now),
+#            'view_mode': 'tree,form,graph',
+#            'view_type': 'form',
+#            'view_id'  : False,
+#            'views'    : [(view_id, 'tree'),(False, 'form'),(False, 'graph')],
+#            'res_model': 'is.account.invoice.line',
+#            'domain'   : [('type','=', 'out_invoice')],
+#            'type': 'ir.actions.act_window',
+#        }
+
+
+
 
 
     @api.multi

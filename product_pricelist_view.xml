@@ -145,10 +145,10 @@
         <field name="model">product.pricelist.item</field>
         <field name="arch" type="xml">
             <tree editable="top">
-                <field name="product_id" on_change="on_change_product_id(product_id)" required="1"/>
+                <field name="product_id" required="1" on_change="on_change_product_id(product_id)"/>
                 <field name="is_gestionnaire_id"/>
                 <field name="sequence"/>
-                <field name="min_quantity"    required="1" digits="(14, 4)"/>
+                <field name="min_quantity"    required="1" digits="(14, 4)" />  <!-- on_change="on_change_min_quantity(min_quantity)" -->
                 <field name="product_po_uom_id"/>
                 <field name="price_surcharge" required="1" string="Prix" />
                 <field name="justification"/>

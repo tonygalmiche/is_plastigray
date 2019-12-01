@@ -56,7 +56,12 @@ class product_pricelist_item(models.Model):
         return res
 
 
-
+#    @api.multi
+#    def on_change_min_quantity(self, min_quantity):
+#        res = {}
+#        res.setdefault('value',{})
+#        res['value']['min_quantity'] = min_quantity
+#        return res
 
 
 class product_pricelist_version(models.Model):
