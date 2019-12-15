@@ -279,7 +279,8 @@ class is_demande_achat_moule(models.Model):
     @api.multi
     def vers_annule_action(self):
         for obj in self:
-            if obj.createur_id.id==self._uid or obj.acheteur_id.id==self._uid:
+            uid = self._uid
+            if obj.createur_id.id==uid or obj.acheteur_id.id==uid or obj.direction_id.id==uid or obj.chef_service_id.id==uid:
                 obj.sudo().state="annule"
 
 
