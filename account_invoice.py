@@ -109,6 +109,14 @@ class account_invoice(models.Model):
 
 
     @api.multi
+    def copy(self,vals):
+        vals['is_folio_id'] = False
+        vals['is_export_cegid_id'] = False
+        res=super(account_invoice, self).copy(vals)
+        return res
+
+
+    @api.multi
     def voir_facture_client_action(self):
         for obj in self:
             view_id=self.env.ref('is_plastigray.is_invoice_form')

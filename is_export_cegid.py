@@ -7,7 +7,10 @@ import codecs
 import unicodedata
 import base64
 import csv, cStringIO
-
+import sys
+import os
+import logging
+_logger = logging.getLogger(__name__)
 
 
 def date2txt(date):
@@ -471,6 +474,26 @@ class is_export_cegid(models.Model):
                 'datas':       r,
             }
             id = self.env['ir.attachment'].create(vals)
+
+            #** Enregistrement dans le dossier de destination ******************
+            company  = self.env.user.company_id
+            dossier_interface_cegid = company.is_dossier_interface_cegid
+            if dossier_interface_cegid:
+                #cde="scp -o ConnectTimeout=20 -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes -o PasswordAuthentication=no "+dest+" "+dossier_interface_cegid+" 2>&1"
+                #TODO : Avec rsync, il est possible de faire le chmod en même temps 
+                cde='rsync -a -e "ssh -o ConnectTimeout=20 -o StrictHostKeyChecking=no -o PubkeyAuthentication=yes -o PasswordAuthentication=no" --chmod=u+rwx,g+rwx,o+rwx --chown=root:root '+dest+' '+dossier_interface_cegid+' 2>&1'
+                _logger.info(cde)
+                lines=os.popen(cde).readlines()
+                for line in lines:
+                    _logger.info(line.strip())
+            #*******************************************************************
+
+
+
+
+
+
+
 
 
 

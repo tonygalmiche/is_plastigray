@@ -54,6 +54,7 @@
                         <group>
                             <group string="Autre">
                                 <field name="is_cout_ctrl_qualite"/>
+                                <field name="is_dossier_interface_cegid"/>
                             </group>
                         </group>
 

@@ -33,6 +33,8 @@ class res_company(models.Model):
     is_dest_bilan_of_ids = fields.Many2many('res.users', 'is_res_company_users_rel', 'res_company_id','user_id', string="Destinataires du bilan de fin d'OF")
     is_cout_ctrl_qualite = fields.Float(u"Coût horaire vendu contrôle qualité", digits=(12, 2))
 
+    is_dossier_interface_cegid = fields.Char(u"Dossier de destination pour le fichier d'interface de CEGID")
+
 
 class res_partner_bank(models.Model):
     _inherit = 'res.partner.bank'
