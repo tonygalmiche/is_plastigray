@@ -652,7 +652,7 @@ class is_liste_servir_line(models.Model):
             docid=context['certificat_matiere']
             return {
                 'name': "Certificat",
-                'url': "http://dynacase/?sole=Y&app=FDL&action=FDL_CARD&id="+docid,
+                'url': "https://dynacase-rp/?sole=Y&app=FDL&action=FDL_CARD&id="+docid,
                 'type': 'ir.actions.act_url',
             }
 
