@@ -45,6 +45,8 @@ class is_demande_achat_invest(models.Model):
                 vsb=True
             if obj.state=='transmis_achat' and uid==obj.acheteur_id.id:
                 vsb=True
+            if obj.state=='validation_direction' and uid==obj.direction_id.id:
+                vsb=True
             obj.vers_annule_vsb=vsb
 
 
