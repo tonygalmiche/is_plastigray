@@ -208,8 +208,12 @@ class is_demande_achat_invest(models.Model):
                 if line.num_chantier==False:
                     raise Warning('N° du chantier obligatoire sur toutes les lignes de la commande !')
                 else:
-                    if len(line.num_chantier)!=5:
-                        raise Warning('N° du chantier sur 5 chiffres obligatoire sur toutes les lignes de la commande !')
+                    if len(line.num_chantier)==5:
+                        line.num_chantier='0'+line.num_chantier
+                    if len(line.num_chantier)!=6:
+                        raise Warning('N° du chantier sur 6 chiffres obligatoire sur toutes les lignes de la commande !')
+
+
             if partner.property_product_pricelist_purchase.id == False:
                 raise Warning('Liste de prix non renseignée pour ce fournisseur')
             else:
@@ -315,7 +319,7 @@ class is_demande_achat_invest_line(models.Model):
     quantite               = fields.Float("Quantité", digits=(14,4), required=True)
     prix                   = fields.Float("Prix"    , digits=(14,4))
     montant                = fields.Float("Montant", compute='_compute', readonly=True, store=True)
-    num_chantier           = fields.Char("N° du chantier sur 5 chiffres", help="Saisir 5 chiffres uniquement")
+    num_chantier           = fields.Char("N° du chantier sur 6 chiffres", help="Saisir 6 chiffres uniquement")
 
     @api.multi
     def product_id_on_change(self,parent,product_id,quantite):
