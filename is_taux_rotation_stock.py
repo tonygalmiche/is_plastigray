@@ -93,7 +93,7 @@ BEGIN
             (
                 select sum(quantite) 
                 from is_pic_3ans
-                where product_id=pp_id and type_donnee='pic' and annee='2019'
+                where product_id=pp_id and type_donnee='pic' and annee='2020'
             )
         ,0)
     );
@@ -108,7 +108,7 @@ BEGIN
             (
                 select sum(quantite) 
                 from is_pic_3ans
-                where product_id=pp_id and annee='2019'
+                where product_id=pp_id and annee='2020'
             )
         ,0)
     );
