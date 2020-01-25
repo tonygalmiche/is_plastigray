@@ -21,9 +21,23 @@ class is_comparatif_tps_article_gamme(models.Model):
     delta_nb_secondes   = fields.Float('Delta Nb secondes')
 
 
+#                    sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia) as nb_secondes_gamme,
+
+
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_comparatif_tps_article_gamme')
         cr.execute("""
+
+            CREATE OR REPLACE FUNCTION get_nb_secondes_gamme(nbsecondes float, nbempreintes integer, coeftheia float, name char) RETURNS float AS $$
+                    BEGIN
+                        IF name = 'ASSEMBLAGE' THEN
+                            RETURN nbsecondes;
+                        ELSE
+                            RETURN nbsecondes*coeftheia;
+                        END IF;
+                    END;
+            $$ LANGUAGE plpgsql;
+
             CREATE OR REPLACE view is_comparatif_tps_article_gamme AS (
                 SELECT 
                     mb.id,
@@ -33,9 +47,9 @@ class is_comparatif_tps_article_gamme(models.Model):
                     min(mrw.sequence)         as sequence,
                     min(mrw.name)             as name,
                     min(mrw.workcenter_id)    as workcenter_id,
-                    sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia) as nb_secondes_gamme,
+                    sum(get_nb_secondes_gamme(mrw.is_nb_secondes,mr.is_nb_empreintes,mr.is_coef_theia,mrw.name)) as nb_secondes_gamme,
                     min(pt.temps_realisation) as nb_secondes_article,
-                    round(cast(sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia)-min(pt.temps_realisation) as numeric),2) as delta_nb_secondes
+                    round(cast(sum(get_nb_secondes_gamme(mrw.is_nb_secondes,mr.is_nb_empreintes,mr.is_coef_theia,mrw.name))-min(pt.temps_realisation) as numeric),2) as delta_nb_secondes
                 FROM mrp_bom mb inner join mrp_routing mr             on mb.routing_id=mr.id
                                 inner join mrp_routing_workcenter mrw on mr.id=mrw.routing_id
                                 inner join mrp_workcenter mw          on mrw.workcenter_id=mw.id
@@ -50,7 +64,7 @@ class is_comparatif_tps_article_gamme(models.Model):
                     mb.product_tmpl_id,
                     pt.is_category_id,
                     mr.id
-                HAVING round(cast(sum(mrw.is_nb_secondes*mr.is_nb_empreintes*mr.is_coef_theia)-min(pt.temps_realisation) as numeric),2)<>0
+                HAVING round(cast(sum(get_nb_secondes_gamme(mrw.is_nb_secondes,mr.is_nb_empreintes,mr.is_coef_theia,mrw.name))-min(pt.temps_realisation) as numeric),2)<>0
             )
         """)
 
