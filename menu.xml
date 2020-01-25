@@ -198,6 +198,7 @@
             ref('is_commerciaux_group'),
             ref('is_rsp_achats_group'),
             ref('is_rsp_production_group'),
+            ref('is_administration_vente_group'),
         ])]"/>
     </record>
     <menuitem id="menu_is_societes_10"   sequence="10" name="Société"               parent="menu_is_societes" action="is_action_partner_supplier_form" />

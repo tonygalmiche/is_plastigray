@@ -1479,6 +1479,24 @@
 
 
     <!-- ADV - Expéditions -->
+    <record id="is_res_partner_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_res_partner_administration_vente_access</field>
+        <field name="model_id"    eval="ref('base.model_res_partner')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="perm_create" eval="False"/>
+    </record>
+    <record id="is_resource_calendar_leaves_administration_vente_access"  model="ir.model.access" >
+        <field name="name">is_resource_calendar_leaves_administration_vente_access</field>
+        <field name="model_id"    eval="ref('model_resource_calendar_leaves')"/>
+        <field name="group_id"    eval="ref('is_administration_vente_group')"/>
+        <field name="perm_read"   eval="True"/>
+        <field name="perm_write"  eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
     <record id="is_sale_order_administration_vente_access"  model="ir.model.access" >
         <field name="name">is_sale_order_administration_vente_access</field>
         <field name="model_id"    eval="ref('model_sale_order')"/>
