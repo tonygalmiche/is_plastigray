@@ -358,7 +358,7 @@ class is_database(models.Model):
             'is_type_reglement'              : partner.is_type_reglement and self.get_is_type_reglement(partner, DB, USERID, USERPASS, sock) or False,
             'is_rib_id'                      : partner.is_rib_id and self.get_is_rib_id(partner, DB, USERID, USERPASS, sock) or False,
             'user_id'                        : partner.user_id and self.get_user_id(partner, DB, USERID, USERPASS, sock) or False,
-            'active'                 : True,
+            'active'                 : partner.active,
         }
         db_ids = self.env['is.database'].search([('database','=',DB)])
         if db_ids:
