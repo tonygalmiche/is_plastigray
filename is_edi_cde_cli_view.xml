@@ -99,6 +99,7 @@
                             <field name="name"/>
                             <field name="partner_id" domain="[('is_import_function','!=','')]"  />
                             <field name="date_maxi"/>
+                            <field name="jour_semaine"/>
                             <field name="import_function"/>
                             <field name="file_ids" widget="many2many_binary" />
                             <field name="nb_lignes"/>
@@ -117,12 +118,8 @@
                     <field name="name"/>
                     <field name="partner_id"/>
                     <field name="date_maxi"/>
+                    <field name="jour_semaine"/>
                     <field name="import_function"/>
-                    <!--
-                    <field name="nb_lignes"/>
-                    <field name="nb_fichiers"/>
-                    <field name="nb_anomalies"/>
-                    -->
                     <field name="state"/>
                </tree>
             </field>

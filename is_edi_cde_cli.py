@@ -67,11 +67,20 @@ class is_edi_cde_cli(models.Model):
             ])
             obj.nb_anomalies=len(r)
 
-
+    _JOURS_SEMAINE=[
+        (1, 'Lundi'),
+        (2, 'Mardi'),
+        (3, 'Mercredi'),
+        (4, 'Jeudi'),
+        (5, 'Vendredi'),
+        (6, 'Samedi'),
+        (7, 'Dimanche'),
+    ]
 
     name            = fields.Date('Date de création', readonly='1')
     partner_id      = fields.Many2one('res.partner', 'Client', required=False)
     date_maxi       = fields.Date(u"Date de livraison limite d'intégration", help="Au delà de cette date, les nouvelles commandes ne seront pas importés et les commandes existantes ne seront pas supprimées")
+    jour_semaine    = fields.Selection(_JOURS_SEMAINE, "Jour semaine", help="Jour de la semaine d'intégration du prévisionnel")
     import_function = fields.Char("Fonction d'importation", compute='_import_function', readonly=True)
     file_ids        = fields.Many2many('ir.attachment', 'is_doc_attachment_rel', 'doc_id', 'file_id', 'Fichiers')
     create_id       = fields.Many2one('res.users', 'Importe par', readonly=True)
@@ -150,15 +159,28 @@ class is_edi_cde_cli(models.Model):
                             product    = order[0].is_article_commande_id
                             product_id = product.id
 
+                            #** Date de livraison sur le jour indiqué **********
+                            date_livraison=ligne["date_livraison"]
+                            if ligne["type_commande"]=='previsionnel' and date_livraison and obj.jour_semaine:
+                                d=datetime.strptime(date_livraison, '%Y-%m-%d')
+                                jour_semaine_client = d.weekday() + 1
+                                jour_semaine        = int(obj.jour_semaine)
+                                delta = jour_semaine - jour_semaine_client
+                                if delta:
+                                    d = d + timedelta(days=delta)
+                                    date_livraison = d.strftime('%Y-%m-%d')
+                            #***************************************************
+
+
                             #** Recherche du prix ******************************
                             if quantite>0:
                                 context={}
                                 if pricelist_id:
-                                    date = ligne["date_livraison"]
+                                    #date = ligne["date_livraison"]
                                     ctx = dict(
                                         context,
                                         uom=product.uom_id.id,
-                                        date=date,
+                                        date=date_livraison,
                                     )
                                     prix = self.pool.get('product.pricelist').price_get(
                                         self._cr, self._uid,
@@ -183,9 +205,9 @@ class is_edi_cde_cli(models.Model):
                             #***************************************************
 
                             #** Vérification de la date de livraison livraison *
-                            date_livraison=ligne["date_livraison"]
+                            #date_livraison=ligne["date_livraison"]
                             if date_livraison:
-                                check_date = self.env['sale.order.line'].check_date_livraison(ligne["date_livraison"], partner_id)
+                                check_date = self.env['sale.order.line'].check_date_livraison(date_livraison, partner_id)
                                 if not check_date:
                                     anomalie2.append("Date de livraison pendant la fermeture du client")
                             else:
