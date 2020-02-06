@@ -288,6 +288,10 @@
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
+                <field name="name" position="after" >
+                    <field name="is_piece_jointe" invisible="1"/>
+                    <button string="Pièce jointe" name="pj_action" type="object" icon="STOCK_FILE" attrs="{'invisible': [('is_piece_jointe', '==', False)]}"/>
+                </field>
                 <field name="date" position="after" >
                     <field name="is_date_expedition" />
                     <field name="is_date_livraison" />

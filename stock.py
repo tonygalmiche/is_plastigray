@@ -43,6 +43,20 @@ class stock_picking(models.Model):
     is_num_bl             = fields.Char("N° BL fournisseur")
     is_date_reception     = fields.Date('Date de réception')
     is_facture_pk_id      = fields.Many2one('is.facture.pk', 'Facture PK')
+    is_piece_jointe       = fields.Boolean(u"Pièce jointe", store=False, readonly=True, compute='_compute_is_piece_jointe')
+
+    @api.multi
+    def pj_action(self):
+        for obj in self:
+            print obj
+
+    def _compute_is_piece_jointe(self):
+        for obj in self:
+            attachments = self.env['ir.attachment'].search([('res_model','=',self._name),('res_id','=',obj.id)])
+            pj=False
+            if attachments:
+                pj=True
+            obj.is_piece_jointe=pj
 
 
     @api.depends('is_date_livraison', 'partner_id', 'company_id')
