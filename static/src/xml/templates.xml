@@ -14,10 +14,10 @@
                         <td>Code PG (Début) <br /><input style='width:9em' type='text'     id='code_pg_debut'  title="Début Code PG"/></td>
                         <td>Gest            <br /><select style="width: 4em;" id='gest'/></td>
                         <td>Cat             <br /><input style='width:4em' type='text'     id='cat'/></td>
-                        <td>Moule           <br /><input style='width:4em' type='text'     id='moule'/></td>
+                        <td>Moule (Liste avec virgule)<br /><input style='width:14em' type='text'     id='moule'/></td>
                         <td>Projet          <br /><input style='width:4em' type='text'     id='projet'/></td>
                         <td>Client          <br /><input style='width:6em' type='text'     id='client'/></td>
-                        <td>Fournisseur     <br /><select style="width: 6em;" id='fournisseur'/></td>
+                        <td>Fournisseur     <br /><select style="width: 8em;" id='fournisseur'/></td>
                         <td>Semaines        <br /><select style="width: 8em;" id='nb_semaines'/></td>
                         <td>Type Cde        <br /><select style="width: 8em;" id='type_commande'/></td>
                         <td>Rapport         <br /><select style="width: 8em;" id='type_rapport'/></td>
@@ -42,10 +42,10 @@
                         <td>Code PG (Début) <br /><input style='width:9em' type='text'     id='code_pg_debut'  title="Début Code PG (v2)"/></td>
                         <td>Gest            <br /><select style="width: 4em;" id='gest'/></td>
                         <td>Cat             <br /><input style='width:4em' type='text'     id='cat'/></td>
-                        <td>Moule           <br /><input style='width:4em' type='text'     id='moule'/></td>
+                        <td>Moule (Liste avec virgule)<br /><input style='width:14em' type='text'     id='moule'/></td>
                         <td>Projet          <br /><input style='width:4em' type='text'     id='projet'/></td>
                         <td>Client          <br /><input style='width:6em' type='text'     id='client'/></td>
-                        <td>Fournisseur     <br /><select style="width: 6em;" id='fournisseur'/></td>
+                        <td>Fournisseur     <br /><select style="width: 8em;" id='fournisseur'/></td>
                         <td>Semaines        <br /><select style="width: 8em;" id='nb_semaines'/></td>
                         <td>Type Cde        <br /><select style="width: 8em;" id='type_commande'/></td>
                         <td>Rapport         <br /><select style="width: 8em;" id='type_rapport'/></td>

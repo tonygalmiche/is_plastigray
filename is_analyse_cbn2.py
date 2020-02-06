@@ -597,7 +597,14 @@ class product_product(models.Model):
         if cat:
             filtre=filtre+" and ic.name='"+cat+"' "
         if moule:
-            filtre=filtre+" and (im.name='"+moule+"' or id.name='"+moule+"' )"
+            moules = moule.split(',')
+            res=[]
+            for m in moules:
+                res.append("'"+str(m)+"'")
+            moules=",".join(res)
+            moules='('+moules+')'
+            filtre=filtre+" and (im.name in "+moules+" or id.name in "+moules+" )"
+            #filtre=filtre+" and (im.name='"+moule+"' or id.name='"+moule+"' )"
         if projet:
             filtre=filtre+" and (imp1.name ilike '%"+projet+"%' or imp2.name ilike '%"+projet+"%') "
         if client:
