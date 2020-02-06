@@ -56,7 +56,7 @@ class is_demande_achat_serie(models.Model):
     is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", related='fournisseur_id.is_type_cde_fournisseur', readonly=True)
     delai_livraison      = fields.Date("Délai de livraison", required=True)
     lieu_livraison_id    = fields.Many2one('res.partner', 'Lieu de livraison', domain=[('is_company','=',True)], required=True)
-    is_incoterm          = fields.Many2one('stock.incoterms', "Incoterm", related='fournisseur_id.is_incoterm', readonly=True)
+    is_incoterm          = fields.Many2one('stock.incoterms', "Incoterm  / Conditions de livraison", related='fournisseur_id.is_incoterm', readonly=True)
     is_lieu              = fields.Char("Lieu", related='fournisseur_id.is_lieu', readonly=True)
     motif                = fields.Selection([
         ('pas_tarif'    , "Pas de tarif de créé"),

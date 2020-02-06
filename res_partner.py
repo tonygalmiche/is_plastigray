@@ -151,7 +151,7 @@ class res_partner(models.Model):
     is_adr_facturation      = fields.Many2one('res.partner', 'Adresse de facturation')
     is_adr_groupe           = fields.Char('Code auxiliaire comptable', help="Code auxiliaire comptable de l'adresse groupe pour la comptabilité")
     is_cofor                = fields.Char('N° fournisseur (COFOR)', help="Notre code fourniseur chez le client")
-    is_incoterm             = fields.Many2one('stock.incoterms', "Incoterm")
+    is_incoterm             = fields.Many2one('stock.incoterms', "Incoterm  / Conditions de livraison")
     is_lieu                 = fields.Char("Lieu")
     is_escompte             = fields.Many2one('is.escompte', "Escompte")
     is_type_reglement       = fields.Many2one('account.journal', u'Type règlement', domain=[('type', 'in', ['bank','cash'])])
