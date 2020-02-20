@@ -7,6 +7,8 @@ from openerp.tools import float_compare, float_is_zero
 from openerp import tools, SUPERUSER_ID
 import openerp.addons.decimal_precision as dp
 from openerp.exceptions import Warning
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class MrpProduction(models.Model):
@@ -130,8 +132,27 @@ class MrpProduction(models.Model):
             # TODO : Ajout d'un blocage le 27/01/2018 pour empècher les problèmes de déclarations sur les OF
             if nb!=ct:
                 raise Warning("Problème de synchronisation de nomenclature. Il faut modifier la quantité de cet OF pour resynchroniser la nomenclature")
-            return
         #***********************************************************************
+
+
+        #** Vérifier qu'il n'y a pas de desyncronisation après *****************
+        #TODO : Ajout de cette partie pour synchronier la nomenclature avec sudo si problème constaté le 20/02/2020
+        if production_mode in ['consume', 'consume_produce']:
+            sequence=0
+            nb=len(wiz.consume_lines)
+            ct=0
+            for move in production.move_lines:
+                sequence=sequence+1
+                for wiz_line in wiz.consume_lines:
+                    if move.product_id==wiz_line.product_id and wiz_line.is_sequence==sequence:
+                        ct=ct+1
+            if nb!=ct:
+                _logger.info(u"#### Nomenclature Ordre de Fabrication désynchronisé => importer_nomenclature avec sudo() ####")
+                production.sudo().importer_nomenclature()
+        #***********************************************************************
+
+        return
+
 
 
     def _prepare_lines(self, cr, uid, production, properties=None, context=None):

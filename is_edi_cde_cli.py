@@ -11,7 +11,10 @@ import base64
 import os
 import time
 from datetime import date,datetime,timedelta
-#import cProfile
+#from openpyxl import load_workbook
+
+import openpyxl
+
 
 
 class is_edi_cde_cli_line(models.Model):
@@ -384,12 +387,128 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_Odoo(attachment)
         if import_function=="Plasti-ka":
             datas=self.get_data_plastika(attachment)
+        if import_function=="SIMU":
+            datas=self.get_data_SIMU(attachment)
         if import_function=="THERMOR":
             datas=self.get_data_THERMOR(attachment)
         if import_function=="Watts":
             datas=self.get_data_Watts(attachment)
 
         return datas
+
+
+
+#TODO : La version d'openpyxl installée par défaut est la 1.7 : 
+#ii  python-openpyxl                   1.7.0+ds1-1                        all          module to read/write OpenXML xlsx/xlsm files
+#Il faut installer une version plus récente pour pouvoir suivre la docuementation : 
+#apt-get remove python-openpyxl
+#pip install openpyxl
+#Successfully installed et-xmlfile-1.0.1 jdcal-1.4.1 openpyxl-2.6.4
+
+# Doc https://openpyxl.readthedocs.io/en/stable/tutorial.html
+
+    @api.multi
+    def get_data_SIMU(self, attachment):
+        res = []
+        for obj in self:
+            #** Lecture du fichier xlsx ****************************************
+            xlsxfile = base64.decodestring(attachment.datas)
+            path = '/tmp/edi-simu-'+str(obj.id)+'.xlsx'
+            f = open(path,'wb')
+            f.write(xlsxfile)
+            f.close()
+            wb = openpyxl.load_workbook(filename = path)
+            ws = wb['DL']
+            cells = list(ws)
+            #*******************************************************************
+
+            now = datetime.now()
+            annee = int(now.year)
+            lig=0
+            semaines={}
+            test=False
+            mem_ref = ''
+            for row in ws.rows:
+
+                #** Traitement des lignes des prévisions ***********************
+                if test:
+                    val1=cells[lig][0].value
+                    val2=cells[lig][1].value
+                    if val1:
+                        mem_ref=val1
+                    if val2==u'Forecast / prévision':
+                        vals={}
+                        for col in range(len(row)):
+                            if col>=2:
+                                #semaine = semaines[col+1]
+                                v = cells[lig][col].value
+                                if v:
+                                    semaine = semaines[col+1]
+                                    ref_article_client  = mem_ref
+
+                                    #** Recherche de la commande ***************
+                                    order = self.env['sale.order'].search([
+                                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+                                        ('is_ref_client', '=', ref_article_client),
+                                        ('is_type_commande'  , '=', 'ouverte'),
+                                    ])
+                                    num_commande_client = "??"
+                                    if len(order):
+                                        num_commande_client = order[0].client_order_ref
+                                    #*******************************************
+
+
+                                    #** Convertir la semaine en date ***********
+                                    sem=''
+                                    try:
+                                        annee = int(semaine[0:4])
+                                        sem   = int(semaine[6:8])
+                                        date_livraison = datetime.strptime('%04d-%02d-1' % (annee, sem), '%Y-%W-%w')
+                                        #Pour avoir la semaine en ISO car pas dispo en Python 2.7, uniqument avec Python 3
+                                        if date(annee, 1, 4).isoweekday() > 4:
+                                            date_livraison -= timedelta(days=7)
+                                        date_livraison = date_livraison.strftime('%Y-%m-%d')
+                                    except:
+                                        date_livraison = False
+                                    #*******************************************
+
+                                    try:
+                                        qt=float(v)
+                                    except ValueError:
+                                        qt=0
+
+                                    type_commande="previsionnel"
+                                    val = {
+                                        'num_commande_client' : num_commande_client,
+                                        'ref_article_client'  : ref_article_client,
+                                    }
+                                    ligne = {
+                                        'quantite'      : qt,
+                                        'type_commande' : type_commande,
+                                        'date_livraison': date_livraison,
+                                    }
+                                    val.update({'lignes': [ligne]})
+                                    res.append(val)
+                #***************************************************************
+
+
+                #** Recherche des numéros des semaines *************************
+                nbcols = len(row)-1
+                if cells[lig][1].value=='Semaine / week':
+                    for col in range(len(row)):
+                        if col>=2:
+                            semaine = int(cells[lig][col].value)
+                            if col==2:
+                                memsemaine=semaine
+                            if semaine<(memsemaine-5):
+                                annee+=1
+                            val = cells[lig][col].value
+                            semaines[col+1] = str(annee)+'-S'+str(val)
+                            memsemaine=semaine
+                    test = True # Il est possible de traiter les lignes suivantes
+                #***************************************************************
+                lig+=1
+        return res
 
 
     @api.multi
