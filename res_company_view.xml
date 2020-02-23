@@ -56,8 +56,6 @@
                             <field name="is_sms_login"/>
                             <field name="is_sms_password" password="True"/>
                             <field name="is_sms_from"/>
-                            <field name="is_sms_message"/>
-                            <field name="is_sms_mobile"/>
                         </group>
                         <group>
                             <group string="Autre">
