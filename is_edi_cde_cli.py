@@ -532,6 +532,11 @@ class is_edi_cde_cli(models.Model):
                 test=False
                 mem_ref = ''
                 for row in ws.rows:
+                    #print row
+                    nb_cols = len(row)
+                    if nb_cols>100:
+                        nb_cols=100
+
                     #** Traitement des lignes des prévisions *******************
                     if test:
                         val1=cells[lig][0].value
@@ -540,7 +545,7 @@ class is_edi_cde_cli(models.Model):
                             mem_ref=val1
                         if val2==u'Forecast / prévision':
                             vals={}
-                            for col in range(len(row)):
+                            for col in range(nb_cols):
                                 if col>=2:
                                     v = cells[lig][col].value
                                     if v:
@@ -582,10 +587,13 @@ class is_edi_cde_cli(models.Model):
 
 
                     #** Recherche des numéros des semaines *************************
-                    nbcols = len(row)-1
+                    #nbcols = len(row)-1
                     if cells[lig][1].value=='Semaine / week':
-                        for col in range(len(row)):
-                            if col>=2:
+                        for col in range(nb_cols):
+                            if col>=2 and cells[lig][col].value:
+
+                                #print lig,col,nb_cols
+
                                 semaine = int(cells[lig][col].value)
                                 if col==2:
                                     memsemaine=semaine
