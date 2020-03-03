@@ -267,7 +267,7 @@ class is_export_cegid(models.Model):
                                     Affaire=Affaires[row[0]]
                             if Affaire:
                                 if Affaire[:5]=='M0000' or Affaire[:5]=='m0000':
-                                    Affaire=Affaire[-5:]
+                                    Affaire=Affaire[-6:]
                                 libelle=Affaire+u' '+libelle
                     #***********************************************************
 
@@ -387,7 +387,7 @@ class is_export_cegid(models.Model):
                     A2=False
                     Affaire = row[15] or False
                     if Affaire:
-                        A2=(Affaire[-5:]+u'    ')[:5]
+                        A2=(Affaire[-6:]+u'    ')[:6]
 
                     if general[0:1] in ['6','7']:
                         if A1:
