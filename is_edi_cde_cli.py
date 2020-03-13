@@ -141,6 +141,10 @@ class is_edi_cde_cli(models.Model):
                         partner_id   = order[0].partner_id.id
                         pricelist_id = order[0].pricelist_id.id
 
+
+
+
+
                     for ligne in row["lignes"]:
                         product_id = False
                         prix       = 0;
@@ -158,7 +162,12 @@ class is_edi_cde_cli(models.Model):
                                 order=order[0]
                             
                             quantite   = int(ligne["quantite"])
-                            product    = order[0].is_article_commande_id
+
+
+                            if 'product' in row:
+                                product = row['product']
+                            else:
+                                product    = order[0].is_article_commande_id
                             product_id = product.id
 
                             #** Date de livraison sur le jour indiqué **********
@@ -339,7 +348,7 @@ class is_edi_cde_cli(models.Model):
                                 'order_id'            : line.order_id.id, 
                                 'is_date_livraison'   : line.date_livraison, 
                                 'is_type_commande'    : line.type_commande, 
-                                'product_id'          : line.order_id.is_article_commande_id.id, 
+                                'product_id'          : line.order_id.is_article_commande_id.id or line.product_id.id, 
                                 'product_uom_qty'     : line.quantite, 
                                 'is_client_order_ref' : line.order_id.client_order_ref, 
                                 'price_unit'          : line.prix,
@@ -468,13 +477,47 @@ class is_edi_cde_cli(models.Model):
                             quantite=0
                         ref_article_client = cells[lig][2].value
 
+                        #** Recherche article **********************************
+                        products = self.env['product.product'].search([
+                            ('is_client_id.is_code', '=', obj.partner_id.is_code),
+                            ('is_ref_client'     , '=', ref_article_client),
+                        ])
+                        Product = False
+                        if len(products):
+                            Product = products[0]
+                        #*******************************************************
+
+
+                        SaleOrder = False
+                        num_commande_client = "??"
+                        if Product:
+                            #** Recherche et création de la commande ferme *****
+                            num_commande_client = cells[lig][9].value
+                            order = self.env['sale.order'].search([
+                                ('partner_id.is_code', '=', obj.partner_id.is_code),
+                                #('is_ref_client'     , '=', ref_article_client),
+                                ('is_type_commande'  , '=', 'standard'),
+                                ('client_order_ref'  , '=', num_commande_client),
+                            ])
+
+                            if len(order):
+                                SaleOrder = order[0]
+                            else:
+                                vals={
+                                    'partner_id'      : obj.partner_id.id,
+                                    'is_type_commande': 'standard',
+                                    'client_order_ref': num_commande_client,
+                                    'pricelist_id'    : obj.partner_id.property_product_pricelist.id,
+                                }
+                                SaleOrder = self.env['sale.order'].create(vals)
+                            #***************************************************
+
+
                         #** Répartir la quantité sur 4 jours *******************
                         lot_livraison = 0
-                        num_commande_client = "??"
-                        SaleOrder = self.getSaleOrder(ref_article_client)
                         if SaleOrder:
-                            num_commande_client = SaleOrder.client_order_ref
-                            for line in SaleOrder.is_article_commande_id.is_client_ids:
+                            #num_commande_client = SaleOrder.client_order_ref
+                            for line in Product.is_client_ids:
                                 if line.client_id == obj.partner_id:
                                     lot_livraison = line.lot_livraison
                                     nb_lots = math.ceil(quantite / lot_livraison / 4.0)
@@ -498,7 +541,7 @@ class is_edi_cde_cli(models.Model):
                         #** Mettre la date au lundi ****************************
                         try:
                             date_livraison = cells[lig][12].value
-                            jour_semaine = date_livraison.weekday()
+                            jour_semaine = date_livraison.weekday() + 7 # Semaine précédente
                             date_lundi = date_livraison - timedelta(days=jour_semaine)
                         except ValueError:
                             date_livraison = False
@@ -514,6 +557,8 @@ class is_edi_cde_cli(models.Model):
                             val = {
                                 'num_commande_client' : num_commande_client,
                                 'ref_article_client'  : ref_article_client,
+                                'order_id'            : SaleOrder and SaleOrder.id,
+                                'product'             : Product,
                             }
                             ligne = {
                                 'quantite'      : quantite,
@@ -532,7 +577,6 @@ class is_edi_cde_cli(models.Model):
                 test=False
                 mem_ref = ''
                 for row in ws.rows:
-                    #print row
                     nb_cols = len(row)
                     if nb_cols>100:
                         nb_cols=100
@@ -591,9 +635,6 @@ class is_edi_cde_cli(models.Model):
                     if cells[lig][1].value=='Semaine / week':
                         for col in range(nb_cols):
                             if col>=2 and cells[lig][col].value:
-
-                                #print lig,col,nb_cols
-
                                 semaine = int(cells[lig][col].value)
                                 if col==2:
                                     memsemaine=semaine
