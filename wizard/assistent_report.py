@@ -20,8 +20,9 @@ class assistent_report1(models.TransientModel):
             ("4", "ST-Brice"), 
         ], "Site", required=True)
     version = fields.Selection([
-            ("1", "1"), 
-            ("2", "2"), 
+            ("1", "1"),
+            ("2", "2"),
+            ("3", "3"),
         ], "Version du rapport", required=True, default="2")
     type_rapport= fields.Selection([
             ("rapport_mois", "Liste mensuelle"), 
