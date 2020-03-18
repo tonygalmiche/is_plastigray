@@ -90,6 +90,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-3">
+                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 350, 60)"/><br/><br/>
                     </div>
                     <div class="col-xs-5">
                         <div class="client">

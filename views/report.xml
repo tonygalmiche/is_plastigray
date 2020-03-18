@@ -406,5 +406,18 @@
             <field name="paperformat_id" ref="is_plastigray.document_livraison_gefbox"/>
         </record>
 
+
+        <report
+            id="is_galia_base_reports"
+            string="Etiquette GALIA"
+            model="is.galia.base"
+            report_type="qweb-pdf"
+            name="is_plastigray.report_galia_base"
+            file="is_plastigray.report_galia_base"
+        />
+        <record id="is_galia_base_reports" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="is_plastigray.is_galia_base_paperformat"/>
+        </record>
+
     </data>
 </openerp>

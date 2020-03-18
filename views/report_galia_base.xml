@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_galia_base_style">
+        </template>
+
+        <template id="report_galia_base_layout" inherit_id="web.layout" primary="True">
+            <xpath expr="//html" position="attributes">
+                <attribute name="t-att-data-report-margin-top">data_report_margin_top if data_report_margin_top else None</attribute>
+                <attribute name="t-att-data-report-header-spacing">data_report_header_spacing if data_report_header_spacing else None</attribute>
+                <attribute name="t-att-data-report-dpi">data_report_dpi if data_report_dpi else None</attribute>
+            </xpath>
+            <xpath expr="//head" position="inside">
+                <link href="/web/static/lib/bootstrap/css/bootstrap.css" rel="stylesheet"/>
+                <link href="/website/static/src/css/website.css" rel="stylesheet"/>
+                <link href="/web/static/lib/fontawesome/css/font-awesome.css" rel="stylesheet"/>
+                <style type="text/css">
+                    <t t-call="report.style"/>
+                    <t t-call="is_plastigray.report_galia_base_style"/>
+                </style>
+            </xpath>
+            <xpath expr="//head/link[@href='/web/static/src/css/full.css']" position="replace"></xpath>
+        </template>
+
+        <template id="report_galia_base_html_container">
+            <t t-set="body_classname" t-value="'container'"/>
+            <t t-call="is_plastigray.report_galia_base_layout">
+                <t t-raw="0"/>
+            </t>
+        </template>
+        <template id="report_galia_base_external_layout_header">
+            <div class="header">
+            </div>
+        </template>
+
+        <template id="report_galia_base_external_layout_footer">
+            <div class="footer">
+            </div>
+            <br />
+        </template>
+
+        <template id="report_galia_base_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"/>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+            <t t-call="is_plastigray.report_galia_base_external_layout_header"/>
+            <t t-raw="0"/>
+            <t t-call="is_plastigray.report_galia_base_external_layout_footer"/>
+        </template>
+
+        <template id="report_galia_base_external_layout">
+            <t t-if="o and 'company_id' in o">
+                <t t-set="company" t-value="o.company_id"></t>
+            </t>
+            <t t-if="not o or not 'company_id' in o">
+                <t t-set="company" t-value="res_company"></t>
+            </t>
+            <t t-call="is_plastigray.report_galia_base_external_layout_header" />
+            <t t-raw="0" />
+            <t t-call="is_plastigray.report_galia_base_external_layout_footer" />
+        </template>
+
+        <template id="report_galia_base">
+            <t t-call="is_plastigray.report_galia_base_html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="is_plastigray.report_galia_base_external_layout">
+                        <div class="page">
+                            <div class="row">
+                                <h1>Etiquette GALIA</h1>
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.num_eti, 350, 60)"/><br/>
+                                <div>N°Étiquette :      <b><span t-field="o.num_eti"/></b></div>
+                                <div>Société :          <b><span t-field="o.soc"/></b></div>
+                                <div>Type étiquette :   <b><span t-field="o.type_eti"/></b></div>
+                                <div>N°OF :             <b><span t-field="o.num_of"/></b></div>
+                                <div>N°Carton :         <b><span t-field="o.num_carton"/></b></div>
+                                <div>Qt Pièces :        <b><span t-field="o.qt_pieces"/></b></div>
+                                <div>Date de création : <b><span t-field="o.date_creation"/></b></div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

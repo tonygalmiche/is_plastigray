@@ -2,6 +2,8 @@
 
 <openerp>
     <data>
+
+        <!-- is.galia.base -->
         <record model="ir.ui.view" id="is_galia_base_form_view">
             <field name="name">is_galia_base_form_view</field>
             <field name="model">is.galia.base</field>
@@ -62,5 +64,141 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+
+        <!-- is.galia.base.uc -->
+        <record model="ir.ui.view" id="is_galia_base_uc_form_view">
+            <field name="name">is_galia_base_uc_form_view</field>
+            <field name="model">is.galia.base.uc</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <field name="um_id"/>
+                            <field name="num_eti"/>
+                            <field name="type_eti"/>
+                            <field name="num_carton"/>
+                            <field name="qt_pieces"/>
+                            <field name="date_creation"/>
+                            <field name="production_id"/>
+                            <field name="product_id"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_galia_base_uc_tree_view">
+            <field name="name">is_galia_base_uc_tree_view</field>
+            <field name="model">is.galia.base.uc</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="um_id"/>
+                    <field name="num_eti"/>
+                    <field name="type_eti"/>
+                    <field name="num_carton"/>
+                    <field name="qt_pieces"/>
+                    <field name="date_creation"/>
+                    <field name="production_id"/>
+                    <field name="product_id"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_galia_base_uc_search_view" >
+            <field name="name">is_galia_base_uc_search_view</field>
+            <field name="model">is.galia.base.uc</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="um_id"/>
+                    <field name="num_eti"/>
+                    <field name="type_eti"/>
+                    <field name="num_carton"/>
+                    <field name="production_id"/>
+                    <field name="product_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_galia_base_uc_action">
+            <field name="name">Etiquettes UC</field>
+            <field name="res_model">is.galia.base.uc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!-- is.galia.base.um -->
+        <record id="is_galia_base_um_type_seq" model="ir.sequence.type">
+            <field name="name">Etiquettes UM</field>
+            <field name="code">is.galia.base.um</field>
+        </record>
+        <record id="is_galia_base_um_seq" model="ir.sequence">
+            <field name="name">Etiquettes UM</field>
+            <field name="code">is.galia.base.um</field>
+            <field name="prefix"></field>
+            <field name="padding">8</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record model="ir.ui.view" id="is_galia_base_um_form_view">
+            <field name="name">is_galia_base_um_form_view</field>
+            <field name="model">is.galia.base.um</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Form">  
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="liste_servir_id"/>
+                            <field name="bon_transfert_id"/>
+                        </group>
+                        <group>
+                            <field name="uc_ids" nolabel="1" >
+                                <tree editable="bottom">
+                                    <field name="num_eti"/>
+                                    <field name="type_eti"/>
+                                    <field name="num_carton"/>
+                                    <field name="qt_pieces"/>
+                                    <field name="date_creation"/>
+                                    <field name="production_id"/>
+                                    <field name="product_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_galia_base_um_tree_view">
+            <field name="name">is_galia_base_um_tree_view</field>
+            <field name="model">is.galia.base.um</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="liste_servir_id"/>
+                    <field name="bon_transfert_id"/>
+                    <field name="uc_ids"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_galia_base_um_search_view" >
+            <field name="name">is_galia_base_um_search_view</field>
+            <field name="model">is.galia.base.um</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="liste_servir_id"/>
+                    <field name="bon_transfert_id"/>
+                </search>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_galia_base_um_action">
+            <field name="name">Etiquettes UM</field>
+            <field name="res_model">is.galia.base.um</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
     </data>
 </openerp>

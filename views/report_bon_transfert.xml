@@ -75,6 +75,7 @@
                             <div t-field="company.street2"/>
                             <div><span t-field="company.zip"/> - <span t-field="company.city"/></div>
                             <div t-field="company.country_id.name"/>
+                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 400, 40)"/><br/><br/>
                         </div>
                     </div>
                     <div class="col-xs-1" />
