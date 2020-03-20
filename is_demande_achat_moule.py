@@ -108,8 +108,10 @@ class is_demande_achat_moule(models.Model):
 
     @api.multi
     def _dirigeant_id(self):
-        user = self.env['res.users'].search([('login','=','bph')])
-        return user.id
+        #user = self.env['res.users'].search([('login','=','bph')])
+        user    = self.env["res.users"].browse(self._uid)
+        company = user.company_id
+        return company.is_directeur_technique_id.id
 
 
     _defaults = {

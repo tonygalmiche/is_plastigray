@@ -125,10 +125,8 @@ class is_liste_servir(models.Model):
     poids_brut             = fields.Float('Poids brut', compute='_compute', readonly=True, store=False)
     poids_net              = fields.Float('Poids net' , compute='_compute', readonly=True, store=False)
     info_client            = fields.Text("Information client complèmentaire")
+    galia_um_ids           = fields.One2many('is.galia.base.um', 'liste_servir_id', u"UMs scannées", readonly=True)
 
-
-
-    
 
     @api.multi
     def tableaux(self):

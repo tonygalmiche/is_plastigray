@@ -57,6 +57,14 @@
                                 </tree>
                             </field>
                         </group>
+                        <group attrs="{'invisible': [('galia_um_ids', '=', [])]}">
+                            <field name="galia_um_ids" nolabel="1">
+                                <tree>
+                                    <button string="UM" name="acceder_um_action" type="object" icon="gtk-zoom-in"/>
+                                    <field name="name" string="N°étiquette UM scannée"/>
+                                </tree>
+                            </field>
+                        </group>
                     </sheet>
                </form>
             </field>
@@ -77,6 +85,18 @@
                     <field name="total_um" />
                     <field name="commentaire" />
                 </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="is_bon_transfert_search_view" >
+            <field name="name">is_bon_transfert_search_view</field>
+            <field name="model">is.bon.transfert</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" />
+                    <field name="location_id" />
+                    <field name="partner_id" />
+                    <field name="commentaire" />
+                </search>
             </field>
         </record>
         <record id="is_bon_transfert_action" model="ir.actions.act_window">

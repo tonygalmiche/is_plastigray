@@ -32,24 +32,14 @@
                                 <field name="is_url_odoo_theia"/>
                             </group>
                         </group>
-                        <group>
-                            <group>
-                                <group string="Gestionnaires">
-                                    <field name="is_acheteur_id"/>
-                                    <field name="is_gest_demande_transport_id"/>
-                                </group>
-                            </group>
-                            <group>
-                                <group string="Base principale (Primaire)">
-                                    <field name="is_base_principale"/>
-                                </group>
-                            </group>
+                        <group string="Gestionnaires">
+                            <field name="is_directeur_technique_id"/>
+                            <field name="is_acheteur_id"/>
+                            <field name="is_gest_demande_transport_id"/>
                         </group>
-                        <group>
-                            <group string="THEIA">
-                                <field name="is_code_societe"/>
-                                <field name="is_dest_bilan_of_ids" widget="many2many_tags"/>
-                            </group>
+                        <group string="THEIA">
+                            <field name="is_code_societe"/>
+                            <field name="is_dest_bilan_of_ids" widget="many2many_tags"/>
                         </group>
                         <group string="SMS via OVH">
                             <field name="is_sms_account"/>
@@ -57,13 +47,15 @@
                             <field name="is_sms_password" password="True"/>
                             <field name="is_sms_from"/>
                         </group>
+                        <group string="Base principale (Primaire)">
+                            <field name="is_base_principale"/>
+                        </group>
                         <group>
                             <group string="Autre">
                                 <field name="is_cout_ctrl_qualite"/>
                                 <field name="is_dossier_interface_cegid"/>
                             </group>
                         </group>
-
                     </page>
                 </notebook>
                 <field name="logo" position="after">

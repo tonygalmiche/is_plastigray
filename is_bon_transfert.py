@@ -20,8 +20,8 @@ class is_bon_transfert(models.Model):
     qt_total        = fields.Float('Quantité totale', compute='_compute', readonly=True, store=True, digits=(14,0))
     total_uc        = fields.Float('Total UC'       , compute='_compute', readonly=True, store=True, digits=(14,1))
     total_um        = fields.Float('Total UM'       , compute='_compute', readonly=True, store=True, digits=(14,1))
-
-    line_ids      = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
+    line_ids        = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
+    galia_um_ids    = fields.One2many('is.galia.base.um', 'bon_transfert_id', u"UMs scannées", readonly=True)
 
     def _date():
         return datetime.date.today().strftime('%Y-%m-%d')

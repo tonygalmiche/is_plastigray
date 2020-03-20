@@ -139,6 +139,16 @@
                             </group>
                         </group>
                         <group>
+                            <group attrs="{'invisible': [('galia_um_ids', '=', [])]}">
+                                <field name="galia_um_ids" nolabel="1">
+                                    <tree>
+                                        <button string="UM" name="acceder_um_action" type="object" icon="gtk-zoom-in"/>
+                                        <field name="name" string="N°étiquette UM scannée"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </group>
+                        <group>
                             <group>
                                 <field name="info_client"/>
                             </group>

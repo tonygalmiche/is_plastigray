@@ -42,6 +42,25 @@ class is_galia_base_um(models.Model):
         return res
 
 
+    @api.multi
+    def acceder_um_action(self):
+        dummy, view_id = self.env['ir.model.data'].get_object_reference('is_plastigray', 'is_galia_base_um_form_view')
+        for obj in self:
+            return {
+                'name': "Etiquettes UM",
+                'view_mode': 'form',
+                'view_id': view_id,
+                'view_type': 'form',
+                'res_model': 'is.galia.base.um',
+                'type': 'ir.actions.act_window',
+                'res_id': obj.id,
+                'domain': '[]',
+            }
+
+
+
+
+
 class is_galia_base_uc(models.Model):
     _name='is.galia.base.uc'
     _order='num_eti desc'
