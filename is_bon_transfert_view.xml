@@ -62,6 +62,8 @@
                                 <tree>
                                     <button string="UM" name="acceder_um_action" type="object" icon="gtk-zoom-in"/>
                                     <field name="name" string="N°étiquette UM scannée"/>
+                                    <field name="product_id"/>
+                                    <field name="qt_pieces"/>
                                 </tree>
                             </field>
                         </group>

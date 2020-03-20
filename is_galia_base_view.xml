@@ -151,6 +151,8 @@
                             <field name="name"/>
                             <field name="liste_servir_id"/>
                             <field name="bon_transfert_id"/>
+                            <field name="product_id"/>
+                            <field name="qt_pieces"/>
                         </group>
                         <group>
                             <field name="uc_ids" nolabel="1" >
@@ -178,6 +180,8 @@
                     <field name="name"/>
                     <field name="liste_servir_id"/>
                     <field name="bon_transfert_id"/>
+                    <field name="product_id"/>
+                    <field name="qt_pieces"/>
                     <field name="uc_ids"/>
                 </tree>
             </field>

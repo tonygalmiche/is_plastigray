@@ -26,10 +26,24 @@ class is_galia_base_um(models.Model):
     _order='name desc'
     _sql_constraints = [('name_uniq','UNIQUE(name)', u'Cette étiquette UM existe déjà')]
 
+    @api.depends('uc_ids')
+    def _compute(self):
+        for obj in self:
+            qt_pieces  = 0
+            product_id = False
+            for line in obj.uc_ids:
+                qt_pieces += line.qt_pieces
+                product_id = line.product_id
+            obj.product_id = product_id
+            obj.qt_pieces  = qt_pieces
+
     name             = fields.Char(u"N°Étiquette UM", readonly=True, select=True)
     liste_servir_id  = fields.Many2one('is.liste.servir', u'Liste à servir')
     bon_transfert_id = fields.Many2one('is.bon.transfert', u'Bon de transfert')
     uc_ids           = fields.One2many('is.galia.base.uc'  , 'um_id', u"UCs")
+    product_id       = fields.Many2one('product.product', 'Article', readonly=True, compute='_compute', store=False)
+    qt_pieces        = fields.Integer(u"Qt Pièces"                 , readonly=True, compute='_compute', store=False)
+
 
     @api.model
     def create(self, vals):
