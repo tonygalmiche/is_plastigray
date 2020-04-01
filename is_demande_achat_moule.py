@@ -19,7 +19,7 @@ class is_demande_achat_moule(models.Model):
                 montant_total+=line.montant
             obj.montant_total = montant_total
             vsb=False
-            if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
+            if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.direction_id.id or uid==obj.acheteur_id.id):
                 vsb=True
             obj.vers_brouillon_vsb=vsb
             if obj.state=='annule' and (uid==obj.createur_id.id or uid==obj.chef_service_id.id or uid==obj.direction_id.id or uid==obj.acheteur_id.id):
@@ -60,7 +60,7 @@ class is_demande_achat_moule(models.Model):
                 obj.num_chantier=line.num_chantier
 
 
-    name                 = fields.Char("N°DA FG", readonly=True)
+    name                 = fields.Char("N°DA-M", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
     chef_service_id      = fields.Many2one('res.users', 'Chef de projet', required=True)
     direction_id         = fields.Many2one('res.users', 'Directeur technique', readonly=True)

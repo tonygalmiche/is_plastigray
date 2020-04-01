@@ -24,6 +24,7 @@ class res_company(models.Model):
     is_url_intranet_theia = fields.Char('URL Intranet THEIA', default='http://raspberry-cpi')
     is_url_odoo_theia     = fields.Char('URL Odoo THEIA')
 
+    is_directeur_general_id      = fields.Many2one('res.users', u'Directeur Général'                     , help=u"Utilisé en particulier pour les DA Investissements")
     is_directeur_technique_id    = fields.Many2one('res.users', u'Directeur Technique'                   , help=u"Utilisé en particulier pour les DA Moules")
     is_acheteur_id               = fields.Many2one('res.users', u'Acheteur'                              , help=u"Utilisé en particulier pour transformer les SA en DAS")
     is_gest_demande_transport_id = fields.Many2one('res.users', u'Gestionnaire des demandes de transport', help=u"Utilisé pour envoyer un mail lors de la création d'une demande de transport")

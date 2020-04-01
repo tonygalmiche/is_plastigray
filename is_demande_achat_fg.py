@@ -45,7 +45,7 @@ class is_demande_achat_fg(models.Model):
             obj.vers_annule_vsb=vsb
 
 
-    name                 = fields.Char("N°DA FG", readonly=True)
+    name                 = fields.Char("N°DA-FG", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
     chef_service_id      = fields.Many2one('res.users', 'Chef de service', required=True)
     date_creation        = fields.Date("Date de création", required=True)

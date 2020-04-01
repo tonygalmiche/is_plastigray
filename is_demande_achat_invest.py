@@ -19,7 +19,7 @@ class is_demande_achat_invest(models.Model):
                 montant_total+=line.montant
             obj.montant_total = montant_total
             vsb=False
-            if obj.state!='brouillon' and (uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
+            if obj.state!='brouillon' and (uid==obj.direction_id.id or uid==obj.chef_service_id.id or uid==obj.acheteur_id.id):
                 vsb=True
             obj.vers_brouillon_vsb=vsb
             vsb=False
@@ -50,7 +50,7 @@ class is_demande_achat_invest(models.Model):
             obj.vers_annule_vsb=vsb
 
 
-    name                 = fields.Char("N°DA FG", readonly=True)
+    name                 = fields.Char("N°DA-I", readonly=True)
     createur_id          = fields.Many2one('res.users', 'Demandeur', required=True)
     chef_service_id      = fields.Many2one('res.users', 'Chef de service', required=True)
     direction_id         = fields.Many2one('res.users', 'Direction', readonly=True)
@@ -92,12 +92,19 @@ class is_demande_achat_invest(models.Model):
         return partner_id
 
 
+#    @api.multi
+#    def _dirigeant_id(self):
+#        if self._uid==1:
+#            return 1
+#        user = self.env['res.users'].search([('login','=','eg')])
+#        return user.id
+
+
     @api.multi
     def _dirigeant_id(self):
-        if self._uid==1:
-            return 1
-        user = self.env['res.users'].search([('login','=','eg')])
-        return user.id
+        user    = self.env["res.users"].browse(self._uid)
+        company = user.company_id
+        return company.is_directeur_general_id.id
 
 
     _defaults = {
