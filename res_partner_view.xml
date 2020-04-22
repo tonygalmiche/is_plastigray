@@ -92,9 +92,12 @@
                             <field name="close_tuesday" />
                             <field name="close_wednesday" />
                             <field name="close_thursday" />
-                               <field name="close_friday" />
+                            <field name="close_friday" />
                             <field name="close_saturday" />
                             <field name="close_sunday" />
+                        </group>
+                        <group>
+                            <field name="is_horizon_besoins"/>
                         </group>
                     </page>
                 </xpath>

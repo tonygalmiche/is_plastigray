@@ -119,6 +119,10 @@
         <field name="arch" type="xml">
             <tree create="false">
                 <field name="date_reception"/>
+
+                <field name="is_piece_jointe" invisible="1"/>
+                <button string="Pièce jointe" name="pj_action" type="object" icon="STOCK_FILE" attrs="{'invisible': [('is_piece_jointe', '==', False)]}"/>
+
                 <field name="picking_id"     widget="many2one_clickable"/>
                 <field name="num_bl"/>
                 <field name="order_id"       widget="many2one_clickable"/>

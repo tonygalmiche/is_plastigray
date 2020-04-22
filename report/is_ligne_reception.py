@@ -64,6 +64,22 @@ class is_ligne_reception(models.Model):
         ('invoiced'  , u'Facturé'),
     ], u"État facturation", readonly=True, select=True)
 
+    is_piece_jointe = fields.Boolean(u"Pièce jointe", store=False, readonly=True, compute='_compute_is_piece_jointe')
+
+
+    @api.multi
+    def pj_action(self):
+        for obj in self:
+            print obj
+
+    def _compute_is_piece_jointe(self):
+        for obj in self:
+            attachments = self.env['ir.attachment'].search([('res_model','=','stock.picking'),('res_id','=',obj.picking_id.id)])
+            pj=False
+            if attachments:
+                pj=True
+            obj.is_piece_jointe=pj
+
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_ligne_reception')

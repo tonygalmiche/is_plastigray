@@ -188,11 +188,13 @@ class res_partner(models.Model):
         ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
     ], "Mode d'envoi des factures")
     is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", readonly=True)
+    is_horizon_besoins      = fields.Integer(u'Horizon des besoins (jour)', help=u"Champ utilisé pour le mail de l'horizon des besoins (7 jours en général ou 21 jours pendant la période de vacances)")
 
     _defaults = {
         'delai_transport'     : 0,
         'is_adr_code'         : 0,
         'is_fournisseur_da_fg': False,
+        'is_horizon_besoins'  : 7,
     }
 
     _sql_constraints = [
