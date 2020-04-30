@@ -373,10 +373,6 @@ class is_export_cegid(models.Model):
                     }
                     self.env['is.export.cegid.ligne'].create(vals)
 
-
-                    #print refinterne,echeance
-
-
                     # A1 = Axe Analytique 1 = Section Analytique
                     # Pas de section analytique pour les comptes 2xx (immo)
                     A1=str(row[5] or False) 
@@ -387,7 +383,10 @@ class is_export_cegid(models.Model):
                     A2=False
                     Affaire = row[15] or False
                     if Affaire:
-                        A2=(Affaire[-6:]+u'    ')[:6]
+
+                        t = Affaire.split('/')
+                        if(len(t)>0):
+                            A2=t[1]
 
                     if general[0:1] in ['6','7']:
                         if A1:
