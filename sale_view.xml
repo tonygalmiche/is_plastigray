@@ -292,8 +292,8 @@
 
 
 
-        <record id="is_sale_order_line_graph_view" model="ir.ui.view">
-             <field name="name">is_sale_order_line_graph_view</field>
+        <record id="is_sale_order_line_graph_view1" model="ir.ui.view">
+             <field name="name">is_sale_order_line_graph_view1</field>
              <field name="model">sale.order.line</field>
              <field name="arch" type="xml">
                  <graph type="pivot">
