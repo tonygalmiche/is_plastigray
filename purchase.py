@@ -251,6 +251,7 @@ class purchase_order(models.Model):
                 'is_livre_a_id': partner.is_livre_a_id.id,
                 'incoterm_id'  : partner.is_incoterm.id,
                 'is_lieu'      : partner.is_lieu,
+                'location_id'  : partner.is_source_location_id.id,
             })
         return res
 
