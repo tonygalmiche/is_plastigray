@@ -324,7 +324,7 @@ class is_demande_achat_moule_line(models.Model):
     quantite               = fields.Float("Quantité", digits=(14,4), required=True)
     prix                   = fields.Float("Prix"    , digits=(14,4))
     montant                = fields.Float("Montant", compute='_compute', readonly=True, store=True)
-    num_chantier           = fields.Char("N° du chantier", required=True, help="N° du chantier (M0000/xxxxxx)")
+    num_chantier           = fields.Char("N° du chantier", required=True, help="N° du chantier (M0000/12345)")
 
 
     @api.multi
@@ -370,8 +370,8 @@ class is_demande_achat_moule_line(models.Model):
     def _test_num_chantier(self,vals):
         if 'num_chantier' in vals:
             num_chantier=vals.get('num_chantier')
-            if len(num_chantier)!=11 and len(num_chantier)!=12:
-                raise Warning('Le numéro du chantier doit-être sur 11 ou 12 caractères (ex : M0000/123456)')
+            if len(num_chantier)!=11:
+                raise Warning('Le numéro du chantier doit-être sur 11 caractères (ex : M0000/12345)')
 
 
     @api.model
