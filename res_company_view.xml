@@ -55,6 +55,7 @@
                             <group string="Autre">
                                 <field name="is_cout_ctrl_qualite"/>
                                 <field name="is_dossier_interface_cegid"/>
+                                <field name="is_calendrier_expedition_id"/>
                             </group>
                         </group>
                     </page>

@@ -373,6 +373,22 @@ class sale_order_line(models.Model):
     is_ind_plan           = fields.Char("Indice plan", related='product_id.is_ind_plan', readonly=True)
 
 
+
+    # Le 22/06/2020 à 12:02, Caroline CHEVALLIER a écrit :
+    # Date de livraison - délai de transport = date d'expédition.
+    # Il faut ensuite comparer la date d'expédition au calendrier usine. 
+    # Si la la date d'expédition se situe un jour où l'entreprise est fermée, il faut ramener la date d'expédition au 1er jour ouvré.
+
+    # J'ai aussi une autre demande qui concerne le calendrier usine : nous avons besoin de 2 calendriers usine : un calendrier pour la production 
+    # et qui sert au calcul de besoin et un calendrier pour les expéditions qui sert au calcul de la date d'expédition. 
+    # La plupart du temps, ces 2 calendriers sont identiques mais en période estivale, ces calendriers sont différents 
+    # car nous avons besoin d'avoir une permanence logistique et nous avons besoin de pouvoir expédier des produits.
+
+    # Date de livraison = 31/07/2020
+    # Nous avons fermé le calendrier de la société les 29/30/31 juillet : 
+    # le temps de transport est inchangé : 2 jours : le 29/07 étant fermé, 
+    # le système devrait positionné la commande au 28/07 : premier jour ouvert dans le calendrier.
+
     @api.depends('is_date_livraison')
     def _date_expedition(self):
         for order in self:
@@ -382,23 +398,22 @@ class sale_order_line(models.Model):
                 context = self._context
                 res_partner = self.env['res.partner']
                 # jours de fermeture de la société
-                jours_fermes = res_partner.num_closing_days(order.order_id.company_id.partner_id)
+                jours_fermes = res_partner.num_closing_days(order.order_id.company_id.is_calendrier_expedition_id)
                 # Jours de congé de la société
-                leave_dates = res_partner.get_leave_dates(order.order_id.company_id.partner_id)
+                leave_dates = res_partner.get_leave_dates(order.order_id.company_id.is_calendrier_expedition_id)
                 delai_transport = order.order_id.partner_id.is_delai_transport
                 date_expedition = order.is_date_livraison
-                if delai_transport:
-                    new_date=datetime.datetime.strptime(date_expedition, '%Y-%m-%d')
-                    nb_jours=delai_transport
-                    while True:
+                date_expedition = datetime.datetime.strptime(date_expedition, '%Y-%m-%d')
+                date_expedition = date_expedition - datetime.timedelta(days=delai_transport)
+                new_date = date_expedition
+                while True:
+                    date_txt=new_date.strftime('%Y-%m-%d')
+                    num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
+                    if (num_day in jours_fermes or date_txt in leave_dates):
                         new_date = new_date - datetime.timedelta(days=1)
-                        date_txt=new_date.strftime('%Y-%m-%d')
-                        num_day = int(time.strftime('%w', time.strptime( date_txt, '%Y-%m-%d')))
-                        if not(num_day in jours_fermes or date_txt in leave_dates):
-                            nb_jours=nb_jours-1
-                        if nb_jours<=0:
-                            date_expedition=new_date.strftime('%Y-%m-%d')
-                            break
+                    else:
+                        break
+                date_expedition = new_date.strftime('%Y-%m-%d')
                 order.is_date_expedition=date_expedition
 
 

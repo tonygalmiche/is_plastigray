@@ -42,6 +42,8 @@ class res_company(models.Model):
     is_sms_password = fields.Char(u'SMS password')
     is_sms_from     = fields.Char(u'SMS from')
 
+    is_calendrier_expedition_id = fields.Many2one('res.partner', u'Calendrier Expéditions', domain=[('is_company','=',True),('is_adr_code','=','EXP')], help=u"Calendrier utilisé dans le calcul de la date d'expédition des commandes des clients (code adresse=EXP)")
+
 
 class res_partner_bank(models.Model):
     _inherit = 'res.partner.bank'
