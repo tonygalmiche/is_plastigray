@@ -397,14 +397,21 @@ class sale_order_line(models.Model):
                 uid     = self._uid
                 context = self._context
                 res_partner = self.env['res.partner']
+                delai_transport = order.order_id.partner_id.is_delai_transport
+                date_expedition = order.is_date_livraison
+                date_expedition = datetime.datetime.strptime(date_expedition, '%Y-%m-%d')
+                #Delai de transport en jour ouvrés (sans samedi et dimanches)
+                if delai_transport:
+                    while delai_transport>0:
+                        date_expedition = date_expedition - datetime.timedelta(days=1)
+                        weekday = date_expedition.weekday()
+                        if weekday not in [5,6]:
+                            delai_transport = delai_transport - 1
                 # jours de fermeture de la société
                 jours_fermes = res_partner.num_closing_days(order.order_id.company_id.is_calendrier_expedition_id)
                 # Jours de congé de la société
                 leave_dates = res_partner.get_leave_dates(order.order_id.company_id.is_calendrier_expedition_id)
-                delai_transport = order.order_id.partner_id.is_delai_transport
-                date_expedition = order.is_date_livraison
-                date_expedition = datetime.datetime.strptime(date_expedition, '%Y-%m-%d')
-                date_expedition = date_expedition - datetime.timedelta(days=delai_transport)
+                #date_expedition = date_expedition - datetime.timedelta(days=delai_transport)
                 new_date = date_expedition
                 while True:
                     date_txt=new_date.strftime('%Y-%m-%d')
