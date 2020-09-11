@@ -224,6 +224,34 @@
                     </tr>
                 </tbody>
             </table>
+
+
+            <t t-if="o.galia_um_ids">
+                <br />
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Article</th>
+                            <th class="text-left">Etiquettes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="res" t-value="o.get_etiquettes()"/>
+                        <tr t-foreach="res" t-as="l">
+                            <td><span t-esc="l"/></td>
+                            <td>
+                                <t t-foreach="res[l]" t-as="e">
+                                    <div t-esc="e"/>
+                                </t>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+
+
+
+
         </div>
     </t>
 </template>

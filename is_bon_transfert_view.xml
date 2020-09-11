@@ -21,7 +21,15 @@
             <field name="name">is_bon_transfert_from_view</field>
             <field name="model">is.bon.transfert</field>
             <field name="arch" type="xml">
+
+
+
                 <form>
+                    <!--
+                    <header>
+                        <button name="test_action" string="Test" type="object"/>
+                    </header>
+                    -->
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
                             <group>

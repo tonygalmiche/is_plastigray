@@ -101,6 +101,52 @@ class is_bon_transfert(models.Model):
         return {'value': value}
 
 
+    @api.multi
+    def get_etiquettes(self):
+        cr = self._cr
+        for obj in self:
+            SQL="""
+                select 
+                    pt.is_code,
+                    uc.num_eti
+                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                         inner join is_bon_transfert bon on um.bon_transfert_id=bon.id
+                                         inner join product_product pp on uc.product_id=pp.id 
+                                         inner join product_template pt on pp.product_tmpl_id=pt.id
+                where bon.id="""+str(obj.id)+"""
+                order by pt.is_code, uc.num_eti
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            mem_code_pg=''
+            mem_eti=0
+            res={}
+            nb=0
+            for row in result:
+                nb+=1
+                code_pg = row[0]
+                eti     = row[1]
+                if code_pg!=mem_code_pg:
+                    res[code_pg] = {}
+                    mem_code_pg = code_pg
+                if mem_eti!=(eti-nb):
+                    res[code_pg][eti] = []
+                    mem_eti=eti
+                    nb=0
+                res[code_pg][mem_eti].append(eti)
+            res2={}
+            for code_pg in res:
+                res2[code_pg]=[]
+                for eti in res[code_pg]:
+                    nb=len(res[code_pg][eti])
+                    if nb==1:
+                        v=str(res[code_pg][eti][0])
+                    else:
+                        v=str(res[code_pg][eti][0])+'..'+str(res[code_pg][eti][nb-1])[-4:]
+                    res2[code_pg].append(v)
+        return res2
+
+
 class is_bon_transfert_line(models.Model):
     _name='is.bon.transfert.line'
     _order='product_id'
