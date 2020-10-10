@@ -228,6 +228,32 @@
 
             <t t-if="o.galia_um_ids">
                 <br />
+                <table class="table table-condensed" style="width:50%">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Article</th>
+                            <th class="text-left">Etiquette UC</th>
+                            <th class="text-left">Qt pièces</th>
+                            <th class="text-left">Etiquette UM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="res" t-value="o.get_etiquettes()"/>
+                        <tr t-foreach="res" t-as="l" style="height=3mm">
+                            <td><span t-esc="l[0]"/></td>
+                            <td><span t-esc="l[1]"/></td>
+                            <td><span t-esc="l[2]"/></td>
+                            <td><span t-esc="l[3]"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+
+
+
+            <!--
+            <t t-if="o.galia_um_ids">
+                <br />
                 <table class="table table-condensed">
                     <thead>
                         <tr>
@@ -248,7 +274,7 @@
                     </tbody>
                 </table>
             </t>
-
+            -->
 
 
 
