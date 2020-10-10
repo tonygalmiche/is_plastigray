@@ -175,7 +175,6 @@ class is_bon_transfert(models.Model):
             result = cr.fetchall()
             for row in result:
                 res.append(row)
-        print res
         return res
 
 
