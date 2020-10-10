@@ -25,7 +25,7 @@ class is_stock_move(models.Model):
     qty                = fields.Float('Quantité')
     product_uom        = fields.Many2one('product.uom', 'Unité')
     location_dest      = fields.Char("Lieu")
-    login              = fields.Char('Login')
+    login              = fields.Char('Utilisateur')
 
     purchase_line_id           = fields.Many2one('purchase.order.line', 'Ligne commande achat')
     raw_material_production_id = fields.Many2one('mrp.production'     , 'Composant ordre de fabrication')
@@ -78,7 +78,7 @@ class is_stock_move(models.Model):
                         sm.qty                             as qty,
                         pt.uom_id                          as product_uom,
                         sm.dest                            as location_dest,
-                        ru.login                           as login
+                        rp.name                            as login
                 from (
 
                     select 
@@ -122,6 +122,7 @@ class is_stock_move(models.Model):
                         inner join product_product            pp on sm2.product_id=pp.id
                         inner join product_template           pt on pp.product_tmpl_id=pt.id
                         inner join res_users                  ru on sm2.write_uid=ru.id
+                        inner join res_partner                rp on ru.partner_id=rp.id
                         left outer join stock_picking_type   spt on sm2.picking_type_id=spt.id
                         left outer join stock_picking         sp on sm2.picking_id=sp.id
                         left outer join is_category           ic on pt.is_category_id=ic.id

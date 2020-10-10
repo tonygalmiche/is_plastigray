@@ -23,11 +23,12 @@ class is_bon_transfert(models.Model):
     line_ids        = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
     galia_um_ids    = fields.One2many('is.galia.base.um', 'bon_transfert_id', u"UMs scannées", readonly=True)
 
-    def _date():
-        return datetime.date.today().strftime('%Y-%m-%d')
+    #def _date():
+    #    return datetime.date.today().strftime('%Y-%m-%d')
 
     _defaults = {
-        'date_creation':  _date(),
+        #'date_creation':  _date(),
+        'date_creation':  lambda *a: fields.datetime.now(),
     }
 
 
