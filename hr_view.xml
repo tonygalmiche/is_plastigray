@@ -49,6 +49,7 @@
                                 <field name="is_matricule"/>
                                 <field name="is_categorie"/>
                                 <field name="is_interimaire"/>
+                                <field name="is_pointage"/>
                             </group>
                             <group string="Horaires">
                                 <field name="is_jour1"/>
@@ -107,6 +108,7 @@
                 </field>
                 <field name="department_id" position="replace">
                     <field name="is_interimaire"/>
+                    <field name="is_pointage"/>
                     <field name="is_jour1" invisible="context.get('invisible_horaire', True)"/>
                     <field name="is_jour2" invisible="context.get('invisible_horaire', True)"/>
                     <field name="is_jour3" invisible="context.get('invisible_horaire', True)"/>
@@ -131,12 +133,14 @@
                         <field name="is_matricule"/>
                         <field name="is_categorie"/>
                         <field name="is_interimaire"/>
+                        <field name="is_pointage"/>
                     </field>
                     <!-- Filtres pré-enregistrés -->
                     <group string="Group By" position="before">
                         <group string="Filtres">
                             <filter string="Employés"     name="is_interimaire" domain="[('is_interimaire','!=',True)]" />
                             <filter string="Intérimaires" name="is_interimaire" domain="[('is_interimaire','=',True)]" />
+                            <filter string="Pointages"    name="is_pointage"    domain="[('is_pointage','=',True)]" />
                         </group>
                     </group>
                     <!-- Group by -->
@@ -144,6 +148,7 @@
                         <filter string="Site"        context="{'group_by': 'is_site'}"/>
                         <filter string="Catégorie"   context="{'group_by': 'is_categorie'}"/>
                         <filter string="Intérimaire" context="{'group_by': 'is_interimaire'}"/>
+                        <filter string="Pointage"    context="{'group_by': 'is_pointage'}"/>
                     </filter>
                     <!-- Filtres permettant d'afficher des colonnes -->
                     <group string="Group By" position="after">

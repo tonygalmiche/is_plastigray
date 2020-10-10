@@ -39,9 +39,10 @@ class hr_employee(models.Model):
             ("3x8" , "en 3x8"),
             ("jour", "Personnel de journée"),
         ], "Catégorie de personnel", required=False)
-    is_interimaire=fields.Boolean('Intérimaire',  help="Cocher pour indiquer que c'est un intérimaire")
-    is_badge_count=fields.Integer('# Badges'      , compute='_badge_count'   , readonly=True, store=False)
-    is_pointage_count=fields.Integer('# Pointages', compute='_pointage_count', readonly=True, store=False)
+    is_interimaire    = fields.Boolean('Intérimaire',  help="Cocher pour indiquer que c'est un intérimaire")
+    is_pointage       = fields.Boolean('Pointage',  help="Cocher pour indiquer que l'employé pointe", default=False)
+    is_badge_count    = fields.Integer('# Badges'      , compute='_badge_count'   , readonly=True, store=False)
+    is_pointage_count = fields.Integer('# Pointages', compute='_pointage_count', readonly=True, store=False)
     is_jour1=fields.Float('Lundi')
     is_jour2=fields.Float('Mardi')
     is_jour3=fields.Float('Mercredi')
