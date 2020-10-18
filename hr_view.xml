@@ -41,24 +41,33 @@
                         </button>
                     </div>
                 </field>
+                <field name="address_id"     position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="mobile_phone"   position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="work_location"  position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="department_id"  position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="job_id"         position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="parent_id"      position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="coach_id"       position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="user_id"        position="attributes"><attribute name="readonly">1</attribute></field>
+                <field name="notes"          position="attributes"><attribute name="readonly">1</attribute></field>
                 <page string="Public Information" position="before">
                     <page string="Pointage">
                         <group>
                             <group string="Paramètrage">
-                                <field name="is_site"/>
-                                <field name="is_matricule"/>
-                                <field name="is_categorie"/>
-                                <field name="is_interimaire"/>
-                                <field name="is_pointage"/>
+                                <field name="is_site"        readonly="1"/>
+                                <field name="is_matricule"   readonly="1"/>
+                                <field name="is_categorie"   readonly="1"/>
+                                <field name="is_interimaire" readonly="1"/>
+                                <field name="is_pointage"    readonly="1"/>
                             </group>
                             <group string="Horaires">
-                                <field name="is_jour1"/>
-                                <field name="is_jour2"/>
-                                <field name="is_jour3"/>
-                                <field name="is_jour4"/>
-                                <field name="is_jour5"/>
-                                <field name="is_jour6"/>
-                                <field name="is_jour7"/>
+                                <field name="is_jour1" readonly="1"/>
+                                <field name="is_jour2" readonly="1"/>
+                                <field name="is_jour3" readonly="1"/>
+                                <field name="is_jour4" readonly="1"/>
+                                <field name="is_jour5" readonly="1"/>
+                                <field name="is_jour6" readonly="1"/>
+                                <field name="is_jour7" readonly="1"/>
                             </group>
                         </group>
                         <group string="Horaires">
@@ -93,6 +102,35 @@
             </field>
         </record>
 
+        <record id="is_view_employee_form_manager" model="ir.ui.view">
+            <field name="name">is_view_employee_form_manager</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="is_plastigray.is_view_employee_form" />
+            <field name="groups_id" eval="[(4, ref('base.group_hr_manager'))]"/>
+            <field name="arch" type="xml">
+                <field name="is_site"        position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_matricule"   position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_categorie"   position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_interimaire" position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_pointage"    position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour1"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour2"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour3"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour4"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour5"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour6"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="is_jour7"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="address_id"     position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="mobile_phone"   position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="work_location"  position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="department_id"  position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="job_id"         position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="parent_id"      position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="coach_id"       position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="user_id"        position="attributes"><attribute name="readonly" position="replace"/></field>
+                <field name="notes"          position="attributes"><attribute name="readonly" position="replace"/></field>
+            </field>
+        </record>
 
         <record id="is_view_employee_tree" model="ir.ui.view">
             <field name="name">is.hr.employee.tree</field>

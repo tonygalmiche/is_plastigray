@@ -202,6 +202,8 @@ access_is_employe_horaire_manager,access_is_employe_horaire_manager,model_is_emp
 access_is_employe_absence,access_is_employe_absence,model_is_employe_absence,base.group_user,1,0,0,0
 access_is_employe_absence_manager,access_is_employe_absence_manager,model_is_employe_absence,base.group_hr_manager,1,1,1,1
 
+access_is_hr_employee_user,access_is_hr_employee_user,model_hr_employee,base.group_user,1,1,0,0
+
 access_is_reach,access_is_reach,model_is_reach,base.group_user,1,1,1,1
 access_is_reach_product,access_is_reach_product,model_is_reach_product,base.group_user,1,1,1,1
 access_is_reach_product_cas,access_is_reach_product_cas,model_is_reach_product_cas,base.group_user,1,1,1,1
