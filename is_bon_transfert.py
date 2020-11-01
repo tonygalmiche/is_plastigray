@@ -23,11 +23,7 @@ class is_bon_transfert(models.Model):
     line_ids        = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
     galia_um_ids    = fields.One2many('is.galia.base.um', 'bon_transfert_id', u"UMs scannées", readonly=True)
 
-    #def _date():
-    #    return datetime.date.today().strftime('%Y-%m-%d')
-
     _defaults = {
-        #'date_creation':  _date(),
         'date_creation':  lambda *a: fields.datetime.now(),
     }
 
@@ -102,54 +98,47 @@ class is_bon_transfert(models.Model):
         return {'value': value}
 
 
-#    @api.multi
-#    def get_etiquettes(self):
-#        cr = self._cr
-#        for obj in self:
-#            SQL="""
-#                select 
-#                    pt.is_code,
-#                    uc.num_eti
-#                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
-#                                         inner join is_bon_transfert bon on um.bon_transfert_id=bon.id
-#                                         inner join product_product pp on uc.product_id=pp.id 
-#                                         inner join product_template pt on pp.product_tmpl_id=pt.id
-#                where bon.id="""+str(obj.id)+"""
-#                order by pt.is_code, uc.num_eti
-#            """
-#            cr.execute(SQL)
-#            result = cr.fetchall()
-#            mem_code_pg=''
-#            mem_eti=0
-#            res={}
-#            nb=0
-#            for row in result:
-#                nb+=1
-#                code_pg = row[0]
-#                eti     = row[1]
-#                if code_pg!=mem_code_pg:
-#                    res[code_pg] = {}
-#                    mem_code_pg = code_pg
-#                if mem_eti!=(eti-nb):
-#                    res[code_pg][eti] = []
-#                    mem_eti=eti
-#                    nb=0
-#                res[code_pg][mem_eti].append(eti)
-#            res2={}
-#            for code_pg in res:
-#                res2[code_pg]=[]
-#                for eti in res[code_pg]:
-#                    nb=len(res[code_pg][eti])
-#                    if nb==1:
-#                        v=str(res[code_pg][eti][0])
-#                    else:
-#                        v=str(res[code_pg][eti][0])+'..'+str(res[code_pg][eti][nb-1])[-4:]
-#                    res2[code_pg].append(v)
-#        return res2
+    @api.multi
+    def get_is_code_rowspan(self,product_id):
+        cr = self._cr
+        for obj in self:
+            SQL="""
+                select count(*)
+                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                         inner join is_bon_transfert bon on um.bon_transfert_id=bon.id
+                                         inner join product_product pp on uc.product_id=pp.id 
+                where 
+                    bon.id="""+str(obj.id)+""" and 
+                    uc.product_id="""+str(product_id)+""" 
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            nb=0
+            for row in result:
+                nb=row[0]
+            return nb
 
 
-
-
+    @api.multi
+    def get_um_rowspan(self,product_id,um_id):
+        cr = self._cr
+        for obj in self:
+            SQL="""
+                select count(*)
+                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                         inner join is_bon_transfert bon on um.bon_transfert_id=bon.id
+                                         inner join product_product pp on uc.product_id=pp.id 
+                where 
+                    bon.id="""+str(obj.id)+""" and 
+                    uc.product_id="""+str(product_id)+""" and
+                    um.id="""+str(um_id)+""" 
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            nb=0
+            for row in result:
+                nb=row[0]
+            return nb
 
 
     @api.multi
@@ -161,50 +150,58 @@ class is_bon_transfert(models.Model):
                 select 
 
                     pt.is_code,
+                    um.name,
                     uc.num_eti,
                     uc.qt_pieces,
-                    um.name
+                    pp.id,
+                    um.id
                 from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
                                          inner join is_bon_transfert bon on um.bon_transfert_id=bon.id
                                          inner join product_product pp on uc.product_id=pp.id 
                                          inner join product_template pt on pp.product_tmpl_id=pt.id
                 where bon.id="""+str(obj.id)+"""
-                order by pt.is_code, uc.num_eti
+                order by pt.is_code, um.name, uc.num_eti
             """
             cr.execute(SQL)
             result = cr.fetchall()
+            ct_code = 0
+            ct_um   = 0
+            is_code_rowspan = 0
+            um_rowspan = 0
+            mem_code = ''
+            mem_um   = ''
             for row in result:
-                res.append(row)
+                is_code_rowspan=0
+                um_rowspan=0
+                if row[0]!=mem_code:
+                    mem_code=row[0]
+                    is_code_rowspan=self.get_is_code_rowspan(row[4])
+                    ct_code=0
+
+                is_code_um = (row[0]+row[1])
+                if is_code_um!=mem_um:
+                    mem_um=is_code_um
+                    um_rowspan=self.get_um_rowspan(row[4],row[5])
+                    ct_um=0
+
+                ct_code+=1
+                ct_um+=1
+
+                vals={
+                    'is_code'  : row[0],
+                    'um'       : row[1],
+                    'uc'       : row[2],
+                    'qt_pieces': row[3],
+                    'is_code_rowspan': is_code_rowspan,
+                    'um_rowspan': um_rowspan,
+                }
+                res.append(vals)
         return res
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class is_bon_transfert_line(models.Model):
     _name='is.bon.transfert.line'
     _order='product_id'
-
 
     @api.depends('product_id','quantite')
     def _compute(self):
@@ -239,7 +236,6 @@ class is_bon_transfert_line(models.Model):
                     obj.mold_id    = row[4]
                     obj.ref_client = row[5]
                     obj.uom_id     = row[6]
-
 
     bon_transfert_id = fields.Many2one('is.bon.transfert', 'Bon de transfert', required=True, ondelete='cascade', readonly=True)
     product_id       = fields.Many2one('product.product', 'Article', required=True)

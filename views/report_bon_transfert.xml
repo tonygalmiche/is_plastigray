@@ -220,64 +220,35 @@
                                 brut : <t t-esc='"{:,.1f}".format(pds_brut_total).replace(","," ").replace(".",",")'/> KG
                             </b>
                         </td>
-
                     </tr>
                 </tbody>
             </table>
-
-
             <t t-if="o.galia_um_ids">
                 <br />
                 <table class="table table-condensed" style="width:50%">
                     <thead>
                         <tr>
                             <th class="text-left">Article</th>
+                            <th class="text-left">Etiquette UM</th>
                             <th class="text-left">Etiquette UC</th>
                             <th class="text-left">Qt pièces</th>
-                            <th class="text-left">Etiquette UM</th>
                         </tr>
                     </thead>
                     <tbody>
                         <t t-set="res" t-value="o.get_etiquettes()"/>
-                        <tr t-foreach="res" t-as="l" style="height=3mm">
-                            <td><span t-esc="l[0]"/></td>
-                            <td><span t-esc="l[1]"/></td>
-                            <td><span t-esc="l[2]"/></td>
-                            <td><span t-esc="l[3]"/></td>
+                        <tr t-foreach="res" t-as="obj">
+                            <t t-if="obj['is_code_rowspan']">
+                                <td style="padding:2px;" t-att-rowspan="obj['is_code_rowspan']"><span t-esc="obj['is_code']"/> <span t-esc="obj['is_code_rowspan']"/></td>
+                            </t>
+                            <t t-if="obj['um_rowspan']">
+                                <td style="padding:2px;" t-att-rowspan="obj['um_rowspan']"><span t-esc="obj['um']"/></td>
+                            </t>
+                            <td style="padding:2px;"><span t-esc="obj['uc']"/></td>
+                            <td style="padding:2px;"><span t-esc="obj['qt_pieces']"/></td>
                         </tr>
                     </tbody>
                 </table>
             </t>
-
-
-
-            <!--
-            <t t-if="o.galia_um_ids">
-                <br />
-                <table class="table table-condensed">
-                    <thead>
-                        <tr>
-                            <th class="text-left">Article</th>
-                            <th class="text-left">Etiquettes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <t t-set="res" t-value="o.get_etiquettes()"/>
-                        <tr t-foreach="res" t-as="l">
-                            <td><span t-esc="l"/></td>
-                            <td>
-                                <t t-foreach="res[l]" t-as="e">
-                                    <div t-esc="e"/>
-                                </t>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </t>
-            -->
-
-
-
         </div>
     </t>
 </template>
