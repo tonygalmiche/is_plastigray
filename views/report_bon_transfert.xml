@@ -83,7 +83,7 @@
                         <div class="titre">
                             <span>Bon de transfert N°</span>
                             <span t-field="o.name"/>
-                             du <t t-usertime="%d/%m/%Y"/> à <t t-usertime="%H"/>H<br />
+                             du <span t-field="o.date_creation"/><br />
                         </div>
                         <div class="titre">
                             <span>Navette</span> 
