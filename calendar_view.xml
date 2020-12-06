@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+
+<!--
+    <record model="ir.ui.view" id="view_calendar_event_calendar">
+        <field name="name">Meetings Calendar</field>
+        <field name="model">calendar.event</field>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <calendar string="Meetings" date_start="start" date_stop="stop" date_delay="duration" all_day="allday" 
+                         display="[name]" color="color_partner_id" attendee="partner_ids" avatar_model="res.partner"
+                         use_contacts="True" event_open_popup="%(calendar.view_calendar_event_form_popup)s">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="color_partner_id"/>
+                <field name="partner_ids"/>
+            </calendar>
+        </field>
+    </record>
+-->
+
+
+        <record id="is_view_calendar_event_calendar" model="ir.ui.view">
+            <field name="name">is_view_calendar_event_calendar</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_calendar" />
+            <field name="arch" type="xml">
+                <calendar string="Meetings" position="attributes">
+                    <attribute name="mode">week</attribute>
+                </calendar>
+            </field>
+        </record>
+
+
+
+        <record id="is_view_calendar_event_form" model="ir.ui.view">
+            <field name="name">is_view_calendar_event_form</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_form" />
+            <field name="arch" type="xml">
+                <field name="start" position="before">
+                    <field name="is_project_id"/>
+                    <field name="is_partner_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="is_view_calendar_event_form_popup" model="ir.ui.view">
+            <field name="name">is_view_calendar_event_form_popup</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_form_popup" />
+            <field name="arch" type="xml">
+                <field name="start_date" position="before">
+                    <field name="is_project_id"/>
+                    <field name="is_partner_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="is_view_calendar_event_tree" model="ir.ui.view">
+            <field name="name">is_view_calendar_event_tree</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_tree" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_project_id"/>
+                    <field name="is_partner_id"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="is_view_calendar_event_search" model="ir.ui.view">
+            <field name="name">is_view_calendar_event_search</field>
+            <field name="model">calendar.event</field>
+            <field name="inherit_id" ref="calendar.view_calendar_event_search" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="is_project_id"/>
+                    <field name="is_partner_id"/>
+                </field>
+                <filter string="Responsible" position="after">
+                    <filter string="Projet" icon="terp-personal" domain="[]" context="{'group_by':'is_project_id'}"/>
+                    <filter string="Client" icon="terp-personal" domain="[]" context="{'group_by':'is_partner_id'}"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="is_view_calendar_event_pivot" model="ir.ui.view">
+            <field name="name">is_view_calendar_event_pivot</field>
+            <field name="model">calendar.event</field>
+            <field name="arch" type="xml">
+                 <graph type="pivot">
+                     <field name="is_project_id"  type="row"/>
+                     <field name="user_id"        type="col"/>
+                     <field name="duration"       type="measure"/>
+                 </graph>
+             </field>
+        </record>
+
+
+        <record id="calendar.action_calendar_event" model="ir.actions.act_window">
+            <field name="name">Évènements</field>
+            <field name="res_model">calendar.event</field>
+            <field name="view_mode">calendar,tree,form,graph</field>
+            <field name="view_id" ref="calendar.view_calendar_event_calendar"/>
+            <field name="search_view_id" ref="calendar.view_calendar_event_search"/>
+        </record>
+
+
+
+<!--
+
+
+
+    <record id="action_calendar_event" model="ir.actions.act_window">
+        <field name="name">Meetings</field>
+        <field name="res_model">calendar.event</field>
+        <field name="view_mode">calendar,tree,form,gantt</field>
+        <field name="view_id" ref="view_calendar_event_calendar"/>
+        <field name="search_view_id" ref="view_calendar_event_search"/>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Click to schedule a new meeting.
+          </p><p>
+            The calendar is shared between employees and fully integrated with
+            other applications such as the employee holidays or the business
+            opportunities.
+          </p>
+        </field>
+    </record>
+    <record model="ir.actions.act_window.view" id="action_view_calendar_event_calendar">
+        <field name="act_window_id" ref="action_calendar_event"/>
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">calendar</field>
+        <field name="view_id" ref="view_calendar_event_calendar"/>
+    </record>
+    <record model="ir.actions.act_window.view" id="action_view_calendar_event_tree">
+        <field name="act_window_id" ref="action_calendar_event"/>
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_calendar_event_tree"/>
+    </record>
+    <record model="ir.actions.act_window.view" id="action_view_calendar_event_form">
+        <field name="act_window_id" ref="action_calendar_event"/>
+        <field name="sequence" eval="3"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_calendar_event_form"/>
+    </record>
+    <record model="ir.actions.act_window.view" id="action_view_calendar_event_gantt">
+        <field name="act_window_id" ref="action_calendar_event"/>
+        <field name="sequence" eval="4"/>
+        <field name="view_mode">gantt</field>
+        <field name="view_id" ref="view_calendar_event_gantt"/>
+    </record>
+-->
+
+       
+    
+    </data>
+</openerp>

@@ -63,6 +63,7 @@ import is_rgpd
 import is_export_cegid
 import is_galia_base
 import is_article
+import calendar
 
 
 #TODO : Une fois la période de tests terminé, il faudra supprimer l'ancienne version

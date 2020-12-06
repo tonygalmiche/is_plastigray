@@ -363,7 +363,7 @@
             </div>
 
            <t t-if="o.galia_um_ids">
-                <br />
+                <div style="page-break-after:always;" />
                 <table class="table table-condensed" style="width:50%">
                     <thead>
                         <tr>
@@ -377,13 +377,13 @@
                         <t t-set="res" t-value="o.get_etiquettes()"/>
                         <tr t-foreach="res" t-as="obj">
                             <t t-if="obj['is_code_rowspan']">
-                                <td style="padding:2px;" t-att-rowspan="obj['is_code_rowspan']"><span t-esc="obj['is_code']"/></td>
+                                <td style="padding:2px;font-size:12pt" t-att-rowspan="obj['is_code_rowspan']"><span t-esc="obj['is_code']"/></td>
                             </t>
                             <t t-if="obj['um_rowspan']">
-                                <td style="padding:2px;" t-att-rowspan="obj['um_rowspan']"><span t-esc="obj['um']"/></td>
+                                <td style="padding:2px;font-size:12pt" t-att-rowspan="obj['um_rowspan']"><span t-esc="obj['um']"/></td>
                             </t>
-                            <td style="padding:2px;"><span t-esc="obj['uc']"/></td>
-                            <td style="padding:2px;"><span t-esc="obj['qt_pieces']"/></td>
+                            <td style="padding:2px;font-size:12pt"><span t-esc="obj['uc']"/></td>
+                            <td style="padding:2px;font-size:12pt"><span t-esc="obj['qt_pieces']"/></td>
                         </tr>
                     </tbody>
                 </table>

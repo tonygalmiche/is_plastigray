@@ -107,6 +107,7 @@ Module principal du projet Plastigray
         "is_export_cegid_view.xml",
         "is_galia_base_view.xml",
         "is_article_view.xml",
+        "calendar_view.xml",
         "wizard/is_gestion_lot_view.xml",
         "wizard/is_stock_mise_rebut_view.xml",
         "wizard/is_liste_servir_wizard_view.xml",

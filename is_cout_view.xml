@@ -436,7 +436,7 @@
             <field name="name">Anomalies achat</field>
             <field name="res_model">is.cout</field>
             <field name="view_type">form</field>
-            <field name="domain">[('type_article','=','A'),('ecart_calcule_matiere','!=',0.0)]</field>
+            <field name="domain">[('type_article','in',['A','ST']),('ecart_calcule_matiere','!=',0.0)]</field>
             <field name="view_mode">tree,form</field>
         </record>
 
