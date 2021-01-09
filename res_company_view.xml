@@ -51,6 +51,10 @@
                         <group string="Base principale (Primaire)">
                             <field name="is_base_principale"/>
                         </group>
+                        <group string="PIC à 3 ans">
+                            <field name="is_annee_pic_3ans"/>
+                            <button string="Actualiser" name="annee_pic_3ans_action" type="object" confirm="Prendre en compte imméditement le changement d'année"/>
+                        </group>
                         <group>
                             <group string="Autre">
                                 <field name="is_cout_ctrl_qualite"/>

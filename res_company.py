@@ -44,6 +44,14 @@ class res_company(models.Model):
 
     is_calendrier_expedition_id = fields.Many2one('res.partner', u'Calendrier Expéditions', domain=[('is_company','=',True),('is_adr_code','=','EXP')], help=u"Calendrier utilisé dans le calcul de la date d'expédition des commandes des clients (code adresse=EXP)")
 
+    is_annee_pic_3ans = fields.Char(u'Année PIC à 3 ans', help=u'Paramètre utilisé en particulier pour Analyse / Taux de rotation des stocks')
+
+
+    @api.multi
+    def annee_pic_3ans_action(self):
+        for obj in self:
+            self.env['is.taux.rotation.stock.new'].annee_pic_3ans_action()
+
 
 class res_partner_bank(models.Model):
     _inherit = 'res.partner.bank'

@@ -24,6 +24,45 @@ class is_taux_rotation_stock_new(models.Model):
     nb_sem          = fields.Float('Nb Sem'              , digits=(14,0))
     stock_valorise  = fields.Float('Stock valorisé'      , digits=(14,0))
 
+
+    @api.multi
+    def annee_pic_3ans_action(self):
+        user = self.env["res.users"].browse(self._uid)
+        company = user.company_id
+        annee = company.is_annee_pic_3ans
+        SQL="""
+            CREATE OR REPLACE FUNCTION get_pic_12mois(pp_id  integer) RETURNS float AS $$
+            BEGIN
+                RETURN (
+                    COALESCE(
+                        (
+                            select sum(quantite) 
+                            from is_pic_3ans
+                            where product_id=pp_id and type_donnee='pic' and annee='"""+annee+"""'
+                        )
+                    ,0)
+                );
+            END;
+            $$ LANGUAGE plpgsql;
+
+            CREATE OR REPLACE FUNCTION get_pic_pdp_12mois(pp_id  integer) RETURNS float AS $$
+            BEGIN
+                RETURN (
+                    COALESCE(
+                        (
+                            select sum(quantite) 
+                            from is_pic_3ans
+                            where product_id=pp_id and annee='"""+annee+"""'
+                        )
+                    ,0)
+                );
+            END;
+            $$ LANGUAGE plpgsql;
+        """
+        self._cr.execute(SQL)
+        self.run_is_taux_rotation_stock_new()
+
+
     def run_is_taux_rotation_stock_new_scheduler_action(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
         self.run_is_taux_rotation_stock_new(cr, uid, context)
 
@@ -79,36 +118,6 @@ BEGIN
                 select ic.cout_act_total 
                 from is_cout ic
                 where ic.name=pp_id limit 1
-            )
-        ,0)
-    );
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION get_pic_12mois(pp_id  integer) RETURNS float AS $$
-BEGIN
-    RETURN (
-        COALESCE(
-            (
-                select sum(quantite) 
-                from is_pic_3ans
-                where product_id=pp_id and type_donnee='pic' and annee='2020'
-            )
-        ,0)
-    );
-END;
-$$ LANGUAGE plpgsql;
-
-
-CREATE OR REPLACE FUNCTION get_pic_pdp_12mois(pp_id  integer) RETURNS float AS $$
-BEGIN
-    RETURN (
-        COALESCE(
-            (
-                select sum(quantite) 
-                from is_pic_3ans
-                where product_id=pp_id and annee='2020'
             )
         ,0)
     );
