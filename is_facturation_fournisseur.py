@@ -30,7 +30,9 @@ class is_facturation_fournisseur(models.Model):
     _order='id desc'
 
     afficher_lignes     = fields.Selection([('oui', u'Oui'),('non', u'Non')], u"Afficher les lignes")
+    masquer_montant_0   = fields.Boolean(u"Masquer les montants à 0", default=True)
     name                = fields.Many2one('res.partner', 'Fournisseur à facturer', required=True)
+    is_incoterm         = fields.Many2one('stock.incoterms', "Incoterm  / Conditions de livraison", related='name.is_incoterm', readonly=True)
     partner_ids         = fields.Many2many('res.partner', id1='facturation_id', id2='partner_id', string='Autres fournisseurs')
     date_fin            = fields.Date('Date de fin'                      , required=True)
     date_facture        = fields.Date('Date facture fournisseur'         , required=True)
@@ -105,7 +107,7 @@ class is_facturation_fournisseur(models.Model):
             obj.bon_a_payer       = bon_a_payer
 
     @api.multi
-    def cherche_receptions(self, partner_id, partner_ids, date_fin):
+    def cherche_receptions(self, partner_id, partner_ids, date_fin,masquer_montant_0):
         ids=partner_ids[0][2]
         ids.append(partner_id)
         partners=[]
@@ -137,11 +139,14 @@ class is_facturation_fournisseur(models.Model):
                     sp.state='done' and
                     round(sm.product_uom_qty-coalesce((select sum(quantity) from account_invoice_line ail where ail.is_move_id=sm.id ),0),4)>0 and 
                     sp.picking_type_id=1 and
-                    pt.is_facturable='t'
+                    pt.is_facturable='t' and
+                    sm.invoice_state='2binvoiced'
             """
             sql=sql+" and sp.partner_id in("+','.join(partners)+") "
             sql=sql+" and sp.is_date_reception<='"+str(date_fin)+"' "
             sql=sql+' order by sp.name, pol.id '
+
+
             cr.execute(sql)
             result=cr.fetchall()
             for row in result:
@@ -168,25 +173,30 @@ class is_facturation_fournisseur(models.Model):
                 account_id = move.product_id.property_account_expense.id
                 #***************************************************************
 
-                vals = {
-                    'num_reception'     : row[0],
-                    'num_bl_fournisseur': row[1],
-                    'date_reception'    : row[2],
-                    'product_id'        : row[3],
-                    'description'       : row[10],
-                    'account_id'        : account_id,
-                    'ref_fournisseur'   : row[4],
-                    'quantite'          : row[5],
-                    'uom_id'            : row[6],
-                    'prix'              : row[7],
-                    'prix_origine'      : row[7],
-                    'total'             : row[5]*(row[7] or 0),
-                    'taxe_ids'          : [(6,0,taxe_ids)],
-                    'taxe_taux'         : taxe_taux,
-                    'move_id'           : row[8],
-                    'selection'         : False,
-                }
-                lines.append(vals)
+                total = row[5]*(row[7] or 0)
+                test=True
+                if masquer_montant_0 and total==0:
+                    test=False
+                if test:
+                    vals = {
+                        'num_reception'     : row[0],
+                        'num_bl_fournisseur': row[1],
+                        'date_reception'    : row[2],
+                        'product_id'        : row[3],
+                        'description'       : row[10],
+                        'account_id'        : account_id,
+                        'ref_fournisseur'   : row[4],
+                        'quantite'          : row[5],
+                        'uom_id'            : row[6],
+                        'prix'              : row[7],
+                        'prix_origine'      : row[7],
+                        'total'             : total,
+                        'taxe_ids'          : [(6,0,taxe_ids)],
+                        'taxe_taux'         : taxe_taux,
+                        'move_id'           : row[8],
+                        'selection'         : False,
+                    }
+                    lines.append(vals)
         value.update({'line_ids': lines})
         return {'value': value}
 

@@ -25,23 +25,29 @@
                     <sheet class="oe_form_sheet_width_wider">
                         <group>
                             <group string="Réceptions à facturer">
-                                <field name="afficher_lignes"  />
+                                <field name="afficher_lignes"/>
                                 <field 
-                                    name="name" 
-                                    domain="[('supplier','=',True),('is_company','=',True)]"
-                                    on_change="cherche_receptions(name, partner_ids, date_fin)"
+                                    name="masquer_montant_0"
+                                    on_change="cherche_receptions(name, partner_ids, date_fin,masquer_montant_0)"
                                     attrs="{'readonly':[('state','=','termine')]}"
                                 />
                                 <field 
+                                    name="name" 
+                                    domain="[('supplier','=',True),('is_company','=',True)]"
+                                    on_change="cherche_receptions(name, partner_ids, date_fin,masquer_montant_0)"
+                                    attrs="{'readonly':[('state','=','termine')]}"
+                                />
+                                <field name="is_incoterm"/>
+                                <field 
                                     name="partner_ids" 
                                     domain="[('supplier','=',True),('is_company','=',True)]"
-                                    on_change="cherche_receptions(name, partner_ids, date_fin)"
+                                    on_change="cherche_receptions(name, partner_ids, date_fin,masquer_montant_0)"
                                     attrs="{'readonly':[('state','=','termine')]}"
                                     widget="many2many_tags"
                                 />
                                 <field 
                                     name="date_fin" 
-                                    on_change="cherche_receptions(name, partner_ids, date_fin)"
+                                    on_change="cherche_receptions(name, partner_ids, date_fin,masquer_montant_0)"
                                     attrs="{'readonly':[('state','=','termine')]}"
                                 />
                                 <field name="is_masse_nette"  />
