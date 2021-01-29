@@ -19,6 +19,7 @@ class is_livraison_gefco(models.Model):
     product_id          = fields.Many2one('product.template', 'Article')
     product_uom_qty     = fields.Float("Quantité")
     uc                  = fields.Char('UC')
+    um                  = fields.Char('UM')
     nb_uc               = fields.Float("Nb UC")
     nb_um               = fields.Float("Nb UM")
 
@@ -41,19 +42,21 @@ class is_livraison_gefco(models.Model):
                             select qty from product_packaging pack where pack.product_tmpl_id=pt.id and qty>0 limit 1
                         )
                     ,1) nb_uc,
-
                     sm.product_uom_qty/coalesce(
                         (
                             select qty*rows*ul_qty from product_packaging pack where pack.product_tmpl_id=pt.id and qty>0 limit 1
                         )
                     ,1) nb_um,
-
-
                     (
                         select ul.name 
                         from product_packaging pack inner join product_ul ul on pack.ul=ul.id
                         where pack.product_tmpl_id=pt.id limit 1
-                    ) uc
+                    ) uc,
+                    (
+                        select ul2.name 
+                        from product_packaging pack2 inner join product_ul ul2 on pack2.ul_container=ul2.id
+                        where pack2.product_tmpl_id=pt.id limit 1
+                    ) um
                 from stock_picking sp inner join stock_move            sm on sp.id=sm.picking_id
                                       inner join product_product       pp on sm.product_id=pp.id
                                       inner join product_template      pt on pp.product_tmpl_id=pt.id
@@ -66,14 +69,3 @@ class is_livraison_gefco(models.Model):
                     sp.picking_type_id=2 
             )
         """)
-
-
-
-#                                        <t t-foreach="move.product_id.packaging_ids" t-as="l">
-#                                            <t t-set="nb2"    t-value="l.qty"/>
-#                                            <t t-set="unite2" t-value="l.ul.name"/>
-#                                            <t t-set="nb3"    t-value="l.qty*l.ul_qty*l.rows"/>
-#                                            <t t-set="unite3" t-value="l.ul_container.name"/>
-#                                        </t>
-
-
