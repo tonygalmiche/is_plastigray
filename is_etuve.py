@@ -282,7 +282,7 @@ class is_etuve_of(models.Model):
                 select pt.is_code, sum(mppl.product_qty) 
                 from mrp_production_product_line mppl inner join product_product pp on mppl.product_id=pp.id 
                                                       inner join product_template pt on pp.product_tmpl_id=pt.id 
-                where mppl.production_id="""+str(obj.of_id.id)+""" and pt.is_code='"""+str(matiere)+"""' or pt.is_code='"""+str(broye)+"""'
+                where mppl.production_id="""+str(obj.of_id.id)+""" and (pt.is_code='"""+str(matiere)+"""' or pt.is_code='"""+str(broye)+"""')
                 group by mppl.product_id,mppl.name,pt.is_code 
                 order by max(mppl.id) """
             matiere=poids_moulee=False
