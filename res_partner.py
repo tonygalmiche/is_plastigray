@@ -12,6 +12,7 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # ** Fonctions d'importation EDI ***********************************************
 import_function=[
+    ('902580'         , '902580'),
     ('902810'         , '902810'),
     ('903410'         , '903410'),
     ('ACTIA'          , 'ACTIA'),

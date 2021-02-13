@@ -369,6 +369,8 @@ class is_edi_cde_cli(models.Model):
     def get_data(self, import_function, attachment):
         datas={}
 
+        if import_function=="902580":
+            datas=self.get_data_902580(attachment)
         if import_function=="902810":
             datas=self.get_data_902810(attachment)
         if import_function=="903410":
@@ -1018,66 +1020,6 @@ class is_edi_cde_cli(models.Model):
         return res
 
 
-#    @api.multi
-#    def get_data_903410(self, attachment):
-#        res = []
-#        for obj in self:
-#            csvfile=base64.decodestring(attachment.datas)
-#            csvfile=csvfile.split("\r")
-#            tab=[]
-#            ct=0
-#            for row in csvfile:
-#                ct=ct+1
-#                if ct>1:
-#                    lig=row.split("\t")
-#                    ref_article_client=lig[5][2:]
-#                    order=self.env['sale.order'].search([
-#                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
-#                        ('is_ref_client', '=', ref_article_client)]
-#                    )
-#                    num_commande_client="??"
-#                    if len(order):
-#                        num_commande_client=order[0].client_order_ref
-#                    val={
-#                        'num_commande_client' : num_commande_client,
-#                        'ref_article_client'  : ref_article_client,
-#                    }
-#                    type_commande=lig[7]
-#                    if type_commande=="P":
-#                        type_commande="previsionnel"
-#                    else:
-#                        type_commande="ferme"
-#                    date_livraison=lig[9].strip()
-#                    d=datetime.strptime(date_livraison, '%d.%m.%Y')
-#                    date_livraison=d.strftime('%Y-%m-%d')
-
-#                    quantite=str(lig[12])
-#                    quantite=quantite.replace(",", ".")
-#                    quantite=quantite.replace(" ", "")
-#                    if quantite=='':
-#                        quantite=0
-#                    qt=0
-#                    try:
-#                        qt=float(quantite)
-#                    except ValueError:
-#                        print '## ValueError', ref_article_client, date_livraison, lig[12]
-
-#                    if qt!=0:
-#                        ligne = {
-#                            'quantite'      : qt,
-#                            'type_commande' : type_commande,
-#                            'date_livraison': date_livraison,
-#                        }
-#                        val.update({'lignes':[ligne]})
-#                        res.append(val)
-#        return res
-
-
-
-
-
-
-
     @api.multi
     def get_data_eCar(self, attachment):
         res = []
@@ -1368,7 +1310,7 @@ class is_edi_cde_cli(models.Model):
                     try:
                         qt=float(quantite)
                     except ValueError:
-                        print '## ValueError', ref_article_client, date_livraison, lig[6]
+                        qt=0
                     if qt!=0:
                         ligne = {
                             'quantite'      : qt,
@@ -1429,10 +1371,8 @@ class is_edi_cde_cli(models.Model):
                         try:
                             qt=float(quantite)
                         except ValueError:
-                            print '## ValueError', ref_article_client, date_livraison, lig[2]
+                            qt=0
                         if qt!=0:
- 
-
                             ligne = {
                                 'quantite'      : qt,
                                 'type_commande' : type_commande,
@@ -1504,9 +1444,6 @@ class is_edi_cde_cli(models.Model):
         return res
 
 
-
-
-
     @api.multi
     def get_data_Watts(self, attachment):
         res = []
@@ -1555,3 +1492,42 @@ class is_edi_cde_cli(models.Model):
 
 
 
+
+    @api.multi
+    def get_data_902580(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter='\t')
+            for ct, lig in enumerate(csvfile):
+                if len(lig)>=8:
+                    quantite = lig[6]
+                    try:
+                        quantite = float(quantite)
+                    except ValueError:
+                        quantite=0
+                    if quantite>0:
+                        ref_article_client  = lig[0].strip()
+                        num_commande_client = self.getNumCommandeClient(ref_article_client)
+                        try:
+                            date_livraison=lig[4]
+                            d=datetime.strptime(date_livraison, '%d/%m/%Y')
+                            date_livraison=d.strftime('%Y-%m-%d')
+                        except ValueError:
+                            date_livraison=False
+                        type_commande="previsionnel"
+                        if lig[5]=='F':
+                            type_commande='ferme'
+                        val = {
+                            'num_commande_client' : num_commande_client,
+                            'ref_article_client'  : ref_article_client,
+                        }
+                        ligne = {
+                            'quantite'      : quantite,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes': [ligne]})
+                        res.append(val)
+        return res
