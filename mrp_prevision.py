@@ -64,150 +64,10 @@ class mrp_prevision(models.Model):
     }
 
 
-
-#    @api.multi
-#    def _get_ids(self):
-#        ids=[]
-#        for obj in self:
-#            if obj.type=='sa':
-#                if len(obj.product_id.seller_ids)>0:
-#                    ids.append(obj)
-#                else:
-#                    obj.note="Aucun fournisseur indiqué dans la fiche article => Convertion en commande impossible"
-#        return ids
-
-#    @api.multi
-#    def convertir_sa2(self):
-#        print "Début cProfile"
-
-#        rules=self.env['auditlog.rule'].sudo().search([('name','=','purchase.order')])
-#        if rules:
-#            rules[0].unsubscribe()
-
-#        ids=self._get_ids()
-
-#        pr=cProfile.Profile()
-#        pr.enable()
-
-#        order_obj      = self.env['purchase.order']
-#        order_line_obj = self.env['purchase.order.line']
-#        for obj in ids:
-#            partner=obj.product_id.seller_ids[0].name
-#            pricelist=partner.property_product_pricelist_purchase
-#            if pricelist:
-#                is_contact_id=False
-#                r=order_obj.onchange_partner_id(partner.id)
-#                if r and 'value' in r:
-#                    v=r['value']
-#                    if 'is_contact_id' in v:
-#                        is_contact_id=v['is_contact_id']
-
-#                vals={
-#                    'partner_id'      : partner.id,
-#                    'is_contact_id'   : is_contact_id,
-#                    'is_livre_a_id'   : partner.is_livre_a_id.id,
-#                    'location_id'     : partner.is_source_location_id.id,
-#                    'fiscal_position' : partner.property_account_position.id,
-#                    'payment_term_id' : partner.property_supplier_payment_term.id,
-#                    'pricelist_id'    : pricelist.id,
-#                }
-#                order=order_obj.create(vals)
-
-#                if order:
-#                    unlink=True
-#                    note=False
-#                    vals=False
-#                    try:
-#                        res=order_line_obj.onchange_product_id(
-#                            order.pricelist_id.id, 
-#                            obj.product_id.id, 
-#                            obj.quantity_ha, 
-#                            obj.uom_po_id.id, 
-#                            partner.id, 
-#                            date_order         = False, 
-#                            fiscal_position_id = partner.property_account_position.id, 
-#                            date_planned       = obj.start_date_cq, 
-
-#                            name               = False, 
-#                            price_unit         = False, 
-#                            state              = 'draft'
-#                        )
-#                        vals=res['value']
-#                    except:
-#                        unlink=False
-#                        note='\n'.join(sys.exc_info()[1])
-#                    if vals and vals['price_unit']:
-#                        print "Création order"
-
-#                        #** Création d'une commande ****************************
-#                        vals['order_id']=order.id
-#                        vals['product_id']=obj.product_id.id
-#                        if 'taxes_id' in vals:
-#                            vals.update({'taxes_id': [[6, False, vals['taxes_id']]]})
-#                        try:
-#                            order_line=order_line_obj.create(vals)
-#                            order.wkf_bid_received() 
-#                            order.wkf_confirm_order()
-#                            order.action_picking_create() 
-#                            order.wkf_approve_order()
-#                        except:
-#                            unlink=False
-#                            if note==False:
-#                                note='\n'.join(sys.exc_info()[1])
-#                            else:
-#                                note=note+'\n'+'\n'.join(sys.exc_info()[1])
-#                        obj.note=unicode(note)
-
-
-
-#                    else:
-#                        print "Création DA"
-
-#                        #** Création d'une demande d'achat série ***************
-#                        order.unlink()
-#                        #TODO : Voir comment gérer l'acheteur pour ne pas le mettre en dur ici
-#                        acheteur_id=self.env['res.users'].search([('login','=','jl2')])[0].id
-#                        vals={
-#                            'acheteur_id'    : acheteur_id, 
-#                            'fournisseur_id' : partner.id, 
-#                            'delai_livraison': obj.start_date_cq, 
-#                            'motif'          : 'pas_tarif', 
-#                        }
-#                        da=self.env['is.demande.achat.serie'].with_context(auditlog_disabled=True).create(vals)
-#                        vals={
-#                            'da_id'     : da.id, 
-#                            'sequence'  : 10, 
-#                            'product_id': obj.product_id.id, 
-#                            'uom_id'    : obj.uom_po_id.id, 
-#                            'quantite'  : obj.quantity_ha, 
-#                        }
-
-#                        line=self.env['is.demande.achat.serie.line'].create(vals)
-#                        da.vers_transmis_achat_action()
-#                    if unlink:
-#                        obj.unlink()
-
-
-#        pr.disable()
-#        pr.dump_stats('/tmp/analyse.cProfile')
-
-
-#        print "Fin cProfile"
-
-#        if rules:
-#            rules[0].subscribe()
-
-
-
-
-
-
     @api.multi
     def convertir_sa(self):
-
         #pr=cProfile.Profile()
         #pr.enable()
-
         rules=self.env['auditlog.rule'].sudo().search([('name','=','purchase.order')])
         if rules:
             rules[0].unsubscribe()
@@ -299,11 +159,13 @@ class mrp_prevision(models.Model):
                         company     = user.company_id
                         acheteur_id = company.is_acheteur_id.id
                         vals={
-                            'acheteur_id'    : acheteur_id, 
-                            'fournisseur_id' : partner.id, 
-                            'delai_livraison': obj.start_date_cq, 
-                            'motif'          : 'pas_tarif', 
+                            'acheteur_id'      : acheteur_id, 
+                            'fournisseur_id'   : partner.id, 
+                            'delai_livraison'  : obj.start_date_cq, 
+                            'motif'            : 'pas_tarif', 
                         }
+                        if partner.is_livre_a_id.id:
+                            vals["lieu_livraison_id"]=partner.is_livre_a_id.id
                         da=self.env['is.demande.achat.serie'].create(vals)
                         vals={
                             'da_id'     : da.id, 
