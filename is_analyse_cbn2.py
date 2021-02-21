@@ -613,7 +613,7 @@ class product_product(models.Model):
 
 
         #** Listes de choix des filtres ****************************************
-        select_nb_semaines=[4,8,12,16,18,20,30,40,60]
+        select_nb_semaines=[4,8,12,16,18,20,25,30,40,60]
         select_type_commande=['','ferme_uniquement','ferme','ouverte','cadencée']
         select_type_rapport=['Fabrication','Achat']
         select_calage=['Date de fin','Date de début']
