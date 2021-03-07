@@ -81,7 +81,7 @@
                             <field name="num_carton"/>
                             <field name="qt_pieces"/>
                             <field name="date_creation"/>
-                            <field name="production_id"/>
+                            <field name="production"/>
                             <field name="product_id"/>
                         </group>
                     </sheet>
@@ -100,7 +100,7 @@
                     <field name="num_carton"/>
                     <field name="qt_pieces"/>
                     <field name="date_creation"/>
-                    <field name="production_id"/>
+                    <field name="production"/>
                     <field name="product_id"/>
                 </tree>
             </field>
@@ -114,7 +114,7 @@
                     <field name="num_eti"/>
                     <field name="type_eti"/>
                     <field name="num_carton"/>
-                    <field name="production_id"/>
+                    <field name="production"/>
                     <field name="product_id"/>
                 </search>
             </field>
@@ -162,7 +162,7 @@
                                     <field name="num_carton"/>
                                     <field name="qt_pieces"/>
                                     <field name="date_creation"/>
-                                    <field name="production_id"/>
+                                    <field name="production"/>
                                     <field name="product_id"/>
                                 </tree>
                             </field>

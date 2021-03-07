@@ -88,6 +88,7 @@ class is_galia_base_uc(models.Model):
     qt_pieces     = fields.Integer(u"Qt Pièces", required=True)
     date_creation = fields.Datetime(u"Date de création", required=True)
     production_id = fields.Many2one('mrp.production', 'Ordre de fabrication')
+    production    = fields.Char('Ordre de fabrication')
     product_id    = fields.Many2one('product.product', 'Article', required=True)
 
 
