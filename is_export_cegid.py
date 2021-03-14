@@ -406,8 +406,7 @@ class is_export_cegid(models.Model):
     @api.multi
     def action_generer_fichier(self):
         for obj in self:
-
-            name='export-cegid-'+obj.name+'.TRA'
+            name='export-cegid-'+obj.journal+'-'+obj.name+'.TRA'
             model='is.export.cegid'
             attachments = self.env['ir.attachment'].search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
             attachments.unlink()
