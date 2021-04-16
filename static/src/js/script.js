@@ -141,6 +141,8 @@ openerp.is_plastigray = function(instance, local) {
             "click a"     : "click_a",
             "click button": "click_button",
             "click img"   : "click_img",
+            "change input": "change_input",
+            "change select": "change_select",
         },
         init: function(parent) {
             this._super(parent);
@@ -210,6 +212,14 @@ openerp.is_plastigray = function(instance, local) {
             }
         },
         click_button: function(e) {
+            $("#validation").val('ok');
+            load_data2(instance)
+        },
+        change_input: function(e) {
+            $("#validation").val('ok');
+            load_data2(instance)
+        },
+        change_select: function(e) {
             $("#validation").val('ok');
             load_data2(instance)
         },

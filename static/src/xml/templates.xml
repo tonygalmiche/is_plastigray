@@ -36,7 +36,7 @@
     <t t-name="AnalyseCBN2">
         <div class="cbn">
             <h2 style="font-size:1.5em;padding:0;margin:0" id="titre"></h2>
-            <form style="padding-top:0.5em;padding-bottom:0.5em">
+            <form2 style="padding-top:0.5em;padding-bottom:0.5em">
                 <table>
                     <tr>
                         <td>Code PG (Début) <br /><input style='width:9em' type='text'     id='code_pg_debut'  title="Début Code PG (v2)"/></td>
@@ -54,7 +54,7 @@
                         <td>                <br /><button type="submit">OK</button><input id="validation" type="hidden" value="ko"/></td>
                     </tr>
                 </table>
-            </form>
+            </form2>
             <div id="analysecbn"/>
         </div>
     </t>
