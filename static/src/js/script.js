@@ -138,12 +138,27 @@ openerp.is_plastigray = function(instance, local) {
     local.AnalyseCBN2 = instance.Widget.extend({
         template: "AnalyseCBN2",     // Permet de préciser le template QWeb à utiliser
         events: {
-            "click a"     : "click_a",
-            "click button": "click_button",
-            "click img"   : "click_img",
-            "change input": "change_input",
-            "change select": "change_select",
+            "click a"      : "click_a",
+            "click button" : "click_button",
+            "click img"    : "click_img",
+            "keydown input": "keydown_input",
+            //"change input": "change_input",
+            //"change select": "change_select",
         },
+
+
+        // events: {
+        //     'keydown input': function (e) {
+        //         switch (e.which) {
+        //         case $.ui.keyCode.UP:
+        //         case $.ui.keyCode.DOWN:
+        //             e.stopPropagation();
+        //         }
+        //     },
+        // },
+    
+
+
         init: function(parent) {
             this._super(parent);
         },
@@ -215,14 +230,22 @@ openerp.is_plastigray = function(instance, local) {
             $("#validation").val('ok');
             load_data2(instance)
         },
-        change_input: function(e) {
-            $("#validation").val('ok');
-            load_data2(instance)
+        keydown_input: function(e) {
+            //console.log(e);
+            //console.log(e.keyCode);
+            if (e.keyCode==13){
+                $("#validation").val('ok');
+                load_data2(instance);
+            }
         },
-        change_select: function(e) {
-            $("#validation").val('ok');
-            load_data2(instance)
-        },
+        // change_input: function(e) {
+        //     $("#validation").val('ok');
+        //     load_data2(instance)
+        // },
+        // change_select: function(e) {
+        //     $("#validation").val('ok');
+        //     load_data2(instance)
+        // },
 
 
         click_img: function(e) {
