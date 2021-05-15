@@ -26,9 +26,9 @@ class res_users(models.Model):
 
     is_site_id    = fields.Many2one("is.database", "Site de production", help=u"Ce champ est utilisé en particulier pour la gestion des OT dans odoo0")
     is_site_ids   = fields.Many2many('is.database','res_users_site_rel','user_id','site_id', string=u"Sites autorisés")
-
     is_service_id = fields.Many2one('is.service', 'Service')
     is_adresse_ip = fields.Char('Adresse IP', help='Adresse IP de cet utilisateur pour lui donner des accès spcécifiques dans THEIA')
+    is_signature  = fields.Binary("Signature", help="Utilisé pour imprimer les certificats matière fournisseur")
 
 
     def _login(self, db, login, password):

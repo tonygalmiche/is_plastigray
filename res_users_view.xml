@@ -27,6 +27,16 @@
                     <field name="is_service_id"/>
                     <field name="is_adresse_ip"/>
                 </field>
+                <field name="signature" position="after">
+                    <field 
+                        name="is_signature" 
+                        widget="image" class="oe_center oe_avatar" 
+                        options='{"preview_image": "is_signature", "size": [150, 150]}'
+                    />
+                </field>
+                <field name="signature" position="attributes">
+                    <attribute name="invisible">1</attribute> 
+                </field>
             </field>
         </record>
         <record id="is_view_users_tree" model="ir.ui.view">

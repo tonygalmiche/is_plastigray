@@ -60,6 +60,11 @@
                                 <field name="is_cout_ctrl_qualite"/>
                                 <field name="is_dossier_interface_cegid"/>
                                 <field name="is_calendrier_expedition_id"/>
+                                <field 
+                                    name="is_cachet_plastigray" 
+                                    widget="image" class="oe_center oe_avatar" 
+                                    options='{"preview_image": "is_cachet_plastigray", "size": [150, 150]}'
+                                />
                             </group>
                         </group>
                     </page>
