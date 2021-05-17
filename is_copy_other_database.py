@@ -712,6 +712,7 @@ class is_mold(models.Model):
         'designation'      : mold.designation,
         'project'          : self._get_project(mold, DB, USERID, USERPASS, sock),
         'dossierf_id'      : self._get_dossierf_id(mold, DB, USERID, USERPASS, sock),
+        'dossierf_ids'     : self._get_dossierf_ids(mold, DB, USERID, USERPASS, sock),
         'nb_empreintes'    : mold.nb_empreintes,
         'moule_a_version'  : mold.moule_a_version,
         'lieu_changement'  : mold.lieu_changement,
@@ -743,7 +744,17 @@ class is_mold(models.Model):
             if dossierf_ids:
                 return dossierf_ids[0]
         return False
-        
+
+
+    def _get_dossierf_ids(self, mold, DB, USERID, USERPASS, sock):
+        list_dossierf_ids =[]
+        for dossierf in mold.dossierf_ids:
+            dest_dossierf_ids = sock.execute(DB, USERID, USERPASS, 'is.dossierf', 'search', [('is_database_origine_id', '=', dossierf.id)], {})
+            if dest_dossierf_ids:
+                list_dossierf_ids.append(dest_dossierf_ids[0])
+        return [(6, 0, list_dossierf_ids)]
+
+
     @api.model    
     def _get_project(self, mold, DB, USERID, USERPASS, sock):
         if mold.project:
