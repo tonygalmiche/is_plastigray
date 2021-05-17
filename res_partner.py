@@ -27,6 +27,7 @@ import_function=[
     ('Odoo'           , 'Odoo'),
     ('Plasti-ka'      , 'Plasti-ka'),
     ('SIMU'           , 'SIMU'),
+    ('SIMU-SOMFY'     , 'SIMU-SOMFY'),
     ('THERMOR'        , 'THERMOR'),
     ('Watts'          , 'Watts'),
 ]

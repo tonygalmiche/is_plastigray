@@ -140,19 +140,13 @@ class is_edi_cde_cli(models.Model):
                         order_id     = order[0].id
                         partner_id   = order[0].partner_id.id
                         pricelist_id = order[0].pricelist_id.id
-
-
-
-
-
                     for ligne in row["lignes"]:
                         product_id = False
-                        prix       = 0;
+                        prix       = 0
                         anomalie2  = []
                         if "anomalie" in ligne:
                             if ligne["anomalie"]:
                                 anomalie2.append(ligne["anomalie"])
-
                         if len(order):
                             if len(order)>1:
                                 t=[]
@@ -160,10 +154,7 @@ class is_edi_cde_cli(models.Model):
                                     t.append(o.name)
                                 anomalie2.append('Commande ouverte en double trouvée =>'+','.join(t))
                                 order=order[0]
-                            
                             quantite   = int(ligne["quantite"])
-
-
                             if 'product' in row:
                                 product = row['product']
                             else:
@@ -260,14 +251,14 @@ class is_edi_cde_cli(models.Model):
                     ('partner_invoice_id', '=', obj.partner_id.id),
                 ]
                 orders=self.env['sale.order'].search(filtre)
-            if obj.import_function=="Watts":
+            if obj.import_function in ["Watts","SIMU-SOMFY"]:
                 filtre=[
-                    ('is_type_commande'  , '=', 'ouverte'),
-                    ('state'             , '=', 'draft'),
-                    ('partner_id', '=', obj.partner_id.id),
+                    ('is_type_commande', '=', 'ouverte'),
+                    ('state'           , '=', 'draft'),
+                    ('partner_id'      , '=', obj.partner_id.id),
                 ]
                 orders=self.env['sale.order'].search(filtre)
-            if obj.import_function=="Plasti-ka" or obj.import_function=="Watts":
+            if obj.import_function in ["Plasti-ka", "Watts", "SIMU-SOMFY"]:
                 for order in orders:
                     filtre=[
                         ('order_id'        , '=', order.id),
@@ -399,6 +390,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_plastika(attachment)
         if import_function=="SIMU":
             datas=self.get_data_SIMU(attachment)
+        if import_function=="SIMU-SOMFY":
+            datas=self.get_data_SIMU_SOMFY(attachment)
         if import_function=="THERMOR":
             datas=self.get_data_THERMOR(attachment)
         if import_function=="Watts":
@@ -652,6 +645,54 @@ class is_edi_cde_cli(models.Model):
             if type_fichier==False:
                 raise Warning(u"Le fichier "+attachment.name+u" n'est pas un fichier SIMU compatible (xlsx pour le ferme ou le prévisionnel)")
 
+        return res
+
+
+    @api.multi
+    def get_data_SIMU_SOMFY(self, attachment):
+        res = []
+        for obj in self:
+            csvfile = base64.decodestring(attachment.datas)
+            csvfile = csvfile.split("\n")
+            csvfile = csv.reader(csvfile, delimiter=';')
+            for ct, lig in enumerate(csvfile):
+                if ct>0 and len(lig)>=28:
+                    type_commande      = lig[25].strip()
+                    if type_commande == u"Prévision":
+                        type_commande="previsionnel"
+                        ref_article_client = lig[18].strip()
+                        quantite = lig[26].replace(',', '.')
+                        try:
+                            quantite = float(quantite)
+                        except ValueError:
+                            quantite=0
+                        date_livraison = lig[28]
+                        d=False
+                        try:
+                            d = datetime.strptime(date_livraison, '%d/%m/%Y')
+                        except ValueError:
+                            continue
+                        if d:
+                            date_livraison = d.strftime('%Y-%m-%d')
+                            order = self.env['sale.order'].search([
+                                ('partner_id.is_code', '=', obj.partner_id.is_code),
+                                ('is_ref_client'     , '=', ref_article_client),
+                                ('is_type_commande'  , '=', 'ouverte')]
+                            )
+                            num_commande_client = "??"
+                            if len(order):
+                                num_commande_client = order[0].client_order_ref
+                            val = {
+                                'num_commande_client' : num_commande_client,
+                                'ref_article_client'  : ref_article_client,
+                            }
+                            ligne = {
+                                'quantite'      : quantite,
+                                'type_commande' : type_commande,
+                                'date_livraison': date_livraison,
+                            }
+                            val.update({'lignes': [ligne]})
+                            res.append(val)
         return res
 
 

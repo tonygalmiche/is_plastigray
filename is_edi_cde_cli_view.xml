@@ -64,6 +64,7 @@
                         <filter string="Article"  context="{'group_by': 'product_id'}"/>
                         <filter string="Anomalie" context="{'group_by': 'anomalie'}"/>
                         <filter string="Fichier"  context="{'group_by': 'file_id'}"/>
+                        <filter string="Date liv" context="{'group_by': 'date_livraison:day'}"/>
                     </group>
                 </search>
             </field>
