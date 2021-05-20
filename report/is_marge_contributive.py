@@ -42,20 +42,6 @@ class is_marge_contributive(models.Model):
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'is_marge_contributive')
         cr.execute("""
-
-            CREATE OR REPLACE FUNCTION fsens(t text) RETURNS integer AS $$
-            BEGIN
-                RETURN (
-                    SELECT
-                    CASE
-                    WHEN t::text = ANY (ARRAY['out_refund'::character varying::text, 'in_refund'::character varying::text])
-                        THEN -1::int
-                        ELSE 1::int
-                    END
-                );
-            END;
-            $$ LANGUAGE plpgsql;
-
             CREATE OR REPLACE view is_marge_contributive AS (
                 select 
                     ail.id          id,

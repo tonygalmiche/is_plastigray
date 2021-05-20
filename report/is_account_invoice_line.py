@@ -99,8 +99,29 @@ class is_account_invoice_line(models.Model):
         }
 
 
+    @api.multi
+    def refresh_ca_facture_client_action(self):
+        cr = self._cr
+        cr.execute("REFRESH MATERIALIZED VIEW is_account_invoice_line;")
+        now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
+        view_id=self.env.ref('is_plastigray.is_indicateur_ca_facture_tree_view').id
+        return {
+            'name': u'CA factures client actualisé à '+str(now),
+            'view_mode': 'tree,form,graph',
+            'view_type': 'form',
+            'view_id'  : False,
+            'views'    : [(view_id, 'tree'),(False, 'form'),(False, 'graph')],
+            'res_model': 'is.account.invoice.line',
+            'domain'   : [('type','in', ['out_refund','out_invoice']),('state','=','open')],
+            'type': 'ir.actions.act_window',
+        }
+
+
     def init(self, cr):
         #tools.drop_view_if_exists(cr, 'is_account_invoice_line')
+
+        print "## TEST ##"
+
         cr.execute("""
             DROP MATERIALIZED VIEW IF EXISTS is_account_invoice_line;
             CREATE MATERIALIZED view is_account_invoice_line AS (
@@ -131,8 +152,8 @@ class is_account_invoice_line(models.Model):
                     ail.uos_id,
                     ail.price_unit,
                     (fsens(ai.type)*ail.quantity*ail.price_unit) total,
-                    get_amortissement_moule(rp.is_code, pt.id) as amortissement_moule,
-                    get_amortissement_moule(rp.is_code, pt.id)*ail.quantity as montant_amt_moule,
+                    get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
+                    get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
                     get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
                     ail.is_move_id            move_id,
                     sm.picking_id             picking_id,

@@ -67,35 +67,6 @@ class is_ligne_livraison(models.Model):
     def init(self, cr):
         #tools.drop_view_if_exists(cr, 'is_ligne_livraison')
         cr.execute("""
-            CREATE OR REPLACE FUNCTION get_amortissement_moule(code_client char, pt_id  integer) RETURNS float AS $$
-            BEGIN
-                RETURN (
-                    COALESCE(
-                        (
-                            select itc.amortissement_moule 
-                            from is_tarif_cial itc inner join res_partner rp on itc.partner_id=rp.id
-                            where itc.product_id=pt_id and rp.is_code=code_client and itc.indice_prix=999
-                            order by itc.amortissement_moule desc limit 1
-                        )
-                    ,0)
-                );
-            END;
-            $$ LANGUAGE plpgsql;
-
-            CREATE OR REPLACE FUNCTION get_cout_act_matiere_st(pp_id  integer) RETURNS float AS $$
-            BEGIN
-                RETURN (
-                    COALESCE(
-                        (
-                            select ic.cout_act_matiere+ic.cout_act_st 
-                            from is_cout ic
-                            where ic.name=pp_id limit 1
-                        )
-                    ,0)
-                );
-            END;
-            $$ LANGUAGE plpgsql;
-
 
             DROP MATERIALIZED VIEW IF EXISTS is_ligne_livraison;
             CREATE MATERIALIZED view is_ligne_livraison AS (
