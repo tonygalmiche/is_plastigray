@@ -19,6 +19,7 @@
                                     <th><strong>Moule ou Dossier F</strong></th>
                                     <th><strong>Article</strong></th>
                                     <th><strong>UC</strong></th>
+                                    <th><strong>UM</strong></th>
                                     <th><strong>Quantité</strong></th>
                                     <th><strong>Nb UC</strong></th>
                                     <th><strong>Nb UM</strong></th>
@@ -40,6 +41,7 @@
                                         <td><span t-field="o.is_mold_dossierf"/> </td>
                                         <td><span t-field="o.product_id"/> </td>
                                         <td><span t-field="o.uc"/> </td>
+                                        <td><span t-field="o.um"/> </td>
                                         <td><span t-field="o.product_uom_qty"/> </td>
                                         <td><span t-field="o.nb_uc"/> </td>
                                         <td><span t-field="o.nb_um"/> </td>
