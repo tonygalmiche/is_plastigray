@@ -1530,6 +1530,7 @@
             ref('is_gestionnaire_donnees_techniques_group'),
             ref('is_comptable_group'),
             ref('is_rsp_production_group'),
+            ref('is_chef_projet_group'),
         ])]"/>
     </record>
     <menuitem id="is_indicateur_ca_menu" sequence="10" name="Chiffre d'affaire" parent="is_indicateurs_menu"/>
