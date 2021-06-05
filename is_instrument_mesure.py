@@ -28,6 +28,15 @@ class is_instrument_mesure(models.Model):
                 periodicite=obj.famille_id.faible
             obj.periodicite=periodicite
 
+
+    @api.depends()
+    def _check_base_db(self):
+        for obj in self:
+            user_data = self.env['res.users'].browse(self._uid)
+            if user_data and user_data.company_id.is_base_principale:
+                obj.is_base_check = True
+
+
     code_pg            = fields.Char("Code PG", required=True)
     designation        = fields.Char("Désignation",required=True)
     famille_id         = fields.Many2one("is.famille.instrument", "Famille", required=True)
@@ -40,6 +49,7 @@ class is_instrument_mesure(models.Model):
     type_boolean       = fields.Boolean('Is Type?', default=False)
     etendue_boolean    = fields.Boolean('Is Etendue?', default=False)
     resolution_boolean = fields.Boolean('Is Résolution?', default=False)
+    emt                = fields.Char("EMT")
     site_id            = fields.Many2one("is.database", "Site", required=True)
     lieu_stockage      = fields.Char("Lieu de stockage")
     service_affecte    = fields.Char("Personne/Service auquel est affecté l'instrument")
@@ -53,6 +63,8 @@ class is_instrument_mesure(models.Model):
     controle_ids           = fields.One2many('is.historique.controle', 'instrument_id', string='Historique des contrôles')
     is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
     active                 = fields.Boolean('Active', default=True)
+    is_base_check          = fields.Boolean(string="Is Base", compute="_check_base_db")
+
     
 
     @api.multi
@@ -155,6 +167,7 @@ class is_instrument_mesure(models.Model):
             'service_affecte': tools.ustr(mesure.service_affecte or '') ,
             'frequence':mesure.frequence,
             'periodicite':tools.ustr(mesure.periodicite or ''),
+            'emt':mesure.emt,
             'site_id':self._get_site_id(mesure, DB, USERID, USERPASS, sock),
             'active':mesure.site_id and mesure.site_id.database == DB and True or False,
             'is_database_origine_id':mesure.id,

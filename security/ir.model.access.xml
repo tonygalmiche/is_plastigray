@@ -789,7 +789,7 @@
     <record id="is_operation_controle_access"  model="ir.model.access" >
         <field name="name">is_operation_controle_access</field>
         <field name="model_id"    eval="ref('model_is_operation_controle')"/>
-        <field name="group_id"    eval="ref('is_metrologie_group')"/>
+        <field name="group_id"    eval="ref('is_plastigray.is_gestionnaire_tables_group')"/>
         <field name="perm_read"   eval="True"/>
         <field name="perm_write"  eval="True"/>
         <field name="perm_unlink" eval="True"/>

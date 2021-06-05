@@ -23,9 +23,11 @@
                                 <field name="fabriquant"/>
                                 <field name="date_reception"/>
                                 <field name="etendue" attrs="{'invisible':[('etendue_boolean','!=',True)]}"/>
+                                <field name="emt"/>
                                 <field name="site_id"/>
-                                <field name="etendue_boolean" invisible="1"/>
+                                <field name="etendue_boolean"    invisible="1"/>
                                 <field name="resolution_boolean" invisible="1"/>
+                                <field name="is_base_check"      invisible="1"/>
                             </group>
                             <group col="4" colspan="4">
                                 <field name="service_affecte"/>
@@ -34,35 +36,10 @@
                         <group string="Contrôle périodique">
                             <field name="frequence"/>
                             <field name="periodicite"/>
-                            <field name="date_prochain_controle"/>
+                            <field name="date_prochain_controle" attrs="{'invisible': [('is_base_check','!=',True)]}"/>
                         </group>
-                        <!--
-                        <group col="4" colspan="4" string="Résultat du contrôle">
-                            <group>
-                                <field name="controle"/>
-                                <field name="commentaire" attrs="{'invisible':[('controle','!=','visuel')],'required':[('controle','=','visuel')]}"/>
-                                <field name="date_controle"/>
-                                <field name="date_prochain_controle"/>
-                                <field name="classe" attrs="{'invisible':[('classe_boolean','!=',True)]}"/>
-                                <field name="classe_boolean" invisible="1"/>
-                            </group>
-                            <group>
-                                <field name="cause_arret"  attrs="{'invisible':[('controle','!=','arret')],'required':[('controle','=','arret')]}"/>
-                                <field name="organisme_controleur"/>
-                                <field 
-                                    name="fournisseur_id" 
-                                    domain="[('supplier' ,'=',True),('is_company','=',True)]"
-                                    attrs="{'invisible':[('organisme_controleur','!=','externe')],'required':[('organisme_controleur','=','externe')]}"
-                                />
-                                <field name="etat_conformite"/>
-                            </group>
-                            <group col="4" colspan="4">
-                                <field name="rapport_de_controle"/>
-                            </group>
-                        </group>
-                        -->
                         <notebook>
-                            <page string="Historique des contrôles">
+                            <page string="Historique des contrôles" attrs="{'invisible': [('is_base_check','!=',True)]}">
                                 <field name="controle_ids">
                                     <form string="Historique des contrôles">  
                                         <sheet>
@@ -71,7 +48,6 @@
                                                     name="operation_controle_id"
                                                     domain="[('instrument' ,'=',True)]"
                                                 />
-
                                                 <field name="operation_controle_code" invisible="1"/>
                                                 <field name="cause_arret"  attrs="{'invisible':[('operation_controle_code','!=','arret')] ,'required':[('operation_controle_code','=','arret')]}"/>
                                                 <field name="cause_visuel" attrs="{'invisible':[('operation_controle_code','!=','visuel')],'required':[('operation_controle_code','=','visuel')]}"/>
@@ -90,7 +66,6 @@
                                                 <field name="classe" attrs="{'invisible':[('classe_boolean','!=',True)]}"/>
                                                 <field name="resultat" />
                                                 <field name="etat_conformite" />
-                                                <!--<field name="rapport_de_controle" />-->
                                                 <field name="rapport_controle_ids" widget="many2many_binary" />
                                             </group>
                                         </sheet>
@@ -105,7 +80,6 @@
                                         <field name="classe" />
                                         <field name="resultat" />
                                         <field name="etat_conformite" />
-                                        <!--<field name="rapport_de_controle" />-->
                                         <field name="rapport_controle_ids"/>
                                     </tree>
                                 </field>
@@ -115,7 +89,6 @@
                 </form>
             </field>
         </record>
-        
         <record model="ir.ui.view" id="is_instrument_mesure_tree_view">
             <field name="name">is_instrument_mesure_tree_view</field>
             <field name="model">is.instrument.mesure</field>
@@ -131,6 +104,7 @@
                     <field name="type"/>
                     <field name="etendue"/>
                     <field name="resolution"/>
+                    <field name="emt"/>
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
                     <field name="date_prochain_controle"/>
@@ -138,7 +112,6 @@
                 </tree>
             </field>
         </record>
-        
         <record model="ir.ui.view" id="is_instrument_mesure_search_view" >
             <field name="name">is_instrument_mesure_search_view</field>
             <field name="model">is.instrument.mesure</field>
@@ -148,18 +121,17 @@
                     <field name="designation"/>
                     <field name="famille_id"/>
                     <field name="fabriquant"/>
+                    <field name="emt"/>
                     <field name="site_id"/>
                     <filter name="date_prochain_controle_filter" string="Date prochain contrôle dépassée" domain="[('date_prochain_controle','&lt;=',context_today().strftime('%%Y-%%m-%%d'))]"/>
                 </search>
             </field>
         </record>     
-        
         <record id="is_instrument_mesure_action" model="ir.actions.act_window" >
             <field name="name">Instruments de mesure</field>
             <field name="res_model">is.instrument.mesure</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <!--<field name="context">{'search_default_date_prochain_controle_filter':1}</field>-->
             <field name="context">{}</field>
         </record>
         
@@ -184,8 +156,6 @@
                 </form>
             </field>
         </record>
-        
-        
         <record model="ir.ui.view" id="is_famille_instrument_tree_view">
             <field name="name">is_famille_instrument_tree_view</field>
             <field name="model">is.famille.instrument</field>
@@ -200,11 +170,9 @@
                        <field name="afficher_classe"/>
                        <field name="afficher_type"/>
                        <field name="is_database_origine_id"/>
-                       
                 </tree>
             </field>
        </record>
-        
         <record model="ir.ui.view" id="is_famille_instrument_search_view" >
             <field name="name">is_famille_instrument_search_view</field>
             <field name="model">is.famille.instrument</field>
@@ -218,14 +186,11 @@
                 </search>
             </field>
         </record>     
-        
         <record id="is_famille_instrument_action" model="ir.actions.act_window" >
             <field name="name">Familles d'instruments</field>
             <field name="res_model">is.famille.instrument</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        
-        
     </data>
 </openerp>  

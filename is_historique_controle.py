@@ -44,7 +44,7 @@ class is_historique_controle(models.Model):
     fournisseur_id       = fields.Many2one('res.partner', 'Fournisseur')
     classe               = fields.Selection([('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('na', '/NA')], "Classe")
     classe_boolean       = fields.Boolean('Is Classe?', compute=_compute, store=False)
-    resultat             = fields.Char(string='Résultat')
+    resultat             = fields.Char(string='Résultat/Erreur maxi')
     etat_conformite      = fields.Selection([('conforme', 'Conforme'), ('non_conforme', 'Non Conforme')], string="Etat de la conformité", required=True)
     #rapport_de_controle  = fields.Binary("Rapport de contrôle")
     rapport_controle_ids = fields.Many2many('ir.attachment', 'rapport_controle_attachment_rel', 'rapport_controle_id', 'attachment_id', u'Pièces jointes')
@@ -60,6 +60,7 @@ class is_operation_controle(models.Model):
     instrument = fields.Boolean('Instruments de mesure')
     gabarit    = fields.Boolean('Gabarit de contrôle')
     piece      = fields.Boolean('Piece Montabilite')
+    active     = fields.Boolean('Active', default=True)
 
 
 

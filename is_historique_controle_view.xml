@@ -91,12 +91,17 @@
                 <form string="Opération de contrôle">
                     <sheet>
                         <group>
-                            <field name="name" />
-                            <field name="code" />
-                            <field name="plaquette" />
-                            <field name="instrument" />
-                            <field name="gabarit" />
-                            <field name="piece" />
+                            <group>
+                                <field name="name" />
+                                <field name="code" />
+                                <field name="plaquette" />
+                                <field name="instrument" />
+                                <field name="gabarit" />
+                                <field name="piece" />
+                            </group>
+                            <group>
+                                <field name="active"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
