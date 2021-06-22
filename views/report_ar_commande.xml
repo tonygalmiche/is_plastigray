@@ -238,6 +238,30 @@
 		        <strong>Type règlement :</strong>
 		        <span t-field="o.partner_id.is_type_reglement"/>
 		    </p>
+		    <p t-if="o.is_incoterm or o.is_lieu">
+                <span t-if="o.is_incoterm">
+                    <strong>Incoterm : </strong>
+                    <span t-field="o.is_incoterm"/>
+                    <span t-if="o.is_lieu">
+                        <strong> - </strong>
+                    </span>
+                </span>
+                <span t-if="o.is_lieu">
+                    <strong>Lieu : </strong>
+                    <span t-field="o.is_lieu"/>
+                </span>
+            </p>
+		    <p t-if="o.is_ar_commentaire or o.is_message">
+                <p>
+                    <strong>Commentaire : </strong>
+                </p>
+            </p>
+		    <p t-if="o.is_ar_commentaire">
+                <span t-field="o.is_ar_commentaire"/>
+		    </p>
+		    <p t-if="o.is_message">
+                <span t-field="o.is_message"/>
+		    </p>
 		    <div class="oe_structure"/>
                 </div>
             </t>

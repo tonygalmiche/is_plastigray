@@ -41,10 +41,26 @@ class sale_order(models.Model):
     is_info_client         = fields.Text("Information client complèmentaire")
     is_nb_lignes           = fields.Integer("Nb lignes", store=True, compute='_compute')
     is_date_envoi_mail     = fields.Datetime("Mail envoyé le", readonly=False)
+    is_incoterm            = fields.Many2one('stock.incoterms', 'Incoterm / Conditions de livraison', related='partner_id.is_incoterm', readonly=True)
+    is_lieu                = fields.Char('Lieu', related='partner_id.is_lieu', readonly=True)
+    is_ar_commentaire      = fields.Text("Commentaire AR de commande")
+    is_message             = fields.Text("Message", compute='_compute_message')
+    is_ar_contact_id       = fields.Many2many('res.partner', 'is_sale_ar_contact_id_rel', 'partner_id', 'contact_id', 'Destinataire AR de commande')
 
     _defaults = {
         'is_type_commande': 'standard',
     }
+
+    @api.depends('partner_id')
+    def _compute_message(self):
+        for obj in self:
+            #** Recherche messages *********************************************
+            messages = ''
+            where=['|',('name','=',obj.partner_id.id),('name','=',False)]
+            for row in self.env['is.vente.message'].search(where):
+                messages += row.message + '\n'
+            #*******************************************************************
+            obj.is_message = messages
 
 
     @api.multi
@@ -92,6 +108,7 @@ class sale_order(models.Model):
                 <br><br>
                 <font> Veuillez trouver ci-joint notre AR de commande.</font>
                 <br><br>
+                [commentaire]
                 Cordialement <br><br>
                 [from]<br>
             </body>
@@ -99,10 +116,15 @@ class sale_order(models.Model):
         """
         for obj in self:
             mails=[]
-            for c in obj.partner_id.child_ids:
-                if c.is_type_contact.name == 'Approvisionneur':
+            if obj.is_ar_contact_id:
+                for c in obj.is_ar_contact_id:
                     mail = c.name + u' <' + c.email + u'>'
                     mails.append(mail)
+            else:
+                for c in obj.partner_id.child_ids:
+                    if c.is_type_contact.name == 'Approvisionneur':
+                        mail = c.name + u' <' + c.email + u'>'
+                        mails.append(mail)
             if not mails:
                 raise Warning(u"Aucun mail de type 'Approvisionneur' pour ce client !")
             email_contact = ','.join(mails)
@@ -153,6 +175,13 @@ class sale_order(models.Model):
             #email_to = email_cc
 
             body_html = modele_mail.replace('[from]', user.name)
+            if obj.is_ar_commentaire:
+                commentaire = obj.is_ar_commentaire.replace('\n', '<br>') + '<br><br>'
+            else:
+                commentaire = ''
+            if obj.is_message:
+                commentaire += obj.is_message.replace('\n', '<br>') + '<br><br>'
+            body_html = body_html.replace('[commentaire]', commentaire)
             email_vals = {
                 'subject'       : subject,
                 'email_to'      : email_to,
@@ -602,3 +631,11 @@ class sale_order_line(models.Model):
             vals['value']['is_justification'] = result[0];
         return vals
 
+
+class is_vente_message(models.Model):
+    _name='is.vente.message'
+    _order='name'
+    _sql_constraints = [('name_uniq','UNIQUE(name)', 'Un message pour ce client existe déjà')] 
+
+    name    = fields.Many2one('res.partner', 'Client')
+    message = fields.Text('Message')

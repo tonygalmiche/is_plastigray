@@ -79,6 +79,8 @@
                             context="{'pricelist': pricelist_id}" />
                     <field name="is_ref_client" readonly="1" attrs="{'invisible' : [('is_article_commande_id', '=', False)]}" />
                     <field name="is_date_envoi_mail" />
+                    <field name="is_incoterm" domain="[('is_company', '=', True),('supplier','=', True)]"/>
+                    <field name="is_lieu" domain="[('is_company', '=', True),('supplier','=', True)]"/>
                 </xpath>
                 <field name="partner_id" position="attributes">
                     <attribute name="domain">[('customer','=',True),('is_company','=',True)]</attribute>
@@ -170,6 +172,10 @@
                         </group>
                         <group>
                             <field name="is_info_client"/>
+                        </group>
+                        <group>
+			    <field name="is_ar_commentaire"/>
+			    <field name="is_ar_contact_id" widget="many2many_tags" domain="[('parent_id','=',partner_id)]"/>
                         </group>
                     </group>
                 </field>
@@ -358,6 +364,29 @@
             <field name="view_mode">tree,form,calendar,graph</field>
             <field name="domain">[('is_type_commande','=', 'proforma')]</field>
             <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        </record>
+
+        <!-- Message client -->
+        <record model="ir.ui.view" id="is_vente_message_tree_view">
+            <field name="name">is_vente_message_tree_view</field>
+            <field name="model">is.vente.message</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="tree" editable="top">
+                    <field name="name" domain="[('customer','=',True),('is_company','=',True)]" widget="many2one_clickable"/>
+                    <field name="message"/>
+                    <field name="create_date" string="Créé le"     readonly="1"/>
+                    <field name="write_date"  string="Modifié le"  readonly="1"/>
+                    <field name="write_uid"   string="Créé par"    readonly="1"/>
+                    <field name="create_uid"  string="Modifié par" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="is_vente_message_action">
+            <field name="name">Message vente</field>
+            <field name="res_model">is.vente.message</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
         </record>
 
 
