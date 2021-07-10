@@ -376,6 +376,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_903410(attachment)
         if import_function=="ACTIA":
             datas=self.get_data_ACTIA(attachment)
+        if import_function=="ASTEELFLASH":
+            datas=self.get_data_ASTEELFLASH(attachment)
         if import_function=="DARWIN":
             datas=self.get_data_DARWIN(attachment)
         if import_function=="eCar":
@@ -432,6 +434,70 @@ class is_edi_cde_cli(models.Model):
             if len(order):
                 SaleOrder = order[0]
             return SaleOrder
+
+
+
+
+
+    @api.multi
+    def get_data_ASTEELFLASH(self, attachment):
+        res = []
+        for obj in self:
+            #** Lecture du fichier xlsx ****************************************
+            xlsxfile = base64.decodestring(attachment.datas)
+            path = '/tmp/edi-asteelflash-'+str(obj.id)+'.xlsx'
+            f = open(path,'wb')
+            f.write(xlsxfile)
+            f.close()
+            #*******************************************************************
+
+            #** Test si fichier est bien du xlsx *******************************
+            try:
+                wb = openpyxl.load_workbook(filename = path)
+                ws = wb.active
+                title = ws.title
+                cells = list(ws)
+            except:
+                raise Warning(u"Le fichier "+attachment.name+u" n'est pas un fichier xlsx")
+            #*******************************************************************
+
+            lig=0
+            for row in ws.rows:
+                if lig>0:
+                    type_commande="previsionnel"
+                    ref_article_client = cells[lig][0].value
+                    try:
+                        quantite = cells[lig][4].value
+                        quantite=float(quantite)
+                    except:
+                        quantite=0
+                    date_livraison = cells[lig][6].value
+                    try:
+                        date_livraison = date_livraison.strftime('%Y-%m-%d')
+                    except ValueError:
+                        date_livraison = False
+                    if date_livraison:
+                        order = self.env['sale.order'].search([
+                            ('partner_id.is_code', '=', obj.partner_id.is_code),
+                            ('is_ref_client'     , '=', ref_article_client),
+                            ('is_type_commande'  , '=', 'ouverte')]
+                        )
+                        num_commande_client = "??"
+                        if len(order):
+                            num_commande_client = order[0].client_order_ref
+                        val = {
+                            'num_commande_client' : num_commande_client,
+                            'ref_article_client'  : ref_article_client,
+                        }
+                        ligne = {
+                            'quantite'      : quantite,
+                            'type_commande' : type_commande,
+                            'date_livraison': date_livraison,
+                        }
+                        val.update({'lignes': [ligne]})
+                        res.append(val)
+                lig+=1
+        return res
 
 
     @api.multi
