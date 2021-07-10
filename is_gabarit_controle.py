@@ -26,13 +26,10 @@ class is_gabarit_controle(models.Model):
     client_id              = fields.Many2one("res.partner","Client")
     site_id                = fields.Many2one('is.database', string='Site')
     lieu_stockage          = fields.Char("Lieu de stockage")
-
-    #periodicite            = fields.Integer("Périodicité ( en mois )")
     periodicite            = fields.Selection([
                                     ('24','24 mois (standard)'),
                                     ('48','48 mois ( qté annuelle < 10000p)'),
                                 ], string="Périodicité ( en mois )")
-
     type_controle          = fields.Many2one("is.type.controle.gabarit","Type de contrôle")
     date_prochain_controle = fields.Date("Date prochain contrôle", compute='_compute_date_prochain_controle', readonly=True, store=True)
     controle_ids           = fields.One2many('is.historique.controle', 'gabarit_id', string='Historique des contrôles')
@@ -45,23 +42,6 @@ class is_gabarit_controle(models.Model):
     def _compute_date_prochain_controle(self):
         for rec in self:
             date_prochain_controle(rec)
-#            date_prochain_controle=False
-#            if rec.controle_ids:
-#                for row in rec.controle_ids:
-#                    if row.operation_controle_id.code!='arret' and row.operation_controle_id.code!='maintenance':
-#                        date_controle=row.date_controle
-#                        if date_controle:
-#                            date_controle = datetime.strptime(date_controle, "%Y-%m-%d")
-#                            periodicite=0
-#                            if rec.periodicite:
-#                                try:
-#                                    periodicite = int(rec.periodicite)
-#                                except ValueError:
-#                                    continue
-#                            date_prochain_controle = date_controle + relativedelta(months=periodicite)
-#                            date_prochain_controle = date_prochain_controle.strftime('%Y-%m-%d')
-#                            break
-#            rec.date_prochain_controle = date_prochain_controle
 
     
     @api.multi
@@ -72,8 +52,7 @@ class is_gabarit_controle(models.Model):
                 obj.copy_other_database_gabarit_controle()
             return res
         except Exception as e:
-            raise osv.except_osv(_('Controle!'),
-                             _('(%s).') % str(e).decode('utf-8'))
+            raise Warning(e)
 
 
     @api.model
@@ -201,15 +180,15 @@ class is_gabarit_controle(models.Model):
                 return fournisseur_ids[0]
         return False
     
-    @api.model
-    def _get_controle_ids(self, controle, DB, USERID, USERPASS, sock):
-        list_controle_ids =[]
-        for is_controle in controle.controle_ids:
-            is_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', is_controle.id)], {})
-            if is_controle_ids:
-                list_controle_ids.append(is_controle_ids[0])
+    # @api.model
+    # def _get_controle_ids(self, controle, DB, USERID, USERPASS, sock):
+    #     list_controle_ids =[]
+    #     for is_controle in controle.controle_ids:
+    #         is_controle_ids = sock.execute(DB, USERID, USERPASS, 'is.historique.controle', 'search', [('is_database_origine_id', '=', is_controle.id)], {})
+    #         if is_controle_ids:
+    #             list_controle_ids.append(is_controle_ids[0])
         
-        return [(6, 0, list_controle_ids)]
+    #     return [(6, 0, list_controle_ids)]
    
 
 

@@ -81,8 +81,9 @@ class is_edi_cde_cli(models.Model):
 
     name            = fields.Date('Date de création', readonly='1')
     partner_id      = fields.Many2one('res.partner', 'Client', required=False)
-    date_maxi       = fields.Date(u"Date de livraison limite d'intégration", help="Au delà de cette date, les nouvelles commandes ne seront pas importés et les commandes existantes ne seront pas supprimées")
-    jour_semaine    = fields.Selection(_JOURS_SEMAINE, "Jour semaine", help="Jour de la semaine d'intégration du prévisionnel")
+    date_maxi       = fields.Date(u"Date de livraison limite d'intégration", help=u"Au delà de cette date, les nouvelles commandes ne seront pas importés et les commandes existantes ne seront pas supprimées")
+    jour_semaine    = fields.Selection(_JOURS_SEMAINE, "Jour semaine"      , help=u"Jour de la semaine d'intégration du prévisionnel")
+    date_debut_prev = fields.Date(u"Date de début du prévisionnel"         , help=u"A partir de cette date, toutes les commandes seront forcées en prévisionnel")
     import_function = fields.Char("Fonction d'importation", compute='_import_function', readonly=True)
     file_ids        = fields.Many2many('ir.attachment', 'is_doc_attachment_rel', 'doc_id', 'file_id', 'Fichiers')
     create_id       = fields.Many2one('res.users', 'Importe par', readonly=True)
@@ -123,6 +124,7 @@ class is_edi_cde_cli(models.Model):
                     ref_article_client  = row["ref_article_client"]
                     order_id = False
                     date_livraison=False
+                    type_commande=False
                     if 'order_id' in row:
                         order_id=row['order_id']
                         order=self.env['sale.order'].search([('id', '=', order_id)])
@@ -217,6 +219,12 @@ class is_edi_cde_cli(models.Model):
                                 date_livraison=False
                             #***************************************************
 
+                            #** En prévisionnel à partir de date_debut_prev ****
+                            type_commande = ligne["type_commande"]
+                            if obj.date_debut_prev and date_livraison and date_livraison>=obj.date_debut_prev:
+                                type_commande = 'previsionnel'
+                            #***************************************************
+
                         if anomalie1:
                             anomalie2.append(anomalie1)
                         anomalie=''
@@ -229,7 +237,7 @@ class is_edi_cde_cli(models.Model):
                             'product_id'         : product_id,
                             'quantite'           : ligne["quantite"],
                             'date_livraison'     : date_livraison,
-                            'type_commande'      : ligne["type_commande"],
+                            'type_commande'      : type_commande,
                             'prix'               : prix,
                             'order_id'           : order_id,
                             'anomalie'           : anomalie,

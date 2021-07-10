@@ -23,6 +23,12 @@ class is_historique_controle(models.Model):
             obj.classe_boolean = obj.instrument_id.famille_id.afficher_classe
 
 
+    @api.depends('operation_controle_id')
+    def _compute_operation_controle_code(self):
+        for obj in self:
+            obj.operation_controle_code = obj.operation_controle_id.code
+
+
 #    operation_controle = fields.Selection([
 #        ('creation', 'Création'), 
 #        ('verification', 'Vérification'), 
@@ -34,7 +40,10 @@ class is_historique_controle(models.Model):
 
 
     operation_controle_id   = fields.Many2one('is.operation.controle', 'Opération de contrôle', required=True)
-    operation_controle_code = fields.Char("Code de l'Opération de contrôle", related='operation_controle_id.code')
+    #operation_controle_code = fields.Char("Code de l'Opération de contrôle", related='operation_controle_id.code')
+    operation_controle_code = fields.Char("Code de l'Opération de contrôle", compute=_compute_operation_controle_code, store=False)
+
+
 
     cause_arret   = fields.Char("Cause arrêt")
     cause_visuel  = fields.Char("Cause visuel")
@@ -63,6 +72,10 @@ class is_operation_controle(models.Model):
     active     = fields.Boolean('Active', default=True)
 
 
-
+    # @api.multi
+    # def write(self, vals):
+    #     print vals
+    #     res=super(is_operation_controle, self).write(vals)
+    #     return res
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4
