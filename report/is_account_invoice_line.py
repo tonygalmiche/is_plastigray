@@ -58,7 +58,8 @@ class is_account_invoice_line(models.Model):
             ('out_refund' , u'Avoir client'),
 
         ], u"Type", readonly=True, select=True)
-    state               = fields.Selection([
+    journal_id = fields.Many2one('account.journal', 'Journal')
+    state      = fields.Selection([
             ('open'  , u'Ouverte'),
             ('cancel', u'Annulée'),
         ], u"État", readonly=True, select=True)
@@ -139,6 +140,7 @@ class is_account_invoice_line(models.Model):
                     ai.supplier_invoice_number,
                     ai.state,
                     ai.type,
+                    ai.journal_id,
                     ai.is_type_facture,
                     ail.product_id,
                     pt.segment_id,
@@ -153,8 +155,8 @@ class is_account_invoice_line(models.Model):
                     ail.price_unit,
                     (fsens(ai.type)*ail.quantity*ail.price_unit) total,
                     get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
-                    get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
-                    get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
+                    fsens(ai.type)*get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
+                    fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
                     ail.is_move_id            move_id,
                     sm.picking_id             picking_id,
                     sp.is_purchase_order_id   purchase_order_id,
