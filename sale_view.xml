@@ -288,6 +288,7 @@
                     <field name="order_id"            readonly="1" widget="many2one_clickable"/>
                     <field name="is_client_order_ref" readonly="1"/>
                     <field name="price_unit"          readonly="1"/>
+                    <field name="price_subtotal"      readonly="1" sum="Total"/>
                     <field name="is_justification"    readonly="1"/>
                     <field name="is_date_confirmation"/>
                     <field name="is_comment_confirm"/>
