@@ -44,11 +44,14 @@ class stock_picking(models.Model):
     is_date_reception     = fields.Date('Date de réception')
     is_facture_pk_id      = fields.Many2one('is.facture.pk', 'Facture PK')
     is_piece_jointe       = fields.Boolean(u"Pièce jointe", store=False, readonly=True, compute='_compute_is_piece_jointe')
+    is_galia_um           = fields.Boolean(u"Test si étiquettes scannées sur Liste à servir", store=False, readonly=True, compute='_compute_is_galia_um')
+
 
     @api.multi
     def pj_action(self):
         for obj in self:
             print obj
+
 
     def _compute_is_piece_jointe(self):
         for obj in self:
@@ -68,6 +71,127 @@ class stock_picking(models.Model):
             if not vsb:
                 msg='La date de livraison tombe pendant la fermeture du client !'
             obj.is_date_livraison_msg=msg
+
+
+    def _compute_is_galia_um(self):
+        for obj in self:
+            test=False
+            if obj.is_sale_order_id.is_liste_servir_id.galia_um_ids:
+                test=True
+            obj.is_galia_um = test
+
+
+    @api.multi
+    def get_is_code_rowspan(self,product_id):
+        cr = self._cr
+        for obj in self:
+            liste_servir = obj.is_sale_order_id.is_liste_servir_id
+            SQL="""
+                select count(*)
+                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                         inner join is_liste_servir ls on um.liste_servir_id=ls.id
+                                         inner join product_product pp on uc.product_id=pp.id 
+                where 
+                    ls.id="""+str(liste_servir.id)+""" and 
+                    uc.product_id="""+str(product_id)+""" 
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            nb=0
+            for row in result:
+                nb=row[0]
+            return nb
+
+
+    @api.multi
+    def get_um_rowspan(self,product_id,um_id):
+        cr = self._cr
+        for obj in self:
+            liste_servir = obj.is_sale_order_id.is_liste_servir_id
+            SQL="""
+                select count(*)
+                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                         inner join is_liste_servir ls on um.liste_servir_id=ls.id
+                                         inner join product_product pp on uc.product_id=pp.id 
+                where 
+                    ls.id="""+str(liste_servir.id)+""" and 
+                    uc.product_id="""+str(product_id)+""" and
+                    um.id="""+str(um_id)+""" 
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            nb=0
+            for row in result:
+                nb=row[0]
+            return nb
+
+
+    @api.multi
+    def get_etiquettes(self):
+        cr = self._cr
+        res=[]
+        for obj in self:
+            liste_servir = obj.is_sale_order_id.is_liste_servir_id
+            SQL="""
+                select 
+                    pt.is_code,
+                    um.name,
+                    uc.num_eti,
+                    uc.qt_pieces,
+                    pp.id,
+                    um.id
+                from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                         inner join is_liste_servir ls on um.liste_servir_id=ls.id
+                                         inner join product_product pp on uc.product_id=pp.id 
+                                         inner join product_template pt on pp.product_tmpl_id=pt.id
+                where ls.id="""+str(liste_servir.id)+"""
+                order by pt.is_code, um.name, uc.num_eti
+            """
+            cr.execute(SQL)
+            result = cr.fetchall()
+            ct_code = 0
+            ct_um   = 0
+            is_code_rowspan = 0
+            um_rowspan = 0
+            mem_code = ''
+            mem_um   = ''
+            for row in result:
+                is_code_rowspan=0
+                um_rowspan=0
+                if row[0]!=mem_code:
+                    mem_code=row[0]
+                    is_code_rowspan=self.get_is_code_rowspan(row[4])
+                    ct_code=0
+
+                is_code_um = (row[0]+row[1])
+                if is_code_um!=mem_um:
+                    mem_um=is_code_um
+                    um_rowspan=self.get_um_rowspan(row[4],row[5])
+                    ct_um=0
+
+                ct_code+=1
+                ct_um+=1
+
+                vals={
+                    'is_code'  : row[0],
+                    'um'       : row[1],
+                    'uc'       : row[2],
+                    'qt_pieces': row[3],
+                    'is_code_rowspan': is_code_rowspan,
+                    'um_rowspan': um_rowspan,
+                }
+                res.append(vals)
+        return res
+
+
+
+
+
+
+
+
+
+
 
 
     @api.multi

@@ -337,6 +337,32 @@ TODO :
                                 <b>Information client complèmentaire : </b><br />
                                 <span t-field="o.is_sale_order_id.is_info_client" />
                             </t>
+                            <t t-if="o.is_galia_um">
+                                <br />
+                                <table class="table table-condensed" style="width:50%">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-left">Article</th>
+                                            <th class="text-left">Etiquette UM</th>
+                                            <th class="text-left">Etiquette UC</th>
+                                            <th class="text-left">Qt pièces</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="res" t-value="o.get_etiquettes()"/>
+                                        <tr t-foreach="res" t-as="obj">
+                                            <t t-if="obj['is_code_rowspan']">
+                                                <td style="padding:2px;" t-att-rowspan="obj['is_code_rowspan']"><span t-esc="obj['is_code']"/></td>
+                                            </t>
+                                            <t t-if="obj['um_rowspan']">
+                                                <td style="padding:2px;" t-att-rowspan="obj['um_rowspan']"><span t-esc="obj['um']"/></td>
+                                            </t>
+                                            <td style="padding:2px;"><span t-esc="obj['uc']"/></td>
+                                            <td style="padding:2px;"><span t-esc="obj['qt_pieces']"/></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
                         </div>
                     </t>
                  </t>
