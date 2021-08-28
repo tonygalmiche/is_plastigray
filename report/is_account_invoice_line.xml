@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 <data>
-
-
-
-
-    
     <record id="is_account_invoice_line_form_view" model="ir.ui.view">
         <field name="name">is_account_invoice_line_form_view</field>
         <field name="model">is.account.invoice.line</field>
@@ -75,11 +70,6 @@
         </field>
     </record>
 
-
-
-
-
-
     <!-- Lignes de factures fournisseur -->
     <record id="is_account_invoice_line_supplier_tree_view" model="ir.ui.view">
         <field name="name">is_account_invoice_line_tree_view</field>
@@ -105,7 +95,6 @@
            </tree>
         </field>
     </record>
-
 
     <record id="is_account_invoice_line_tree_view" model="ir.ui.view">
         <field name="name">is_account_invoice_line_tree_view</field>
@@ -189,28 +178,6 @@
             </graph>
         </field>
     </record>
-
-
-    <!--
-    <record id="is_ligne_facture_fournisseur_action" model="ir.actions.act_window">
-        <field name="name">Lignes factures fournisseur</field>
-        <field name="res_model">is.account.invoice.line</field>
-        <field name="view_id" ref="is_account_invoice_line_supplier_tree_view"/>
-        <field name="domain">[('type','=', 'in_invoice')]</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form,graph</field>
-    </record>
-
-    <record id="is_ligne_facture_client_action" model="ir.actions.act_window">
-        <field name="name">Lignes factures client</field>
-        <field name="res_model">is.account.invoice.line</field>
-        <field name="view_id" ref="is_account_invoice_line_customer_tree_view"/>
-        <field name="domain">[('type','=', 'out_invoice')]</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form,graph</field>
-    </record>
-    -->
-
     <record id="is_ligne_facture_fournisseur_action" model="ir.actions.server">
         <field name="name">Lignes factures fournisseur</field>
         <field name="condition">True</field>
@@ -227,9 +194,6 @@
         <field name="state">code</field>
         <field name="code">action = self.refresh_ligne_facture_client_action(cr, uid, context.get('active_ids', []), context=context)</field>
     </record>
-
-
-
 
     <!-- Indicateur CA factures client -->
     <record id="is_indicateur_ca_facture_tree_view" model="ir.ui.view">
@@ -252,23 +216,19 @@
                 <field name="quantity"           sum="Total"/>
                 <field name="price_unit"/>
                 <field name="amortissement_moule"/>
-                <field name="total"              sum="Total"/>
-                <field name="montant_amt_moule"  sum="Total"/>
-                <field name="montant_matiere"    sum="Total"/>
+                <field name="amt_interne"/>
+                <field name="cagnotage"/>
+                <field name="total"               sum="Total"/>
+                <field name="montant_amt_moule"   sum="Total"/>
+                <field name="montant_amt_interne" sum="Total"/>
+                <field name="montant_cagnotage"   sum="Total"/>
+                <field name="montant_matiere"     sum="Total"/>
                 <field name="type"/>
                 <field name="is_type_facture"/>
                 <field name="state"/>
            </tree>
         </field>
     </record>
-    <!-- <record id="is_indicateur_ca_facture_action" model="ir.actions.act_window">
-        <field name="name">CA factures client</field>
-        <field name="res_model">is.account.invoice.line</field>
-        <field name="view_id" ref="is_indicateur_ca_facture_tree_view"/>
-        <field name="domain">[('type','in', ['out_refund','out_invoice']),('state','=','open')]</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form,graph</field>
-    </record> -->
     <record id="is_indicateur_ca_facture_action" model="ir.actions.server">
         <field name="name">CA factures client</field>
         <field name="condition">True</field>
@@ -277,11 +237,5 @@
         <field name="state">code</field>
         <field name="code">action = self.refresh_ca_facture_client_action(cr, uid, context.get('active_ids', []), context=context)</field>
     </record>
-
-
-
-
-
-
 </data>
 </openerp>

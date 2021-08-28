@@ -12,19 +12,10 @@ class is_tarif_cial(models.Model):
     _sql_constraints = [('is_indice_prix_uniq','UNIQUE(partner_id, product_id,indice_prix)', 'Cet indice de prix existe déja pour ce client et cet article')]
 
 
-#    @api.depends('product_id','prix_vente','date_debut','date_fin')
-#    def _ref_client(self):
-#        for obj in self:
-#            if obj.product_id:
-#                obj.is_ref_client = obj.product_id.is_ref_client
-
     display_name        = fields.Char(string='Name', compute='_compute_display_name')
     partner_id          = fields.Many2one('res.partner', 'Client'      , required=True, select=True)
     product_id          = fields.Many2one('product.template', 'Article', required=True, select=True)
-
-    #is_ref_client       = fields.Char("Référence client", store=True, compute='_ref_client')
     is_ref_client       = fields.Char("Référence client", related='product_id.is_ref_client', readonly=True)
-
     is_mold_dossierf    = fields.Char('Moule', related='product_id.is_mold_dossierf', readonly=True)
     indice_prix         = fields.Integer("Indice Prix"                 , required=True, select=True)
     date_debut          = fields.Date("Date de début")
@@ -37,7 +28,9 @@ class is_tarif_cial(models.Model):
     va_assemblage       = fields.Float("VA Assemblage"      , digits=(12, 4))
     frais_port          = fields.Float("Frais de Port"      , digits=(12, 4))
     logistique          = fields.Float("Logistique"         , digits=(12, 4))
-    amortissement_moule = fields.Float("Amortissement Moule", digits=(12, 4), select=True)
+    amortissement_moule = fields.Float("Amt client négocié" , digits=(12, 4))
+    amt_interne         = fields.Float("Amt interne"        , digits=(12, 4))
+    cagnotage           = fields.Float("Cagnotage"          , digits=(12, 4))
     surcout_pre_serie   = fields.Float("Surcôut pré-série"  , digits=(12, 4))
     prix_vente          = fields.Float("Prix de Vente"      , digits=(12, 4))
     ecart               = fields.Float("Ecart prix de vente", digits=(12, 4), compute='_ecart')
@@ -45,10 +38,35 @@ class is_tarif_cial(models.Model):
 
 
     @api.one
-    @api.depends('part_matiere', 'part_composant', 'part_emballage', 'va_injection', 'va_assemblage', 'frais_port', 'logistique', 'amortissement_moule', 'surcout_pre_serie', 'prix_vente')
+    @api.depends(
+            'part_matiere', 
+            'part_composant', 
+            'part_emballage', 
+            'va_injection', 
+            'va_assemblage', 
+            'frais_port', 
+            'logistique', 
+            'amortissement_moule', 
+            'amt_interne', 
+            'cagnotage', 
+            'surcout_pre_serie', 
+            'prix_vente'
+        )
     def _ecart(self):
         for obj in self:
-            obj.ecart = obj.prix_vente-(obj.part_matiere+obj.part_composant+obj.part_emballage+obj.va_injection+obj.va_assemblage+obj.frais_port+obj.logistique+obj.amortissement_moule+obj.surcout_pre_serie)
+            obj.ecart = obj.prix_vente-( \
+                obj.part_matiere+ \
+                obj.part_composant+ \
+                obj.part_emballage+ \
+                obj.va_injection+ \
+                obj.va_assemblage+ \
+                obj.frais_port+ \
+                obj.logistique+ \
+                obj.amortissement_moule+ \
+                obj.amt_interne+ \
+                obj.cagnotage+ \
+                obj.surcout_pre_serie \
+            )
 
     @api.one
     @api.depends('product_id', 'indice_prix')

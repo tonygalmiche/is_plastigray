@@ -24,7 +24,15 @@ class is_sale_order_line(models.Model):
     date_livraison      = fields.Date("Date d'arrivée chez le client")
     price_unit          = fields.Float('Prix unitaire', digits=(14,4))
     price_subtotal      = fields.Float('Montant total', digits=(14,2))
-    amortissement_moule = fields.Float('Amortissement moule', digits=(14,4))
+    
+    amortissement_moule = fields.Float('Amt client négocié', digits=(14,4))
+    amt_interne         = fields.Float('Amt interne'       , digits=(14,4))
+    cagnotage           = fields.Float('Cagnotage'         , digits=(14,4))
+
+    montant_amt_moule   = fields.Float('Montant amt client négocié', digits=(14,2))
+    montant_amt_interne = fields.Float('Montant amt interne'       , digits=(14,2))
+    montant_cagnotage   = fields.Float('Montant cagnotage'         , digits=(14,2))
+
     montant_amt_moule   = fields.Float('Montant amortissement moule', digits=(14,2))
     montant_matiere     = fields.Float('Montant matière livrée', digits=(14,2))
     order_id            = fields.Many2one('sale.order', 'Commande')
@@ -50,8 +58,15 @@ class is_sale_order_line(models.Model):
                         sol.product_uom         as product_uom,
                         sol.price_unit          as price_unit,
                         (sol.price_unit*sol.product_uom_qty) as price_subtotal,
-                        get_amortissement_moule(rp.is_code, pt.id) as amortissement_moule,
-                        get_amortissement_moule(rp.is_code, pt.id)*sol.product_uom_qty as montant_amt_moule,
+
+                        get_amortissement_moule_a_date(rp.is_code, pt.id, sol.is_date_expedition) as amortissement_moule,
+                        get_amt_interne_a_date(rp.is_code, pt.id, sol.is_date_expedition)  as amt_interne,
+                        get_cagnotage_a_date(rp.is_code, pt.id, sol.is_date_expedition)    as cagnotage,
+
+                        get_amortissement_moule_a_date(rp.is_code, pt.id, sol.is_date_expedition)*sol.product_uom_qty as montant_amt_moule,
+                        get_amt_interne_a_date(rp.is_code, pt.id, sol.is_date_expedition)*sol.product_uom_qty         as montant_amt_interne,
+                        get_cagnotage_a_date(rp.is_code, pt.id, sol.is_date_expedition)*sol.product_uom_qty           as montant_cagnotage,
+
                         get_cout_act_matiere_st(pp.id)*sol.product_uom_qty as montant_matiere,
                         so.id                   as order_id,
                         sol.id                  as order_line_id,

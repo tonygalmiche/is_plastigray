@@ -777,7 +777,7 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
             csvfile = csvfile.split("\n")
-            csvfile = csv.reader(csvfile, delimiter=',')
+            csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
             annees=[]
             dates=[]
@@ -982,7 +982,7 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
             csvfile = csvfile.split("\n")
-            csvfile = csv.reader(csvfile)
+            csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
             try:
                 for ct, lig in enumerate(csvfile):
@@ -1565,7 +1565,7 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
             csvfile = csvfile.split("\n")
-            csvfile = csv.reader(csvfile, delimiter=',')
+            csvfile = csv.reader(csvfile, delimiter='\t')
             for ct, lig in enumerate(csvfile):
                 if len(lig)>=10 and ct>0:
                     ref_article_client = lig[1].strip()

@@ -36,8 +36,14 @@ class is_account_invoice_line(models.Model):
     price_unit              = fields.Float('Prix unitaire', digits=(14,4))
     total                   = fields.Float('Montant Total', digits=(14,2))
 
-    amortissement_moule     = fields.Float('Amortissement moule', digits=(14,4))
-    montant_amt_moule       = fields.Float('Montant amortissement moule', digits=(14,2))
+    amortissement_moule     = fields.Float('Amt client négocié', digits=(14,4))
+    amt_interne             = fields.Float('Amt interne'       , digits=(14,4))
+    cagnotage               = fields.Float('Cagnotage'         , digits=(14,4))
+
+    montant_amt_moule       = fields.Float('Montant amt client négocié', digits=(14,2))
+    montant_amt_interne     = fields.Float('Montant amt interne'       , digits=(14,2))
+    montant_cagnotage       = fields.Float('Montant cagnotage'         , digits=(14,2))
+
     montant_matiere         = fields.Float('Montant matière livrée', digits=(14,2))
 
     invoice_line_id         = fields.Many2one('account.invoice.line', 'Ligne de facture')
@@ -119,10 +125,6 @@ class is_account_invoice_line(models.Model):
 
 
     def init(self, cr):
-        #tools.drop_view_if_exists(cr, 'is_account_invoice_line')
-
-        print "## TEST ##"
-
         cr.execute("""
             DROP MATERIALIZED VIEW IF EXISTS is_account_invoice_line;
             CREATE MATERIALIZED view is_account_invoice_line AS (
@@ -154,8 +156,15 @@ class is_account_invoice_line(models.Model):
                     ail.uos_id,
                     ail.price_unit,
                     (fsens(ai.type)*ail.quantity*ail.price_unit) total,
+
                     get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
+                    get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice) as amt_interne,
+                    get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice) as cagnotage,
+
                     fsens(ai.type)*get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
+                    fsens(ai.type)*get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_interne,
+                    fsens(ai.type)*get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_cagnotage,
+
                     fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
                     ail.is_move_id            move_id,
                     sm.picking_id             picking_id,

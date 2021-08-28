@@ -138,6 +138,46 @@ class is_create_postgres_function(models.Model):
             END;
             $$ LANGUAGE plpgsql;
 
+
+            CREATE OR REPLACE FUNCTION get_amt_interne_a_date(code_client char, pt_id  integer, date_tarif date) RETURNS float AS $$
+            BEGIN
+                RETURN (
+                    COALESCE(
+                        (
+                            select itc.amt_interne 
+                            from is_tarif_cial itc inner join res_partner rp on itc.partner_id=rp.id
+                            where 
+                                itc.product_id=pt_id and rp.is_code=code_client and 
+                                (itc.date_fin   is null or itc.date_fin   >= date_tarif) and
+                                (itc.date_debut is null or itc.date_debut <= date_tarif) 
+                            order by itc.indice_prix desc limit 1
+                        )
+                    ,0)
+                );
+            END;
+            $$ LANGUAGE plpgsql;
+
+
+            CREATE OR REPLACE FUNCTION get_cagnotage_a_date(code_client char, pt_id  integer, date_tarif date) RETURNS float AS $$
+            BEGIN
+                RETURN (
+                    COALESCE(
+                        (
+                            select itc.cagnotage 
+                            from is_tarif_cial itc inner join res_partner rp on itc.partner_id=rp.id
+                            where 
+                                itc.product_id=pt_id and rp.is_code=code_client and 
+                                (itc.date_fin   is null or itc.date_fin   >= date_tarif) and
+                                (itc.date_debut is null or itc.date_debut <= date_tarif) 
+                            order by itc.indice_prix desc limit 1
+                        )
+                    ,0)
+                );
+            END;
+            $$ LANGUAGE plpgsql;
+
+
+
         """)
 
 

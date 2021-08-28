@@ -2,7 +2,6 @@
 <openerp>
 <data>
 
-
     <record id="is_refresh_ligne_livraison_action" model="ir.actions.server">
         <field name="name">Lignes des livraisons</field>
         <field name="condition">True</field>
@@ -12,8 +11,7 @@
         <field name="code">action = self.refresh_materialized_view_action(cr, uid, context.get('active_ids', []), context=context)</field>
     </record>
 
-
-   <record id="is_ligne_livraison_form_view" model="ir.ui.view">
+    <record id="is_ligne_livraison_form_view" model="ir.ui.view">
         <field name="name">is_ligne_livraison_form_view</field>
         <field name="model">is.ligne.livraison</field>
         <field name="arch" type="xml">
@@ -40,7 +38,11 @@
                             <field name="price_unit"/>
                             <field name="price_subtotal"/>
                             <field name="amortissement_moule"/>
+                            <field name="amt_interne"/>
+                            <field name="cagnotage"/>
                             <field name="montant_amt_moule"/>
+                            <field name="montant_amt_interne"/>
+                            <field name="montant_cagnotage"/>
                         </group>
                         <group>
                             <field name="order_id" />
@@ -149,9 +151,13 @@
                 <field name="product_uom" />
                 <field name="price_unit" />
                 <field name="amortissement_moule" />
-                <field name="price_subtotal"    sum="Total"/>
-                <field name="montant_amt_moule" sum="Total"/>
-                <field name="montant_matiere"   sum="Total"/>
+                <field name="amt_interne" />
+                <field name="cagnotage" />
+                <field name="price_subtotal"      sum="Total"/>
+                <field name="montant_amt_moule"   sum="Total"/>
+                <field name="montant_amt_interne" sum="Total"/>
+                <field name="montant_cagnotage"   sum="Total"/>
+                <field name="montant_matiere"     sum="Total"/>
            </tree>
         </field>
     </record>
