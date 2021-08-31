@@ -776,7 +776,7 @@ class is_edi_cde_cli(models.Model):
         mois=[u'janv.',u'févr.',u'mars',u'avr.',u'mai',u'juin',u'juil.',u'août',u'sept.',u'oct.',u'nov.',u'déc.']
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
-            csvfile = csvfile.split("\n")
+            csvfile = csvfile.split("\r\n")
             csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
             annees=[]
@@ -981,7 +981,7 @@ class is_edi_cde_cli(models.Model):
         res = []
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
-            csvfile = csvfile.split("\n")
+            csvfile = csvfile.split("\r\n")
             csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
             try:
@@ -1005,6 +1005,7 @@ class is_edi_cde_cli(models.Model):
                         # '1\xc2\xa0456,000' => 1456.00
                         quantite = lig[col_qn].decode('utf8').strip()
                         quantite = quantite.replace(u'\xa0', '')
+                        quantite = quantite.replace(u' ', '')
                         quantite = quantite.replace(',', '.')
                         try:
                             qt = float(quantite)
@@ -1028,6 +1029,10 @@ class is_edi_cde_cli(models.Model):
                         }
                         val.update({'lignes': [ligne]})
                         res.append(val)
+
+                        print(val)
+
+
             except csv.Error:
                 raise Warning('Fichier vide ou non compatible (le fichier doit être au format CSV)')
         return res
@@ -1564,7 +1569,7 @@ class is_edi_cde_cli(models.Model):
         res = []
         for obj in self:
             csvfile = base64.decodestring(attachment.datas)
-            csvfile = csvfile.split("\n")
+            csvfile = csvfile.split("\r\n")
             csvfile = csv.reader(csvfile, delimiter='\t')
             for ct, lig in enumerate(csvfile):
                 if len(lig)>=10 and ct>0:
