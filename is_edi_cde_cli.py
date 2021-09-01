@@ -785,10 +785,10 @@ class is_edi_cde_cli(models.Model):
                     continue
                 nb=len(lig)
                 if ct==7:
-                    for i in range(8,nb):
+                    for i in range(7,nb):
                         annees.append(lig[i])
                 if ct==8:
-                    for i in range(8,nb):
+                    for i in range(7,nb):
                         m=mois.index(lig[i])+1
                         txt=str(annees[i-8])+'-'+str(m)+'-01'
                         d=datetime.strptime(txt, '%Y-%m-%d')
@@ -802,7 +802,7 @@ class is_edi_cde_cli(models.Model):
                         dates.append(d.strftime('%Y-%m-%d'))
                 if ct>8:
                     if nb>=10:
-                        ref_article_client = lig[1].strip()
+                        ref_article_client = lig[0].strip()
                         order = self.env['sale.order'].search([
                             ('partner_id.is_code'   , '=', obj.partner_id.is_code),
                             ('is_ref_client', '=', ref_article_client)]
@@ -810,7 +810,7 @@ class is_edi_cde_cli(models.Model):
                         num_commande_client = "??"
                         if len(order):
                             num_commande_client = order[0].client_order_ref
-                        for i in range(8,nb):
+                        for i in range(7,nb):
                             val = {
                                 'num_commande_client' : num_commande_client,
                                 'ref_article_client'  : ref_article_client,
