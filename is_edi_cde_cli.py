@@ -790,7 +790,7 @@ class is_edi_cde_cli(models.Model):
                 if ct==8:
                     for i in range(7,nb):
                         m=mois.index(lig[i])+1
-                        txt=str(annees[i-8])+'-'+str(m)+'-01'
+                        txt=str(annees[i-7])+'-'+str(m)+'-01'
                         d=datetime.strptime(txt, '%Y-%m-%d')
                         #** Recherche du premier mercredi du mois **************
                         while True:
@@ -815,7 +815,7 @@ class is_edi_cde_cli(models.Model):
                                 'num_commande_client' : num_commande_client,
                                 'ref_article_client'  : ref_article_client,
                             }
-                            date_livraison=dates[(i-8)]
+                            date_livraison=dates[(i-7)]
                             quantite = lig[i]
                             try:
                                 qt = float(quantite)
