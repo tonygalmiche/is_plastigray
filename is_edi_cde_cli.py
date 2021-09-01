@@ -175,7 +175,6 @@ class is_edi_cde_cli(models.Model):
                                     date_livraison = d.strftime('%Y-%m-%d')
                             #***************************************************
 
-
                             #** Recherche du prix ******************************
                             if quantite>0:
                                 context={}
@@ -775,7 +774,7 @@ class is_edi_cde_cli(models.Model):
         res = []
         mois=[u'janv.',u'févr.',u'mars',u'avr.',u'mai',u'juin',u'juil.',u'août',u'sept.',u'oct.',u'nov.',u'déc.']
         for obj in self:
-            csvfile = base64.decodestring(attachment.datas)
+            csvfile = base64.decodestring(attachment.datas).decode('cp1252')
             csvfile = csvfile.split("\r\n")
             csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
@@ -1029,10 +1028,6 @@ class is_edi_cde_cli(models.Model):
                         }
                         val.update({'lignes': [ligne]})
                         res.append(val)
-
-                        print(val)
-
-
             except csv.Error:
                 raise Warning('Fichier vide ou non compatible (le fichier doit être au format CSV)')
         return res
