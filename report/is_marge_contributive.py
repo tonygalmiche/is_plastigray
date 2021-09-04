@@ -58,11 +58,11 @@ class is_marge_contributive(models.Model):
                     rp.is_code      client_fac,
                     rp.name         raison_sociale,
                     pt.name         designation,
-                    (   select amortissement_moule 
-                        from is_tarif_cial itc inner join res_partner rp2 on itc.partner_id=rp2.id
-                        where itc.product_id=pt.id and indice_prix=999 and rp2.is_code=rp.is_code
-                        order by amortissement_moule desc limit 1
-                    ) amortissement_moule,
+
+                    get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
+                    get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice) as amt_interne,
+                    get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice) as cagnotage,
+
                     (select cout_std_matiere    from is_cout cout where pp.id=cout.name limit 1) cout_std_matiere,
                     (select cout_std_machine    from is_cout cout where pp.id=cout.name limit 1) cout_std_machine,
                     (select cout_std_mo         from is_cout cout where pp.id=cout.name limit 1) cout_std_mo,
@@ -91,4 +91,10 @@ class is_marge_contributive(models.Model):
             )
         """)
 
+
+                    # (   select amortissement_moule 
+                    #     from is_tarif_cial itc inner join res_partner rp2 on itc.partner_id=rp2.id
+                    #     where itc.product_id=pt.id and indice_prix=999 and rp2.is_code=rp.is_code
+                    #     order by amortissement_moule desc limit 1
+                    # ) amortissement_moule,
 
