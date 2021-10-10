@@ -158,7 +158,8 @@ class is_atelier(models.Model):
 class is_ilot(models.Model):
     _name='is.ilot'
     _order='name'
-    name = fields.Char("Ilot", required=True)
+    name    = fields.Char("Ilot", required=True)
+    atelier = fields.Selection([('Injection', 'Injection'), ('Assemblage', 'Assemblage')], 'Atelier')
 
 
 class mrp_workcenter(models.Model):

@@ -20,7 +20,6 @@ class ir_actions_act_url(models.Model):
         return company
 
 
-
     def read(self, cr, uid, ids, fields=None, context=None, load='_classic_read'):
         if not context: context = {}
         results = super(ir_actions_act_url, self).read(cr, uid, ids, fields=fields, context=context, load=load)
@@ -30,7 +29,14 @@ class ir_actions_act_url(models.Model):
                     user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
                     soc  = user.company_id.is_code_societe
                     ip   = request.httprequest.environ['REMOTE_ADDR'] 
-                    url='http://raspberry-theia/atelier.php?soc='+str(soc)+'&uid='+str(uid)
+                    url='http://raspberry-theia/atelier.php?atelier=inj&soc='+str(soc)+'&uid='+str(uid)
+                    results[0].update({'url': url})
+
+                if results[0]['name']==u'is_url_parc_assemblage_action':
+                    user = self.pool['res.users'].browse(cr, uid, [uid], context=context)[0]
+                    soc  = user.company_id.is_code_societe
+                    ip   = request.httprequest.environ['REMOTE_ADDR'] 
+                    url='http://raspberry-theia4/atelier.php?atelier=ass&soc='+str(soc)+'&uid='+str(uid)
                     results[0].update({'url': url})
 
                 if results[0]['name']==u'is_url_indicateur_rebuts_action':
