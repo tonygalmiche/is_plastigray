@@ -30,7 +30,7 @@ class is_facture_pk(models.Model):
 
 
     num_facture      = fields.Char('N° de Facture')
-    date_facture     = fields.Date('Date de facture', required=True)
+    date_facture     = fields.Date('Date de facture', required=True, default=lambda *a: fields.datetime.now())
     annee_facture    = fields.Char('Année de la facture'  , compute='_compute', store=True)
     semaine_facture  = fields.Char('Semaine de la facture', compute='_compute', store=True)
     num_bl           = fields.Many2one('stock.picking', string='N° de BL', required=True, domain=[('is_sale_order_id', '!=', False),('is_facture_pk_id', '=', False)]) 
@@ -47,9 +47,9 @@ class is_facture_pk(models.Model):
     line_ids         = fields.One2many('is.facture.pk.line' , 'is_facture_id', string='Lignes de la facture')
     moule_ids        = fields.One2many('is.facture.pk.moule', 'is_facture_id', string='Moules à taxer')
 
-    _defaults = {
-        'date_facture': time.strftime('%Y-%m-%d'),
-    }
+    # _defaults = {
+    #     'date_facture': time.strftime('%Y-%m-%d'),
+    # }
     
     
     @api.model
