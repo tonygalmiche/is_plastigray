@@ -26,6 +26,10 @@
                                 <field name="is_postgres_user"/>
                                 <field name="is_postgres_pwd" password="True"/>
                             </group>
+                            <group string="Google Agenda">
+                                <field name="is_agenda_url"/>
+                                <field name="is_agenda_pwd" password="True"/>
+                            </group>
                             <group string="Programmes externes">
                                 <field name="is_url_intranet_odoo"/>
                                 <field name="is_url_intranet_theia"/>

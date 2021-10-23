@@ -46,6 +46,8 @@ class res_company(models.Model):
     is_annee_pic_3ans           = fields.Char(u'Année PIC à 3 ans', help=u'Paramètre utilisé en particulier pour Analyse / Taux de rotation des stocks')
     is_cachet_plastigray        = fields.Binary("Cachet de Plastigray", help="Utilisé pour imprimer les certificats matière fournisseur")
 
+    is_agenda_url = fields.Char(u'URL Google Agenda')
+    is_agenda_pwd = fields.Char(u'Mot de passe admin Google Agenda')
 
     @api.multi
     def annee_pic_3ans_action(self):
