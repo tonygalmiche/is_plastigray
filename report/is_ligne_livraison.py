@@ -63,10 +63,10 @@ class is_ligne_livraison(models.Model):
         now = datetime.datetime.now(pytz.timezone('Europe/Paris')).strftime('%H:%M:%S')
         return {
             'name'     : u'Lignes des livraisons actualisées à '+str(now),
-            'view_mode': 'tree,form',
+            'view_mode': 'tree,form,graph',
             'view_type': 'form',
             'res_model': 'is.ligne.livraison',
-            'views'    : [(view_id, 'tree'),(False, 'form')],
+            'views'    : [(view_id, 'tree'),(False, 'form'),(False, 'graph')],
             'type'     : 'ir.actions.act_window',
         }
 
