@@ -30,6 +30,7 @@
                                 <field name="instrument_id" readonly="1" />
                                 <field name="gabarit_id"    readonly="1" />
                                 <field name="piece_id"      readonly="1" />
+                                <field name="create_uid" string="Créé par" readonly="1"/>
                             </group>
                         </group>
                     </sheet>
@@ -60,6 +61,7 @@
                     <field name="instrument_id" widget="many2one_clickable" />
                     <field name="gabarit_id"    widget="many2one_clickable" />
                     <field name="piece_id"      widget="many2one_clickable" />
+		    <field name="create_uid" string="Créé par" readonly="1"/>
                 </tree>
             </field>
         </record>
