@@ -54,6 +54,25 @@ class hr_employee(models.Model):
     is_employe_horaire_ids = fields.One2many('is.employe.horaire', 'employe_id', u"Horaires")
     is_employe_absence_ids = fields.One2many('is.employe.absence', 'employe_id', u"Absences")
 
+    def name_get(self, cr, uid, ids, context=None):
+        res = []
+        for obj in self.browse(cr, uid, ids, context=context):
+            #name=obj.name+" / "+(obj.code_einecs or '')+" / "+(obj.code_cas or '')
+            #name=obj.code_cas or obj.name or obj.code_einecs
+            name = obj.name + ' (' + obj.is_matricule + ')'
+            res.append((obj.id,name))
+        return res
+
+    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if name:
+            ids = self.search(cr, user, ['|',('name','ilike', name),('is_matricule','ilike', name)], limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        result = self.name_get(cr, user, ids, context=context)
+        return result
+
 
 class is_employe_horaire(models.Model):
     _name='is.employe.horaire'
