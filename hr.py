@@ -59,7 +59,7 @@ class hr_employee(models.Model):
         for obj in self.browse(cr, uid, ids, context=context):
             #name=obj.name+" / "+(obj.code_einecs or '')+" / "+(obj.code_cas or '')
             #name=obj.code_cas or obj.name or obj.code_einecs
-            name = obj.name + ' (' + obj.is_matricule + ')'
+            name = obj.name + u' (' + (obj.is_matricule or u'') + u')'
             res.append((obj.id,name))
         return res
 
