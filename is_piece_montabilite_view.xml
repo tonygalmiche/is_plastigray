@@ -88,6 +88,7 @@
                     <field name="fabriquant"/> 
                     <field name="fabricant_client_id"/>
                     <field name="lieu_stockage"/> 
+                    <field name="periodicite"/>
                     <field name="date_prochain_controle"/>
                     <field name="is_database_origine_id"/>
                 </tree>

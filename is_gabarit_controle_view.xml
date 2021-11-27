@@ -54,6 +54,7 @@
                                                 />
                                                 <field name="etat_conformite" />
                                                 <field name="rapport_controle_ids" widget="many2many_binary" />
+                                                <field name="create_uid" string="Créé par" readonly="1"/>
                                             </group>
                                         </sheet>
                                     </form>
@@ -65,6 +66,7 @@
                                         <field name="fournisseur_id" />
                                         <field name="etat_conformite" />
                                         <field name="rapport_controle_ids"/>
+                                        <field name="create_uid" string="Créé par" readonly="1"/>
                                     </tree>
                                 </field>
                             </page>
@@ -89,6 +91,7 @@
                     <field name="client_id"/>
                     <field name="site_id"/>
                     <field name="lieu_stockage"/>
+                    <field name="periodicite"/>
                     <field name="date_prochain_controle"/>
                     <field name="is_database_origine_id"/>
                 </tree>
