@@ -17,6 +17,7 @@ class is_tarif_cial(models.Model):
     product_id          = fields.Many2one('product.template', 'Article', required=True, select=True)
     is_ref_client       = fields.Char("Référence client", related='product_id.is_ref_client', readonly=True)
     is_mold_dossierf    = fields.Char('Moule', related='product_id.is_mold_dossierf', readonly=True)
+    is_gestionnaire_id  = fields.Many2one('is.gestionnaire', 'Gestionnaire', related='product_id.is_gestionnaire_id', readonly=True)
     indice_prix         = fields.Integer("Indice Prix"                 , required=True, select=True)
     date_debut          = fields.Date("Date de début")
     date_fin            = fields.Date("Date de fin")
@@ -35,6 +36,7 @@ class is_tarif_cial(models.Model):
     prix_vente          = fields.Float("Prix de Vente"      , digits=(12, 4))
     ecart               = fields.Float("Ecart prix de vente", digits=(12, 4), compute='_ecart')
     numero_dossier      = fields.Char("Numéro de dossier")
+    active              = fields.Boolean('Actif', default=True)
 
 
     @api.one
