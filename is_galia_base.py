@@ -37,12 +37,15 @@ class is_galia_base_um(models.Model):
             obj.product_id = product_id
             obj.qt_pieces  = qt_pieces
 
-    name             = fields.Char(u"N°Étiquette UM", readonly=True, select=True)
-    liste_servir_id  = fields.Many2one('is.liste.servir', u'Liste à servir')
-    bon_transfert_id = fields.Many2one('is.bon.transfert', u'Bon de transfert')
+    name             = fields.Char(u"N°Étiquette UM", readonly=True             , select=True)
+    liste_servir_id  = fields.Many2one('is.liste.servir', u'Liste à servir'     , select=True)
+    bon_transfert_id = fields.Many2one('is.bon.transfert', u'Bon de transfert'  , select=True)
+    production_id    = fields.Many2one('mrp.production', u'Ordre de fabrication', select=True)
     uc_ids           = fields.One2many('is.galia.base.uc'  , 'um_id', u"UCs")
-    product_id       = fields.Many2one('product.product', 'Article', readonly=True, compute='_compute', store=False)
+    product_id       = fields.Many2one('product.product', u'Article', readonly=True, compute='_compute', store=False)
     qt_pieces        = fields.Integer(u"Qt Pièces"                 , readonly=True, compute='_compute', store=False)
+    employee_id      = fields.Many2one("hr.employee", u"Employé")
+    date_fin         = fields.Datetime(u"Date fin UM")
 
 
     @api.model
@@ -90,5 +93,6 @@ class is_galia_base_uc(models.Model):
     production_id = fields.Many2one('mrp.production', 'Ordre de fabrication')
     production    = fields.Char('Ordre de fabrication')
     product_id    = fields.Many2one('product.product', 'Article', required=True)
+    employee_id   = fields.Many2one("hr.employee", u"Employé")
 
 

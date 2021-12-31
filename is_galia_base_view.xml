@@ -82,7 +82,9 @@
                             <field name="qt_pieces"/>
                             <field name="date_creation"/>
                             <field name="production"/>
+                            <field name="production_id"/>
                             <field name="product_id"/>
+                            <field name="employee_id"/>
                         </group>
                     </sheet>
                 </form>
@@ -102,6 +104,9 @@
                     <field name="date_creation"/>
                     <field name="production"/>
                     <field name="product_id"/>
+                    <field name="employee_id"/>
+                    <field name="write_date"/>
+                    <field name="create_date"/>
                 </tree>
             </field>
         </record>
@@ -151,8 +156,11 @@
                             <field name="name"/>
                             <field name="liste_servir_id"/>
                             <field name="bon_transfert_id"/>
+                            <field name="production_id"/>
                             <field name="product_id"/>
                             <field name="qt_pieces"/>
+                            <field name="employee_id"/>
+                            <field name="date_fin"/>
                         </group>
                         <group>
                             <field name="uc_ids" nolabel="1" >
@@ -180,9 +188,14 @@
                     <field name="name"/>
                     <field name="liste_servir_id"/>
                     <field name="bon_transfert_id"/>
+                    <field name="production_id"/>
                     <field name="product_id"/>
                     <field name="qt_pieces"/>
+                    <field name="employee_id"/>
+                    <field name="date_fin"/>
                     <field name="uc_ids"/>
+                    <field name="write_date"/>
+                    <field name="create_date"/>
                 </tree>
             </field>
         </record>
@@ -194,6 +207,7 @@
                     <field name="name"/>
                     <field name="liste_servir_id"/>
                     <field name="bon_transfert_id"/>
+                    <field name="production_id"/>
                 </search>
             </field>
         </record>
