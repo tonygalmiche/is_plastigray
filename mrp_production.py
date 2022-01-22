@@ -86,7 +86,6 @@ class MrpProduction(models.Model):
         production    = self.browse(production_id)
         qty_uom       = uom_obj._compute_qty(production.product_uom.id, qty, production.product_id.uom_id.id)
         precision = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-
         #** Traitement des produits finis **************************************
         main_production_move = False
         if production_mode == 'consume_produce':
@@ -131,7 +130,7 @@ class MrpProduction(models.Model):
                         move.action_consume(consumed_qty, move.location_id.id, restrict_lot_id=lot_id, consumed_for=main_production_move)
             # TODO : Ajout d'un blocage le 27/01/2018 pour empècher les problèmes de déclarations sur les OF
             if nb!=ct:
-                raise Warning("Problème de synchronisation de nomenclature. Il faut modifier la quantité de cet OF pour resynchroniser la nomenclature")
+                raise Warning("Probleme de synchronisation de nomenclature. Il faut modifier la quantite de cet OF pour resynchroniser la nomenclature")
         #***********************************************************************
 
 
@@ -147,7 +146,7 @@ class MrpProduction(models.Model):
                     if move.product_id==wiz_line.product_id and wiz_line.is_sequence==sequence:
                         ct=ct+1
             if nb!=ct:
-                _logger.info(u"#### Nomenclature Ordre de Fabrication désynchronisé => importer_nomenclature avec sudo() ####")
+                _logger.info(u"#### Nomenclature Ordre de Fabrication desynchronise => importer_nomenclature avec sudo() ####")
                 production.sudo().importer_nomenclature()
         #***********************************************************************
 
@@ -308,6 +307,89 @@ class MrpProduction(models.Model):
                 prod_line_obj.create(cr, uid, line)
             production.recreer_mouvements()
 
+
+    @api.multi
+    def get_consume_lines(self, production_id, product_qty):
+        prod_obj = self.env["mrp.production"]
+        uom_obj = self.env["product.uom"]
+        production = prod_obj.browse(production_id)
+        consume_lines = []
+        new_consume_lines = []
+        if product_qty > 0.0:
+            product_uom_qty = uom_obj._compute_qty(production.product_uom.id, product_qty, production.product_id.uom_id.id)
+            consume_lines = prod_obj._calculate_qty(production, product_qty=product_uom_qty)
+        
+        for consume in consume_lines:
+            new_consume_lines.append([0, False, consume])
+        return new_consume_lines
+    
+
+    @api.multi
+    def get_track(self, product_id):
+        prod_obj = self.env["product.product"]
+        return product_id and prod_obj.browse(product_id).track_production or False
+
+
+    @api.multi
+    def get_wizard(self, production):
+        wiz_obj = self.env['mrp.product.produce']
+        vals = {
+            'product_id': production.product_id.id,
+            'product_qty': 1.0,
+            'mode': 'consume_produce',
+            'lot_id': False,
+            'consume_lines': self.get_consume_lines(production.id, 1.0),
+            'track_production': self.get_track(production.product_id.id)
+        }
+        wiz = wiz_obj.create(vals)
+        return wiz
+
+
+    @api.multi
+    def declaration_production_theia_action(self,qt_bonne, qt_rebut):
+        err=""
+        for obj in self:
+            qt=0
+            if qt_bonne>0:
+                qt=qt_bonne
+                filtre = [
+                    ('name' , '=', '00'),
+                    ('usage', '=', 'internal'),
+                ]
+            if qt_rebut>0:
+                qt=qt_rebut
+                filtre = [
+                    ('name' , '=', 'Rebuts'),
+                    ('usage', '=', 'inventory'),
+                ]
+            if qt==0:
+                err="Qt = 0"
+            if err=="":
+                lines = self.env["stock.location"].search(filtre)
+                location_id = lines and lines[0].id or False
+                if location_id==False:
+                    err="Emplacement non trouve"
+            if err=="":
+                wiz = obj.get_wizard(obj)
+                wiz.finished_products_location_id = location_id
+                wiz.product_package_qty = qt
+                res = wiz.with_context(active_id=obj.id).on_change_qty(qt, False)
+                wiz.consume_lines.unlink()
+                wiz.write(res["value"])
+
+                if qt_rebut>0:
+                    for line in wiz.consume_lines:
+                        code = line.product_id.is_code
+                        if code[:1]!="5":
+                            line.unlink()
+                obj.action_produce(obj.id, qt, 'consume_produce', wiz)
+                if qt_rebut>0:
+                    obj.sudo().importer_nomenclature() #Sinon, j'ai un soucis avec la déclaration des rebuts
+        res=True
+        if err!="":
+            res={"err": err}
+        return res
+    
 
 class mrp_production_product_line(models.Model):
     _inherit = 'mrp.production.product.line'
