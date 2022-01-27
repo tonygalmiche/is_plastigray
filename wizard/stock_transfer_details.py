@@ -134,13 +134,13 @@ class stock_transfer_details(models.TransientModel):
 class stock_transfer_details_items(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
-    name               = fields.Char('Description')
-    is_lot_fournisseur = fields.Char("Lot fournisseur")
-    is_ctrl_rcp        = fields.Selection([('bloque','Produit bloqué')], "Contrôle réception", related='product_id.is_ctrl_rcp', readonly=True)
+    name                  = fields.Char('Description')
+    is_lot_fournisseur    = fields.Char("Lot fournisseur / Date péremption")
+    is_produit_perissable = fields.Boolean("Produit périssable", related="product_id.is_produit_perissable", readonly=True)
+    is_ctrl_rcp           = fields.Selection([('bloque','Produit bloqué')], "Contrôle réception", related='product_id.is_ctrl_rcp', readonly=True)
 
 
-
-
-
-
+    @api.multi
+    def produit_perissable_action(self):
+        print self
 

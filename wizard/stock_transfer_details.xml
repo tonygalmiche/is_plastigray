@@ -12,7 +12,7 @@
                     <field name="name"/>
                 </xpath>
 
-
+<!-- gtk-dialog-warning.png -->
 
                 <field name="picking_source_location_id" position="before">
                     <group>
@@ -59,6 +59,8 @@
                     <attribute name="invisible">1</attribute>
                 </field>
                 <field name="lot_id" position="after">
+                    <field name="is_produit_perissable" invisible="1"/>
+                    <button string="Produit périssable" name="produit_perissable_action" type="object" icon="gtk-dialog-warning" attrs="{'invisible': [('is_produit_perissable', '==', False)]}"/>
                     <field name="is_lot_fournisseur" attrs="" />
                     <field name="is_ctrl_rcp"        attrs="" />
                 </field>
