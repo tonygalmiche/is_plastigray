@@ -86,12 +86,13 @@ class account_invoice(models.Model):
         ], u"Type de facture", default='standard', select=True)
     is_origine_id     = fields.Many2one('account.invoice', "Facture d'origine")
     is_mode_envoi_facture = fields.Selection([
-        ('courrier'      , 'Envoi par courrier'),
-        ('courrier2'     , 'Envoi par courrier en double exemplaire'),
-        ('mail'          , 'Envoi par mail (1 mail par facture)'),
-        ('mail2'         , 'Envoi par mail (1 mail par facture en double exemplaire)'),
-        ('mail_client'   , 'Envoi par mail (1 mail par client)'),
-        ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
+        ('courrier'        , 'Envoi par courrier'),
+        ('courrier2'       , 'Envoi par courrier en double exemplaire'),
+        ('mail'            , 'Envoi par mail (1 mail par facture)'),
+        ('mail2'           , 'Envoi par mail (1 mail par facture en double exemplaire)'),
+        ('mail_client'     , 'Envoi par mail (1 mail par client)'),
+        ('mail_client_bl'  , 'Envoi par mail avec BL (1 mail par client)'),
+        ('mail_regroupe_bl', 'Regroupement des BL sur une même facture et envoi par mail'),
     ], "Mode d'envoi de la facture")
     is_date_envoi_mail = fields.Datetime("Mail envoyé le", readonly=False)
     is_masse_nette     = fields.Float("Masse nette (Kg)")
@@ -307,7 +308,7 @@ class account_invoice(models.Model):
 
             # ** Un mail par facture *******************************************
             for row in result:
-                if row[0]=='mail':
+                if row[0] in ['mail', 'mail_regroupe_bl']:
                     partner_id = row[1]
                     id         = row[3]
                     self._envoi_par_mail(partner_id, [id])
@@ -440,7 +441,6 @@ class account_invoice(models.Model):
             raise Warning(u"Aucun contact de type 'Facturation' trouvé pour le client "+partner.is_code+u'/'+partner.is_adr_code+" !")
         #*******************************************************************
 
-
         email_cc   = user.name+u' <'+user.email+u'>'
         email_to   = u','.join(emails_to)
         #email_to   = email_cc
@@ -457,17 +457,14 @@ class account_invoice(models.Model):
             'body_html'     : body_html.encode('utf-8'), 
             'attachment_ids': [(6, 0, [attachment_ids])] 
         })
-
         email_id=self.env['mail.mail'].create(email_vals)
         if email_id:
             self.env['mail.mail'].send(email_id)
-
         email_to   = u','.join(emails_to)
         for id in ids:
             invoice = self.env['account.invoice'].browse(id)
             invoice.message_post(body=subject+u' envoyée par mail à '+u','.join(emails_to))
             invoice.is_date_envoi_mail=datetime.now()
-
 
 
     @api.multi

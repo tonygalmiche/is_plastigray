@@ -873,9 +873,15 @@
             ref('is_comptable_group')
         ])]"/>
     </record>
-
-
-
+    <record id="is_regroupement_livraisons_a_facturer_menu" model="ir.ui.menu" >
+        <field name="name">Regroupement livraisons à facturer</field>
+        <field name="sequence">11</field>
+        <field name="parent_id" eval="ref('menu_is_ventes_fac')"/>
+        <field name="action"    ref="is_regroupement_livraisons_a_facturer_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_comptable_group')
+        ])]"/>
+    </record>
     <record id="is_comparatif_tarif_facture_menu" model="ir.ui.menu" >
         <field name="name">Comparatif Tarif / Facture</field>
         <field name="sequence">15</field>

@@ -220,6 +220,9 @@ class is_cout_calcul(models.Model):
                 if min_quantity:
                     coef=cout.name.lot_mini/min_quantity
                 prix_tarif=row[0]/coef
+
+
+
         return prix_tarif
 
 
@@ -239,6 +242,11 @@ class is_cout_calcul(models.Model):
         prix_commande=0
         for row in result:
             prix_commande=row[0]
+
+
+            
+
+
         return prix_commande
 
 
@@ -259,6 +267,9 @@ class is_cout_calcul(models.Model):
         prix_facture=0
         for row in result:
             prix_facture=row[0]
+
+
+
         return prix_facture
 
 
@@ -284,6 +295,11 @@ class is_cout_calcul(models.Model):
                 prix_commande = 0
                 prix_facture  = 0
                 prix_calcule  = 0
+
+                print("## _maj_couts_thread 1 ##",cout,prix_calcule)
+
+
+
                 ecart_calcule_matiere = 0
                 vals={
                     'cout_calcul_id': obj.id,
@@ -296,6 +312,11 @@ class is_cout_calcul(models.Model):
                     prix_tarif    = self._get_prix_tarif(cout,pricelist) # Recherche du prix tarif
                     prix_commande = self._get_prix_commande(product)     # Recherche prix dernière commande
                     prix_facture  = self._get_prix_facture(product)      # Recherche prix dernière facture
+
+
+                    print("## _maj_couts_thread 2 ##",cout,prix_tarif,prix_commande,prix_facture,pricelist )
+
+
                     if cout.prix_force:
                         prix_calcule=cout.prix_force
                     else:
@@ -312,14 +333,25 @@ class is_cout_calcul(models.Model):
                             prix_calcule=cout.cout_act_matiere
                         ecart_calcule_matiere  = prix_calcule - cout.cout_act_matiere
                     if type_article=='ST':
+                        #if prix_calcule==0:
+                        #    prix_calcule=cout.cout_act_st
                         if prix_calcule==0:
-                            prix_calcule=cout.cout_act_st
+                            prix_calcule=cout.prix_tarif
                         ecart_calcule_matiere  = prix_calcule - cout.cout_act_st
+
+
+                    print("## _maj_couts_thread 3 ##",cout,cout.prix_force,cout.cout_act_st )
+
+
                 vals={}
                 if prix_tarif:
                     vals.update({
                         'prix_tarif' : prix_tarif
                     })
+
+
+                print("## _maj_couts_thread 4 ##",cout,prix_calcule)
+
                 vals.update({
                     'type_article'         : type_article,
                     'prix_commande'        : prix_commande,

@@ -183,12 +183,13 @@ class res_partner(models.Model):
         ('ref_article', '1 référence client = 1 BL'),
     ], 'Caractéristique des BL')
     is_mode_envoi_facture   = fields.Selection([
-        ('courrier'      , 'Envoi par courrier'),
-        ('courrier2'     , 'Envoi par courrier en double exemplaire'),
-        ('mail'          , 'Envoi par mail (1 mail par facture)'),
-        ('mail2'         , 'Envoi par mail (1 mail par facture en double exemplaire)'),
-        ('mail_client'   , 'Envoi par mail (1 mail par client)'),
-        ('mail_client_bl', 'Envoi par mail avec BL (1 mail par client)'),
+        ('courrier'        , 'Envoi par courrier'),
+        ('courrier2'       , 'Envoi par courrier en double exemplaire'),
+        ('mail'            , 'Envoi par mail (1 mail par facture)'),
+        ('mail2'           , 'Envoi par mail (1 mail par facture en double exemplaire)'),
+        ('mail_client'     , 'Envoi par mail (1 mail par client)'),
+        ('mail_client_bl'  , 'Envoi par mail avec BL (1 mail par client)'),
+        ('mail_regroupe_bl', 'Regroupement des BL sur une même facture et envoi par mail'),
     ], "Mode d'envoi des factures")
     is_type_cde_fournisseur = fields.Selection(type_commande_list, "Type commande fourniseur", readonly=True)
     is_horizon_besoins      = fields.Integer(u'Horizon des besoins (jour)', help=u"Champ utilisé pour le mail de l'horizon des besoins (7 jours en général ou 21 jours pendant la période de vacances)")

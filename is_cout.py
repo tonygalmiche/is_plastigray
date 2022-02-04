@@ -419,6 +419,9 @@ class is_cout_calcul(models.Model):
                     msg_err=u'Err Coût ST'
 
         cout=self.creation_cout(cout_calcul_obj, product, type_article)
+
+
+
         self.detail_nomenclature.append({
             'product_id'  : product.id,
             'is_code'     : product.is_code,
@@ -606,6 +609,9 @@ class is_cout_calcul(models.Model):
             couts = self._get_couts()
             self._unlink_detail_cout(couts)
             for cout in couts:
+
+
+
                 product=cout.name
                 ct=ct+1
                 _logger.info(str(ct)+'/'+str(nb)+' : '+str(product.is_code))
@@ -644,7 +650,14 @@ class is_cout_calcul(models.Model):
                         del vals['is_code']
                         vals['cout_id']=cout.id
                         cout_act_matiere = cout_act_matiere+vals['total_mat']
+
+
+
                         cout_act_st      = cout_act_st+vals['total_st']
+
+
+
+
                         res=self.env['is.cout.nomenclature'].create(vals)
                     vals={
                         'cout_id'     : cout.id,

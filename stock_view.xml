@@ -269,6 +269,7 @@
                     <field name="is_date_reception"     attrs="{'invisible': [('is_purchase_order_id', '=', False)]}"  /> 
                 </field>
                 <field name="priority" position="after">
+                    <field name="is_mode_envoi_facture"/> 
                     <field name="is_facture_pk_id" attrs="{'invisible': [('is_sale_order_id', '=', False)]}"  /> 
                 </field>
             </field>
@@ -491,7 +492,28 @@
             <field name="name">Livraisons à facturer</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">stock.picking</field>
-            <field name="domain">[('invoice_state','=', '2binvoiced'),('picking_type_id','=', 2),('state','=', 'done')]</field>
+            <field name="domain">[
+                    ('invoice_state','=', '2binvoiced'),
+                    ('picking_type_id','=', 2),
+                    ('state','=', 'done'),
+                    ('is_mode_envoi_facture','!=', 'regroupe_bl')
+                ]
+            </field>
+            <field name="limit">200</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="is_regroupement_livraisons_a_facturer_action" model="ir.actions.act_window">
+            <field name="name">Regroupement livraisons à facturer</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="domain">[
+                    ('invoice_state','=', '2binvoiced'),
+                    ('picking_type_id','=', 2),
+                    ('state','=', 'done'),
+                    ('is_mode_envoi_facture','=', 'regroupe_bl')
+                ]
+            </field>
             <field name="limit">200</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

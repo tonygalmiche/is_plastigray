@@ -82,7 +82,7 @@ class is_galia_base_uc(models.Model):
     _name='is.galia.base.uc'
     _order='num_eti desc'
     _rec_name='num_eti'
-    _sql_constraints = [('num_eti_uniq','UNIQUE(num_eti)', u'Cette étiquette existe déjà')]
+    _sql_constraints = [('num_eti_uniq','UNIQUE(num_eti,um_id)', u'Cette étiquette existe déjà dans cette UM')]
 
     um_id         = fields.Many2one('is.galia.base.um', 'UM', required=True, ondelete='cascade')
     num_eti       = fields.Integer(u"N°Étiquette UC", required=True, select=True)

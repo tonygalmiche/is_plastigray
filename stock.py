@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import string
 from openerp import models,fields,api
 from openerp.tools.translate import _
 
@@ -45,6 +46,9 @@ class stock_picking(models.Model):
     is_facture_pk_id      = fields.Many2one('is.facture.pk', 'Facture PK')
     is_piece_jointe       = fields.Boolean(u"Pièce jointe", store=False, readonly=True, compute='_compute_is_piece_jointe')
     is_galia_um           = fields.Boolean(u"Test si étiquettes scannées sur Liste à servir", store=False, readonly=True, compute='_compute_is_galia_um')
+    is_mode_envoi_facture = fields.Selection(related="partner_id.is_mode_envoi_facture", string="Mode d'envoi des factures")
+
+
 
 
     @api.multi
