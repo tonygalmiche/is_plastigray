@@ -496,7 +496,7 @@
                     ('invoice_state','=', '2binvoiced'),
                     ('picking_type_id','=', 2),
                     ('state','=', 'done'),
-                    ('is_mode_envoi_facture','!=', 'regroupe_bl')
+                    ('is_mode_envoi_facture','in', [False,'courrier','courrier2','mail','mail2','mail_client','mail_client_bl'])
                 ]
             </field>
             <field name="limit">200</field>
