@@ -2,11 +2,6 @@
 <openerp>
     <data>
 
-
-
-
-
-
         <!-- Fiche Emplacement de stock -->
         <record id="is_stock_location_view_form" model="ir.ui.view">
             <field name="name">is.stock.location.form</field>
@@ -47,8 +42,6 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-
-
 
 
         <!-- stock.move.form --> 
@@ -149,11 +142,6 @@
         </record>
 
 
-
-
-
-
-
         <record id="is_view_move_picking_tree" model="ir.ui.view">
             <field name="name">is_view_move_picking_tree</field>
             <field name="model">stock.move</field>
@@ -164,11 +152,11 @@
                 </button>
                 <field name="product_id" position="after">
                     <field name="name" />
-                    <field name="is_dosmat_ctrl_qual" />
+                    <field name="is_lots"/>
+                    <field name="is_dosmat_ctrl_qual"/>
                 </field>
             </field>
         </record>
-
 
 
         <record id="view_picking_location_inherit_form" model="ir.ui.view">

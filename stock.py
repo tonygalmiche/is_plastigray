@@ -143,7 +143,8 @@ class stock_picking(models.Model):
                     uc.num_eti,
                     uc.qt_pieces,
                     pp.id,
-                    um.id
+                    um.id,
+                    uc.production
                 from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
                                          inner join is_liste_servir ls on um.liste_servir_id=ls.id
                                          inner join product_product pp on uc.product_id=pp.id 
@@ -181,6 +182,7 @@ class stock_picking(models.Model):
                     'um'       : row[1],
                     'uc'       : row[2],
                     'qt_pieces': row[3],
+                    'lot'      : row[6],
                     'is_code_rowspan': is_code_rowspan,
                     'um_rowspan': um_rowspan,
                 }
@@ -280,11 +282,9 @@ class stock_picking(models.Model):
                     lot_id=quant.lot_id.id
 #                name=move.picking_id.name
 #                lots = self.env['stock.production.lot'].search([('product_id','=',move.product_id.id),('name','=',name)])
-#                print 'lots=',lots
 #                lot_id=False
 #                for lot in lots:
 #                    lot_id=lot.id
-#                    print lot.name
                 #***************************************************************
                 copy=move.copy()
                 copy.location_id      = move.location_dest_id.id
@@ -670,78 +670,38 @@ class stock_quant(models.Model):
     is_mold_id          = fields.Many2one('is.mold'    , 'Moule'            , related='product_id.is_mold_id'         , readonly=True)
 
 
-
-
-#    #La reprise de cette fonction permet de créer le lot à la volée pour les stocks négatif
-#    def quants_move(self, cr, uid, quants, move, location_to, location_from=False, lot_id=False, owner_id=False, src_package_id=False, dest_package_id=False, context=None):
-#        quants_reconcile = []
-#        to_move_quants = []
-#        self._check_location(cr, uid, location_to, context=context)
-#        for quant, qty in quants:
-
-#            print 'quant=',quant,qty
-
-#            if not quant:
-#                print move,move.product_id
-#                name='#'+move.product_id.is_code
-
-#                lot_obj = self.pool.get("stock.production.lot")
-#                lots = lot_obj.search(cr, uid, [('name', '=', name)], context=context)
-#                print name, lots
-
-#                lot_id=False
-
-#                for lot in lots:
-#                    lot_id=lot
-
-#                if not lot_id:
-#                    vals={
-#                        'name'      : name,
-#                        'product_id': move.product_id.id,
-#                    }
-#                    lot_id=lot_obj.create(cr, uid, vals, context=context)
-
-#                #lot_id=27779
-#                print 'lot_id=',lot_id
-
-
-#                #If quant is None, we will create a quant to move (and potentially a negative counterpart too)
-#                quant = self._quant_create(cr, uid, qty, move, lot_id=lot_id, owner_id=owner_id, src_package_id=src_package_id, dest_package_id=dest_package_id, force_location_from=location_from, force_location_to=location_to, context=context)
-#            else:
-#                self._quant_split(cr, uid, quant, qty, context=context)
-#                to_move_quants.append(quant)
-#            quants_reconcile.append(quant)
-#        if to_move_quants:
-#            to_recompute_move_ids = [x.reservation_id.id for x in to_move_quants if x.reservation_id and x.reservation_id.id != move.id]
-#            self.move_quants_write(cr, uid, to_move_quants, move, location_to, dest_package_id, context=context)
-#            self.pool.get('stock.move').recalculate_move_state(cr, uid, to_recompute_move_ids, context=context)
-#        if location_to.usage == 'internal':
-#            # Do manual search for quant to avoid full table scan (order by id)
-#            cr.execute("""
-#                SELECT 0 FROM stock_quant, stock_location WHERE product_id = %s AND stock_location.id = stock_quant.location_id AND
-#                ((stock_location.parent_left >= %s AND stock_location.parent_left < %s) OR stock_location.id = %s) AND qty < 0.0 LIMIT 1
-#            """, (move.product_id.id, location_to.parent_left, location_to.parent_right, location_to.id))
-#            if cr.fetchone():
-#                for quant in quants_reconcile:
-#                    self._quant_reconcile_negative(cr, uid, quant, move, context=context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class stock_move(models.Model):
     _inherit = "stock.move"
     _order   = "date desc, id"
-    is_dosmat_ctrl_qual           = fields.Char('Contrôle qualité', readonly=True)
+
+
+    @api.depends('product_id','product_uom_qty')
+    def _compute_lots(self):
+        cr = self._cr
+        for obj in self:
+            lots = False
+            if obj.picking_id.is_sale_order_id.is_liste_servir_id.galia_um_ids:
+                liste_servir_id = obj.picking_id.is_sale_order_id.is_liste_servir_id.id
+                SQL="""
+                    select uc.production, sum(uc.qt_pieces)
+                    from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+                                            inner join is_liste_servir ls on um.liste_servir_id=ls.id
+                                            inner join product_product pp on uc.product_id=pp.id 
+                                            inner join product_template pt on pp.product_tmpl_id=pt.id
+                    where ls.id=%s and uc.product_id=%s
+                    group by uc.production
+                    order by uc.production
+                """
+                cr.execute(SQL,[liste_servir_id, obj.product_id.id])
+                result = cr.fetchall()
+                lots=[]
+                for row in result:
+                    lots.append(u"Lot "+row[0]+u" : "+str(row[1]))
+                lots = u"\n".join(lots)
+            obj.is_lots = lots
+
+    is_lots             = fields.Text('Lots', compute='_compute_lots', store=False, readonly=True)
+    is_dosmat_ctrl_qual = fields.Char('Contrôle qualité', readonly=True)
 
 
     @api.multi
@@ -777,18 +737,12 @@ class stock_move(models.Model):
         return result
 
 
-
-
-
     @api.model
     def create(self, vals):
         obj = super(stock_move, self).create(vals)
         if obj.purchase_line_id and obj.picking_id:
             obj.picking_id.is_purchase_order_id=obj.purchase_line_id.order_id.id
         return obj
-
-
-
 
 
     def _create_invoice_line_from_vals(self, cr, uid, move, invoice_line_vals, context=None):
@@ -838,27 +792,6 @@ class stock_move(models.Model):
         for obj in self:
             date_livraison= self.env['res.partner'].get_date_livraison(obj.company_id, obj.partner_id, date_expedition)
         return date_livraison
-
-
-#    def _get_date_livraison(self,date_expedition):
-#        cr, uid, context = self.env.args
-#        date_livraison=date_expedition
-#        for obj in self:
-#            if obj.partner_id:
-#                res_partner = self.env['res.partner']
-#                # jours de fermeture de la société
-#                jours_fermes = res_partner.num_closing_days(obj.partner_id)
-#                # Jours de congé de la société
-#                leave_dates = res_partner.get_leave_dates(obj.partner_id)
-#                # Délai de transport
-#                delai_transport = obj.partner_id.is_delai_transport
-#                date_livraison = datetime.datetime.strptime(date_livraison, '%Y-%m-%d') + datetime.timedelta(days=delai_transport)
-#                # Reporter au premier jour ouvré disponible
-#                date = date_livraison.strftime('%Y-%m-%d')
-#                num_day = date_livraison.strftime('%w')
-#                date_livraison = self.get_working_day(date, num_day, jours_fermes, leave_dates)
-#            return date_livraison
-#        return date_livraison
 
 
     @api.multi
@@ -913,10 +846,6 @@ class stock_move(models.Model):
             self.write({'picking_id': pick.id})
         return
     
-
-
-
-
 
     def action_consume(self, cr, uid, ids, product_qty, location_id=False, restrict_lot_id=False, restrict_partner_id=False,
                        consumed_for=False, context=None):
