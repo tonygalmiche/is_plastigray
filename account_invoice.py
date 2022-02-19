@@ -556,45 +556,69 @@ class account_invoice(models.Model):
         return res
 
 
-#    @api.multi
-#    def repartir_frais_de_port(self):
-#        """Répartir les frais de port sur les lignes"""
-#        for obj in self:
-#            frais_de_port=0.0
-#            nb_lignes=0
-#            total1=0.0
-#            for line in obj.invoice_line:
-#                montant=line.quantity*line.price_unit
-#                total1=total1+montant
-#                if line.product_id.is_code=='608005VENT':
-#                    frais_de_port=frais_de_port+montant
-#                    line.price_unit=0.0
-#                else:
-#                    nb_lignes=nb_lignes+1
-#            if nb_lignes>0 and frais_de_port>0:
-#                repartition=frais_de_port/nb_lignes
-#                total2=0.0
-#                for line in obj.invoice_line:
-#                    if line.product_id.is_code!='608005VENT' and line.quantity!=0:
-#                        montant=line.quantity*line.price_unit
-#                        repartition_unitaire=round(repartition/line.quantity,4)
-#                        new_price=line.price_unit+repartition_unitaire
-#                        line.price_unit=new_price
-#                        total2=total2+round(line.quantity*new_price,2)
-#                if total1!=total2:
-#                    for line in obj.invoice_line:
-#                        if line.product_id.is_code=='608005VENT':
-#                            line.quantity=1
-#                            line.price_unit=(total1-total2)
-#                            break
-
-
 class account_invoice_line(models.Model):
     _inherit = "account.invoice.line"
 
     is_section_analytique_id = fields.Many2one('is.section.analytique', 'Section analytique')
     is_move_id               = fields.Many2one('stock.move', 'Mouvement de stock', select=True)
     is_document              = fields.Char("N° du chantier")
+
+
+
+    @api.depends('invoice_id.state')
+    def _compute_amortissement_moule(self):
+        cr = self._cr
+        for obj in self:
+            amortissement_moule = 0
+            amt_interne = 0
+            cagnotage = 0
+            montant_amt_moule = 0
+            montant_amt_interne = 0
+            montant_cagnotage = 0
+            montant_matiere = 0
+            if obj.product_id and obj.quantity and obj.invoice_id and obj.invoice_id.partner_id and obj.invoice_id.date_invoice:
+                SQL="""
+                    SELECT
+                        get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
+                        get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice) as amt_interne,
+                        get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice) as cagnotage,
+                        fsens(ai.type)*get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
+                        fsens(ai.type)*get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_interne,
+                        fsens(ai.type)*get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_cagnotage,
+                        fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere
+                    from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
+                                            inner join product_product       pp on ail.product_id=pp.id
+                                            inner join product_template      pt on pp.product_tmpl_id=pt.id
+                                            inner join res_partner           rp on ai.partner_id=rp.id
+                    where ail.id=%s
+                """
+                cr.execute(SQL,[obj.id])
+                res_ids = cr.fetchall()
+                for res in res_ids:
+                    amortissement_moule = res[0]
+                    amt_interne         = res[1]
+                    cagnotage           = res[2]
+                    montant_amt_moule   = res[3]
+                    montant_amt_interne = res[4]
+                    montant_cagnotage   = res[5]
+                    montant_matiere     = res[6]
+            obj.is_amortissement_moule = amortissement_moule
+            obj.is_amt_interne         = amt_interne
+            obj.is_cagnotage           = cagnotage
+            obj.is_montant_amt_moule   = montant_amt_moule
+            obj.is_montant_amt_interne = montant_amt_interne
+            obj.is_montant_cagnotage   = montant_cagnotage
+            obj.is_montant_matiere     = montant_matiere
+
+
+    is_amortissement_moule = fields.Float('Amt client négocié'        , digits=(14,4), store=True, compute='_compute_amortissement_moule')
+    is_amt_interne         = fields.Float('Amt interne'               , digits=(14,4), store=True, compute='_compute_amortissement_moule')
+    is_cagnotage           = fields.Float('Cagnotage'                 , digits=(14,4), store=True, compute='_compute_amortissement_moule')
+    is_montant_amt_moule   = fields.Float('Montant amt client négocié', digits=(14,2), store=True, compute='_compute_amortissement_moule')
+    is_montant_amt_interne = fields.Float('Montant amt interne'       , digits=(14,2), store=True, compute='_compute_amortissement_moule')
+    is_montant_cagnotage   = fields.Float('Montant cagnotage'         , digits=(14,2), store=True, compute='_compute_amortissement_moule')
+    is_montant_matiere     = fields.Float('Montant matière livrée'    , digits=(14,2), store=True, compute='_compute_amortissement_moule')
+
 
     @api.multi
     def product_id_change(self, product_id, uom_id, qty=0, name='', type='out_invoice',

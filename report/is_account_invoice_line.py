@@ -157,15 +157,14 @@ class is_account_invoice_line(models.Model):
                     ail.price_unit,
                     (fsens(ai.type)*ail.quantity*ail.price_unit) total,
 
-                    get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
-                    get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice) as amt_interne,
-                    get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice) as cagnotage,
+                    ail.is_amortissement_moule amortissement_moule,
+                    ail.is_amt_interne         amt_interne,
+                    ail.is_cagnotage           cagnotage,
+                    ail.is_montant_amt_moule   montant_amt_moule,
+                    ail.is_montant_amt_interne montant_amt_interne,
+                    ail.is_montant_cagnotage   montant_cagnotage,
+                    ail.is_montant_matiere     montant_matiere,
 
-                    fsens(ai.type)*get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
-                    fsens(ai.type)*get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_interne,
-                    fsens(ai.type)*get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_cagnotage,
-
-                    fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
                     ail.is_move_id            move_id,
                     sm.picking_id             picking_id,
                     sp.is_purchase_order_id   purchase_order_id,
@@ -184,6 +183,13 @@ class is_account_invoice_line(models.Model):
             )
         """)
 
+                    # get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice) as amortissement_moule,
+                    # get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice) as amt_interne,
+                    # get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice) as cagnotage,
+                    # fsens(ai.type)*get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
+                    # fsens(ai.type)*get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_interne,
+                    # fsens(ai.type)*get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_cagnotage,
+                    # fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
 
 
 
