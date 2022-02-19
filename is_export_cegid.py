@@ -386,7 +386,10 @@ class is_export_cegid(models.Model):
 
                         t = Affaire.split('/')
                         if(len(t)>0):
-                            A2=t[1]
+                            if len(t)==2:
+                                A2=t[1]
+                            else:
+                                raise Warning(u'N° du chantier mal formaté sur la facture %s'%(refinterne))
 
                     if general[0:1] in ['6','7']:
                         if A1:
