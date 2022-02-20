@@ -160,7 +160,6 @@
         </record>
 
 
-
         <!-- is.deb.synthese -->
         <record model="ir.ui.view" id="is_deb_synthese_form_view">
             <field name="name">is_deb_synthese_form_view</field>
@@ -177,6 +176,7 @@
                             <field name="code_regime" />
                             <field name="nomenclature_douaniere" />
                             <field name="masse_nette"/>
+                            <field name="pays_origine" />
                             <field name="pays_destination" />
                             <field name="valeur_fiscale"/>
                             <field name="nature_transaction"/>
@@ -202,6 +202,7 @@
                     <field name="nomenclature_douaniere" />
                     <field name="masse_nette"      sum="Total"/>
                     <field name="valeur_fiscale"   sum="Total"/>
+                    <field name="pays_origine" />
                     <field name="pays_destination" />
                     <field name="num_tva" />
                     <field name="nature_transaction"  readonly="1"/>
@@ -218,28 +219,12 @@
                     <field name="type_deb"/>
                     <field name="num_facture"/>
                     <field name="nomenclature_douaniere" />
+                    <field name="pays_origine" />
                     <field name="pays_destination" />
                     <field name="nature_transaction"/>
                     <field name="num_tva"/>
                 </search>
             </field>
         </record>
-
-
-        <!-- account.invoice : Répartir les frais de port sur les lignes -->
-        <!--
-        <record id="repartir_frais_de_port_action_server" model="ir.actions.server">
-             <field name="name">Répartir les frais de port sur les lignes</field>
-            <field name="model_id" ref="model_account_invoice"/>
-            <field name="code">action = self.repartir_frais_de_port(cr, uid, context.get('active_ids', []), context=context)</field>
-        </record>
-        <record id="repartir_frais_de_port_ir_value" model="ir.values">
-            <field eval="'client_action_multi'" name="key2"/>
-            <field eval="'account.invoice'" name="model"/>
-            <field name="name">Répartir les frais de port sur les lignes</field>
-            <field eval="'ir.actions.server,%d'%repartir_frais_de_port_action_server" name="value"/>
-        </record>
-        -->
-
     </data>
 </openerp>

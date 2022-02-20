@@ -585,7 +585,9 @@ class account_invoice_line(models.Model):
                         fsens(ai.type)*get_amortissement_moule_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_moule,
                         fsens(ai.type)*get_amt_interne_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_amt_interne,
                         fsens(ai.type)*get_cagnotage_a_date(rp.is_code, pt.id, ai.date_invoice)*ail.quantity as montant_cagnotage,
-                        fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere
+                        fsens(ai.type)*get_cout_act_matiere_st(pp.id)*ail.quantity as montant_matiere,
+                        ai.date_invoice,
+                        ai.state
                     from account_invoice ai inner join account_invoice_line ail on ai.id=ail.invoice_id
                                             inner join product_product       pp on ail.product_id=pp.id
                                             inner join product_template      pt on pp.product_tmpl_id=pt.id

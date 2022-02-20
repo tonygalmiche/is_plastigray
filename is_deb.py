@@ -6,11 +6,6 @@ import datetime
 import xmlrpclib
 
 
-#TODO : 
-#- DEB importation
-#- Ajouter un bouton pour accèder aux lignes de la synthese quand la fiche est terminé
-
-
 class is_deb(models.Model):
     _name='is.deb'
     _order='name desc'
@@ -72,10 +67,10 @@ class is_deb(models.Model):
                                         left outer join stock_move       sm on ail.is_move_id=sm.id
                                         left outer join stock_picking    sp on sm.picking_id=sp.id
                 where 
-                    ai.date_invoice>='"""+str(obj.date_debut)+"""' and
-                    ai.date_invoice<='"""+str(obj.date_fin)+"""' and
+                    ai.date_invoice>=%s and
+                    ai.date_invoice<=%s and
+                    pt.is_code not like %s and
                     get_property_account_position(COALESCE(sp.partner_id, ai.partner_id))=1 and
-                    pt.is_code not like '608005%' and
                     ai.state not in ('draft','cancel')
                 group by
                     ai.id,
@@ -88,7 +83,7 @@ class is_deb(models.Model):
                     pt.is_nomenclature_douaniere,
                     pt.is_origine_produit_id
             """
-            cr.execute(SQL)
+            cr.execute(SQL,[obj.date_debut, obj.date_fin, '608005%'])
             result = cr.fetchall()
             for row in result:
                 type_deb='exportation'
@@ -100,7 +95,9 @@ class is_deb(models.Model):
                     masse_nette=0
                 country=self.env['res.country'].browse(row[7])
                 pays_origine=''
-                if type_deb=='introduction':
+                #if type_deb=='introduction':
+                #    pays_origine=country.code
+                if country:
                     pays_origine=country.code
                 partner=self.env['res.partner'].browse(row[5])
                 pays_destination=partner.country_id.code
@@ -114,18 +111,15 @@ class is_deb(models.Model):
                     'partner_id'            : partner.id,
                     'nomenclature_douaniere': row[6],
                     'masse_nette'           : masse_nette,
-                    'pays_origine'          : pays_origine,
-                    'pays_destination'      : pays_destination,
+                    'pays_origine'          : (pays_origine     or '').strip(),
+                    'pays_destination'      : (pays_destination or '').strip(),
                     'valeur_fiscale'        : row[9],
                     'departement_expedition': departement,
                     'num_tva'               : partner.vat, 
                 }
                 line=self.env['is.deb.line'].create(vals)
-
-
             for line in obj.line_ids:
                 if line.type_deb=='introduction':
-
                     #** Mise à jour de la masse nette sur les lignes ***********
                     SQL="""
                         select count(*) 
@@ -186,7 +180,7 @@ class is_deb(models.Model):
                     sum(masse_nette),
                     sum(valeur_fiscale)
                 from is_deb_line
-                where deb_id="""+str(obj.id)+"""
+                where deb_id=%s
                 group by
                     type_deb,
                     num_facture,
@@ -200,22 +194,23 @@ class is_deb(models.Model):
                     departement_expedition,
                     num_tva
             """
-            cr.execute(SQL)
+            cr.execute(SQL,[obj.id])
             result = cr.fetchall()
             obj.synthese_ids.unlink()
             for row in result:
-                type_deb=row[0]
-                pays=row[5]
-                if type_deb=='exportation':
-                    pays=row[6]
+                #type_deb=row[0]
+                #pays=row[5]
+                #if type_deb=='exportation':
+                #    pays=row[6]
                 vals={
                     'deb_id'                : obj.id,
-                    'type_deb'              : type_deb,
+                    'type_deb'              : row[0],
                     'num_facture'           : row[1],
                     'date_facture'          : row[2],
                     'code_regime'           : row[3],
                     'nomenclature_douaniere': row[4],
-                    'pays_destination'      : pays,
+                    'pays_origine'          : row[5],
+                    'pays_destination'      : row[6],
                     'nature_transaction'    : row[7],
                     'mode_transport'        : row[8],
                     'departement_expedition': row[9],
@@ -226,10 +221,6 @@ class is_deb(models.Model):
                 line=self.env['is.deb.synthese'].create(vals)
             obj.state='termine'
             return self.synthese_lignes_action()
-
-
-
-
 
 
     @api.multi
@@ -256,6 +247,7 @@ class is_deb(models.Model):
                         'code_regime',
                         'nomenclature_douaniere',
                         'masse_nette',
+                        'pays_origine',
                         'pays_destination',
                         'valeur_fiscale',
                         'nature_transaction',
@@ -282,7 +274,6 @@ class is_deb(models.Model):
                 'type': 'ir.actions.act_window',
                 'limit': 1000,
             }
-
 
 
     @api.multi
@@ -321,10 +312,6 @@ class is_deb(models.Model):
                 'type': 'ir.actions.act_window',
                 'limit': 1000,
             }
-
-
-
-
 
 
 class is_deb_line(models.Model):
@@ -367,7 +354,11 @@ class is_deb_synthese(models.Model):
     code_regime            = fields.Char("Code régime")
     nomenclature_douaniere = fields.Char("Nomenclature douaniere")
     masse_nette            = fields.Float("Masse nette")
-    pays_destination       = fields.Char("Pays", help="Pays de destination du client livré ou Pays d'expédition pour les fournisseurs")
+
+    #pays_destination       = fields.Char("Pays", help="Pays de destination du client livré ou Pays d'expédition pour les fournisseurs")
+    pays_origine           = fields.Char("Pays d'origine"     , help="Pays d'origine indiqué dans la fiche article")
+    pays_destination       = fields.Char("Pays de destination", help="Pays de destination du client livré")
+
     valeur_fiscale         = fields.Float("Valeur fiscale"    , help="Montant net facturé")
     nature_transaction     = fields.Char("Nature de la transaction")
     mode_transport         = fields.Char("Mode de transport")
