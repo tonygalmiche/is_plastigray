@@ -42,6 +42,11 @@ type_commande_list=[
 ]
 
 
+traitement_edi=[
+    ('DESADV', 'DESADV'),
+]
+
+
 class is_segment_achat(models.Model):
     _name = 'is.segment.achat'
     _description = "Segment d'achat"
@@ -146,6 +151,7 @@ class res_partner(models.Model):
     is_livre_a_id           = fields.Many2one('res.partner', 'Livrer à', help="Indiquez l'adresse de livraison si celle-ci est différente de celle de la société")
     is_certificat_matiere   = fields.Boolean(u'Certificat matière demandé')
     is_import_function      = fields.Selection(import_function, "Fonction d'importation EDI")
+    is_traitement_edi       = fields.Selection(traitement_edi, "Traitement EDI")
     is_raison_sociale2      = fields.Char('Raison sociale 2')
     is_code                 = fields.Char('Code'        , select=True)
     is_adr_code             = fields.Char('Code adresse', select=True)

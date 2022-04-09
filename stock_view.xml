@@ -191,8 +191,14 @@
                         attrs="{'invisible': ['|',('is_purchase_order_id', '=', False),('state','!=','done')]}" 
                         confirm="Voulez-vous vraiment annuler cette réception ?"
                         type="object"/>
+                    <button 
+                        name="desadv_action" 
+                        string="DESADV" 
+                        type="object"
+                        confirm="Voulez-vous vraiment envoyer l'avis d'expédition par EDI ?"
+                        attrs="{'invisible': ['|','|',('is_date_traitement_edi', '!=', False),('is_traitement_edi', '!=', 'DESADV'),('state','!=','done')]}" 
+                    />
                 </button>
-
                 <button name="do_print_picking" position="after" >
                     <button 
                         name="action_imprimer_etiquette_reception" 
@@ -202,7 +208,6 @@
                         attrs="{'invisible': ['|',('is_purchase_order_id', '=', False),('state','!=','done')]}" 
                         type="object"/>
                 </button>
-
                 <button name="do_partial_open_barcode" position="attributes">
                     <attribute name="invisible">1</attribute>>
                 </button>
@@ -258,7 +263,9 @@
                 </field>
                 <field name="priority" position="after">
                     <field name="is_mode_envoi_facture"/> 
-                    <field name="is_facture_pk_id" attrs="{'invisible': [('is_sale_order_id', '=', False)]}"  /> 
+                    <field name="is_facture_pk_id" attrs="{'invisible': [('is_sale_order_id', '=', False)]}"/> 
+                    <field name="is_traitement_edi"/> 
+                    <field name="is_date_traitement_edi" attrs="{'invisible': [('is_date_traitement_edi', '=', False)]}"/> 
                 </field>
             </field>
         </record>

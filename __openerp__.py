@@ -82,6 +82,7 @@ Module principal du projet Plastigray
         "is_historique_controle_view.xml",
         "is_presse_view.xml",
         "is_prechauffeur_view.xml",
+        "is_commande_externe_view.xml",
         "is_demande_achat_view.xml",
         "is_demande_achat_serie_view.xml",
         "is_demande_achat_fg_view.xml",

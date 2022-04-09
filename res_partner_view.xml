@@ -37,6 +37,7 @@
                     />
                     <field name="is_delai_transport" />
                     <field name="is_certificat_matiere"   attrs="{'invisible': [('customer','=', False)]}" />
+                    <field name="is_traitement_edi"       attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="is_import_function"      attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="is_type_cde_fournisseur" attrs="{'invisible': [('supplier','=', False)]}" />
                     <field name="is_livre_a_id"           attrs="{'invisible': [('supplier','=', False)]}"/>

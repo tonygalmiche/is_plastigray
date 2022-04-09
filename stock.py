@@ -3,11 +3,17 @@
 import string
 from openerp import models,fields,api
 from openerp.tools.translate import _
-
 from openerp.exceptions import Warning
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 import time
 import datetime
+from xml.dom.minidom import parseString
+from dicttoxml import dicttoxml
+import re
+import os
+from collections import OrderedDict
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class stock_pack_operation(models.Model):
@@ -29,26 +35,39 @@ class is_commentaire_mouvement_stock(models.Model):
     name = fields.Char('Description', required=True)
 
 
+class stock_production_lot(models.Model):
+    _inherit = "stock.production.lot"
+    _order="id desc"
+
+    is_date_peremption = fields.Date("Date de péremption")
+    is_lot_fournisseur = fields.Char("Lot fournisseur")
+
+
+class stock_inventory(models.Model):
+    _inherit = "stock.inventory"
+    _order="date desc"
+
+
 class stock_picking(models.Model):
     _inherit = "stock.picking"
     _order   = "date desc, name desc"
     
-    location_id           = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
-    is_sale_order_id      = fields.Many2one('sale.order', 'Commande Client')
-    is_purchase_order_id  = fields.Many2one('purchase.order', 'Commande Fournisseur')
-    is_transporteur_id    = fields.Many2one('res.partner', 'Transporteur')
-    is_date_expedition    = fields.Date("Date d'expédition")
-    is_date_livraison     = fields.Date("Date d'arrivée chez le client")
-    is_date_livraison_vsb = fields.Boolean('Avertissement VSB', store=False, compute='_compute_is_date_livraison_vsb', readonly=True)
-    is_date_livraison_msg = fields.Char("Avertissement"       , store=False, compute='_compute_is_date_livraison_vsb', readonly=True)
-    is_num_bl             = fields.Char("N° BL fournisseur")
-    is_date_reception     = fields.Date('Date de réception')
-    is_facture_pk_id      = fields.Many2one('is.facture.pk', 'Facture PK')
-    is_piece_jointe       = fields.Boolean(u"Pièce jointe", store=False, readonly=True, compute='_compute_is_piece_jointe')
-    is_galia_um           = fields.Boolean(u"Test si étiquettes scannées sur Liste à servir", store=False, readonly=True, compute='_compute_is_galia_um')
-    is_mode_envoi_facture = fields.Selection(related="partner_id.is_mode_envoi_facture", string="Mode d'envoi des factures")
-
-
+    location_id            = fields.Many2one(realted='move_lines.location_id', relation='stock.location', string='Location', readonly=False)
+    is_sale_order_id       = fields.Many2one('sale.order', 'Commande Client')
+    is_purchase_order_id   = fields.Many2one('purchase.order', 'Commande Fournisseur')
+    is_transporteur_id     = fields.Many2one('res.partner', 'Transporteur')
+    is_date_expedition     = fields.Date("Date d'expédition")
+    is_date_livraison      = fields.Date("Date d'arrivée chez le client")
+    is_date_livraison_vsb  = fields.Boolean('Avertissement VSB', store=False, compute='_compute_is_date_livraison_vsb', readonly=True)
+    is_date_livraison_msg  = fields.Char("Avertissement"       , store=False, compute='_compute_is_date_livraison_vsb', readonly=True)
+    is_num_bl              = fields.Char("N° BL fournisseur")
+    is_date_reception      = fields.Date('Date de réception')
+    is_facture_pk_id       = fields.Many2one('is.facture.pk', 'Facture PK')
+    is_piece_jointe        = fields.Boolean(u"Pièce jointe", store=False, readonly=True, compute='_compute_is_piece_jointe')
+    is_galia_um            = fields.Boolean(u"Test si étiquettes scannées sur Liste à servir", store=False, readonly=True, compute='_compute_is_galia_um')
+    is_mode_envoi_facture  = fields.Selection(related="partner_id.is_mode_envoi_facture", string="Mode d'envoi des factures")
+    is_traitement_edi      = fields.Selection(related='partner_id.is_traitement_edi', string='Traitement EDI', readonly=True)
+    is_date_traitement_edi = fields.Datetime("Date traitement EDI")
 
 
     @api.multi
@@ -663,6 +682,267 @@ class stock_picking(models.Model):
         return invoices
 
 
+
+
+    @api.multi
+    def desadv_action(self):
+        for obj in self : 
+            cdes = self.env['is.commande.externe'].search([('name','=',"edi-tenor-desadv")])
+            for cde in cdes:
+                model=self._name
+                uid=self._uid
+                user=self.env['res.users'].browse(uid)
+                soc=user.company_id.partner_id.is_code
+                x = cde.commande
+                x = x.replace("#soc"   , soc)
+                x = x.replace("#model" , model)
+                x = x.replace("#res_id", str(obj.id))
+                x = x.replace("#uid"   , str(uid))
+                lines=os.popen(x).readlines()
+                for line in lines:
+                    _logger.info(line.strip())
+                now = datetime.datetime.now()
+                obj.is_date_traitement_edi = now
+                body = u"<b>DESADV envoyé</b><br>"+"<br>".join(lines)
+                vals={
+                    'author_id': user.partner_id.id,
+                    'type'     : "notification",
+                    'body'     : body,
+                    'model'    : model,
+                    'res_id'   : obj.id
+                }
+                res=self.env['mail.message'].create(vals)
+
+
+
+
+
+
+    # @api.multi
+    # def desadv_action(self):
+    #     cr = self._cr
+    #     for obj in self : 
+
+    #         # Pour Treve : 
+    #         NumeroBALEmetteur  = "ECARFRNTREVES"
+    #         NumeroBALRecepteur = "TREVESAPSPT"
+    #         Standard           = "EDIFACT"
+
+    #         # Pour Antolin
+    #         NumeroBALEmetteur  = "1008063"
+    #         NumeroBALRecepteur = "VDA4913"
+    #         Standard           = "VDA"
+
+    #         DateDocument = datetime.datetime.strptime(obj.date_done, '%Y-%m-%d %H:%M:%S')
+    #         DateDocument = DateDocument.strftime('%Y%m%d%H%M%S')
+
+    #         DateHeureEstimeeArrivee = datetime.datetime.strptime(obj.is_date_livraison, '%Y-%m-%d')
+    #         DateHeureEstimeeArrivee = DateHeureEstimeeArrivee.strftime('%Y%m%d')+"080000"
+
+    #         data={
+    #             'NumeroBALEmetteur' : NumeroBALEmetteur,
+    #             'NumeroBALRecepteur': NumeroBALRecepteur,
+    #             'Standard'          : Standard,
+    #             'NumeroDocument'    : obj.name,
+    #             'TypeDocumentCode': "351",                             # ??
+    #             'TypeDocumentCodeAgence': "10",                        # ??
+    #             'NumeroIdentificationDestinataire': "0944513191216",   # ??
+    #             'NumeroIdentificationDestinataireAgence': "92",        # ??
+    #             'DateDocument': DateDocument,                          # ex : 202201270943
+    #             'EXPEDITION': {
+    #                 'DateHeureEstimeeArrivee': DateHeureEstimeeArrivee, # ex : 202202080000
+    #                 'PoidsBrutExpedition': "0",
+    #                 'UniteMesurePoidsExpedition': "KGM",
+
+    #                 'PARTIE_CITEE_001': {                              # ??
+    #                     'RolePartieCitee': "CZ",
+    #                     'IdentificationPartieCitee': "0931377846381",
+    #                     'IdentificationPartieCiteeAgence': "10",
+    #                 },
+    #                 'PARTIE_CITEE_002': {                              # ??
+    #                     'RolePartieCitee': "SE",
+    #                     'IdentificationPartieCitee': "0931377846381",
+    #                     'IdentificationPartieCiteeAgence': "10",
+    #                     'RoleNumeroComplementairePartieCitee': "ADE",
+    #                     'NumeroComplementairePartieCitee': "0020002956",
+    #                 },
+    #                 'PARTIE_CITEE_003': {                              # ??
+    #                     'RolePartieCitee': "CN",
+    #                     'IdentificationPartieCitee': "0944513191216",
+    #                     'IdentificationPartieCiteeAgence': "92",
+    #                     'POINT_DE_DECHARGEMENT':{
+    #                         'CodeIdentificationPointDechargement': '52A1'
+    #                     }
+    #                 },
+
+    #                 'EQUIPEMENT': {                                    # ??
+    #                     'IdentificationEquipement': "UNKNOWN",
+    #                     'CodeTypeEquipement': "TE",
+    #                 },
+    #             }
+    #         }
+
+    #         lig=1
+    #         for line in obj.move_lines:
+
+
+    #             LIGNE_ARTICLE={
+    #                 'QuantiteAExpedier': line.product_uom_qty,
+    #                 'UniteMesureQuantiteAExpedier': "PCE",
+    #                 'GROUPE_UC': {
+    #                     'NombreUCIdentiqueParGroupe': 5,          # ??
+    #                     'UniteMesureQuantiteAExpedier': 600,      # ??
+    #                     'UniteMesureNombreArticleParUC': "PCE",
+    #                     'TYPE_UM_UC': {
+    #                         'IdentifiantTypeUC': "PCE",
+    #                         'IdentifiantTypeUCAgence': "92",      # ??
+    #                     },
+    #                     'ARTICLE_EXPEDIE': {
+    #                         'NumeroArticleClient': "350431786",
+    #                         'NiveauConfiguration': "0",
+    #                         'ARTICLE_PROGRAMME': {
+    #                             'NumeroCommande': "5500000462",
+    #                             'ARTICLE': {
+    #                                 'NumeroArticleSupplementaire': "350431786",
+    #                                 'LigneDescriptionArticle': "CLIP-OMEGA-BFB",
+    #                                 'CodePaysOrigine': "FR",
+    #                             }
+    #                         }
+    #                     }
+    #                 }
+    #             }
+
+
+    #             # Recherche des UMs *******************************************
+    #             SQL="""
+    #                 select distinct um.id, um.name
+    #                 from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+    #                                         inner join is_liste_servir ls on um.liste_servir_id=ls.id
+    #                 where ls.id=%s and uc.product_id=%s
+    #             """
+    #             cr.execute(SQL,[obj.is_sale_order_id.is_liste_servir_id.id,line.product_id.id])
+    #             result = cr.fetchall()
+    #             lig_um=1
+    #             for row in result:
+    #                 seq_um=("000"+str(lig_um))[-3:]
+    #                 UM_INDIVIDUEL={
+    #                     'NumeroUM': row[1]
+    #                 }
+
+    #                 #** Recherche des UC **************************************
+    #                 SQL="""
+    #                     select 
+    #                         uc.num_eti,
+    #                         pt.is_code,
+    #                         um.name,
+    #                         uc.qt_pieces,
+    #                         pp.id,
+    #                         um.id,
+    #                         uc.production
+    #                     from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
+    #                                             inner join is_liste_servir ls on um.liste_servir_id=ls.id
+    #                                             inner join product_product pp on uc.product_id=pp.id 
+    #                                             inner join product_template pt on pp.product_tmpl_id=pt.id
+    #                     where um.id=%s
+    #                 """
+    #                 cr.execute(SQL,[row[0]])
+    #                 result2 = cr.fetchall()
+    #                 lig_uc=1
+    #                 for row2 in result2:
+    #                     seq_uc=("000"+str(lig_uc))[-3:]
+    #                     UC_INDIVIDUEL = {
+    #                         'NumeroUC': row2[0]
+    #                     }
+    #                     UM_INDIVIDUEL["UC_INDIVIDUEL_"+seq_uc] = UC_INDIVIDUEL
+    #                     lig_uc+=1
+
+
+    #                 #**********************************************************
+
+
+    #                 LIGNE_ARTICLE["GROUPE_UC"]["UM_INDIVIDUEL_"+seq_um]=UM_INDIVIDUEL
+    #                 lig_um+=1
+
+
+    #             sequence=("000"+str(lig))[-3:]
+    #             data['EXPEDITION']["LIGNE_ARTICLE_"+sequence]=LIGNE_ARTICLE
+    #             lig+=1
+
+
+
+    #         xml = dicttoxml(data, attr_type=False, custom_root='AVIEXP')
+    #         dom = parseString(xml)
+    #         res=dom.toprettyxml()
+    #         res=res.replace('<?xml version="1.0" ?>', '<?xml version="1.0" encoding="ISO-8859-1" ?>\n<!DOCTYPE eCar_AVIEXP>\n')
+    #         res = re.sub(r"PARTIE_CITEE_...", "PARTIE_CITEE", res)
+    #         res = re.sub(r"UC_INDIVIDUEL_...", "UC_INDIVIDUEL", res)
+    #         res = re.sub(r"LIGNE_ARTICLE_...", "LIGNE_ARTICLE", res)
+
+
+    #         # ** Enregistrement du fichier ************************************
+    #         name = "desadv-"+str(obj.name)+".xml"
+    #         path = "/tmp/"+name
+    #         fd = os.open(path,os.O_RDWR|os.O_CREAT)
+    #         try:
+    #             os.write(fd, res)
+    #         finally:
+    #             os.close(fd)
+    #         # **********************************************************************
+
+    #         # ** Creation ou modification de la pièce jointe ***********************
+    #         model=self._name
+    #         attachment_obj = self.env['ir.attachment']
+    #         attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
+    #         datas = open(path,'rb').read().encode('base64')
+    #         vals = {
+    #             'name':        name,
+    #             'datas_fname': name,
+    #             'type':        'binary',
+    #             'res_model':   model,
+    #             'res_id':      obj.id,
+    #             'datas':       datas,
+    #         }
+    #         if attachments:
+    #             for attachment in attachments:
+    #                 attachment.write(vals)
+    #                 attachment_id=attachment.id
+    #         else:
+    #             attachment = attachment_obj.create(vals)
+    #             attachment_id=attachment.id
+    #         #***********************************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class stock_quant(models.Model):
     _inherit = "stock.quant"
     _order   = "product_id, location_id"
@@ -944,22 +1224,4 @@ class stock_move(models.Model):
         #if prod_orders:
         #    production_obj.signal_workflow(cr, uid, list(prod_orders), 'button_produce')
         return res
-
-
-
-class stock_production_lot(models.Model):
-    _inherit = "stock.production.lot"
-    _order="id desc"
-
-    is_date_peremption = fields.Date("Date de péremption")
-    is_lot_fournisseur = fields.Char("Lot fournisseur")
-
-
-
-
-class stock_inventory(models.Model):
-    _inherit = "stock.inventory"
-    _order="date desc"
-
-
 

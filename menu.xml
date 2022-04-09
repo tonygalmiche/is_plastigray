@@ -1893,9 +1893,8 @@
         ])]"/>
     </record>
 
-
-
-    <menuitem id="is_database_menu" action="is_database_action" name="Sites" parent="base.menu_res_company_global" sequence="90"/>
+    <menuitem id="is_database_menu"         action="is_database_action"         name="Sites"              parent="base.menu_res_company_global" sequence="90"/>
+    <menuitem id="is_commande_externe_menu" action="is_commande_externe_action" name="Commandes externes" parent="base.menu_res_company_global" sequence="92"/>
 
 
     <!-- Déplacement des menus standards sous le menu 'Autre' -->

@@ -40,6 +40,7 @@ import is_instrument_mesure
 import is_historique_controle
 import is_presse
 import is_prechauffeur
+import is_commande_externe
 import is_demande_achat
 import is_demande_achat_serie
 import is_demande_achat_fg
