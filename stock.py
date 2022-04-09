@@ -8,7 +8,6 @@ from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, float_compare
 import time
 import datetime
 from xml.dom.minidom import parseString
-from dicttoxml import dicttoxml
 import re
 import os
 from collections import OrderedDict
