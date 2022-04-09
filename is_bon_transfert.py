@@ -3,10 +3,14 @@ import datetime
 from openerp import models,fields,api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning
+import os
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class is_bon_transfert(models.Model):
     _name = "is.bon.transfert"
+    _inherit=['mail.thread']
     _description = "Bon de transfert"
     _order='name desc'
 
@@ -22,6 +26,9 @@ class is_bon_transfert(models.Model):
     total_um        = fields.Float('Total UM'       , compute='_compute', readonly=True, store=True, digits=(14,1))
     line_ids        = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
     galia_um_ids    = fields.One2many('is.galia.base.um', 'bon_transfert_id', u"UMs scannées", readonly=True)
+    traitement_edi      = fields.Selection(related='partner_id.is_traitement_edi', string='Traitement EDI', readonly=True)
+    date_traitement_edi = fields.Datetime("Date traitement EDI")
+
 
     _defaults = {
         'date_creation':  lambda *a: fields.datetime.now(),
@@ -197,6 +204,36 @@ class is_bon_transfert(models.Model):
                 }
                 res.append(vals)
         return res
+
+
+    @api.multi
+    def desadv_action(self):
+        for obj in self : 
+            cdes = self.env['is.commande.externe'].search([('name','=',"edi-tenor-desadv")])
+            for cde in cdes:
+                model=self._name
+                uid=self._uid
+                user=self.env['res.users'].browse(uid)
+                soc=user.company_id.partner_id.is_code
+                x = cde.commande
+                x = x.replace("#soc"   , soc)
+                x = x.replace("#model" , model)
+                x = x.replace("#res_id", str(obj.id))
+                x = x.replace("#uid"   , str(uid))
+                lines=os.popen(x).readlines()
+                for line in lines:
+                    _logger.info(line.strip())
+                now = datetime.datetime.now()
+                obj.date_traitement_edi = now
+                body = u"<b>DESADV envoyé</b><br>"+"<br>".join(lines)
+                vals={
+                    'author_id': user.partner_id.id,
+                    'type'     : "notification",
+                    'body'     : body,
+                    'model'    : model,
+                    'res_id'   : obj.id
+                }
+                res=self.env['mail.message'].create(vals)
 
 
 class is_bon_transfert_line(models.Model):
