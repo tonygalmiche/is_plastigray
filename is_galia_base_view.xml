@@ -151,6 +151,13 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Form">  
+                    <header>
+                        <button 
+                            name="imprimer_etiquette_um_action" 
+                            string="Imprimer étiquette UM" 
+                            type="object"
+                        />
+                    </header>
                     <sheet>
                         <group>
                             <field name="name"/>

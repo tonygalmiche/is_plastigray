@@ -4,6 +4,9 @@ from openerp import models,fields,api
 from openerp.tools.translate import _
 import datetime
 import pytz
+import os
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class is_galia_base(models.Model):
@@ -75,8 +78,24 @@ class is_galia_base_um(models.Model):
             }
 
 
-
-
+    @api.multi
+    def imprimer_etiquette_um_action(self):
+        for obj in self : 
+            cdes = self.env['is.commande.externe'].search([('name','=',"imprimer-etiquette-um")])
+            for cde in cdes:
+                model=self._name
+                uid=self._uid
+                user=self.env['res.users'].browse(uid)
+                soc=user.company_id.partner_id.is_code
+                x = cde.commande
+                x = x.replace("#soc"  , soc)
+                x = x.replace("#um_id", str(obj.id))
+                x = x.replace("#uid"  , str(uid))
+                _logger.info(x)
+                lines=os.popen(x).readlines()
+                for line in lines:
+                    _logger.info(line.strip())
+ 
 
 class is_galia_base_uc(models.Model):
     _name='is.galia.base.uc'
