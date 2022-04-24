@@ -29,29 +29,26 @@ class is_facture_pk(models.Model):
             obj.semaine_facture = semaine_facture
 
 
-    num_facture      = fields.Char('N° de Facture')
-    date_facture     = fields.Date('Date de facture', required=True, default=lambda *a: fields.datetime.now())
-    annee_facture    = fields.Char('Année de la facture'  , compute='_compute', store=True)
-    semaine_facture  = fields.Char('Semaine de la facture', compute='_compute', store=True)
-    num_bl           = fields.Many2one('stock.picking', string='N° de BL', required=True, domain=[('is_sale_order_id', '!=', False),('is_facture_pk_id', '=', False)]) 
-    matiere_premiere = fields.Float('Total Matière première (€)'       , digits=(14, 4), readonly=True)
-    main_oeuvre      = fields.Float("Total Main d'oeuvre (€)"          , digits=(14, 4), readonly=True)
-    total_moules     = fields.Float("Total des moules à taxer (€)"     , digits=(14, 4), compute='_compute', store=True)
-    total            = fields.Float("TOTAL (€)"                        , digits=(14, 4), compute='_compute', store=True)
-    nb_cartons       = fields.Integer("Nombre de cartons", readonly=True)
-    nb_colis         = fields.Integer("Nombre de colis")
-    nb_pieces        = fields.Integer("Nombre de pièces", readonly=True)
-    poids_net        = fields.Float("Poids net (Kg)" , digits=(14, 2))
-    poids_brut       = fields.Float("Poids brut (Kg)", digits=(14, 2))
-    volume           = fields.Integer("Vomule (m3)", compute='_compute', store=True)
-    line_ids         = fields.One2many('is.facture.pk.line' , 'is_facture_id', string='Lignes de la facture')
-    moule_ids        = fields.One2many('is.facture.pk.moule', 'is_facture_id', string='Moules à taxer')
+    num_facture        = fields.Char('N° de Facture')
+    date_facture       = fields.Date('Date de facture', required=True, default=lambda *a: fields.datetime.now())
+    annee_facture      = fields.Char('Année de la facture'  , compute='_compute', store=True)
+    semaine_facture    = fields.Char('Semaine de la facture', compute='_compute', store=True)
+    num_bl             = fields.Many2one('stock.picking', string='N° de BL', required=True, domain=[('is_sale_order_id', '!=', False),('is_facture_pk_id', '=', False)]) 
+    num_import_matiere = fields.Char(u"N° d'import matière première")
+    matiere_premiere   = fields.Float('Total Matière première (€)'       , digits=(14, 4), readonly=True)
+    main_oeuvre        = fields.Float("Total Main d'oeuvre (€)"          , digits=(14, 4), readonly=True)
+    total_moules       = fields.Float("Total des moules à taxer (€)"     , digits=(14, 4), compute='_compute', store=True)
+    total              = fields.Float("TOTAL (€)"                        , digits=(14, 4), compute='_compute', store=True)
+    nb_cartons         = fields.Integer("Nombre de cartons", readonly=True)
+    nb_colis           = fields.Integer("Nombre de colis")
+    nb_pieces          = fields.Integer("Nombre de pièces", readonly=True)
+    poids_net          = fields.Float("Poids net (Kg)" , digits=(14, 2))
+    poids_brut         = fields.Float("Poids brut (Kg)", digits=(14, 2))
+    volume             = fields.Integer("Vomule (m3)", compute='_compute', store=True)
+    line_ids           = fields.One2many('is.facture.pk.line' , 'is_facture_id', string='Lignes de la facture')
+    moule_ids          = fields.One2many('is.facture.pk.moule', 'is_facture_id', string='Moules à taxer')
 
-    # _defaults = {
-    #     'date_facture': time.strftime('%Y-%m-%d'),
-    # }
-    
-    
+      
     @api.model
     def create(self, vals):
         data_obj          = self.env['ir.model.data']

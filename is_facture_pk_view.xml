@@ -24,6 +24,7 @@
                                 <field name="annee_facture"/> 
                                 <field name="semaine_facture"/> 
                                 <field name="num_bl"/> 
+                                <field name="num_import_matiere"/> 
                             </group>
                             <group>
                                 <field name="nb_pieces"/> 
@@ -86,6 +87,7 @@
                     <field name="annee_facture"/> 
                     <field name="semaine_facture"/> 
                     <field name="num_bl"/>
+                    <field name="num_import_matiere"/> 
                     <field name="matiere_premiere" sum="Total"/>
                     <field name="main_oeuvre"      sum="Total"/>
                     <field name="total_moules"     sum="Total"/>
@@ -182,16 +184,5 @@
                 </search>
             </field>
         </record>
-        <!--
-        <record model="ir.actions.act_window" id="is_facture_pk_line_action">
-            <field name="name">Lignes Facture PK</field>
-            <field name="res_model">is.facture.pk.line</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="is_facture_pk_line_tree_view"/>
-        </record>
-        -->
-
-
 </data>
 </openerp>

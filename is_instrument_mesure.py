@@ -230,9 +230,9 @@ class is_famille_instrument(models.Model):
     _name = 'is.famille.instrument'
     
     name = fields.Char("Nom de la famille", required=True)
-    intensive = fields.Char("INTENSIVE (fréquence f >= 1 fois / jour) en mois")
-    moyenne = fields.Char("MOYENNE ( 1fois / 5 jours < f < 1fois / jour ) en mois")
-    faible = fields.Char("FAIBLE (f <=1fois / 5 jours) en mois")
+    intensive = fields.Char("INTENSIVE (fréquence f >= 1 fois / jour) en mois ou méthode OPPERET")
+    moyenne = fields.Char("MOYENNE ( 1fois / 5 jours < f < 1fois / jour ) en mois ou méthode OPPERET")
+    faible = fields.Char("FAIBLE (f <=1fois / 5 jours) en mois ou méthode OPPERET")
     tolerance = fields.Char("Tolérance")
     afficher_classe = fields.Boolean("Afficher le champ Classe", default=False)
     afficher_type = fields.Boolean("Afficher les champs Type, Etendue et Résolution", default=False)
