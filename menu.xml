@@ -394,7 +394,6 @@
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
             ref('is_chef_equipe_group'),
-
             ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
@@ -409,7 +408,6 @@
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
             ref('is_chef_equipe_group'),
-
             ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
@@ -424,6 +422,7 @@
             ref('is_rsp_achats_group'),
             ref('is_rsp_production_group'),
             ref('is_magasiniers_group'),
+            ref('is_employes_hors_production_group'),
         ])]"/>
     </record>
     <record id="is_ligne_reception_menu" model="ir.ui.menu">

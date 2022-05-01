@@ -39,9 +39,8 @@
             <field name="model">is.badge</field>
             <field name="arch" type="xml">
                 <search string="Recherche">
-                    <field name="name" filter_domain="[('name', 'ilike', self)]"/>
+                    <field name="name" string="Code / Code THEIA" filter_domain="['|',('name', 'ilike', self),('code_theia', 'ilike', self)]"/>
                     <field name="employee"/>
-                    <field name="code_theia"/> 
                     <field name="nom_odalid"/> 
                 </search>
             </field>
