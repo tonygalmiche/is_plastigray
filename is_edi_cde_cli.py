@@ -119,6 +119,12 @@ class is_edi_cde_cli(models.Model):
             line_obj = self.env['is.edi.cde.cli.line']
             for attachment in obj.file_ids:
                 datas = self.get_data(obj.import_function, attachment)
+
+
+
+
+
+
                 for row in datas:
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
@@ -1499,52 +1505,52 @@ class is_edi_cde_cli(models.Model):
         return res
 
 
+    # Nouvel EDI de THERMOR à partir du 15/05/2022
     @api.multi
     def get_data_THERMOR(self, attachment):
         res = []
         for obj in self:
-            csvfile = base64.decodestring(attachment.datas)
-            csvfile = csvfile.split("\n")
-            csvfile = csv.reader(csvfile, delimiter=';')
-            tab=[]
-            for ct, lig in enumerate(csvfile):
-                if len(lig)>37 and ct>0:
-                    x = lig[23]
-                    x = x.replace('="', '')
-                    ref_article_client = x.replace('"', '')
+            #** Lecture du fichier xlsx ****************************************
+            xlsxfile = base64.decodestring(attachment.datas)
+            path = '/tmp/THERMOR-'+str(obj.id)+'.xlsx'
+            f = open(path,'wb')
+            f.write(xlsxfile)
+            f.close()
+            type_fichier=False
+            #*******************************************************************
+
+            #** Ouverture du fichier *******************************************
+            try:
+                wb = openpyxl.load_workbook(filename = path)
+                ws = wb.active
+                cells = list(ws)
+            except:
+                raise Warning(u"Le fichier "+attachment.name+u" n'est pas un fichier xlsx valide")
+            #*******************************************************************
+
+            lig=0
+            for row in ws.rows:
+                if lig>0:
+                    type_commande = 'previsionnel'
+                    try:
+                        quantite = float(cells[lig][7].value)
+                    except ValueError:
+                        quantite=0
+
+                    try:
+                        date_livraison = cells[lig][9].value.strftime('%Y-%m-%d')
+                    except ValueError:
+                        date_livraison = False
+
+                    ref_article_client = cells[lig][5].value
                     order = self.env['sale.order'].search([
-                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
-                        ('is_ref_client', '=', ref_article_client)]
+                        ('partner_id.is_code', '=', obj.partner_id.is_code),
+                        ('is_ref_client'     , '=', ref_article_client)]
                     )
                     num_commande_client = "??"
                     if len(order):
                         num_commande_client = order[0].client_order_ref
-                    try:
-                        date_livraison = datetime.strptime(lig[33], "%d-%m-%Y")
-                        date_livraison = date_livraison.strftime('%Y-%m-%d')
-                    except:
-                        date_livraison = False
-                    if date_livraison == False:
-                        try:
-                            annee   = int(lig[34][0:4])
-                            semaine = int(lig[34][4:6])
-                            date_livraison = datetime.strptime('%04d-%02d-1' % (annee, semaine), '%Y-%W-%w')
-                            #Pour avoir la semaine en ISO car pas dispo en Python 2.7, uniqument avec Python 3
-                            if date(annee, 1, 4).isoweekday() > 4:
-                                date_livraison -= timedelta(days=7)
-                            date_livraison = date_livraison.strftime('%Y-%m-%d')
-                        except:
-                            date_livraison = False
-                    type_commande = lig[35][2:4]
-                    if type_commande=='CF':
-                        type_commande = 'ferme'
-                    else:
-                        type_commande = 'previsionnel'
-                    quantite = lig[37]
-                    try:
-                        quantite = float(quantite)
-                    except ValueError:
-                        quantite=0
+
                     val = {
                         'num_commande_client' : num_commande_client,
                         'ref_article_client'  : ref_article_client,
@@ -1556,7 +1562,69 @@ class is_edi_cde_cli(models.Model):
                     }
                     val.update({'lignes': [ligne]})
                     res.append(val)
+                lig+=1
         return res
+
+
+    # Ancien EDI THERMOR avant le 15/05/2022
+    # @api.multi
+    # def get_data_THERMOR(self, attachment):
+    #     res = []
+    #     for obj in self:
+    #         csvfile = base64.decodestring(attachment.datas)
+    #         csvfile = csvfile.split("\n")
+    #         csvfile = csv.reader(csvfile, delimiter=';')
+    #         tab=[]
+    #         for ct, lig in enumerate(csvfile):
+    #             if len(lig)>37 and ct>0:
+    #                 x = lig[23]
+    #                 x = x.replace('="', '')
+    #                 ref_article_client = x.replace('"', '')
+    #                 order = self.env['sale.order'].search([
+    #                     ('partner_id.is_code'   , '=', obj.partner_id.is_code),
+    #                     ('is_ref_client', '=', ref_article_client)]
+    #                 )
+    #                 num_commande_client = "??"
+    #                 if len(order):
+    #                     num_commande_client = order[0].client_order_ref
+    #                 try:
+    #                     date_livraison = datetime.strptime(lig[33], "%d-%m-%Y")
+    #                     date_livraison = date_livraison.strftime('%Y-%m-%d')
+    #                 except:
+    #                     date_livraison = False
+    #                 if date_livraison == False:
+    #                     try:
+    #                         annee   = int(lig[34][0:4])
+    #                         semaine = int(lig[34][4:6])
+    #                         date_livraison = datetime.strptime('%04d-%02d-1' % (annee, semaine), '%Y-%W-%w')
+    #                         #Pour avoir la semaine en ISO car pas dispo en Python 2.7, uniqument avec Python 3
+    #                         if date(annee, 1, 4).isoweekday() > 4:
+    #                             date_livraison -= timedelta(days=7)
+    #                         date_livraison = date_livraison.strftime('%Y-%m-%d')
+    #                     except:
+    #                         date_livraison = False
+    #                 type_commande = lig[35][2:4]
+    #                 if type_commande=='CF':
+    #                     type_commande = 'ferme'
+    #                 else:
+    #                     type_commande = 'previsionnel'
+    #                 quantite = lig[37]
+    #                 try:
+    #                     quantite = float(quantite)
+    #                 except ValueError:
+    #                     quantite=0
+    #                 val = {
+    #                     'num_commande_client' : num_commande_client,
+    #                     'ref_article_client'  : ref_article_client,
+    #                 }
+    #                 ligne = {
+    #                     'quantite'      : quantite,
+    #                     'type_commande' : type_commande,
+    #                     'date_livraison': date_livraison,
+    #                 }
+    #                 val.update({'lignes': [ligne]})
+    #                 res.append(val)
+    #     return res
 
 
     @api.multi

@@ -115,7 +115,8 @@
                     <filter string="Article"      context="{'group_by':'product_id'}"/>
                     <filter string="Segment"      context="{'group_by':'segment_id'}"/>
                     <filter string="Catégorie"    context="{'group_by':'is_category_id'}"/>
-                    <filter string="Gestionnaire" context="{'group_by':'is_gestionnaire_id'}"/>
+                    <filter string="Gestionnaire"      context="{'group_by':'is_gestionnaire_id'}"/>
+                    <filter string="Commande Client"   context="{'group_by':'client_order_ref'}"/>
                     <filter string="Mois d'expédition" context="{'group_by':'date_expedition:month'}"/>
                     <filter string="Mois d'arrivé chez le client" context="{'group_by':'date_livraison:month'}"/>
                 </group>

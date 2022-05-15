@@ -520,10 +520,10 @@
             <field name="inherit_id" ref="stock.view_inventory_form"/>
             <field name="arch" type="xml">
                 <button name="prepare_inventory" position="replace">
-                    <button name="prepare_inventory" states="draft" string="Start Inventory" type="object" class="oe_highlight" groups="is_plastigray.is_rsp_production_group"/>
+                    <button name="prepare_inventory" states="draft" string="Start Inventory" type="object" class="oe_highlight" groups="is_plastigray.is_rsp_production_group,is_plastigray.is_inventaire_jour_group"/>
                 </button>
                 <button name="action_done" position="replace">
-                    <button name="action_done" states="confirm" string="Validate Inventory" type="object" class="oe_highlight"  groups="is_plastigray.is_rsp_production_group"/>
+                    <button name="action_done" states="confirm" string="Validate Inventory" type="object" class="oe_highlight"  groups="is_plastigray.is_rsp_production_group,is_plastigray.is_inventaire_jour_group"/>
                 </button>
             </field>
         </record>
