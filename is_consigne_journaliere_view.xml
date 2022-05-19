@@ -39,6 +39,7 @@
                                             <field name="mod1"/>
                                             <field name="operateur"/>
                                             <field name="moule1"/>
+                                            <field name="info_planning1"/>
                                             <field name="matiere1"/>
                                             <field name="tps_arret"/>
                                             <field name="heure"/>

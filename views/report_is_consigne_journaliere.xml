@@ -4,16 +4,16 @@
 
         <template id="report_is_consigne_journaliere_style">
             .header {
-                font-size:11pt;
+                font-size:10pt;
             }
             .footer {
-                font-size:11pt;
+                font-size:10pt;
             }
             .page {
-                font-size:11pt;
+                font-size:10pt;
             }
             .titre {
-                font-size:18pt;
+                font-size:16pt;
                 font-weight: bold;
             }
             .nowrap{
@@ -24,13 +24,13 @@
                 border:1px solid black;
             }
             td{
-                padding:0.5mm;
+                padding:0.3mm;
                 border:1px solid black;
                 text-align:center;
             }
             th{
                 font-weight: bold;
-                padding:0.5mm;
+                padding:0.3mm;
                 border:1px solid black;
             }
         </template>
@@ -148,6 +148,7 @@
                                         <th class="text-center"   style="vertical-align:top">MOD</th>
                                         <th class="text-center"   style="vertical-align:top">Opérateur</th>
                                         <th class="text-center"   style="vertical-align:top">Moule</th>
+                                        <th class="text-center"   style="vertical-align:top">Info Planning</th>
                                         <th class="text-center"   style="vertical-align:top">Matière</th>
                                         <th class="text-center"   style="vertical-align:top">Tps arrêt matière</th>
                                         <th class="text-center"   style="vertical-align:top">Heure</th>
@@ -165,6 +166,7 @@
                                         <td class="text-center">    <span t-field="l.mod1"/> </td>
                                         <td class="text-center">    <span t-field="l.operateur"/> </td>
                                         <td class="text-center">    <span t-field="l.moule1"/> </td>
+                                        <td class="text-left" style="font-size:9pt"> <span t-field="l.info_planning1"/> </td>
                                         <td class="text-center">    <span t-field="l.matiere1"/> </td>
                                         <td class="text-center">    <span t-field="l.tps_arret"/> </td>
                                         <td class="text-center">    <span t-field="l.heure"/> </td>
@@ -173,11 +175,6 @@
                                         <td class="text-center">    <span t-field="l.moule2"/> </td>
                                         <td class="text-center">    <span t-field="l.matiere2"/> </td>
                                         <td class="text-center">    <span t-field="l.remarque"/> </td>
-                                        <!--
-                                        <td class="text-right nowrap">   
-                                            <t t-esc='"{:,.1f}".format(l.stock01).replace(","," ").replace(".",",")'/> 
-                                        </td>
-                                        -->
                                     </tr>
                                 </tbody>
                             </table>
