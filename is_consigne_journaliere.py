@@ -239,9 +239,9 @@ class is_consigne_journaliere_inj(models.Model):
                             SQL=""""
                                 select id,plasfil_moule,plasfil_dateend,plasfil_j_etat 
                                 from doc1225 
-                                where locked='0' and plasfil_dateend<now() and plasfil_j_etat='AF' and plasfil_moule like '"""+moule+"""'
+                                where locked='0' and plasfil_dateend<now() and plasfil_j_etat='AF' and plasfil_moule=%s
                             """
-                            cr_dynacase.execute(SQL)
+                            cr_dynacase.execute(SQL,[moule])
                             result = cr_dynacase.fetchall()
                             for row in result:
                                 AcceptationEI=False
