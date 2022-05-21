@@ -224,21 +224,21 @@
                     <br/>
                     <br/>
                     <br/>
-                    <div class="row" style="page-break-after:always;">
+                    <div class="row">
                         <div class="col-xs-12 text-center">
                             Règlement : par virement SWIFT sur le compte n° 7300 0080 8592 0340 0046<br/>
                             T.I.B. : Tunis International Banq,Avenue des Etats-Unis- TUNISIE<br/>
                             Code SWIFT : TUIBTNTT
                         </div>
                     </div>
-
                     <br/>
-
                     <div class="row" t-if="o.num_import_matiere">
-                        <div class="col-xs-12 text-left">
+                        <div class="col-xs-12 text-left" style="font-size:11pt">
                             N° d'import matière première : <b><span t-field="o.num_import_matiere"/></b>
                         </div>
                     </div>
+
+                    <div class="row" style="page-break-after:always;"/>
 
                     <div class="row">
                         <div class="col-xs-12">
