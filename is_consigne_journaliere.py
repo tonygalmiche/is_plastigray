@@ -92,7 +92,8 @@ class is_consigne_journaliere_inj(models.Model):
         if password:
             try:
                 cnx_dynacase = psycopg2.connect("host='dynacase' port=5432 dbname='freedom' user='freedomowner' password='"+password+"'")
-                cr_dynacase = cnx_dynacase.cursor(cursor_factory=RealDictCursor)
+                #cr_dynacase = cnx_dynacase.cursor(cursor_factory=RealDictCursor)
+                cr_dynacase = cnx_dynacase.cursor()
             except:
                 cr_dynacase=False
  
