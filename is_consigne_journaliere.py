@@ -84,7 +84,6 @@ class is_consigne_journaliere_inj(models.Model):
             cr0 = cnx0.cursor(cursor_factory=RealDictCursor)
         except:
             cr0 = False
-            #raise Warning("Impossible de se connecter à odoo0")
 
         #** Connexion à Dynacase **********************************************
         password=company.is_dynacase_pwd
@@ -92,12 +91,10 @@ class is_consigne_journaliere_inj(models.Model):
         if password:
             try:
                 cnx_dynacase = psycopg2.connect("host='dynacase' port=5432 dbname='freedom' user='freedomowner' password='"+password+"'")
-                #cr_dynacase = cnx_dynacase.cursor(cursor_factory=RealDictCursor)
-                cr_dynacase = cnx_dynacase.cursor()
+                cr_dynacase = cnx_dynacase.cursor(cursor_factory=RealDictCursor)
             except:
                 cr_dynacase=False
  
-
         for obj in self:
             info=[]
             if cr0 and cr_dynacase:
@@ -240,22 +237,16 @@ class is_consigne_journaliere_inj(models.Model):
                         moule = obj.of1_id.product_id.is_mold_id.name
                         if moule:
                             AcceptationEI=True
-                            SQL=""""
+                            SQL="""
                                 select id,plasfil_moule,plasfil_dateend,plasfil_j_etat 
                                 from doc1225 
                                 where 
                                     locked='0' and 
                                     plasfil_dateend<now() and 
-                                    plasfil_j_etat='AF' 
+                                    plasfil_j_etat='AF' and 
+                                    plasfil_moule=%s 
                             """
-
-                            SQL=SQL + " and plasfil_moule='"+moule+"' "
-
-                            _logger.info(SQL)
-
-
-
-                            cr_dynacase.execute(SQL)
+                            cr_dynacase.execute(SQL,[moule])
                             result = cr_dynacase.fetchall()
                             for row in result:
                                 AcceptationEI=False
