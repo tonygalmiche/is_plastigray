@@ -7,6 +7,9 @@ from openerp.exceptions import Warning
 import datetime
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import logging
+_logger = logging.getLogger(__name__)
+
 
 class is_consigne_journaliere(models.Model):
     _name = "is.consigne.journaliere"
@@ -239,9 +242,14 @@ class is_consigne_journaliere_inj(models.Model):
                             SQL=""""
                                 select id,plasfil_moule,plasfil_dateend,plasfil_j_etat 
                                 from doc1225 
-                                where locked='0' and plasfil_dateend<now() and plasfil_j_etat='AF' and plasfil_moule=%s
+                                where locked='0' and plasfil_dateend<now() and plasfil_j_etat='AF' and plasfil_moule='"""+moule+"""' 
                             """
-                            cr_dynacase.execute(SQL,[moule])
+
+                            _logger.info(SQL)
+
+
+
+                            cr_dynacase.execute(SQL)
                             result = cr_dynacase.fetchall()
                             for row in result:
                                 AcceptationEI=False
