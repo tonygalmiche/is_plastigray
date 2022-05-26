@@ -26,6 +26,7 @@ class is_edi_cde_cli_line(models.Model):
     product_id          = fields.Many2one('product.product', 'Article')
     quantite            = fields.Integer('Quantité')
     date_livraison      = fields.Date('Date liv')
+    point_dechargement  = fields.Char(u'Point de déchargement')
     type_commande       = fields.Selection([('ferme', 'Ferme'),('previsionnel', 'Prév.')], "Type")
     prix                = fields.Float('Prix', digits=(14,4),)
     order_id            = fields.Many2one('sale.order', 'Cde Odoo')
@@ -120,14 +121,12 @@ class is_edi_cde_cli(models.Model):
             for attachment in obj.file_ids:
                 datas = self.get_data(obj.import_function, attachment)
 
-
-
-
-
-
                 for row in datas:
                     num_commande_client = row["num_commande_client"]
                     ref_article_client  = row["ref_article_client"]
+                    point_dechargement = False
+                    if "point_dechargement" in row:
+                        point_dechargement=row["point_dechargement"]
                     order_id = False
                     date_livraison=False
                     type_commande=False
@@ -148,10 +147,26 @@ class is_edi_cde_cli(models.Model):
                         order_id     = order[0].id
                         partner_id   = order[0].partner_id.id
                         pricelist_id = order[0].pricelist_id.id
+
+
+                                
+
+
+
+
                     for ligne in row["lignes"]:
                         product_id = False
                         prix       = 0
                         anomalie2  = []
+
+
+                        if len(order):
+                            if point_dechargement:
+                                if point_dechargement!=order[0].is_point_dechargement:
+                                    anomalie2.append(u"Point de déchargement modifié (%s<>%s)"%(point_dechargement,order[0].is_point_dechargement))
+
+
+
                         if "anomalie" in ligne:
                             if ligne["anomalie"]:
                                 anomalie2.append(ligne["anomalie"])
@@ -242,6 +257,7 @@ class is_edi_cde_cli(models.Model):
                             'product_id'         : product_id,
                             'quantite'           : ligne["quantite"],
                             'date_livraison'     : date_livraison,
+                            'point_dechargement' : point_dechargement,
                             'type_commande'      : type_commande,
                             'prix'               : prix,
                             'order_id'           : order_id,
@@ -1158,9 +1174,14 @@ class is_edi_cde_cli(models.Model):
                     num_commande_client=""
                     for NumeroArticleClient in article_programme.xpath("NumeroCommande"):
                         num_commande_client=NumeroArticleClient.text
+                    point_dechargement=False
+                    for POINT_DE_DECHARGEMENT in article_programme.xpath("POINT_DE_DECHARGEMENT"):
+                        for CodeIdentificationPointDechargement in POINT_DE_DECHARGEMENT.xpath("CodeIdentificationPointDechargement"):
+                            point_dechargement = CodeIdentificationPointDechargement.text
                     val = {
                         'ref_article_client' : ref_article_client,
                         'num_commande_client': num_commande_client,
+                        'point_dechargement' : point_dechargement,
                         'lignes': []
                     }
                     res1 = []

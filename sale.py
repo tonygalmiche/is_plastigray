@@ -46,6 +46,8 @@ class sale_order(models.Model):
     is_ar_commentaire      = fields.Text("Commentaire AR de commande")
     is_message             = fields.Text("Message", compute='_compute_message')
     is_ar_contact_id       = fields.Many2many('res.partner', 'is_sale_ar_contact_id_rel', 'partner_id', 'contact_id', 'Destinataire AR de commande')
+    is_point_dechargement  = fields.Char(u'Point de déchargement')
+
 
     _defaults = {
         'is_type_commande': 'standard',

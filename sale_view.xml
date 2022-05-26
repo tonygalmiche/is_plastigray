@@ -77,7 +77,8 @@
                                 'invisible': ['|','|',('is_type_commande', '=', 'standard') ,('is_type_commande', '=', 'ls') ,('is_type_commande', '=', 'proforma')] , 
                             }" 
                             context="{'pricelist': pricelist_id}" />
-                    <field name="is_ref_client" readonly="1" attrs="{'invisible' : [('is_article_commande_id', '=', False)]}" />
+                    <field name="is_ref_client" readonly="1" attrs="{'invisible' : [('is_article_commande_id', '=', False)]}"/>
+                    <field name="is_point_dechargement" attrs="{'invisible': [('is_type_commande', '!=', 'ouverte')]}"/>
                     <field name="is_date_envoi_mail" />
                     <field name="is_incoterm" domain="[('is_company', '=', True),('supplier','=', True)]"/>
                     <field name="is_lieu" domain="[('is_company', '=', True),('supplier','=', True)]"/>

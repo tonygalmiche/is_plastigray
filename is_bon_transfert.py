@@ -274,15 +274,30 @@ class is_bon_transfert_line(models.Model):
                     obj.ref_client = row[5]
                     obj.uom_id     = row[6]
 
-    bon_transfert_id = fields.Many2one('is.bon.transfert', 'Bon de transfert', required=True, ondelete='cascade', readonly=True)
-    product_id       = fields.Many2one('product.product', 'Article', required=True)
-    mold_id          = fields.Many2one('is.mold', 'Moule'      , compute='_compute', readonly=True, store=True)
-    ref_client       = fields.Char('Référence client'          , compute='_compute', readonly=True, store=True)
-    quantite         = fields.Float('Quantité', digits=(14,0))
-    uom_id           = fields.Many2one('product.uom', 'Unité'  , compute='_compute', readonly=True, store=True)
-    uc_id            = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
-    nb_uc            = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True, digits=(14,1))
-    um_id            = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
-    nb_um            = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True, digits=(14,1))
+    @api.depends('product_id','quantite')
+    def _compute_point_dechargement(self):
+        for obj in self:
+            x = False
+            if obj.bon_transfert_id.partner_id.is_traitement_edi:
+                orders = self.env['sale.order'].search([
+                    ('partner_id.is_code', '=', obj.bon_transfert_id.partner_id.is_code),
+                    ('is_ref_client'     , '=', obj.product_id.is_ref_client),
+                    ('is_type_commande'  , '=', 'ouverte'),
+                ])
+                for order in orders:
+                    x = order.is_point_dechargement
+            obj.point_dechargement = x
 
+
+    bon_transfert_id   = fields.Many2one('is.bon.transfert', 'Bon de transfert', required=True, ondelete='cascade', readonly=True)
+    product_id         = fields.Many2one('product.product', 'Article', required=True)
+    mold_id            = fields.Many2one('is.mold', 'Moule'      , compute='_compute', readonly=True, store=True)
+    ref_client         = fields.Char('Référence client'          , compute='_compute', readonly=True, store=True)
+    quantite           = fields.Float('Quantité', digits=(14,0))
+    uom_id             = fields.Many2one('product.uom', 'Unité'  , compute='_compute', readonly=True, store=True)
+    uc_id              = fields.Many2one('product.ul', 'UC'      , compute='_compute', readonly=True, store=True)
+    nb_uc              = fields.Float('Nb UC'                    , compute='_compute', readonly=True, store=True, digits=(14,1))
+    um_id              = fields.Many2one('product.ul', 'UM'      , compute='_compute', readonly=True, store=True)
+    nb_um              = fields.Float('Nb UM'                    , compute='_compute', readonly=True, store=True, digits=(14,1))
+    point_dechargement = fields.Char(u'Point de déchargement', compute='_compute_point_dechargement', readonly=True, store=False)
 

@@ -979,8 +979,25 @@ class stock_move(models.Model):
                 lots = u"\n".join(lots)
             obj.is_lots = lots
 
-    is_lots             = fields.Text('Lots', compute='_compute_lots', store=False, readonly=True)
-    is_dosmat_ctrl_qual = fields.Char('Contrôle qualité', readonly=True)
+
+    @api.depends('product_id','product_uom_qty')
+    def _compute_is_point_dechargement(self):
+        for obj in self:
+            x = False
+            if obj.picking_id.partner_id.is_traitement_edi:
+                orders = self.env['sale.order'].search([
+                    ('partner_id.is_code', '=', obj.picking_id.partner_id.is_code),
+                    ('is_ref_client'     , '=', obj.product_id.is_ref_client),
+                    ('is_type_commande'  , '=', 'ouverte'),
+                ])
+                for order in orders:
+                    x = order.is_point_dechargement
+            obj.is_point_dechargement = x
+
+
+    is_lots               = fields.Text(u'Lots', compute='_compute_lots', store=False, readonly=True)
+    is_dosmat_ctrl_qual   = fields.Char(u'Contrôle qualité', readonly=True)
+    is_point_dechargement = fields.Char(u'Point de déchargement', compute='_compute_is_point_dechargement', store=False, readonly=True)
 
 
     @api.multi

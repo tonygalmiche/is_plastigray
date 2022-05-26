@@ -61,6 +61,7 @@
                                      <field name="product_id" />
                                      <field name="mold_id" />
                                      <field name="ref_client" />
+                                     <field name="point_dechargement" />
                                      <field name="quantite" />
                                      <field name="uom_id" />
                                      <field name="uc_id" />
