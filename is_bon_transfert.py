@@ -279,11 +279,18 @@ class is_bon_transfert_line(models.Model):
         for obj in self:
             x = False
             if obj.bon_transfert_id.partner_id.is_traitement_edi:
-                orders = self.env['sale.order'].search([
-                    ('partner_id.is_code', '=', obj.bon_transfert_id.partner_id.is_code),
-                    ('is_ref_client'     , '=', obj.product_id.is_ref_client),
-                    ('is_type_commande'  , '=', 'ouverte'),
-                ])
+                # orders = self.env['sale.order'].search([
+                #     ('partner_id.is_code', '=', obj.bon_transfert_id.partner_id.is_code),
+                #     ('is_ref_client'     , '=', obj.product_id.is_ref_client),
+                #     ('is_type_commande'  , '=', 'ouverte'),
+                # ])
+                filtre = [
+                    ('partner_id'            , '=', obj.bon_transfert_id.partner_id.id),
+                    ('is_article_commande_id', '=', obj.product_id.id),
+                    ('is_type_commande'      , '=', 'ouverte'),
+                    ('state'                 , '=', 'draft'),
+                ]
+                orders = self.env['sale.order'].search(filtre)
                 for order in orders:
                     x = order.is_point_dechargement
             obj.point_dechargement = x
