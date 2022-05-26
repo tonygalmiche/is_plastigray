@@ -697,6 +697,7 @@ class stock_picking(models.Model):
                 x = x.replace("#model" , model)
                 x = x.replace("#res_id", str(obj.id))
                 x = x.replace("#uid"   , str(uid))
+                _logger.info(x)
                 lines=os.popen(x).readlines()
                 for line in lines:
                     _logger.info(line.strip())
