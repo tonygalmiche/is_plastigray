@@ -387,6 +387,20 @@ class is_liste_servir(models.Model):
                 if obj.livrable==True and livrable==False:
                     test=False
 
+
+                point_dechargement = False
+                if obj.partner_id.is_traitement_edi:
+                    filtre = [
+                        ('partner_id'            , '=', obj.partner_id.id),
+                        ('is_article_commande_id', '=', product_id),
+                        ('is_type_commande'      , '=', 'ouverte'),
+                        ('state'                 , '=', 'draft'),
+                    ]
+                    orders = self.env['sale.order'].search(filtre)
+                    for order in orders:
+                        point_dechargement = order.is_point_dechargement
+
+
                 if test:
                     vals={
                         'liste_servir_id'   : obj.id,
@@ -404,6 +418,7 @@ class is_liste_servir(models.Model):
                         'stocka'            : stocka,
                         'stockq'            : stockq,
                         'certificat_matiere': certificat_matiere,
+                        'point_dechargement': point_dechargement,
                     }
                     line_obj.create(vals)
             obj.state="analyse"
@@ -477,6 +492,10 @@ class is_liste_servir(models.Model):
                 key=str(line.client_order_ref)
             if obj.partner_id.is_caracteristique_bl=='ref_article':
                 key=str(line.product_id.id)
+
+            key=key+(line.point_dechargement or '')
+
+
             if mem!=key:
                 if vals:
                     new_id = order_obj.create(cr, uid, vals, context=context)
@@ -738,6 +757,7 @@ class is_liste_servir_line(models.Model):
     mixer              = fields.Boolean('Mixer', help="L'UM de cet article peut-être mixée avec un autre")
     order_id           = fields.Many2one('sale.order', 'Commande', required=False, readonly=True)
     client_order_ref   = fields.Char('Cde Client', readonly=True)
+    point_dechargement = fields.Char(u'Point de déchargement', readonly=True)
     certificat_matiere = fields.Char('Certificat matiere', readonly=True)
     anomalie           = fields.Char('Commentaire')
 

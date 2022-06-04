@@ -104,6 +104,7 @@
 
                                     <field name="mixer"/>
                                     <field name="client_order_ref" readonly="1" />
+                                    <field name="point_dechargement"/>
                                     <field name="certificat_matiere" invisible="1"/>
                                     <button 
                                         string="Voir le certificat matière" 
