@@ -353,7 +353,7 @@ class MrpProduction(models.Model):
             if qt_bonne>0:
                 qt=qt_bonne
                 filtre = [
-                    ('name' , '=', '00'),
+                    ('name' , '=', 'ATELIER'),
                     ('usage', '=', 'internal'),
                 ]
             if qt_rebut>0:
