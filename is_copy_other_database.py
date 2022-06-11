@@ -24,6 +24,7 @@ class is_database(models.Model):
     login                  = fields.Char('Login'          , required=False)
     password               = fields.Char('Mot de passe'   , required=False)
     is_database_origine_id = fields.Integer("Id d'origine", readonly=True)
+    preventif_equipement_user_ids = fields.Many2many('res.users', 'is_database_preventif_equipement_user_ids_rel','user_id', 'database_id',string=u"Destinataires mails préventif équipement")
 
 
     @api.multi
