@@ -371,6 +371,26 @@ class MrpProduction(models.Model):
                     err="Emplacement non trouve"
             if err=="":
                 wiz = obj.get_wizard(obj)
+
+                #** Recherche / Création du lot *******************************
+                lot_obj = self.env["stock.production.lot"]
+                filtre = [
+                    ('name'      , '=', obj.name),
+                    ('product_id', '=', obj.product_id.id),
+                ]
+                lots = lot_obj.search(filtre)
+                if lots:
+                    lot_id=lots[0].id
+                else:
+                    vals={
+                        'name'      : obj.name,
+                        'product_id': obj.product_id.id,
+                    }
+                    lot = lot_obj.create(vals)
+                    lot_id = lot.id
+                wiz.lot_id = lot_id
+                #**************************************************************
+
                 wiz.finished_products_location_id = location_id
                 wiz.product_package_qty = qt
                 res = wiz.with_context(active_id=obj.id).on_change_qty(qt, False)
