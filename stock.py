@@ -153,6 +153,16 @@ class stock_picking(models.Model):
         cr = self._cr
         res=[]
         for obj in self:
+            #** Recherche des articles du BL **********************************
+            product_ids=[]
+            for line in obj.move_lines:
+                if line.state=="done":
+                    product_id = line.product_id.id
+                    if product_id not in product_ids:
+                        product_ids.append(str(product_id))
+            product_ids = ",".join(product_ids)
+            #******************************************************************
+
             liste_servir = obj.is_sale_order_id.is_liste_servir_id
             SQL="""
                 select 
@@ -167,7 +177,9 @@ class stock_picking(models.Model):
                                          inner join is_liste_servir ls on um.liste_servir_id=ls.id
                                          inner join product_product pp on uc.product_id=pp.id 
                                          inner join product_template pt on pp.product_tmpl_id=pt.id
-                where ls.id="""+str(liste_servir.id)+"""
+                where 
+                    ls.id="""+str(liste_servir.id)+""" and 
+                    pp.id in ("""+product_ids+""") 
                 order by pt.is_code, um.name, uc.num_eti
             """
             cr.execute(SQL)
