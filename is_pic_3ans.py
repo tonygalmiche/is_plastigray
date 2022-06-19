@@ -427,12 +427,19 @@ class is_pic_3ans_saisie(models.Model):
         bom = bom_obj.browse(bom_id)
 
         if bom and bom.is_sous_traitance!=True and bom.is_negoce!=True:
+
+            _logger.info(str(pic.product_id.is_code) + ' : ' + str(pic.quantite) + ' : bom OK')
+
+
             res= bom_obj._bom_explode(bom, product, 1)
             pic_obj = self.env['is.pic.3ans']
             for line in res[0]:
                 ordre=ordre+1
                 line_product  = self.env['product.product'].browse(line['product_id'])
                 line_quantite = quantite*line['product_qty']
+
+                _logger.info(str(pic.product_id.is_code) + ' : ' + str(pic.quantite)+ ' : ' + str(line_product.is_code) + ' : ' + str(line_quantite))
+
                 vals={
                     'type_donnee': 'pdp',
                     'annee'      : pic.annee,
