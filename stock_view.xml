@@ -53,6 +53,11 @@
                 <field name="group_id" position="after">
                     <field name="restrict_lot_id" />
                 </field>
+                <field name="purchase_line_id" position="after">
+                    <field name="create_uid"/>
+                    <field name="write_uid"/>
+                    <field name="is_employee_theia_id"/>
+                </field>
             </field>
         </record>
 
@@ -71,6 +76,7 @@
                 <field name="date_expected" position="after">
                     <field name="create_uid"/>
                     <field name="write_uid"/>
+                    <field name="is_employee_theia_id"/>
                 </field>
                 <field name="date" position="replace">
                     <field name="date" />

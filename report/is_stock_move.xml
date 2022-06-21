@@ -1,1 +1,100 @@
-<?xml version="1.0" encoding="utf-8"?><openerp><data>    <record id="is_refresh_stock_move_action" model="ir.actions.server">        <field name="name">Mouvements de stocks</field>        <field name="condition">True</field>        <field name="type">ir.actions.server</field>        <field name="model_id" ref="model_is_stock_move" />        <field name="state">code</field>        <field name="code">action = self.refresh_stock_move_action(cr, uid, context.get('active_ids', []), context=context)</field>    </record>    <record id="is_stock_move_form_view" model="ir.ui.view">        <field name="name">s_mouvement_stock_form_view</field>        <field name="model">is.stock.move</field>        <field name="arch" type="xml">            <form>                <sheet>                    <group>                        <field name="date" />                        <field name="product_id" />                        <field name="category" />                        <field name="mold" />                        <field name="type_mv" />                        <field name="name" />                        <field name="picking_id" />                        <field name="purchase_line_id" />                        <field name="raw_material_production_id" />                        <field name="production_id" />                        <field name="is_sale_line_id" />                        <field name="lot_id" />                        <field name="lot_fournisseur" />                        <field name="qty" />                        <field name="product_uom" />                        <field name="location_dest" />                        <field name="login" />                        <field name="move_id" />                    </group>                </sheet>            </form>        </field>    </record>    <record id="is_stock_move_tree_view" model="ir.ui.view">        <field name="name">is_stock_move_tree_view</field>        <field name="model">is.stock.move</field>        <field name="arch" type="xml">            <tree create="false" colors="red:qty &lt; 0">                <field name="date" />                <field name="product_id" widget="many2one_clickable"/>                <field name="category" />                <field name="mold" />                <field name="type_mv" />                <field name="name" />                <field name="picking_id" widget="many2one_clickable"/>                <field name="lot_id"     widget="many2one_clickable"/>                <field name="lot_fournisseur" />                <field name="qty" sum="Total"/>                <field name="product_uom" />                <field name="location_dest" />                <field name="login" />           </tree>        </field>    </record>    <record id="is_stock_move_search_view" model="ir.ui.view">        <field name="name">is_stock_move_search_view</field>        <field name="model">is.stock.move</field>        <field name="arch" type="xml">            <search string="Recherche">                <field name="product_id" />                <field name="category" />                <field name="mold" />                <field name="type_mv" />                <field name="name" />                <field name="picking_id" />                <field name="lot_id" />                <field name="lot_fournisseur" />                <field name="location_dest" />                <field name="login" />                <group string="Regrouper par">                    <filter string="Article" context="{'group_by': 'product_id'}"/>                    <filter string="Lieu"    context="{'group_by': 'location_dest'}"/>                    <filter string="Mois"    context="{'group_by': 'date:month'}"/>                </group>            </search>        </field>    </record>    <record id="is_stock_move_action" model="ir.actions.act_window">        <field name="name">Mouvements de stocks</field>        <field name="res_model">is.stock.move</field>        <field name="domain">[]</field>        <field name="view_type">form</field>        <field name="view_mode">tree,form</field>    </record></data></openerp>
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+    <record id="is_refresh_stock_move_action" model="ir.actions.server">
+        <field name="name">Mouvements de stocks</field>
+        <field name="condition">True</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_is_stock_move" />
+        <field name="state">code</field>
+        <field name="code">action = self.refresh_stock_move_action(cr, uid, context.get('active_ids', []), context=context)</field>
+    </record>
+
+    <record id="is_stock_move_form_view" model="ir.ui.view">
+        <field name="name">s_mouvement_stock_form_view</field>
+        <field name="model">is.stock.move</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="date" />
+                        <field name="product_id" />
+                        <field name="category" />
+                        <field name="mold" />
+                        <field name="type_mv" />
+                        <field name="name" />
+                        <field name="picking_id" />
+                        <field name="purchase_line_id" />
+                        <field name="raw_material_production_id" />
+                        <field name="production_id" />
+                        <field name="is_sale_line_id" />
+                        <field name="lot_id" />
+                        <field name="lot_fournisseur" />
+                        <field name="qty" />
+                        <field name="product_uom" />
+                        <field name="location_dest" />
+                        <field name="login" />
+                        <field name="is_employee_theia_id" />
+                        <field name="move_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_stock_move_tree_view" model="ir.ui.view">
+        <field name="name">is_stock_move_tree_view</field>
+        <field name="model">is.stock.move</field>
+        <field name="arch" type="xml">
+            <tree create="false" colors="red:qty &lt; 0">
+                <field name="date" />
+                <field name="product_id" widget="many2one_clickable"/>
+                <field name="category" />
+                <field name="mold" />
+                <field name="type_mv" />
+                <field name="name" />
+                <field name="picking_id" widget="many2one_clickable"/>
+                <field name="lot_id"     widget="many2one_clickable"/>
+                <field name="lot_fournisseur" />
+                <field name="qty" sum="Total"/>
+                <field name="product_uom" />
+                <field name="location_dest" />
+                <field name="login" />
+                <field name="is_employee_theia_id" />
+           </tree>
+        </field>
+    </record>
+    <record id="is_stock_move_search_view" model="ir.ui.view">
+        <field name="name">is_stock_move_search_view</field>
+        <field name="model">is.stock.move</field>
+        <field name="arch" type="xml">
+            <search string="Recherche">
+                <field name="product_id" />
+                <field name="category" />
+                <field name="mold" />
+                <field name="type_mv" />
+                <field name="name" />
+                <field name="picking_id" />
+                <field name="lot_id" />
+                <field name="lot_fournisseur" />
+                <field name="location_dest" />
+                <field name="login" />
+                <group string="Regrouper par">
+                    <filter string="Article" context="{'group_by': 'product_id'}"/>
+                    <filter string="Lieu"    context="{'group_by': 'location_dest'}"/>
+                    <filter string="Mois"    context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="is_stock_move_action" model="ir.actions.act_window">
+        <field name="name">Mouvements de stocks</field>
+        <field name="res_model">is.stock.move</field>
+        <field name="domain">[]</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</data>
+</openerp>

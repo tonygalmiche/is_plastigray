@@ -1018,6 +1018,7 @@ class stock_move(models.Model):
     is_lots               = fields.Text(u'Lots', compute='_compute_lots', store=False, readonly=True)
     is_dosmat_ctrl_qual   = fields.Char(u'Contrôle qualité', readonly=True)
     is_point_dechargement = fields.Char(u'Point de déchargement', compute='_compute_is_point_dechargement', store=False, readonly=True)
+    is_employee_theia_id  = fields.Many2one('hr.employee', 'Employé Theia')
 
 
     @api.multi
