@@ -73,6 +73,11 @@ class is_ligne_livraison(models.Model):
 
     def init(self, cr):
         #tools.drop_view_if_exists(cr, 'is_ligne_livraison')
+
+
+
+
+        
         cr.execute("""
 
             DROP MATERIALIZED VIEW IF EXISTS is_ligne_livraison;
@@ -97,15 +102,14 @@ class is_ligne_livraison(models.Model):
                         sol.price_unit          as price_unit,
                         (sol.price_unit*sol.product_uom_qty) as price_subtotal,
 
-                        get_amortissement_moule_a_date(rp.is_code, pt.id, sp.is_date_expedition) as amortissement_moule,
-                        get_amt_interne_a_date(rp.is_code, pt.id, sp.is_date_expedition) as amt_interne,
-                        get_cagnotage_a_date(rp.is_code, pt.id, sp.is_date_expedition) as cagnotage,
+                        sm.is_amortissement_moule as amortissement_moule,
+                        sm.is_amt_interne         as amt_interne,
+                        sm.is_cagnotage           as cagnotage,
+                        sm.is_montant_amt_moule   as montant_amt_moule,
+                        sm.is_montant_amt_interne as montant_amt_interne,
+                        sm.is_montant_cagnotage   as montant_cagnotage,
+                        sm.is_montant_matiere     as montant_matiere,
 
-                        get_amortissement_moule_a_date(rp.is_code, pt.id, sp.is_date_expedition)*sol.product_uom_qty as montant_amt_moule,
-                        get_amt_interne_a_date(rp.is_code, pt.id, sp.is_date_expedition)*sol.product_uom_qty as montant_amt_interne,
-                        get_cagnotage_a_date(rp.is_code, pt.id, sp.is_date_expedition)*sol.product_uom_qty as montant_cagnotage,
-
-                        get_cout_act_matiere_st(pp.id)*sol.product_uom_qty as montant_matiere,
                         so.id                   as order_id,
                         sol.id                  as order_line_id,
                         sp.id                   as picking_id, 
@@ -124,4 +128,60 @@ class is_ligne_livraison(models.Model):
                 where sp.picking_type_id=2 and sm.state='done' and so.id is not null
             )
         """)
+
+
+
+
+
+        # cr.execute("""
+
+        #     DROP MATERIALIZED VIEW IF EXISTS is_ligne_livraison;
+        #     CREATE MATERIALIZED view is_ligne_livraison AS (
+        #         select  sm.id,
+        #                 sp.is_date_expedition   as date_expedition,
+        #                 sp.is_date_livraison    as date_livraison,
+        #                 sm.date                 as date_mouvement,
+        #                 sol.is_client_order_ref as client_order_ref,
+        #                 sp.partner_id           as partner_id, 
+        #                 pt.id                   as product_id, 
+        #                 ipf.name                as family_id,
+        #                 pt.segment_id           as segment_id,
+        #                 pt.is_category_id       as is_category_id,
+        #                 pt.is_gestionnaire_id   as is_gestionnaire_id,
+        #                 pt.is_mold_dossierf     as is_mold_dossierf,
+        #                 pt.is_ref_client        as ref_client,
+        #                 sm.product_uom_qty,
+        #                 COALESCE(is_qt_par_uc(pt.id),1) as qt_par_uc,
+        #                 sm.product_uom_qty/COALESCE(is_qt_par_uc(pt.id),1) as nb_uc,
+        #                 sm.product_uom          as product_uom,
+        #                 sol.price_unit          as price_unit,
+        #                 (sol.price_unit*sol.product_uom_qty) as price_subtotal,
+
+        #                 get_amortissement_moule_a_date(rp.is_code, pt.id, sp.is_date_expedition) as amortissement_moule,
+        #                 get_amt_interne_a_date(rp.is_code, pt.id, sp.is_date_expedition) as amt_interne,
+        #                 get_cagnotage_a_date(rp.is_code, pt.id, sp.is_date_expedition) as cagnotage,
+
+        #                 get_amortissement_moule_a_date(rp.is_code, pt.id, sp.is_date_expedition)*sol.product_uom_qty as montant_amt_moule,
+        #                 get_amt_interne_a_date(rp.is_code, pt.id, sp.is_date_expedition)*sol.product_uom_qty as montant_amt_interne,
+        #                 get_cagnotage_a_date(rp.is_code, pt.id, sp.is_date_expedition)*sol.product_uom_qty as montant_cagnotage,
+
+        #                 get_cout_act_matiere_st(pp.id)*sol.product_uom_qty as montant_matiere,
+        #                 so.id                   as order_id,
+        #                 sol.id                  as order_line_id,
+        #                 sp.id                   as picking_id, 
+        #                 sm.id                   as move_id,
+        #                 sm.write_uid            as user_id,
+        #                 sm.state                as state
+        #         from stock_picking sp inner join stock_move                sm on sm.picking_id=sp.id 
+        #                               inner join product_product           pp on sm.product_id=pp.id
+        #                               inner join product_template          pt on pp.product_tmpl_id=pt.id
+        #                               inner join res_partner               rp on sp.partner_id=rp.id
+        #                               left outer join is_product_famille   ipf on pt.family_id=ipf.id
+        #                               left outer join sale_order           so on sp.is_sale_order_id=so.id
+        #                               left outer join sale_order_line     sol on sm.is_sale_line_id=sol.id
+
+
+        #         where sp.picking_type_id=2 and sm.state='done' and so.id is not null
+        #     )
+        # """)
 

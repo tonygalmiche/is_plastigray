@@ -236,3 +236,5 @@ access_is_galia_base_uc,access_is_galia_base_uc,model_is_galia_base_uc,base.grou
 access_is_vente_message,access_is_vente_message,model_is_vente_message,base.group_user,1,1,1,1
 
 access_is_commande_externe,access_is_commande_externe,model_is_commande_externe,base.group_user,1,0,0,0
+
+access_pg_stock_move,access_pg_stock_move,model_pg_stock_move,base.group_user,1,0,0,0

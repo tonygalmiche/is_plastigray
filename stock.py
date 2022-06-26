@@ -15,6 +15,9 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
+from openerp.addons.is_plastigray.report.is_stock_move import _SELECT_STOCK_MOVE
+
+
 class stock_pack_operation(models.Model):
     _inherit = "stock.pack.operation"
   
@@ -220,16 +223,6 @@ class stock_picking(models.Model):
         return res
 
 
-
-
-
-
-
-
-
-
-
-
     @api.multi
     def check_date_livraison(self, date_livraison,  partner_id, context=None):
         res_partner = self.env['res.partner']
@@ -340,9 +333,6 @@ class stock_picking(models.Model):
                 'res_id': picking.id,
                 'domain': '[]',
             }
-
-
-
 
 
     #TODO : Fonction reprise complètement par Hiren pour pouvoir gérer les recéptions avec plusieurs lignes du même article
@@ -652,13 +642,6 @@ class stock_picking(models.Model):
         return (need_rereserve, all_op_processed)
 
 
-
-
-
-
-
-
-
     @api.onchange('location_id')
     def onchange_location(self):
         for move in self.move_lines:
@@ -726,235 +709,6 @@ class stock_picking(models.Model):
                 res=self.env['mail.message'].create(vals)
 
 
-
-
-
-
-    # @api.multi
-    # def desadv_action(self):
-    #     cr = self._cr
-    #     for obj in self : 
-
-    #         # Pour Treve : 
-    #         NumeroBALEmetteur  = "ECARFRNTREVES"
-    #         NumeroBALRecepteur = "TREVESAPSPT"
-    #         Standard           = "EDIFACT"
-
-    #         # Pour Antolin
-    #         NumeroBALEmetteur  = "1008063"
-    #         NumeroBALRecepteur = "VDA4913"
-    #         Standard           = "VDA"
-
-    #         DateDocument = datetime.datetime.strptime(obj.date_done, '%Y-%m-%d %H:%M:%S')
-    #         DateDocument = DateDocument.strftime('%Y%m%d%H%M%S')
-
-    #         DateHeureEstimeeArrivee = datetime.datetime.strptime(obj.is_date_livraison, '%Y-%m-%d')
-    #         DateHeureEstimeeArrivee = DateHeureEstimeeArrivee.strftime('%Y%m%d')+"080000"
-
-    #         data={
-    #             'NumeroBALEmetteur' : NumeroBALEmetteur,
-    #             'NumeroBALRecepteur': NumeroBALRecepteur,
-    #             'Standard'          : Standard,
-    #             'NumeroDocument'    : obj.name,
-    #             'TypeDocumentCode': "351",                             # ??
-    #             'TypeDocumentCodeAgence': "10",                        # ??
-    #             'NumeroIdentificationDestinataire': "0944513191216",   # ??
-    #             'NumeroIdentificationDestinataireAgence': "92",        # ??
-    #             'DateDocument': DateDocument,                          # ex : 202201270943
-    #             'EXPEDITION': {
-    #                 'DateHeureEstimeeArrivee': DateHeureEstimeeArrivee, # ex : 202202080000
-    #                 'PoidsBrutExpedition': "0",
-    #                 'UniteMesurePoidsExpedition': "KGM",
-
-    #                 'PARTIE_CITEE_001': {                              # ??
-    #                     'RolePartieCitee': "CZ",
-    #                     'IdentificationPartieCitee': "0931377846381",
-    #                     'IdentificationPartieCiteeAgence': "10",
-    #                 },
-    #                 'PARTIE_CITEE_002': {                              # ??
-    #                     'RolePartieCitee': "SE",
-    #                     'IdentificationPartieCitee': "0931377846381",
-    #                     'IdentificationPartieCiteeAgence': "10",
-    #                     'RoleNumeroComplementairePartieCitee': "ADE",
-    #                     'NumeroComplementairePartieCitee': "0020002956",
-    #                 },
-    #                 'PARTIE_CITEE_003': {                              # ??
-    #                     'RolePartieCitee': "CN",
-    #                     'IdentificationPartieCitee': "0944513191216",
-    #                     'IdentificationPartieCiteeAgence': "92",
-    #                     'POINT_DE_DECHARGEMENT':{
-    #                         'CodeIdentificationPointDechargement': '52A1'
-    #                     }
-    #                 },
-
-    #                 'EQUIPEMENT': {                                    # ??
-    #                     'IdentificationEquipement': "UNKNOWN",
-    #                     'CodeTypeEquipement': "TE",
-    #                 },
-    #             }
-    #         }
-
-    #         lig=1
-    #         for line in obj.move_lines:
-
-
-    #             LIGNE_ARTICLE={
-    #                 'QuantiteAExpedier': line.product_uom_qty,
-    #                 'UniteMesureQuantiteAExpedier': "PCE",
-    #                 'GROUPE_UC': {
-    #                     'NombreUCIdentiqueParGroupe': 5,          # ??
-    #                     'UniteMesureQuantiteAExpedier': 600,      # ??
-    #                     'UniteMesureNombreArticleParUC': "PCE",
-    #                     'TYPE_UM_UC': {
-    #                         'IdentifiantTypeUC': "PCE",
-    #                         'IdentifiantTypeUCAgence': "92",      # ??
-    #                     },
-    #                     'ARTICLE_EXPEDIE': {
-    #                         'NumeroArticleClient': "350431786",
-    #                         'NiveauConfiguration': "0",
-    #                         'ARTICLE_PROGRAMME': {
-    #                             'NumeroCommande': "5500000462",
-    #                             'ARTICLE': {
-    #                                 'NumeroArticleSupplementaire': "350431786",
-    #                                 'LigneDescriptionArticle': "CLIP-OMEGA-BFB",
-    #                                 'CodePaysOrigine': "FR",
-    #                             }
-    #                         }
-    #                     }
-    #                 }
-    #             }
-
-
-    #             # Recherche des UMs *******************************************
-    #             SQL="""
-    #                 select distinct um.id, um.name
-    #                 from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
-    #                                         inner join is_liste_servir ls on um.liste_servir_id=ls.id
-    #                 where ls.id=%s and uc.product_id=%s
-    #             """
-    #             cr.execute(SQL,[obj.is_sale_order_id.is_liste_servir_id.id,line.product_id.id])
-    #             result = cr.fetchall()
-    #             lig_um=1
-    #             for row in result:
-    #                 seq_um=("000"+str(lig_um))[-3:]
-    #                 UM_INDIVIDUEL={
-    #                     'NumeroUM': row[1]
-    #                 }
-
-    #                 #** Recherche des UC **************************************
-    #                 SQL="""
-    #                     select 
-    #                         uc.num_eti,
-    #                         pt.is_code,
-    #                         um.name,
-    #                         uc.qt_pieces,
-    #                         pp.id,
-    #                         um.id,
-    #                         uc.production
-    #                     from is_galia_base_uc uc inner join is_galia_base_um um on uc.um_id=um.id
-    #                                             inner join is_liste_servir ls on um.liste_servir_id=ls.id
-    #                                             inner join product_product pp on uc.product_id=pp.id 
-    #                                             inner join product_template pt on pp.product_tmpl_id=pt.id
-    #                     where um.id=%s
-    #                 """
-    #                 cr.execute(SQL,[row[0]])
-    #                 result2 = cr.fetchall()
-    #                 lig_uc=1
-    #                 for row2 in result2:
-    #                     seq_uc=("000"+str(lig_uc))[-3:]
-    #                     UC_INDIVIDUEL = {
-    #                         'NumeroUC': row2[0]
-    #                     }
-    #                     UM_INDIVIDUEL["UC_INDIVIDUEL_"+seq_uc] = UC_INDIVIDUEL
-    #                     lig_uc+=1
-
-
-    #                 #**********************************************************
-
-
-    #                 LIGNE_ARTICLE["GROUPE_UC"]["UM_INDIVIDUEL_"+seq_um]=UM_INDIVIDUEL
-    #                 lig_um+=1
-
-
-    #             sequence=("000"+str(lig))[-3:]
-    #             data['EXPEDITION']["LIGNE_ARTICLE_"+sequence]=LIGNE_ARTICLE
-    #             lig+=1
-
-
-
-    #         xml = dicttoxml(data, attr_type=False, custom_root='AVIEXP')
-    #         dom = parseString(xml)
-    #         res=dom.toprettyxml()
-    #         res=res.replace('<?xml version="1.0" ?>', '<?xml version="1.0" encoding="ISO-8859-1" ?>\n<!DOCTYPE eCar_AVIEXP>\n')
-    #         res = re.sub(r"PARTIE_CITEE_...", "PARTIE_CITEE", res)
-    #         res = re.sub(r"UC_INDIVIDUEL_...", "UC_INDIVIDUEL", res)
-    #         res = re.sub(r"LIGNE_ARTICLE_...", "LIGNE_ARTICLE", res)
-
-
-    #         # ** Enregistrement du fichier ************************************
-    #         name = "desadv-"+str(obj.name)+".xml"
-    #         path = "/tmp/"+name
-    #         fd = os.open(path,os.O_RDWR|os.O_CREAT)
-    #         try:
-    #             os.write(fd, res)
-    #         finally:
-    #             os.close(fd)
-    #         # **********************************************************************
-
-    #         # ** Creation ou modification de la pièce jointe ***********************
-    #         model=self._name
-    #         attachment_obj = self.env['ir.attachment']
-    #         attachments = attachment_obj.search([('res_model','=',model),('res_id','=',obj.id),('name','=',name)])
-    #         datas = open(path,'rb').read().encode('base64')
-    #         vals = {
-    #             'name':        name,
-    #             'datas_fname': name,
-    #             'type':        'binary',
-    #             'res_model':   model,
-    #             'res_id':      obj.id,
-    #             'datas':       datas,
-    #         }
-    #         if attachments:
-    #             for attachment in attachments:
-    #                 attachment.write(vals)
-    #                 attachment_id=attachment.id
-    #         else:
-    #             attachment = attachment_obj.create(vals)
-    #             attachment_id=attachment.id
-    #         #***********************************************************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class stock_quant(models.Model):
     _inherit = "stock.quant"
     _order   = "product_id, location_id"
@@ -998,11 +752,6 @@ class stock_move(models.Model):
         for obj in self:
             x = False
             if obj.picking_id.partner_id.is_traitement_edi:
-                # orders = self.env['sale.order'].search([
-                #     ('partner_id.is_code', '=', obj.picking_id.partner_id.is_code),
-                #     ('is_ref_client'     , '=', obj.product_id.is_ref_client),
-                #     ('is_type_commande'  , '=', 'ouverte'),
-                # ])
                 filtre = [
                     ('partner_id'            , '=', obj.picking_id.partner_id.id),
                     ('is_article_commande_id', '=', obj.product_id.id),
@@ -1014,11 +763,18 @@ class stock_move(models.Model):
                     x = order.is_point_dechargement
             obj.is_point_dechargement = x
 
-
     is_lots               = fields.Text(u'Lots', compute='_compute_lots', store=False, readonly=True)
     is_dosmat_ctrl_qual   = fields.Char(u'Contrôle qualité', readonly=True)
     is_point_dechargement = fields.Char(u'Point de déchargement', compute='_compute_is_point_dechargement', store=False, readonly=True)
     is_employee_theia_id  = fields.Many2one('hr.employee', 'Employé Theia')
+
+    is_amortissement_moule = fields.Float('Amt client négocié'        , digits=(14,4))
+    is_amt_interne         = fields.Float('Amt interne'               , digits=(14,4))
+    is_cagnotage           = fields.Float('Cagnotage'                 , digits=(14,4))
+    is_montant_amt_moule   = fields.Float('Montant amt client négocié', digits=(14,2))
+    is_montant_amt_interne = fields.Float('Montant amt interne'       , digits=(14,2))
+    is_montant_cagnotage   = fields.Float('Montant cagnotage'         , digits=(14,2))
+    is_montant_matiere     = fields.Float('Montant matière livrée'    , digits=(14,2))
 
 
     @api.multi
@@ -1059,7 +815,131 @@ class stock_move(models.Model):
         obj = super(stock_move, self).create(vals)
         if obj.purchase_line_id and obj.picking_id:
             obj.picking_id.is_purchase_order_id=obj.purchase_line_id.order_id.id
+
+        obj.update_pg_stock_move()
+        vals=obj.update_amortissement_moule()
+        obj.write(vals)
+
         return obj
+
+
+    @api.multi
+    def write(self, vals):
+        v=self.update_amortissement_moule()
+        if v:
+            vals.update(v)
+
+        res=super(stock_move, self).write(vals)
+        for obj in self:
+            obj.update_pg_stock_move()
+        return res
+
+
+    def update_amortissement_moule(self):
+        cr = self._cr
+        for obj in self:
+            amortissement_moule = 0
+            amt_interne = 0
+            cagnotage = 0
+            montant_amt_moule = 0
+            montant_amt_interne = 0
+            montant_cagnotage = 0
+            montant_matiere = 0
+            if obj.picking_id and obj.product_id and obj.product_uom_qty and obj.picking_id.is_date_expedition:
+                SQL="""
+                    SELECT
+                        get_amortissement_moule_a_date(rp.is_code, pt.id, sp.is_date_expedition) as is_amortissement_moule,
+                        get_amt_interne_a_date(rp.is_code, pt.id,  sp.is_date_expedition) as is_amt_interne,
+                        get_cagnotage_a_date(rp.is_code, pt.id,  sp.is_date_expedition) as is_cagnotage,
+                        get_amortissement_moule_a_date(rp.is_code, pt.id,  sp.is_date_expedition)*sm.product_uom_qty as is_montant_amt_moule,
+                        get_amt_interne_a_date(rp.is_code, pt.id,  sp.is_date_expedition)*sm.product_uom_qty as is_montant_amt_interne,
+                        get_cagnotage_a_date(rp.is_code, pt.id,  sp.is_date_expedition)*sm.product_uom_qty as is_montant_cagnotage,
+                        get_cout_act_matiere_st(pp.id)*sm.product_uom_qty as is_montant_matiere,
+                        sp.is_date_expedition,
+                        sm.state
+                    from stock_picking sp inner join stock_move        sm on sm.picking_id=sp.id
+                                          inner join product_product   pp on sm.product_id=pp.id
+                                          inner join product_template  pt on pp.product_tmpl_id=pt.id
+                                          inner join res_partner       rp on sp.partner_id=rp.id
+                    where sm.id=%s
+                """
+                cr.execute(SQL,[obj.id])
+                res_ids = cr.fetchall()
+                for res in res_ids:
+                    amortissement_moule = res[0]
+                    amt_interne         = res[1]
+                    cagnotage           = res[2]
+                    montant_amt_moule   = res[3]
+                    montant_amt_interne = res[4]
+                    montant_cagnotage   = res[5]
+                    montant_matiere     = res[6]
+            vals={
+                "is_amortissement_moule": amortissement_moule,
+                "is_amt_interne"        : amt_interne,
+                "is_cagnotage"          : cagnotage,
+                "is_montant_amt_moule"  : montant_amt_moule,
+                "is_montant_amt_interne": montant_amt_interne,
+                "is_montant_cagnotage"  : montant_cagnotage,
+                "is_montant_matiere"    : montant_matiere,
+            }
+            return vals
+
+
+    @api.multi
+    def update_pg_stock_move(self):
+        cr = self._cr
+        for obj in self:
+            SQL=_SELECT_STOCK_MOVE+" WHERE sm2.id=%s"
+            cr.execute(SQL, [obj.id])
+            rows = cr.fetchall()
+            for row in rows:
+                SQL="delete from pg_stock_move where id=%s"
+                cr.execute(SQL,[row[1]])
+                SQL="""
+                    INSERT INTO pg_stock_move (
+                        move_id,
+                        date,
+                        product_id,
+                        category,
+                        mold,
+                        type_mv,
+                        name,
+                        picking_id,
+                        purchase_line_id,
+                        raw_material_production_id,
+                        production_id,
+                        is_sale_line_id,
+                        lot_id,
+                        lot_fournisseur,
+                        qty,
+                        product_uom,
+                        location_dest,
+                        is_employee_theia_id,
+                        login
+                    )
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
+                """
+                cr.execute(SQL,[
+                    row[1],
+                    row[2],
+                    row[3],
+                    row[4],
+                    row[5],
+                    row[6],
+                    row[7],
+                    row[8],
+                    row[9],
+                    row[10],
+                    row[11],
+                    row[12],
+                    row[13],
+                    row[14],
+                    row[15],
+                    row[16],
+                    row[17],
+                    row[18],
+                    row[19],
+                ])
 
 
     def _create_invoice_line_from_vals(self, cr, uid, move, invoice_line_vals, context=None):

@@ -1274,7 +1274,8 @@
     <!--
     <menuitem id="menu_is_production_stock_20" sequence="20" name="Mouvements de stock"      parent="menu_is_production_stock"  action="is_stock_move_action" />
     -->
-    <menuitem id="menu_is_production_stock_25" sequence="25" name="Mouvements de stock"      parent="menu_is_production_stock"  action="is_refresh_stock_move_action" />
+    <menuitem id="menu_is_production_stock_25" sequence="25" name="Mouvements de stock"       parent="menu_is_production_stock"  action="is_refresh_stock_move_action" />
+    <menuitem id="pg_stock_move_menu"          sequence="26" name="Mouvements de stock (new)" parent="menu_is_production_stock"  action="pg_stock_move_action" />
 
 
     <record id="is_entrees_sorties_stocks_menu" model="ir.ui.menu" >
@@ -1285,6 +1286,7 @@
         <field name="groups_id" eval="[(6,0,[
             ref('is_administration_vente_group'),
             ref('is_magasiniers_group'),
+            ref('is_inventaire_jour_group'),
         ])]"/>
     </record>
     <record id="is_stock_production_lot_menu" model="ir.ui.menu" >

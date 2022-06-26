@@ -56,6 +56,17 @@
                     <field name="write_uid"/>
                     <field name="is_employee_theia_id"/>
                 </field>
+                <group name="destination_grp" position="after">
+                    <group string="Amortissement Moule">
+                        <field name="is_amortissement_moule"/>
+                        <field name="is_amt_interne"/>
+                        <field name="is_cagnotage"/>
+                        <field name="is_montant_amt_moule"/>
+                        <field name="is_montant_amt_interne"/>
+                        <field name="is_montant_cagnotage"/>
+                        <field name="is_montant_matiere"/>
+                    </group>
+                </group>
             </field>
         </record>
 
