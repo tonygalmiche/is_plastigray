@@ -80,7 +80,10 @@ class MrpProduction(models.Model):
 
 
     @api.multi
-    def action_produce(self, production_id, qty, production_mode, wiz=False):
+    def action_produce(self, production_id, qty, production_mode, wiz=False, is_employee_theia_id=False):
+
+        #is_employee_theia_id=223
+
         stock_mov_obj = self.env['stock.move']
         uom_obj       = self.env["product.uom"]
         production    = self.browse(production_id)
@@ -108,7 +111,8 @@ class MrpProduction(models.Model):
                     'production_id'    : production_id,
                     'location_id'      : location_id,
                     'location_dest_id' : location_dest_id,
-                    'restrict_lot_id'  : lot_id
+                    'restrict_lot_id'  : lot_id,
+                    'is_employee_theia_id': is_employee_theia_id, 
                 })
                 new_move.action_confirm()
                 new_move.action_done()
@@ -128,6 +132,9 @@ class MrpProduction(models.Model):
                         consumed_qty = wiz_line.product_qty
                         lot_id       = wiz_line.lot_id.id
                         move.action_consume(consumed_qty, move.location_id.id, restrict_lot_id=lot_id, consumed_for=main_production_move)
+                        move.is_employee_theia_id = is_employee_theia_id
+
+
             # TODO : Ajout d'un blocage le 27/01/2018 pour empècher les problèmes de déclarations sur les OF
             if nb!=ct:
                 raise Warning("Probleme de synchronisation de nomenclature. Il faut modifier la quantite de cet OF pour resynchroniser la nomenclature")
@@ -346,7 +353,10 @@ class MrpProduction(models.Model):
 
 
     @api.multi
-    def declaration_production_theia_action(self,qt_bonne, qt_rebut):
+    def declaration_production_theia_action(self,qt_bonne, qt_rebut, is_employee_theia_id=False):
+
+        #is_employee_theia_id=480
+
         err=""
         for obj in self:
             qt=0
@@ -402,7 +412,7 @@ class MrpProduction(models.Model):
                         code = line.product_id.is_code
                         if code[:1]!="5":
                             line.unlink()
-                obj.action_produce(obj.id, qt, 'consume_produce', wiz)
+                obj.action_produce(obj.id, qt, 'consume_produce', wiz, is_employee_theia_id=is_employee_theia_id)
                 if qt_rebut>0:
                     obj.sudo().importer_nomenclature() #Sinon, j'ai un soucis avec la déclaration des rebuts
         res=True

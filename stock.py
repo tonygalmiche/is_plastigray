@@ -893,7 +893,7 @@ class stock_move(models.Model):
             cr.execute(SQL, [obj.id])
             rows = cr.fetchall()
             for row in rows:
-                SQL="delete from pg_stock_move where id=%s"
+                SQL="delete from pg_stock_move where move_id=%s"
                 cr.execute(SQL,[row[1]])
                 SQL="""
                     INSERT INTO pg_stock_move (
