@@ -228,7 +228,11 @@
         <field name="comment"></field>
         <field name="category_id" ref="is_groupe_plastigray_module_category"/>
     </record>
-
+    <record model="res.groups" id="is_rsp_preventif_equipement_group">
+        <field name="name">Responsable Préventif Équipement</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_groupe_plastigray_module_category"/>
+    </record>
 
     <!-- Catégories de groupes -->
     <record id="is_view_module_category_tree" model="ir.ui.view">
