@@ -152,6 +152,8 @@ class res_partner(models.Model):
     is_certificat_matiere   = fields.Boolean(u'Certificat matière demandé')
     is_import_function      = fields.Selection(import_function, "Fonction d'importation EDI")
     is_traitement_edi       = fields.Selection(traitement_edi, "Traitement EDI")
+    is_numero_bal_recepteur               = fields.Char(string='Numero BAL recepteur')
+    is_numero_identification_destinataire = fields.Char(string='Numero Identification Destinataire')
     is_raison_sociale2      = fields.Char('Raison sociale 2')
     is_code                 = fields.Char('Code'        , select=True)
     is_adr_code             = fields.Char('Code adresse', select=True)
