@@ -151,7 +151,7 @@ class is_etuve_saisie(models.Model):
                 FROM is_dossier_article
                 WHERE code_pg=%s
             """
-            cr0.execute(SQL, (CodeMatiere))
+            cr0.execute(SQL, [CodeMatiere])
             result = cr0.fetchall()
             tmp_etuvage=tps_etuvage=densite=dessication_matiere=False
             for row in result:
