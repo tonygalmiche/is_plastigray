@@ -206,7 +206,7 @@ class is_etuve_saisie(models.Model):
     densite              = fields.Float("Densité"                  , readonly=True, compute='_compute', store=True)
     dessication_matiere  = fields.Char("Dessication"               , readonly=True, compute='_compute', store=True)
     capacite_maxi        = fields.Float("Capacité maxi étuve (Kg)"  , readonly=True, compute='_compute', store=True)
-    conso_horaire        = fields.Float("Consomation horaire (Kg/H)", readonly=True, compute='_compute', store=True)
+    conso_horaire        = fields.Float("Consommation horaire (Kg/H)", readonly=True, compute='_compute', store=True)
     taux_utilisation     = fields.Float("Taux utilisation étuve (%)", readonly=True, compute='_compute', store=True)
     test_taux            = fields.Boolean("Test Taux"               , readonly=True, compute='_compute', store=True)
     message              = fields.Char("Message"                    , readonly=True, compute='_compute', store=True)
