@@ -5,6 +5,7 @@ from openerp.tools.translate import _
 import datetime
 from openerp.exceptions import Warning
 import psycopg2
+from psycopg2.extras import RealDictCursor
 import sys
 
 
@@ -109,29 +110,57 @@ class is_etuve_saisie(models.Model):
     @api.depends('matiere_id','of_ids')
     def _compute(self):
         cr, uid, context = self.env.args
+        company = self.env.user.company_id
         for obj in self:
-            #** Recherche fiche technique Matière dans Dynacase ****************
-            CodeMatiere=obj.matiere_id.is_code
-            user=self.env['res.users'].browse(uid)
-            password=user.company_id.is_dynacase_pwd
-            cnx=False
+            base0="odoo0"
+            if company.is_postgres_host=='localhost':
+                base0="pg-odoo0"
             try:
-                cnx = psycopg2.connect("host='dynacase' port=5432 dbname='freedom' user='freedomowner' password='"+password+"'")
+                cnx0 = psycopg2.connect("dbname='"+base0+"' user='"+company.is_postgres_user+"' host='"+company.is_postgres_host+"' password='"+company.is_postgres_pwd+"'")
+                cr0 = cnx0.cursor(cursor_factory=RealDictCursor)
             except:
-                raise Warning("Impossible de se connecter à Dynacase")
-            cursor = cnx.cursor()
-            SQL="""select dosart_codepg, dosart_designation, dosmat_tmp_etuvage, dosmat_tps_etuvage, dosmat_densite, dosmat_ds
-                   from doc48613
-                   where doctype='D' and locked='0' and dosart_codepg='"""+str(CodeMatiere)+"""' """
-            cursor.execute(SQL)
-            result = cursor.fetchall()
+                raise Warning("Impossible de se connecter à %s"%(base0))
 
+            #** Recherche fiche technique Matière dans Dynacase ****************
+            # user=self.env['res.users'].browse(uid)
+            # password=user.company_id.is_dynacase_pwd
+            # cnx=False
+            # try:
+            #     cnx = psycopg2.connect("host='dynacase' port=5432 dbname='freedom' user='freedomowner' password='"+password+"'")
+            # except:
+            #     raise Warning("Impossible de se connecter à Dynacase")
+            # cursor = cnx.cursor()
+            # SQL="""select dosart_codepg, dosart_designation, dosmat_tmp_etuvage, dosmat_tps_etuvage, dosmat_densite, dosmat_ds
+            #        from doc48613
+            #        where doctype='D' and locked='0' and dosart_codepg='"""+str(CodeMatiere)+"""' """
+            # cursor.execute(SQL)
+            # result = cursor.fetchall()
+
+            # tmp_etuvage=tps_etuvage=densite=dessication_matiere=False
+            # for row in result:
+            #     tmp_etuvage         = self._string2float(row[2])
+            #     tps_etuvage         = self._string2float(row[3])
+            #     densite             = self._string2float(row[4])
+            #     dessication_matiere = row[5]
+
+
+            #** Recherche fiche technique Matière dans odoo0 ******************
+            CodeMatiere=obj.matiere_id.is_code
+            SQL="""
+                SELECT densite, temps_etuvage, temperature_etuvage, dessiccateur
+                FROM is_dossier_article
+                WHERE code_pg=%s
+            """
+            cr0.execute(SQL, (CodeMatiere))
+            result = cr0.fetchall()
             tmp_etuvage=tps_etuvage=densite=dessication_matiere=False
             for row in result:
-                tmp_etuvage         = self._string2float(row[2])
-                tps_etuvage         = self._string2float(row[3])
-                densite             = self._string2float(row[4])
-                dessication_matiere = row[5]
+                tmp_etuvage         = row["temperature_etuvage"]
+                tps_etuvage         = row["temps_etuvage"]
+                densite             = row["densite"]
+                dessication_matiere = row["dessiccateur"]
+            #******************************************************************
+
             obj.tmp_etuvage   = tmp_etuvage
             obj.tps_etuvage   = tps_etuvage
             obj.densite       = densite
@@ -158,8 +187,6 @@ class is_etuve_saisie(models.Model):
                 message=u"Attention : Le taux d'utilisation de l'étuve est de "+str(int(taux_utilisation))+u'%'
             obj.test_taux=test_taux
             obj.message=message
-
-
 
 
     name                 = fields.Char("Saisie", select=True , readonly=True)
