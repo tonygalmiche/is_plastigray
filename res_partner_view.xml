@@ -37,6 +37,7 @@
                     />
                     <field name="is_delai_transport" />
                     <field name="is_certificat_matiere"   attrs="{'invisible': [('customer','=', False)]}" />
+                    
                     <field name="is_traitement_edi"       attrs="{'invisible': [('customer','=', False)]}" />
                     <field 
                         name="is_numero_bal_recepteur"
@@ -46,6 +47,31 @@
                         name="is_numero_identification_destinataire" 
                         attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
                     />
+                   <field 
+                        name="is_numero_bal_emetteur" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
+                    />
+                   <field 
+                        name="is_standard_edi" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
+                    />
+                   <field 
+                        name="is_code_acheteur" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')]}"
+                    />
+                   <field 
+                        name="is_code_expediteur" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
+                    />
+                   <field 
+                        name="is_code_vendeur" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
+                    />
+                   <field 
+                        name="is_code_destinataire_agence" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
+                    />
+
                     <field name="is_import_function"      attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="is_type_cde_fournisseur" attrs="{'invisible': [('supplier','=', False)]}" />
                     <field name="is_livre_a_id"           attrs="{'invisible': [('supplier','=', False)]}"/>

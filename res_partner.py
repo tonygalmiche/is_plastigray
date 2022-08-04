@@ -151,9 +151,17 @@ class res_partner(models.Model):
     is_livre_a_id           = fields.Many2one('res.partner', 'Livrer à', help="Indiquez l'adresse de livraison si celle-ci est différente de celle de la société")
     is_certificat_matiere   = fields.Boolean(u'Certificat matière demandé')
     is_import_function      = fields.Selection(import_function, "Fonction d'importation EDI")
-    is_traitement_edi       = fields.Selection(traitement_edi, "Traitement EDI")
+ 
+    is_traitement_edi                     = fields.Selection(traitement_edi, "Traitement EDI")
     is_numero_bal_recepteur               = fields.Char(string='Numero BAL recepteur')
     is_numero_identification_destinataire = fields.Char(string='Numero Identification Destinataire')
+    is_numero_bal_emetteur                = fields.Char(string='Numero BAL Emetteur')
+    is_standard_edi                       = fields.Char(string='Standard EDI')
+    is_code_acheteur                      = fields.Char(string='Code Acheteur')
+    is_code_expediteur                    = fields.Char(string='Code Expediteur')
+    is_code_vendeur                       = fields.Char(string='Code Vendeur')
+    is_code_destinataire_agence           = fields.Char(string='Code Destinataire Agence')
+
     is_raison_sociale2      = fields.Char('Raison sociale 2')
     is_code                 = fields.Char('Code'        , select=True)
     is_adr_code             = fields.Char('Code adresse', select=True)
