@@ -145,20 +145,21 @@ class is_etuve_saisie(models.Model):
 
 
             #** Recherche fiche technique Matière dans odoo0 ******************
-            CodeMatiere=obj.matiere_id.is_code
-            SQL="""
-                SELECT densite, temps_etuvage, temperature_etuvage, dessiccateur
-                FROM is_dossier_article
-                WHERE code_pg=%s
-            """
-            cr0.execute(SQL, [CodeMatiere])
-            result = cr0.fetchall()
             tmp_etuvage=tps_etuvage=densite=dessication_matiere=False
-            for row in result:
-                tmp_etuvage         = row["temperature_etuvage"]
-                tps_etuvage         = row["temps_etuvage"]
-                densite             = row["densite"]
-                dessication_matiere = row["dessiccateur"]
+            CodeMatiere=obj.matiere_id.is_code
+            if CodeMatiere:
+                SQL="""
+                    SELECT densite, temps_etuvage, temperature_etuvage, dessiccateur
+                    FROM is_dossier_article
+                    WHERE code_pg=%s
+                """
+                cr0.execute(SQL, [CodeMatiere])
+                result = cr0.fetchall()
+                for row in result:
+                    tmp_etuvage         = row["temperature_etuvage"]
+                    tps_etuvage         = row["temps_etuvage"]
+                    densite             = row["densite"]
+                    dessication_matiere = row["dessiccateur"]
             #******************************************************************
 
             obj.tmp_etuvage   = tmp_etuvage
