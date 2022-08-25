@@ -210,15 +210,23 @@ class mrp_prevision(models.Model):
                 if bom_id:
                     bom_point = bom_obj.browse(bom_id)
                     routing_id = bom_point.routing_id.id or False
-                mrp_id = mrp_production_obj.create({
-                        'product_id': obj.product_id.id,
-                        'product_uom': obj.product_id.uom_id.id,
-                        'product_qty': obj.quantity,
-                        'date_planned': obj.start_date,
-                        'bom_id': bom_id,
-                        'routing_id': routing_id,
-                        'origin': obj.name,
-                })
+
+
+                vals={
+                    'product_id': obj.product_id.id,
+                    'product_uom': obj.product_id.uom_id.id,
+                    'product_qty': obj.quantity,
+                    'date_planned': obj.start_date,
+                    'bom_id': bom_id,
+                    'routing_id': routing_id,
+                    'origin': obj.name,
+                }
+
+                if obj.product_id.is_emplacement_destockage_id:
+                    location_id = obj.product_id.is_emplacement_destockage_id.id
+                    vals["location_src_id"] = location_id
+
+                mrp_id = mrp_production_obj.create(vals)
                 name=obj.name
                 unlink=True
                 try:

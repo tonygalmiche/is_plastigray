@@ -70,6 +70,16 @@ class MrpProduction(models.Model):
     move_lines2               = fields.One2many('stock.move', 'raw_material_production_id', 'Consumed Products',domain=[('state', '=', 'done')], readonly=True)
 
 
+    def product_id_change(self, cr, uid, ids, product_id, product_qty=0, context=None):
+        result = super(MrpProduction, self).product_id_change(cr, uid, ids, product_id, product_qty=product_qty, context=context)
+        if product_id:
+            product = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+            if product.is_emplacement_destockage_id:
+                location_id = product.is_emplacement_destockage_id.id
+                result['value']['location_src_id'] = location_id
+        return result
+
+
     @api.multi
     def action_confirm(self):
         res=super(MrpProduction, self).action_confirm()
