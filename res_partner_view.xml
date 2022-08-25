@@ -68,10 +68,14 @@
                         attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
                     />
                    <field 
-                        name="is_code_destinataire_agence" 
-                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')],'required': [('is_traitement_edi','=', 'DESADV')]}"
+                        name="is_code_destinataire" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')]}"
                     />
-
+                   <field 
+                        name="is_code_destinataire_agence" 
+                        attrs="{'invisible': [('is_traitement_edi','!=', 'DESADV')]}"
+                    />
+                    
                     <field name="is_import_function"      attrs="{'invisible': [('customer','=', False)]}" />
                     <field name="is_type_cde_fournisseur" attrs="{'invisible': [('supplier','=', False)]}" />
                     <field name="is_livre_a_id"           attrs="{'invisible': [('supplier','=', False)]}"/>

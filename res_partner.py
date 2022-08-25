@@ -157,10 +157,42 @@ class res_partner(models.Model):
     is_numero_identification_destinataire = fields.Char(string='Numero Identification Destinataire')
     is_numero_bal_emetteur                = fields.Char(string='Numero BAL Emetteur')
     is_standard_edi                       = fields.Char(string='Standard EDI')
-    is_code_acheteur                      = fields.Char(string='Code Acheteur')
-    is_code_expediteur                    = fields.Char(string='Code Expediteur')
-    is_code_vendeur                       = fields.Char(string='Code Vendeur')
-    is_code_destinataire_agence           = fields.Char(string='Code Destinataire Agence')
+    is_code_acheteur                      = fields.Char(string='Code Acheteur (BY)')
+    is_code_expediteur                    = fields.Char(string='Code Expediteur (CZ)')
+    is_code_vendeur                       = fields.Char(string='Code Vendeur (SE)')
+    is_code_destinataire                  = fields.Char(string='Code Destinataire (CN)')
+    is_code_destinataire_agence           = fields.Char(string='Code Destinataire Agence (CN)')
+
+
+    # if CodeAcheteur:
+    #     data['EXPEDITION']['PARTIE_CITEE_001']={
+    #         'RolePartieCitee': "BY",                                            # Toujours BY pour l'acheteur
+    #         'IdentificationPartieCitee': CodeAcheteur,
+    #         'IdentificationPartieCiteeAgence': "10",                            # Toujours 10 pour indiquer que le code acheteur est un code ODETTE, mais non utilisé
+    #     }
+    # if CodeExpediteur:
+    #     data['EXPEDITION']['PARTIE_CITEE_002']={
+    #         'RolePartieCitee': "CZ",                                            # Toujours CZ pour l'expéditeur
+    #         'IdentificationPartieCitee': CodeExpediteur,
+    #         'IdentificationPartieCiteeAgence': "10",                            # Toujours 10 pour indiquer que le code acheteur est un code ODETTE, mais non utilisé
+    #     }
+
+    # if CodeVendeur:
+    #     data['EXPEDITION']['PARTIE_CITEE_003']={
+    #         'RolePartieCitee': "SE",                                            # Toujours SE pour le vendeur
+    #         'IdentificationPartieCitee': CodeVendeur,
+    #         'IdentificationPartieCiteeAgence': "10",                            # Toujours 10 pour indiquer que le code acheteur est un code ODETTE, mais non utilisé
+    #         'RoleNumeroComplementairePartieCitee': "ADE",                       # Toujours ADE pour référence complémentaire
+    #         'NumeroComplementairePartieCitee': Cofor,                           # Code fournisseur de PLASTIGRAY connu de TREVES (Cofor)
+    #     }
+
+    # if CodeDestinataire:
+    #     data['EXPEDITION']['PARTIE_CITEE_004']={
+    #         'RolePartieCitee'                : "CN",                            # Toujours CN pour le destinataire
+    #         'IdentificationPartieCitee'      : CodeDestinataire,
+    #         'IdentificationPartieCiteeAgence': CodeDestinataireAgence,
+    #     }
+
 
     is_raison_sociale2      = fields.Char('Raison sociale 2')
     is_code                 = fields.Char('Code'        , select=True)
