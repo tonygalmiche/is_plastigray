@@ -128,6 +128,7 @@ class is_liste_servir(models.Model):
     poids_net              = fields.Float('Poids net' , compute='_compute', readonly=True, store=False)
     info_client            = fields.Text("Information client complèmentaire")
     galia_um_ids           = fields.One2many('is.galia.base.um', 'liste_servir_id', u"UMs scannées", readonly=True)
+    uc_non_affectes        = fields.Integer(u"UCs non affectés")
 
 
     @api.multi
@@ -470,9 +471,6 @@ class is_liste_servir(models.Model):
             #*******************************************************************
 
 
-
-
-
     @api.multi
     def generer_bl(self,obj):
         cr = self._cr
@@ -674,12 +672,59 @@ class is_liste_servir(models.Model):
         return res
 
 
+    @api.multi
+    def affecter_uc_aux_lignes_ls_action(self):
+        for obj in self:
+            ucs = self.env['is.galia.base.uc'].search([('liste_servir_id','=',obj.id)])
+            for uc in ucs:
+                uc.ls_line_id=False
+            for line in obj.line_ids:
+                for um in obj.galia_um_ids:
+                    if line.product_id==um.product_id:
+                        for uc in um.uc_ids:
+                            if not uc.ls_line_id:
+                                lines2 = self.env['is.galia.base.uc'].search([('ls_line_id','=',line.id)])
+                                qt = uc.qt_pieces
+                                for l in lines2:
+                                    qt+=l.qt_pieces
+                                if qt<=line.quantite:
+                                    uc.ls_line_id=line.id
 
+            lines = self.env['is.galia.base.uc'].search([('liste_servir_id','=',obj.id),('ls_line_id','=',False)])
+            nb=len(lines)
+            obj.uc_non_affectes = nb
 
 
 class is_liste_servir_line(models.Model):
     _name='is.liste.servir.line'
     _order='sequence,id'
+
+    # La fonction name_get est une fonction standard d'Odoo permettant de définir le nom des fiches (dans les relations x2x)
+    # La fonction name_search permet de définir les résultats des recherches dans les relations x2x. En général, elle appelle la fonction name_get
+    @api.multi
+    def name_get(self):
+        res=[]
+        for obj in self:
+            t=[]
+            t.append(obj.product_id.is_code)
+            if obj.client_order_ref:
+                t.append(obj.client_order_ref)
+            if obj.point_dechargement:
+                t.append(obj.point_dechargement)
+            name=u", ".join(t)
+            res.append((obj.id, name))
+        return res
+
+
+    def name_search(self, cr, user, name='', args=None, operator='ilike', context=None, limit=100):
+        if not args:
+            args = []
+        if name:
+            ids = self.search(cr, user, ['|','|',('product_id.is_code','ilike', name),('client_order_ref','ilike', name),('point_dechargement','ilike', name)], limit=limit, context=context)
+        else:
+            ids = self.search(cr, user, args, limit=limit, context=context)
+        result = self.name_get(cr, user, ids, context=context)
+        return result
 
 
     @api.depends('product_id','quantite')

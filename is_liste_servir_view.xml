@@ -32,8 +32,19 @@
         </record>
 
 
-
-
+        <!-- Affecter les UCs aux lignes -->
+        <record id="affecter_uc_aux_lignes_ls_action_server" model="ir.actions.server">
+             <field name="name">Affecter les UCs aux lignes</field>
+            <field name="model_id" ref="model_is_liste_servir"/>
+            <field name="code">action = self.affecter_uc_aux_lignes_ls_action(cr, uid, context.get('active_ids', []), context=context)</field>
+        </record>
+        <record id="affecter_uc_aux_lignes_ls_ir_value" model="ir.values">
+            <field eval="'client_action_multi'" name="key2"/>
+            <field eval="'is.liste.servir'" name="model"/>
+            <field name="name">Affecter les UCs aux lignes</field>
+            <field eval="'ir.actions.server,%d'%affecter_uc_aux_lignes_ls_action_server" name="value"/>
+        </record>
+        
         <record model="ir.ui.view" id="is_liste_servir_form_view">
             <field name="name">is_liste_servir_form_view</field>
             <field name="model">is.liste.servir</field>
@@ -75,8 +86,6 @@
                             </group>
                         </group>
                         <group>
-
-
                             <field name="line_ids" nolabel="1">
                                 <tree editable="bottom"  create="true" colors="red:livrable == False">
                                     <field name="sequence"       invisible="1"/>
@@ -139,17 +148,18 @@
                                 </field>
                             </group>
                         </group>
+                        <group attrs="{'invisible': [('galia_um_ids', '=', [])]}">
+                            <field name="galia_um_ids" nolabel="1">
+                                <tree>
+                                    <button string="UM" name="acceder_um_action" type="object" icon="gtk-zoom-in"/>
+                                    <field name="name" string="N°étiquette UM scannée"/>
+                                    <field name="product_id"/>
+                                    <field name="qt_pieces"/>
+                                </tree>
+                            </field>
+                        </group>
                         <group>
-                            <group attrs="{'invisible': [('galia_um_ids', '=', [])]}">
-                                <field name="galia_um_ids" nolabel="1">
-                                    <tree>
-                                        <button string="UM" name="acceder_um_action" type="object" icon="gtk-zoom-in"/>
-                                        <field name="name" string="N°étiquette UM scannée"/>
-                                        <field name="product_id"/>
-                                        <field name="qt_pieces"/>
-                                    </tree>
-                                </field>
-                            </group>
+                            <field name="uc_non_affectes" attrs="{'invisible': [('uc_non_affectes', '=', 0)]}" readonly="1"/>
                         </group>
                         <group>
                             <group>

@@ -75,16 +75,24 @@
                 <form string="Form">  
                     <sheet>
                         <group>
-                            <field name="um_id"/>
-                            <field name="num_eti"/>
-                            <field name="type_eti"/>
-                            <field name="num_carton"/>
-                            <field name="qt_pieces"/>
-                            <field name="date_creation"/>
-                            <field name="production"/>
-                            <field name="production_id"/>
-                            <field name="product_id"/>
-                            <field name="employee_id"/>
+                            <group>
+                                <field name="um_id"/>
+                                <field name="num_eti"/>
+                                <field name="type_eti"/>
+                                <field name="num_carton"/>
+                                <field name="qt_pieces"/>
+                                <field name="date_creation"/>
+                                <field name="production"/>
+                                <field name="production_id"/>
+                                <field name="product_id"/>
+                                <field name="employee_id"/>
+                            </group>
+                            <group>
+                                <field name="liste_servir_id"/>
+                                <field name="ls_line_id"/>
+                                <field name="bon_transfert_id"/>
+                                <field name="bt_line_id"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
@@ -100,11 +108,15 @@
                     <field name="num_eti"/>
                     <field name="type_eti"/>
                     <field name="num_carton"/>
-                    <field name="qt_pieces"/>
+                    <field name="qt_pieces" sum="Total"/>
                     <field name="date_creation"/>
                     <field name="production"/>
                     <field name="product_id"/>
                     <field name="employee_id"/>
+                    <field name="liste_servir_id"/>
+                    <field name="ls_line_id"/>
+                    <field name="bon_transfert_id"/>
+                    <field name="bt_line_id"/>
                     <field name="write_date"/>
                     <field name="create_date"/>
                 </tree>
@@ -121,6 +133,14 @@
                     <field name="num_carton"/>
                     <field name="production"/>
                     <field name="product_id"/>
+                    <field name="liste_servir_id"/>
+                    <field name="ls_line_id"/>
+                    <field name="bon_transfert_id"/>
+                    <field name="bt_line_id"/>
+                    <group expand="0" string="Group By...">
+                        <filter name="group_ls_line_id" string="Ligne liste à servir"   domain="[]" context="{'group_by':'ls_line_id'}"/>
+                        <filter name="group_bt_line_id" string="Ligne bon de transfert" domain="[]" context="{'group_by':'bt_line_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>

@@ -25,7 +25,8 @@ class is_bon_transfert(models.Model):
     total_uc        = fields.Float('Total UC'       , compute='_compute', readonly=True, store=True, digits=(14,1))
     total_um        = fields.Float('Total UM'       , compute='_compute', readonly=True, store=True, digits=(14,1))
     line_ids        = fields.One2many('is.bon.transfert.line'  , 'bon_transfert_id', u"Lignes")
-    galia_um_ids    = fields.One2many('is.galia.base.um', 'bon_transfert_id', u"UMs scannées", readonly=True)
+    galia_um_ids        = fields.One2many('is.galia.base.um', 'bon_transfert_id', u"UMs scannées", readonly=True)
+    uc_non_affectes     = fields.Integer(u"UCs non affectés")
     traitement_edi      = fields.Selection(related='partner_id.is_traitement_edi', string='Traitement EDI', readonly=True)
     date_traitement_edi = fields.Datetime("Date traitement EDI")
 
@@ -236,9 +237,34 @@ class is_bon_transfert(models.Model):
                 res=self.env['mail.message'].create(vals)
 
 
+    @api.multi
+    def affecter_uc_aux_lignes_bt_action(self):
+        for obj in self:
+            print(obj.name)
+            ucs = self.env['is.galia.base.uc'].search([('bon_transfert_id','=',obj.id)])
+            for uc in ucs:
+                uc.bt_line_id=False
+            for line in obj.line_ids:
+                for um in obj.galia_um_ids:
+                    if line.product_id==um.product_id:
+                        for uc in um.uc_ids:
+                            if not uc.bt_line_id:
+                                lines2 = self.env['is.galia.base.uc'].search([('bt_line_id','=',line.id)])
+                                qt = uc.qt_pieces
+                                for l in lines2:
+                                    qt+=l.qt_pieces
+                                if qt<=line.quantite:
+                                    uc.bt_line_id=line.id
+            lines = self.env['is.galia.base.uc'].search([('bon_transfert_id','=',obj.id),('bt_line_id','=',False)])
+            nb=len(lines)
+            obj.uc_non_affectes = nb
+
+
 class is_bon_transfert_line(models.Model):
     _name='is.bon.transfert.line'
     _order='product_id'
+    _rec_name = 'product_id'
+
 
     @api.depends('product_id','quantite')
     def _compute(self):
