@@ -675,21 +675,22 @@ class is_liste_servir(models.Model):
     @api.multi
     def affecter_uc_aux_lignes_ls_action(self):
         for obj in self:
-            ucs = self.env['is.galia.base.uc'].search([('liste_servir_id','=',obj.id)])
+            ucs = self.env['is.galia.base.uc'].search([('liste_servir_id','=',obj.id)], order='qt_pieces desc')
             for uc in ucs:
                 uc.ls_line_id=False
             for line in obj.line_ids:
                 for um in obj.galia_um_ids:
                     if line.product_id==um.product_id:
-                        for uc in um.uc_ids:
+                        ucs = self.env['is.galia.base.uc'].search([('um_id','=',um.id)], order='qt_pieces desc')
+                        for uc in ucs:
                             if not uc.ls_line_id:
-                                lines2 = self.env['is.galia.base.uc'].search([('ls_line_id','=',line.id)])
+                                lines2 = self.env['is.galia.base.uc'].search([('ls_line_id','=',line.id)], order='qt_pieces desc')
                                 qt = uc.qt_pieces
                                 for l in lines2:
                                     qt+=l.qt_pieces
+                                #print(line.product_id.is_code, um.name, uc.num_eti, uc, uc.qt_pieces, qt, line.quantite)
                                 if qt<=line.quantite:
                                     uc.ls_line_id=line.id
-
             lines = self.env['is.galia.base.uc'].search([('liste_servir_id','=',obj.id),('ls_line_id','=',False)])
             nb=len(lines)
             obj.uc_non_affectes = nb
