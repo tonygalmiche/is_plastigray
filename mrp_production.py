@@ -314,7 +314,11 @@ class MrpProduction(models.Model):
                 email_to=[]
                 for groupe in groupes:
                     for employe in groupe.employee_ids:
-                        email_to.append(employe.is_courriel)    
+                        if employe.is_courriel:
+                            email_to.append(employe.is_courriel)
+                        else:
+                            if employe.user_id.partner_id.email:
+                                email_to.append(employe.user_id.partner_id.email)
                 if email_to:
                     subject=u"["+obj.name+u"] Quantité modifiée de %s vers %s"%(int(qt1), qt2)
                     _logger.info(subject)
