@@ -321,7 +321,11 @@ class MrpProduction(models.Model):
                                 email_to.append(employe.user_id.partner_id.email)
                 if email_to:
                     subject=u"["+obj.name+u"] Quantité modifiée de %s vers %s"%(int(qt1), qt2)
-                    _logger.info(subject)
+                    email_to = u','.join(email_to)
+
+                    _logger.info(subject+u" (%s)"%(email_to))
+
+
                     user  = self.env['res.users'].browse(self._uid)
                     email_from = user.email
                     email_cc   = False
