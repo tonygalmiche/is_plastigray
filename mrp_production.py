@@ -306,7 +306,7 @@ class MrpProduction(models.Model):
             if date_planned<=date_fin:
                 test=True
             if test==False:
-                ofs = self.env["is.of"].search([('name', '=', obj.name),('heure_fin','=',False)])
+                ofs = self.env["is.of"].search([('name', '=', obj.name),('heure_debut','!=',False),('heure_fin','=',False)])
                 if len(ofs)>0:
                     test=True
             if test:
@@ -322,10 +322,7 @@ class MrpProduction(models.Model):
                 if email_to:
                     subject=u"["+obj.name+u"] Quantité modifiée de %s vers %s"%(int(qt1), qt2)
                     email_to = u','.join(email_to)
-
                     _logger.info(subject+u" (%s)"%(email_to))
-
-
                     user  = self.env['res.users'].browse(self._uid)
                     email_from = user.email
                     email_cc   = False
