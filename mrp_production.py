@@ -423,9 +423,6 @@ class MrpProduction(models.Model):
 
     @api.multi
     def declaration_production_theia_action(self,qt_bonne, qt_rebut, is_employee_theia_id=False):
-
-        #is_employee_theia_id=480
-
         err=""
         for obj in self:
             qt=0
