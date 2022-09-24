@@ -1176,6 +1176,8 @@ class product_product(models.Model):
                 if typeod=='FL' and qt<0:
                     qt=-0.01
 
+                qt = qt or 0 #NoneType
+
                 if DateLundi not in Tab[Cle]:
                     Tab[Cle][DateLundi]=0
                 Tab[Cle][DateLundi]=Tab[Cle][DateLundi]+round(Sens*qt,2);
