@@ -763,10 +763,11 @@ class stock_move(models.Model):
                     x = order.is_point_dechargement
             obj.is_point_dechargement = x
 
-    is_lots               = fields.Text(u'Lots', compute='_compute_lots', store=False, readonly=True)
-    is_dosmat_ctrl_qual   = fields.Char(u'Contrôle qualité', readonly=True)
-    is_point_dechargement = fields.Char(u'Point de déchargement', compute='_compute_is_point_dechargement', store=False, readonly=True)
-    is_employee_theia_id  = fields.Many2one('hr.employee', 'Employé Theia')
+    is_lots                       = fields.Text(u'Lots', compute='_compute_lots', store=False, readonly=True)
+    is_dosmat_ctrl_qual           = fields.Char(u'Contrôle qualité', readonly=True)
+    is_dosmat_conditions_stockage = fields.Char(u'Conditions de stockage', readonly=True)
+    is_point_dechargement         = fields.Char(u'Point de déchargement', compute='_compute_is_point_dechargement', store=False, readonly=True)
+    is_employee_theia_id          = fields.Many2one('hr.employee', 'Employé Theia')
 
     is_amortissement_moule = fields.Float('Amt client négocié'        , digits=(14,4))
     is_amt_interne         = fields.Float('Amt interne'               , digits=(14,4))

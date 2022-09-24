@@ -170,6 +170,7 @@
                     <field name="is_lots"/>
                     <field name="is_point_dechargement"/>
                     <field name="is_dosmat_ctrl_qual"/>
+                    <field name="is_dosmat_conditions_stockage"/>
                 </field>
             </field>
         </record>

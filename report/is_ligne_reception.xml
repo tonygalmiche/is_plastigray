@@ -44,6 +44,7 @@
                             <field name="user_id"/>
                             <field name="is_facturable"/>
                             <field name="is_dosmat_ctrl_qual"/>
+                            <field name="is_dosmat_conditions_stockage"/>
                         </group>
                     </group>
                 </sheet>
@@ -70,6 +71,7 @@
                 <field name="is_date_confirmation"/>
                 <field name="is_ctrl_rcp"/>
                 <field name="is_dosmat_ctrl_qual"/>
+                <field name="is_dosmat_conditions_stockage"/>
                 <field name="is_commentaire"/>
            </tree>
         </field>
@@ -85,9 +87,10 @@
                 <field name="partner_id"/>
                 <field name="product_id"/>
                 <field name="description"/>
-               <field name="segment_id"/>
+                <field name="segment_id"/>
                 <field name="is_ctrl_rcp"/>
                 <field name="is_dosmat_ctrl_qual"/>
+                <field name="is_dosmat_conditions_stockage"/>
                 <field name="ref_fournisseur"/>
                 <field name="is_cfc_id"/>
                 <field name="commande_ouverte"/>
