@@ -49,6 +49,8 @@ class res_company(models.Model):
     is_agenda_url = fields.Char(u'URL Google Agenda')
     is_agenda_pwd = fields.Char(u'Mot de passe admin Google Agenda')
 
+    is_zebra_id = fields.Many2one('is.raspberry.zebra', u"Imprimante Zebra par défaut", help=u"Utilisé pour imprimer les étiquettes des équipements")
+
     @api.multi
     def annee_pic_3ans_action(self):
         for obj in self:

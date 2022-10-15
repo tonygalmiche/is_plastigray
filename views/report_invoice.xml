@@ -297,7 +297,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>T.V.A.</td>
+                            <td>T.V.A. 20%</td>
                             <td class="text-right">
                                 <span t-field="o.is_tva" t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
                             </td>

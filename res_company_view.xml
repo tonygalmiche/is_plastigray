@@ -44,7 +44,7 @@
                         </group>
                         <group string="THEIA">
                             <field name="is_code_societe"/>
-                            <!-- <field name="is_dest_bilan_of_ids" widget="many2many_tags"/> -->
+                            <field name="is_zebra_id"/>
                         </group>
                         <group string="SMS via OVH">
                             <field name="is_sms_account"/>
