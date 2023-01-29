@@ -80,7 +80,7 @@
         </field>
     </record>
     <record id="pg_stock_move_action" model="ir.actions.act_window">
-        <field name="name">Mouvements de stocks (new)</field>
+        <field name="name">Mouvements de stocks</field>
         <field name="res_model">pg.stock.move</field>
         <field name="domain">[]</field>
         <field name="view_type">form</field>
