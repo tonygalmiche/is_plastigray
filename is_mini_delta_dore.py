@@ -328,7 +328,7 @@ class is_mini_delta_dore(models.Model):
                             if date_calculee<=date_prochaine_livraison:
                                 type_commande  = 'ferme'
                                 date_livraison=date_prochaine_livraison
-                                commande=commande+multiple # Ajoute 1 multiple si commande ferme
+                                #commande=commande+multiple # Ajoute 1 multiple si commande ferme
                             stock_date=stock_date+commande
                         anomalie = []
                         if stock_date<0:
