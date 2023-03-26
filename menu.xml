@@ -1271,11 +1271,9 @@
     <menuitem id="menu_is_production_stock"    sequence="20" name="Stock"                    parent="menu_is_production"  />
     <menuitem id="menu_is_production_stock_10" sequence="10" name="Stocks détaillés"         parent="menu_is_production_stock"  action="is_stock_quant_action"/>
 
-    <!--
-    <menuitem id="menu_is_production_stock_20" sequence="20" name="Mouvements de stock"      parent="menu_is_production_stock"  action="is_stock_move_action" />
-    -->
-    <menuitem id="menu_is_production_stock_25" sequence="25" name="Mouvements de stock" parent="stock.menu_stock_root"    action="is_refresh_stock_move_action" />
-    <menuitem id="pg_stock_move_menu"          sequence="26" name="Mouvements de stock" parent="menu_is_production_stock" action="pg_stock_move_action" />
+    <menuitem id="menu_is_production_stock_25" sequence="20" name="Actualiser Mouvements"   parent="menu_is_production_stock" action="is_refresh_stock_move_action" />    
+    <menuitem id="menu_is_production_stock_20" sequence="22" name="Mouvement stock"         parent="menu_is_production_stock" action="is_stock_move_action" />
+    <menuitem id="pg_stock_move_menu"          sequence="24" name="Mouvement stock (copie)" parent="menu_is_production_stock" action="pg_stock_move_action" />
 
     <record id="is_entrees_sorties_stocks_menu" model="ir.ui.menu" >
         <field name="name">Entrées-sorties de stocks</field>
@@ -1295,6 +1293,69 @@
         <field name="action"    ref="is_stock_production_lot_action"/>
         <field name="groups_id" eval="[(6,0,[
             ref('is_administration_vente_group'),
+        ])]"/>
+    </record>
+
+
+    <!-- Production / Analyses Stocks -->
+    <menuitem id="is_analyse_stock_menu" sequence="21" name="Analyses Stocks" parent="menu_is_production"/>
+    <record id="is_liste_stock_negatif_menu" model="ir.ui.menu" >
+        <field name="name">Stocks négatifs</field>
+        <field name="sequence">20</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_liste_stock_negatif_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+    <record id="is_liste_stock_detaille_negatif_menu" model="ir.ui.menu" >
+        <field name="name">Stocks détaillé négatif</field>
+        <field name="sequence">25</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_liste_stock_detaille_negatif_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+    <record id="is_liste_stock_sans_lot_menu" model="ir.ui.menu" >
+        <field name="name">Stocks sans lot</field>
+        <field name="sequence">30</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_liste_stock_sans_lot_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+    <record id="is_stock_valorise_menu" model="ir.ui.menu" >
+        <field name="name">Stocks valorisés</field>
+        <field name="sequence">40</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_stock_valorise_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+        ])]"/>
+    </record>
+    <record id="is_taux_rotation_stock_new_menu" model="ir.ui.menu" >
+        <field name="name">Taux rotation stocks</field>
+        <field name="sequence">50</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_taux_rotation_stock_new_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
+        ])]"/>
+    </record>
+    <record id="is_anomalie_declar_prod_menu" model="ir.ui.menu" >
+        <field name="name">Anomalies de production</field>
+        <field name="sequence">60</field>
+        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
+        <field name="action"    ref="is_anomalie_declar_prod_action"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_gestionnaire_donnees_techniques_group'),
+            ref('is_rsp_production_group'),
         ])]"/>
     </record>
 
@@ -1774,71 +1835,7 @@
         ])]"/>
     </record>
 
-    <menuitem id="is_analyse_stock_menu" sequence="30" name="Analyses Stocks" parent="menu_is_analyse"/>
-    <record id="is_liste_stock_negatif_menu" model="ir.ui.menu" >
-        <field name="name">Stocks négatifs</field>
-        <field name="sequence">20</field>
-        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
-        <field name="action"    ref="is_liste_stock_negatif_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
-            ref('is_rsp_production_group'),
-        ])]"/>
-    </record>
-    <record id="is_liste_stock_detaille_negatif_menu" model="ir.ui.menu" >
-        <field name="name">Stocks détaillé négatif</field>
-        <field name="sequence">25</field>
-        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
-        <field name="action"    ref="is_liste_stock_detaille_negatif_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
-            ref('is_rsp_production_group'),
-        ])]"/>
-    </record>
-    <record id="is_liste_stock_sans_lot_menu" model="ir.ui.menu" >
-        <field name="name">Stocks sans lot</field>
-        <field name="sequence">30</field>
-        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
-        <field name="action"    ref="is_liste_stock_sans_lot_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
-            ref('is_rsp_production_group'),
-        ])]"/>
-    </record>
 
-
-
-
-
-    <record id="is_stock_valorise_menu" model="ir.ui.menu" >
-        <field name="name">Stocks valorisés</field>
-        <field name="sequence">40</field>
-        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
-        <field name="action"    ref="is_stock_valorise_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
-        ])]"/>
-    </record>
-    <record id="is_taux_rotation_stock_new_menu" model="ir.ui.menu" >
-        <field name="name">Taux rotation stocks</field>
-        <field name="sequence">50</field>
-        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
-        <field name="action"    ref="is_taux_rotation_stock_new_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
-            ref('is_rsp_production_group'),
-        ])]"/>
-    </record>
-    <record id="is_anomalie_declar_prod_menu" model="ir.ui.menu" >
-        <field name="name">Anomalies de production</field>
-        <field name="sequence">60</field>
-        <field name="parent_id" eval="ref('is_analyse_stock_menu')"/>
-        <field name="action"    ref="is_anomalie_declar_prod_action"/>
-        <field name="groups_id" eval="[(6,0,[
-            ref('is_gestionnaire_donnees_techniques_group'),
-            ref('is_rsp_production_group'),
-        ])]"/>
-    </record>
 
 
 
@@ -2030,4 +2027,3 @@
     />
   </data>
 </openerp>
-
