@@ -752,16 +752,25 @@ class is_edi_cde_cli(models.Model):
             csvfile = csv.reader(csvfile, delimiter=';')
             for ct, lig in enumerate(csvfile):
                 if ct>0 and len(lig)>=28:
-                    type_commande      = lig[25].strip()
+                    #type_commande      = lig[25].strip()
+                    type_commande      = lig[7].strip()
+
                     if type_commande == u"Prévision":
                         type_commande="previsionnel"
-                        ref_article_client = lig[18].strip()
-                        quantite = lig[26].replace(',', '.')
+
+                        #ref_article_client = lig[18].strip()
+                        ref_article_client = lig[0].strip()
+
+                        #quantite = lig[26].replace(',', '.')
+                        quantite = lig[8].replace(',', '.')
                         try:
                             quantite = float(quantite)
                         except ValueError:
                             quantite=0
-                        date_livraison = lig[28]
+
+                        #date_livraison = lig[28]
+                        date_livraison = lig[12]
+
                         d=False
                         try:
                             d = datetime.strptime(date_livraison, '%d/%m/%Y')
