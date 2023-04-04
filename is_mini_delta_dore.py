@@ -48,7 +48,7 @@ class is_mini_delta_dore(models.Model):
             obj.besoin_ids.unlink()
             for attachment in obj.file_ids:
                 res=self.traitement(attachment)
-            self.creation_edi()
+            #self.creation_edi()
 
 
     @api.multi
@@ -115,7 +115,9 @@ class is_mini_delta_dore(models.Model):
             attachment=attachment.decode('iso-8859-1').encode('utf8')
             csvfile = attachment.split("\n")
             csvfile = csv.reader(csvfile, delimiter=';')
-            tsemaines={}
+            #tsemaines={}
+            tmardi={}
+            tjeudi={}
             tmois={}
             tdates=[]
             for lig, row in enumerate(csvfile):
@@ -129,8 +131,11 @@ class is_mini_delta_dore(models.Model):
                             for i in range(0,365):
                                 semaine='S'+d.strftime('%W/%Y')
                                 #Test si lundi
-                                if d.isoweekday()==1:
-                                    tsemaines[semaine]=d
+                                if d.isoweekday()==2:
+                                    #tsemaines[semaine]=d
+                                    tmardi[semaine]=d
+                                if d.isoweekday()==24:
+                                    tjeudi[semaine]=d
                                 d = d + timedelta(days=+1)   # Date +1 jour
                             #***************************************************
 
@@ -138,33 +143,50 @@ class is_mini_delta_dore(models.Model):
                             d=datetime.strptime(cel, '%d/%m/%y')
                             for i in range(0,12):
                                 d = d.replace(day=1)      # Fixe le jour à 1
-                                d = self.premier_lundi(d) # Recherche le premier lundi suivant
+                                d = self.premier_mardi(d) # Recherche le premier mardi suivant
                                 mois=d.strftime('%m/%Y')
                                 tmois[mois]=d
                                 d = d + timedelta(days=32) # Ajoute 32 jours => mois suivant
                             #***************************************************
 
-                            #** Date premier lundi *****************************
+
+                        #** Dates en jours => Mardi ou jeudi le plus prés précédent ******************
+                        if ct>=10 and ct<(10+nb_jours):
+
+                            #** Date premier mardi et jeudi ********************
                             d=datetime.strptime(cel, '%d/%m/%y')
-                            weekday = d.weekday()                    # Jour dans la semaine
-                            date_lundi = d - timedelta(days=weekday) # Date du lundi précédent
+                            weekday = d.isoweekday() # Jour dans la semaine (1=lundi, 7=dimanche)
+                            if weekday==1:
+                                mardi_jeudi_precedent = d - timedelta(days=4) # lundi => jeudi précédent
+                            if weekday==2:
+                                mardi_jeudi_precedent = d - timedelta(days=0) # mardi => mardi
+                            if weekday==3:
+                                mardi_jeudi_precedent = d - timedelta(days=1) # mercredi => mardi précédent
+                            if weekday==4:
+                                mardi_jeudi_precedent = d - timedelta(days=0) # jeudi => jeudi
+                            if weekday==5:
+                                mardi_jeudi_precedent = d - timedelta(days=1) # vendredi => jeudi précédent
+                            if weekday==6:
+                                mardi_jeudi_precedent = d - timedelta(days=2) # samedi => jeudi précédent
+                            if weekday==7:
+                                mardi_jeudi_precedent = d - timedelta(days=3) # dimanche => jeudi précédent
+                            #date_lundi = d - timedelta(days=weekday)  # Date du lundi de la semaine
                             #***************************************************
 
-                        #** Dates en jours => Lundi précédent ******************
-                        if ct>=10 and ct<(10+nb_jours):
-                            tdates.append([cel,date_lundi])
+                            #tdates.append([cel,date_lundi])
+                            tdates.append([cel,mardi_jeudi_precedent])
                             annee=d.year
 
-                        #* Dates en semaines => Lundi de la semaine ************
+                        #* Dates en semaines => Mardi de la semaine ************
                         if ct>=(10+nb_jours) and ct<(10+nb_jours+nb_semaines):
                             cel=cel.strip()
                             semaine=cel+'/'+str(annee)
-                            d=tsemaines[semaine]
+                            d=tmardi[semaine]
                             tdates.append([cel,d])
                             d = d + timedelta(days=7) # Ajoute 7 jours => semaine suivant
                             annee=d.year # Année de la semaine suivante
 
-                        #* Dates en mois => 1er lundi du mois ******************
+                        #* Dates en mois => 1er mardi du mois ******************
                         if ct>=(10+nb_jours+nb_semaines) and ct<(10+nb_jours+nb_semaines+nb_mois):
                             mois=cel.strip()
                             num_mois=_MOIS.index(mois)+1
@@ -362,8 +384,8 @@ class is_mini_delta_dore(models.Model):
 
 
     @api.multi
-    def premier_lundi(self,d):
-        while (d.isoweekday()!=1):
+    def premier_mardi(self,d):
+        while (d.isoweekday()!=2):
             d = d + timedelta(days=1)
         return d
 
