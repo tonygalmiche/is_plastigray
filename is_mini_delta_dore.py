@@ -48,7 +48,7 @@ class is_mini_delta_dore(models.Model):
             obj.besoin_ids.unlink()
             for attachment in obj.file_ids:
                 res=self.traitement(attachment)
-            #self.creation_edi()
+            self.creation_edi()
 
 
     @api.multi
