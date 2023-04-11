@@ -803,7 +803,9 @@ class is_edi_cde_cli(models.Model):
     @api.multi
     def get_data_Millipore(self, attachment):
         res = []
-        mois=[u'janv.',u'févr.',u'mars',u'avr.',u'mai',u'juin',u'juil.',u'août',u'sept.',u'oct.',u'nov.',u'déc.']
+        #mois=[u'janv.',u'févr.',u'mars',u'avr.',u'mai',u'juin',u'juil.',u'août',u'sept.',u'oct.',u'nov.',u'déc.']
+        mois=['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+
         for obj in self:
             csvfile = base64.decodestring(attachment.datas).decode('cp1252')
             csvfile = csvfile.split("\r\n")
