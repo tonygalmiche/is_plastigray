@@ -809,11 +809,22 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             csvfile = base64.decodestring(attachment.datas).decode('cp1252')
             csvfile = csvfile.split("\r\n")
+
+            print(csvfile)
+
+
+
             csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
             annees=[]
             dates=[]
+
+            print(csvfile)
+
             for ct, lig in enumerate(csvfile):
+                print(ct,lig)
+
+
                 if ct<7:
                     continue
                 nb=len(lig)

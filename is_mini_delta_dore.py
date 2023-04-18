@@ -177,11 +177,11 @@ class is_mini_delta_dore(models.Model):
                             tdates.append([cel,mardi_jeudi_precedent])
                             annee=d.year
 
-                        #* Dates en semaines => Mardi de la semaine ************
+                        #* Dates en semaines => Jeudi de la semaine ************
                         if ct>=(10+nb_jours) and ct<(10+nb_jours+nb_semaines):
                             cel=cel.strip()
                             semaine=cel+'/'+str(annee)
-                            d=tmardi[semaine]
+                            d=tjeudi[semaine]
                             tdates.append([cel,d])
                             d = d + timedelta(days=7) # Ajoute 7 jours => semaine suivant
                             annee=d.year # Année de la semaine suivante
