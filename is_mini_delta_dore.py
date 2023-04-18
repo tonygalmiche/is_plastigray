@@ -134,7 +134,7 @@ class is_mini_delta_dore(models.Model):
                                 if d.isoweekday()==2:
                                     #tsemaines[semaine]=d
                                     tmardi[semaine]=d
-                                if d.isoweekday()==24:
+                                if d.isoweekday()==4:
                                     tjeudi[semaine]=d
                                 d = d + timedelta(days=+1)   # Date +1 jour
                             #***************************************************
