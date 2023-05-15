@@ -341,24 +341,31 @@
                 <strong>Type de règlement : </strong>
                 <span t-field="o.partner_id.is_type_reglement.name"/>
             </p>
-            <table class="table table-condensed" style="width:75%" t-if="o.partner_id.is_rib_id">
-                <thead>
-                    <tr>
-                        <th>IBAN</th>
-                        <th>Banque</th>
-                        <th>BIC</th>
-                        <th>SWIFT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span t-field="o.partner_id.is_rib_id.acc_number"/></td>
-                        <td><span t-field="o.partner_id.is_rib_id.bank_name"/></td>
-                        <td><span t-field="o.partner_id.is_rib_id.bank_bic"/></td>
-                        <td><span t-field="o.partner_id.is_rib_id.is_bank_swift"/></td>
-                    </tr>
-                </tbody>
-            </table>
+
+            <t t-if="o.partner_id.is_rib_id">
+                <t t-if="o.partner_id.is_rib_id.bank_bic=='SOGEFRPP'">
+                    <div t-if="o.partner_id.lang == 'fr_FR'"><b>MERCI DE TENIR COMPTE DE NOTRE CHANGEMENT DE RIB, DE « BANQUE KOLB » VERS « SOCIETE GENERALE »</b></div>
+                    <div t-if="o.partner_id.lang != 'fr_FR'"><b>PLEASE CONSIDER OUR BANK ACCOUNT CHANGE, FROM “BANQUE KOLB” TO “SOCIETE GENERALE”</b></div>
+                </t>
+                <table class="table table-condensed" style="width:75%">
+                    <thead>
+                        <tr>
+                            <th>IBAN</th>
+                            <th>Banque</th>
+                            <th>BIC</th>
+                            <th>SWIFT</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span t-field="o.partner_id.is_rib_id.acc_number"/></td>
+                            <td><span t-field="o.partner_id.is_rib_id.bank_name"/></td>
+                            <td><span t-field="o.partner_id.is_rib_id.bank_bic"/></td>
+                            <td><span t-field="o.partner_id.is_rib_id.is_bank_swift"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
 
             <t t-if="picking.is_sale_order_id.is_info_client">
                 <b>Information client complèmentaire : </b><br />
