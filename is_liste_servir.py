@@ -7,7 +7,7 @@ import datetime
 import time
 import psycopg2
 import sys
-
+from math import *
 
 
 
@@ -281,7 +281,7 @@ class is_liste_servir(models.Model):
                     vals={
                         'liste_servir_id': obj.id,
                         'um_id': r[k]['um_id'],
-                        'nb_um': r[k]['nb_um'],
+                        'nb_um': ceil(r[k]['nb_um']),
                     }
                     self.env['is.liste.servir.um'].create(vals)
                 #*******************************************************************
