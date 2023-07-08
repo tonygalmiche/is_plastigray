@@ -147,25 +147,16 @@ class is_edi_cde_cli(models.Model):
                         order_id     = order[0].id
                         partner_id   = order[0].partner_id.id
                         pricelist_id = order[0].pricelist_id.id
-
-
                                 
-
-
-
-
                     for ligne in row["lignes"]:
                         product_id = False
                         prix       = 0
                         anomalie2  = []
 
-
                         if len(order):
                             if point_dechargement:
                                 if point_dechargement!=order[0].is_point_dechargement:
                                     anomalie2.append(u"Point de déchargement modifié (%s<>%s)"%(point_dechargement,order[0].is_point_dechargement))
-
-
 
                         if "anomalie" in ligne:
                             if ligne["anomalie"]:
@@ -809,22 +800,11 @@ class is_edi_cde_cli(models.Model):
         for obj in self:
             csvfile = base64.decodestring(attachment.datas).decode('cp1252')
             csvfile = csvfile.split("\r\n")
-
-            print(csvfile)
-
-
-
             csvfile = csv.reader(csvfile, delimiter='\t')
             tab=[]
             annees=[]
             dates=[]
-
-            print(csvfile)
-
             for ct, lig in enumerate(csvfile):
-                print(ct,lig)
-
-
                 if ct<7:
                     continue
                 nb=len(lig)
@@ -1237,27 +1217,65 @@ class is_edi_cde_cli(models.Model):
             for partie_citee in tree.xpath("/CALDEL/SEQUENCE_PRODUCTION"):
                 if  partie_citee.xpath("ARTICLE_PROGRAMME"):
                     ref_article_client=partie_citee.xpath("ARTICLE_PROGRAMME/NumeroArticleClient")[0].text
-                    order=self.env['sale.order'].search([
-                        ('partner_id.is_code'   , '=', obj.partner_id.is_code),
-                        ('is_ref_client', '=', ref_article_client)]
-                    )
-                    num_commande_client="??"
-                    if len(order):
-                        num_commande_client=order[0].client_order_ref
+                    products=self.env['product.product'].search([
+                        ('is_client_id' , '=', obj.partner_id.id),
+                        ('is_ref_client', '=', ref_article_client),
+                        ('is_gestionnaire_id', '!=', '04'), 
+                        ('is_gestionnaire_id', '!=', '07'), 
+                        ('is_gestionnaire_id', '!=', '12'), 
+                        ('is_gestionnaire_id', '!=', '14'), 
+                        ('is_gestionnaire_id', '!=', '23'), 
+                        ('segment_id', 'not ilike', 'fictif'), 
+                        ('segment_id', 'not ilike', 'fantome'), 
+                        ('segment_id', 'not ilike', 'consommable'), 
+                        ('segment_id', 'not ilike', 'comptable'),
+                    ])
+                    anomalie=False
+                    if len(products)==0:
+                        anomalie=u"Article '%s' non trouvé pour le client %s/%s"%(ref_article_client,obj.partner_id.is_code,obj.partner_id.is_adr_code)
+                    if len(products)>1:
+                        anomalie=u"Il existe plusieurs articles actifs pour la référence client '%s' et pour le client %s/%s"%(ref_article_client,obj.partner_id.is_code,obj.partner_id.is_adr_code)
+                    num_commande_client=partie_citee.xpath("ARTICLE_PROGRAMME/NumeroCommande")[0].text
+                    order_id=False
+                    product=False
+                    if not anomalie:
+                        product=products[0]
+                        orders=self.env['sale.order'].search([
+                            ('is_type_commande'  , '=', 'standard'),
+                            ('state'             , '=', 'draft'),
+                            ('partner_id'        , '=', obj.partner_id.id),
+                            ('client_order_ref'  , '=', num_commande_client),
+                        ])
+                        if len(orders)==0:
+                            vals={
+                                "partner_id": obj.partner_id.id,
+                                "client_order_ref": num_commande_client,
+                                "is_type_commande": "standard",
+                            }
+                            order=self.env['sale.order'].create(vals)
+                        else:
+                            order=orders[0]
+                        order_id=order.id
                     val = {
-                        'ref_article_client': ref_article_client,
+                        'order_id'           : order_id,
+                        'ref_article_client' : ref_article_client,
                         'num_commande_client': num_commande_client,
-                        'lignes': []
+                        'lignes'             : []
                     }
+                    if product:
+                        val["product"]=product
                     res1 = []
                     for detail_programme in partie_citee.xpath("ARTICLE_PROGRAMME/DETAIL_PROGRAMME_ARTICLE"):
-                        date_livraison=detail_programme.xpath("DateHeureLivraisonAuPlusTot")[0].text[:8]
+                        #date_livraison=detail_programme.xpath("DateHeureLivraisonAuPlusTot")[0].text[:8]
+                        date_livraison=detail_programme.xpath("DateHeurelivraisonAuPlusTard")[0].text[:8]
+                        quantite=detail_programme.xpath("QteALivrer")[0].text
                         d=datetime.strptime(date_livraison, '%Y%m%d')
                         date_livraison=d.strftime('%Y-%m-%d')
                         ligne = {
-                            'quantite': detail_programme.xpath("QteALivrer")[0].text,
+                            'quantite': quantite,
                             'type_commande': 'ferme',
                             'date_livraison': date_livraison,
+                            'anomalie'           : anomalie,
                         }
                         res1.append(ligne)
                     val.update({'lignes':res1})
