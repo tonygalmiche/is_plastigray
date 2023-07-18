@@ -728,7 +728,7 @@ class is_liste_servir_line(models.Model):
         return result
 
 
-    @api.depends('product_id','quantite')
+    @api.depends('product_id','quantite','mixer')
     def _compute(self):
         cr = self._cr
         for obj in self:
@@ -765,6 +765,8 @@ class is_liste_servir_line(models.Model):
                         nb_um=row[3]
                         if row[1]!=0 and row[3]!=0:
                             nb_um=qt/(row[1]*row[3])
+                        if not obj.mixer:
+                            nb_um = ceil(nb_um)
                         obj.uc_id     = row[0]
                         obj.nb_uc     = nb_uc
                         obj.um_id     = row[2]
@@ -811,7 +813,7 @@ class is_liste_servir_line(models.Model):
     #TODO : Le champ HTML pour le certificat matiere ne fonctionne pas en tree view => Enregsitrer l'ID de Dynacase et mettre un bouton pour acceder
 
     _defaults = {
-        'mixer': True,
+        'mixer': False,
     }
 
 

@@ -109,7 +109,7 @@
                                     <field name="nb_uc"/>
 
                                     <field name="um_id"/>
-                                    <field name="nb_um"/>
+                                    <field name="nb_um" sum="Total"/>
 
                                     <field name="mixer"/>
                                     <field name="client_order_ref" readonly="1" />
@@ -131,7 +131,7 @@
                                     <tree editable="bottom">
                                         <field name="nb_uc"/>
                                         <field name="uc_id"/>
-                                        <field name="nb_um"/>
+                                        <field name="nb_um" sum="Total"/>
                                         <field name="um_id"/>
                                         <field name="mixer"/>
                                     </tree>
