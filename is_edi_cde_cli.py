@@ -377,6 +377,56 @@ class is_edi_cde_cli(models.Model):
 
 
     @api.multi
+    def group_by_data(self, datas):
+        dict={}
+        for data in datas:
+            ref_article_client  = data.get("ref_article_client")
+            num_commande_client = data.get("num_commande_client")
+            point_dechargement  = data.get("point_dechargement")
+            order_id            = data.get("order_id")
+            product             = data.get("product")
+            lignes              = data.get("lignes",[])
+            key="%s-%s-%s-%s-%s"%(ref_article_client,num_commande_client,point_dechargement,order_id,product)
+            if key not in dict:
+                vals={
+                    "ref_article_client" : ref_article_client,
+                    "num_commande_client": num_commande_client,
+                    "lignes"             : [],
+                }
+                if order_id:
+                    vals["order_id"] = order_id
+                if point_dechargement:
+                    vals["point_dechargement"] = point_dechargement
+                if product:
+                    vals["product"] = product
+                dict[key]={}
+                dict[key]["vals"]=vals
+            dict[key]["vals"]["lignes"]+=lignes
+        for key in dict:
+            dict_ligne={}
+            for ligne in dict[key]["vals"]["lignes"]:
+                type_commande  = ligne.get("type_commande")
+                anomalie       = ligne.get("anomalie")
+                date_livraison = ligne.get("date_livraison")
+                quantite       = ligne.get("quantite")
+                key_ligne="%s-%s-%s"%(type_commande,anomalie,date_livraison)
+                if key_ligne not in dict_ligne:
+                    dict_ligne[key_ligne]={}
+                    dict_ligne[key_ligne]["type_commande"]=type_commande
+                    dict_ligne[key_ligne]["anomalie"]=anomalie
+                    dict_ligne[key_ligne]["date_livraison"]=date_livraison
+                    dict_ligne[key_ligne]["quantite"]=0
+                dict_ligne[key_ligne]["quantite"]+=quantite
+            dict[key]["vals"]["lignes"]=[]
+            for key_ligne in dict_ligne:
+                dict[key]["vals"]["lignes"].append(dict_ligne[key_ligne])
+        datas=[]
+        for key in dict:
+            datas.append(dict[key]["vals"])
+        return datas
+
+
+    @api.multi
     def get_data(self, import_function, attachment):
         datas={}
 
@@ -394,6 +444,8 @@ class is_edi_cde_cli(models.Model):
             datas=self.get_data_DARWIN(attachment)
         if import_function=="eCar":
             datas=self.get_data_eCar(attachment)
+            datas=self.group_by_data(datas)
+
         if import_function=="GXS":
             datas=self.get_data_GXS(attachment)
         if import_function=="John-Deere":
@@ -1204,6 +1256,11 @@ class is_edi_cde_cli(models.Model):
                         quantite=""
                         for QuantiteALivrer in detail_programme.xpath("QuantiteALivrer"):
                             quantite=QuantiteALivrer.text
+                            try:
+                                quantite=float(quantite)
+                            except ValueError:
+                                quantite=0
+
                         ligne = {
                             'quantite'      : quantite,
                             'type_commande' : type_commande,
@@ -1269,6 +1326,10 @@ class is_edi_cde_cli(models.Model):
                         #date_livraison=detail_programme.xpath("DateHeureLivraisonAuPlusTot")[0].text[:8]
                         date_livraison=detail_programme.xpath("DateHeurelivraisonAuPlusTard")[0].text[:8]
                         quantite=detail_programme.xpath("QteALivrer")[0].text
+                        try:
+                            quantite=float(quantite)
+                        except ValueError:
+                            quantite=0
                         d=datetime.strptime(date_livraison, '%Y%m%d')
                         date_livraison=d.strftime('%Y-%m-%d')
                         ligne = {
