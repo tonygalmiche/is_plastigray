@@ -92,6 +92,7 @@
                                 <field name="ls_line_id"/>
                                 <field name="bon_transfert_id"/>
                                 <field name="bt_line_id"/>
+                                <field name="stock_move_id"/>
                             </group>
                         </group>
                     </sheet>
@@ -117,6 +118,7 @@
                     <field name="ls_line_id"/>
                     <field name="bon_transfert_id"/>
                     <field name="bt_line_id"/>
+                    <field name="stock_move_id"/>
                     <field name="write_date"/>
                     <field name="create_date"/>
                 </tree>
@@ -137,6 +139,7 @@
                     <field name="ls_line_id"/>
                     <field name="bon_transfert_id"/>
                     <field name="bt_line_id"/>
+                    <field name="stock_move_id"/>
                     <group expand="0" string="Group By...">
                         <filter name="group_ls_line_id" string="Ligne liste à servir"   domain="[]" context="{'group_by':'ls_line_id'}"/>
                         <filter name="group_bt_line_id" string="Ligne bon de transfert" domain="[]" context="{'group_by':'bt_line_id'}"/>

@@ -113,11 +113,9 @@ class is_galia_base_uc(models.Model):
     production    = fields.Char('Ordre de fabrication')
     product_id    = fields.Many2one('product.product', 'Article', required=True)
     employee_id   = fields.Many2one("hr.employee", u"Employé")
-
     liste_servir_id  = fields.Many2one('is.liste.servir' , u'Liste à servir'  , related='um_id.liste_servir_id')
     bon_transfert_id = fields.Many2one('is.bon.transfert', u'Bon de transfert', related='um_id.bon_transfert_id')
-
-    ls_line_id    = fields.Many2one('is.liste.servir.line' , u'Ligne liste à servir')
-    bt_line_id    = fields.Many2one('is.bon.transfert.line', u'Ligne bon de transfert')
-
+    ls_line_id       = fields.Many2one('is.liste.servir.line' , u'Ligne liste à servir')
+    bt_line_id       = fields.Many2one('is.bon.transfert.line', u'Ligne bon de transfert')
+    stock_move_id    = fields.Many2one('stock.move', u'Ligne livraison')
 
