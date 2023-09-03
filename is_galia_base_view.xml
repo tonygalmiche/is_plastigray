@@ -141,8 +141,9 @@
                     <field name="bt_line_id"/>
                     <field name="stock_move_id"/>
                     <group expand="0" string="Group By...">
-                        <filter name="group_ls_line_id" string="Ligne liste à servir"   domain="[]" context="{'group_by':'ls_line_id'}"/>
-                        <filter name="group_bt_line_id" string="Ligne bon de transfert" domain="[]" context="{'group_by':'bt_line_id'}"/>
+                        <filter name="group_ls_line_id"    string="Ligne liste à servir"   domain="[]" context="{'group_by':'ls_line_id'}"/>
+                        <filter name="group_bt_line_id"    string="Ligne bon de transfert" domain="[]" context="{'group_by':'bt_line_id'}"/>
+                        <filter name="group_stock_move_id" string="Ligne livraison"        domain="[]" context="{'group_by':'stock_move_id'}"/>
                     </group>
                 </search>
             </field>
