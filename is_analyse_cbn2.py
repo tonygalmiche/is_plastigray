@@ -1221,8 +1221,8 @@ class product_product(models.Model):
                         Tab[Cle2]={}
                     Tab[Cle2]['Code'] = Code
                     Tab[Cle2]['TYPE']=u'92-Stock Valorisé'
-                    Tab[Cle2][0]=Tab[Cle1][0]*Cout
-                    Tab[Cle2][DateLundi]=Tab[Cle1][DateLundi]*Cout
+                    Tab[Cle2][0]=Tab[Cle1][0]*(Cout or 0)
+                    Tab[Cle2][DateLundi]=Tab[Cle1][DateLundi]*(Cout or 0)
                 #***************************************************************
 
         return Tab
