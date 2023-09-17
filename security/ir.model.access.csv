@@ -230,8 +230,11 @@ access_is_export_cegid_ligne_compta,access_is_export_cegid_ligne_compta,model_is
 access_is_galia_base,access_is_galia_base,model_is_galia_base,base.group_user,1,0,0,0
 access_is_article,access_is_article,model_is_article,base.group_user,1,0,0,0
 
-access_is_galia_base_um,access_is_galia_base_um,model_is_galia_base_um,base.group_user,1,1,1,1
-access_is_galia_base_uc,access_is_galia_base_uc,model_is_galia_base_uc,base.group_user,1,1,1,1
+access_is_galia_base_um,access_is_galia_base_um,model_is_galia_base_um,base.group_user,1,0,0,0
+access_is_galia_base_uc,access_is_galia_base_uc,model_is_galia_base_uc,base.group_user,1,0,0,0
+
+access_is_galia_base_um_manager,access_is_galia_base_um_manager,model_is_galia_base_um,is_plastigray.is_administration_vente_group,1,1,1,1
+access_is_galia_base_uc_manager,access_is_galia_base_uc_manager,model_is_galia_base_uc,is_plastigray.is_administration_vente_group,1,1,1,1
 
 access_is_vente_message,access_is_vente_message,model_is_vente_message,base.group_user,1,1,1,1
 
