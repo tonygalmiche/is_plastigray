@@ -343,10 +343,10 @@
             </p>
 
             <t t-if="o.partner_id.is_rib_id">
-                <t t-if="o.partner_id.is_rib_id.bank_bic=='SOGEFRPP'">
+                <!-- <t t-if="o.partner_id.is_rib_id.bank_bic=='SOGEFRPP'">
                     <div t-if="o.partner_id.lang == 'fr_FR'"><b>MERCI DE TENIR COMPTE DE NOTRE CHANGEMENT DE RIB, DE « BANQUE KOLB » VERS « SOCIETE GENERALE »</b></div>
                     <div t-if="o.partner_id.lang != 'fr_FR'"><b>PLEASE CONSIDER OUR BANK ACCOUNT CHANGE, FROM “BANQUE KOLB” TO “SOCIETE GENERALE”</b></div>
-                </t>
+                </t> -->
                 <table class="table table-condensed" style="width:75%">
                     <thead>
                         <tr>
