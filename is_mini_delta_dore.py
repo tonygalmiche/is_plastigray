@@ -155,6 +155,7 @@ class is_mini_delta_dore(models.Model):
 
                             #** Date premier mardi et jeudi ********************
                             d=datetime.strptime(cel, '%d/%m/%y')
+
                             weekday = d.isoweekday() # Jour dans la semaine (1=lundi, 7=dimanche)
                             if weekday==1:
                                 mardi_jeudi_precedent = d - timedelta(days=4) # lundi => jeudi précédent
@@ -175,19 +176,29 @@ class is_mini_delta_dore(models.Model):
 
                             #tdates.append([cel,date_lundi])
                             tdates.append([cel,mardi_jeudi_precedent])
-                            annee=d.year
+                            annee=mardi_jeudi_precedent.year
+
+                        # if ct>=10 and ct<(10+nb_jours):
+                        #     print(ct, d, annee, 'Jour',cel)
+                        # if ct>=(10+nb_jours) and ct<(10+nb_jours+nb_semaines):
+                        #     print(ct, d, annee, 'Semaine',cel)
+                        # if ct>=(10+nb_jours+nb_semaines) and ct<(10+nb_jours+nb_semaines+nb_mois):
+                        #     print(ct, d, annee, 'Mois',cel)
 
                         #* Dates en semaines => Jeudi de la semaine ************
                         if ct>=(10+nb_jours) and ct<(10+nb_jours+nb_semaines):
+                            annee=d.year
                             cel=cel.strip()
                             semaine=cel+'/'+str(annee)
                             d=tjeudi[semaine]
                             tdates.append([cel,d])
                             d = d + timedelta(days=7) # Ajoute 7 jours => semaine suivant
-                            annee=d.year # Année de la semaine suivante
 
                         #* Dates en mois => 1er mardi du mois ******************
                         if ct>=(10+nb_jours+nb_semaines) and ct<(10+nb_jours+nb_semaines+nb_mois):
+                            if ct==(10+nb_jours+nb_semaines):
+                                d = d - timedelta(days=7) # Enlever 7 jours au début des mois pour ne pas changer d'année
+                            annee=d.year
                             mois=cel.strip()
                             num_mois=_MOIS.index(mois)+1
                             num_mois=str(num_mois).zfill(2)
@@ -195,7 +206,6 @@ class is_mini_delta_dore(models.Model):
                             date_mois=tmois[mois_annee]
                             tdates.append([mois,date_mois])
                             d = date_mois + timedelta(days=32) # Ajoute 32 jours => mois suivant
-                            annee=d.year # Année du mois suivant
                         ct+=1
 
                 if lig>2:
